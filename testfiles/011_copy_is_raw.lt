@@ -1,0 +1,4 @@
+A copy command 
+does not interpret its input:
+.copy rawtext.inc
+That's all.

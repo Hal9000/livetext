@@ -1,0 +1,10 @@
+abc
+123
+.def foobar
+::STDERR.puts "This is the"
+::STDERR.puts "foobar method"
+.end
+xyz
+.foobar
+xyzzy
+123

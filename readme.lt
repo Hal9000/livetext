@@ -1,0 +1,320 @@
+.mixin tutorial
+.title Livetext: A smart preprocessor for text
+
+.p Livetext is simply a tool for transforming text from one format into another. The source file
+has commands embedded in it, and the output is dependent on those commands.  
+
+.p Why is this special? It's very flexible, very extensible, and it's extensible _(in Ruby).  
+
+.section Why Livetext?
+
+.p Livetext grew out of several motivations. One was a desire for a markup language that would permit
+me to write articles (and even books) in my own way and on my own terms. I've done this more
+than once (and I know others who have, as well).   
+
+.p I liked Softcover, but I found it to be very complex. I never liked Markdown much -- it is very
+dumb and not extensible at all.  
+
+.p I wanted something that had the basic functionality of all my ad hoc solutions but allowed 
+extensions. Then my old solutions would be like subsets of the new format. This was a generalization
+similar to the way we began several years ago to view HTML as a subset of XML.  
+
+.section So what is Livetext really?
+
+.p Here goes:
+.list
+It's a text transformer
+It's Ruby-based
+It's basically agnostic about output format
+It's designed to be flexible, extensible, and easy
+Later on, maybe more language agnostic?
+It's designed to be "plugin" oriented
+It's like an old-fashioned text formatter (but extensible)
+It's like a macro processor (but not)
+It's like markdown and others (but not)
+It's like erb or HAML (but not)
+It's powerful but hopefully not too dangerous
+It's not necesarily a markdown replacement
+It's definitely not a softcover replacement
+It could possibly augment markdown, softcover, others
+.end
+
+.section Enough! How does it work?
+
+.p A Livetext file is simply a text file which may have commands interspersed. A command is
+simply a period followed by a name and optional parameters (at the beginning of a line).  
+
+.p The period is configurable if you want to use another character. The names are (for now)
+actual Ruby method names, so names such as `to_s and `inspect are currently not allowed.  
+
+.p Currently I am mostly emitting "dumb HTML" or Markdown as output. In theory, you can write
+code (or use someone else's) to manipulate text in any way and output any format. Technically,
+you could even emit PDF, PNG, or SVG formats.
+
+. Idea: Make an RMagick DSL as an example.
+
+.p It's possible to embed comments in the text, or even to pass them through to the output 
+in commented form.  
+
+.p The command `.end is special, marking the end of a body of text. Some commands may operate on
+a block of lines rather than just a few parameters. (A text block is like a here-document.)
+There is no method name corresponding to the `.end command.
+
+.p The file extension I've chosen is `.lt (though this may change). *Note: The source for this 
+README is a `.lt file which uses its own little _ad _hoc library (called `readme.rb). Refer to
+the repo to see these.
+
+.section Syntax, comments, and more
+
+.p At first, my idea was to provide predefined commands and allow user-defined commands (to be 
+distinguished by a leading `. or `.. markers). So the single and double dots are both legal. 
+
+However, my concept at present is that the double dots (currently unused) will be used for 
+subcommmands.
+
+.p User-defined commands may be added to the standard namespace marked with a period. They may
+also be preceded by a specified character other than the period and thus stored in their own
+namespace. More on that later.
+
+.p When a leading period (or double period) is followed by a space, that line is a comment.
+When it is follwed by a name, that name is typically understood to be a method name. Any 
+remaining text on the line is treated as a parameter list to be accessed by that method.
+Some methods accept multiple lines of text, terminated by a `.end tag.
+
+.section Boldface and italics
+
+FIXME
+
+.section Standard methods
+
+.p The module `Livetext::Standard contains the set of standard or predefined methods. Their 
+names are essentially the same as the names of the dot-commands, with occasional exceptions.
+(For example, it is impractical to use the name `def as a method name, so we use `_def instead.)
+Here is the current list:
+
+.dlist
+ `comment ~~ Start a comment block
+ `errout ~~ Write an error message to STDERR
+ `sigil ~~ Change the default sigil from `. to some other character
+ `_def ~~ Define a new method inline
+ `set ~~ Assign values to variables for later interpolation
+ `include ~~ Include an outside text file (to be interpreted as Livetext)
+ `mixin ~~ Mix this file of Ruby methods into the standard namespace
+ `copy ~~ Copy this input file verbatim (no interpretation)
+ `r ~~ Pass a single line through without processing
+ `raw ~~ Pass this special text block (terminated with `(__EOF__)) directly into output without processing 
+.end
+
+.section Examples from the tests
+
+Here are some tests from the suite. The file name reflects the general purpose of the test.
+
+.testcase 001_hello_world
+.testcase 002_comments_ignored_1
+.testcase 003_comments_ignored_2
+.testcase 004_sigil_can_change
+.testcase 005_block_comment
+.testcase 006_def_method
+.testcase 007_simple_vars
+.testcase 008_simple_include
+.testcase 009_simple_mixin
+.testcase 010_simple_copy
+.testcase 011_copy_is_raw
+.testcase 012_raw_text_block
+
+.section Writing custom methods
+
+.p Suppose you wanted to write a method called `chapter that would simply
+output a chapter number and title with certain heading tags and a
+horizontal rule following. There is more than one way to do this.
+
+.p The simplest way is just to define a method inline with the rest of 
+the text. Here's an example.
+
+.code
+  .comment
+  This example shows how to define
+  a simple method "chapter" inline
+  .end
+
+  . This is also a comment, by the way.
+  .def chapter
+     params = _args
+     raise "chapter: expecting at least two args" unless params.size > 1
+     num, *title = params     # Chapter number + title
+     title = title.join(" ")  # Join all words into one string
+     text = <<-HTML
+     <h3>Chapter #{num}</h3>
+     <h2>#{title}</h2>
+     <hr>
+     HTML
+     _puts text
+  .end
+  . Now let's invoke it...
+  .chapter 1 Why I Went to the Woods
+  It was the best of times, and you can call me Ishmael. The clocks
+  were striking thirteen.
+.end
+
+.p What can we see from this example? First of all, notice that the part
+between `.def and `.end (the body of the method) really is just Ruby
+code. The method takes no parameters because parameter passing is 
+handled inside the Livetext engine and the instance variable `@\_args is
+initialized to the contents of this array. We usually refer to the
+`@\_args array only through the method `_args which returns it.
+
+The `_args method is also an iterator. If a block is attached, that block
+will be called for every argument.
+
+.p We then create a string using these parameters and call it using the
+`_puts method. This really does do a `puts call, but it applies it to
+wherever the output is currently being sent (defaulting to STDOUT).
+
+.p All the "helper" methods start with an underscore so as to avoid name
+collisions. These are all stored in the `Livetext::Helpers module
+(which also has some methods you will never use).
+
+.p Here is the HTML output of the previous example:
+
+.code
+  <h3>Chapter 1</h3>
+  <h2>Why I Went to the Woods</h2>
+  <hr>
+  It was the best of times, and you can call me Ishmael. The clocks
+  were striking thirteen.
+.end
+
+.p What are some other helper methods? Here's a list.
+
+.dlist
+`_args ~~ Returns an array of arguments for the method (or an enumerator for that array)
+`_data ~~ A single "unsplit" string of all arguments in raw form
+`_body ~~ Returns a string (or enumerator) giving access to the text block (preceding `(.end))
+`_puts ~~ Write a line to output (STDOUT or wherever)
+`_print ~~ Write a line to output (STDOUT or wherever) without a newline
+`_formatting ~~ A function transforming boldface, italics, and monospace (Livetext conventions)
+`_var_substitution ~~ Substitute variables into a string
+`_passthru ~~ Feed a line directly into output after transforming and substituting
+.end
+
+.p Note that the last three methods are typically _not called in your own code. They could be,
+but it remains to be seen whether something that advanced is useful.
+
+.section More examples
+
+.p Suppose you wanted to take a list of words, more than one per line, and alphabetize them.
+Let's write a method called `alpha for that. This exercise and the next one are implemented 
+in the test suite.
+
+.testcase 013_example_alpha
+
+.p I'll let that code stand on its own. Now suppose you wanted to allow columnar output. Let's
+have the user specify a number of columns (from 1 to 5, defaulting to 1).
+
+.testcase 014_example_alpha2
+
+.p What if we wanted to store the code outside the text file? There is more than one way to 
+do this.
+
+.p Let's assume we have a file called `mylib.rb in the same directory as the file we're processing.
+(Issues such as paths and security have not been addressed yet.) We'll stick the actual Ruby code
+in here (and nothing else).
+
+.code
+# File: mylib.rb
+
+def alpha
+  cols = _args.first
+  cols = "1" if cols == ""
+  cols = cols.to_i
+  raise "Columns must be 1-5" unless cols.between?(1,5)
+  text = _body.join
+  text.gsub!(/\n/, " ")
+  words = text.split.sort
+  words.each_slice(cols) do |row| 
+    row.each {|w| _print '%-15s' % w }
+    _puts 
+  end
+end
+.end
+
+.p Now the `.lt file can be written this way:
+
+.code
+ .mixin mylib
+ Here is an alphabetized list:
+
+ .alpha 3
+ fishmonger anarchist aardvark glyph gryphon
+ halcyon zymurgy mataeotechny zootrope
+ pareidolia manicotti quark bellicose anamorphic
+ cytology fusillade ectomorph
+ .end
+
+ I hope that worked a second time.
+.end
+
+.p The output, of course, is the same.
+
+.p There is an important feature that has not yet been implemented (the
+`require method). Like Ruby's `(require), it will grab Ruby code and 
+load it; however, unlike `(mixin), it will load it into a customized
+object and associate a new sigil with it. So for example, the command
+`.foobar would refer to a method in the `Livetext::Standard class 
+(whether predefined or user-defined). If we did a `require on a file
+and associated the sigil `# with it, then `#foobar would be a method
+on that new custom object. I will implement this soon.
+
+.section Issues, open questions, and to-do items
+
+.p This list is not prioritized yet.
+
+.nlist
+Add versioning information 
+Clean up code structure
+Add RDoc
+Think about command line executable
+Write as pure library in addition to executable
+Package as gem
+Document: `require `include `copy `mixin `errout and others
+Need much better error checking and corresponding tests
+Worry about nesting of elements (probably mostly disallow)
+Think about UTF-8
+Document API fully
+Add `_raw_args and let `_args honor quotes
+Support quotes in `.set values
+Support "namespaced" variables  (`(.set code.font="whatever"))
+Support functions (`($$func)) including namespacing
+Create predefined variables and functions (e.g., `($_source_file), `$(_line), `($$_today))
+Support markdown-style bold/italics? (`_markdown replaces `_formatting method)
+Allow turning on/off: formatting, variable interpolation, function interpolation?
+`.require with file and sigil parameters
+Comments passed through (e.g. as HTML comments)
+`.run to execute arbitrary Ruby code inline?
+Concept of `.proc (guaranteed to return no value, produce no output)?
+Exceptions??
+Ruby `$SAFE levels?
+Warn when overriding existing names?
+Think about passing data in (erb replacement)
+Allow custom ending tag on `raw method
+Ignore first blank line after `(.end)? (and after raw-tag?)
+Allow/encourage custom `passthru method?
+Must have sane support for CSS
+Support for Pygments and/or other code processors
+Support for gists? arbitrary links? other remote resouces?
+Small libraries for special purposes (books? special Softcover support? blogs? PDF? RMagick?)
+Experiment with idea of special libraries having pluggable output formats (via Ruby mixin?)
+Imagining a lib that can run/test code fragments as part of document generation
+Create vim (emacs?) syntax files
+Someday: Support other languages (Elixir, Python, ...)
+`.pry method?
+`.irb method?
+Other debugging features
+Feature to "break" to EOF?
+`.meth? method ending in `? takes a block that may be processed or thrown away (`(.else) perhaps?)
+`.dump to dump all variables and their values
+`.if and `(.else)?
+Make any/all delimiters configurable
+HTML helper? (in their own library?)
+.end
+

@@ -1,0 +1,13 @@
+This text block will be passed thru
+with no interpretation or processing:
+.comment
+This isn't a
+real comment.
+.end  This isn't picked up.
+
+.not_a_method
+
+And this stuff won't be munged: `alpha _beta *gamma
+Or this: `(alpha male) _(beta max) *(gamma rays)
+
+I hope that worked.

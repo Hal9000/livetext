@@ -1,0 +1,132 @@
+configurable sigils
+double sigil + blank = true comment 
+sigil + blank = passthru comment 
+double sigil + token = internal sigil
+
+define variables, functions, methods
+warn when overriding?
+
+allow switching sigils, etc.
+
+need a 'require' (with sigil?)
+need include
+.raw
+.args
+.mixin
+.include
+
+BEGIN/END for require or mixin?
+
+comment!  pass this thru as comment
+comments/end
+comments!/end
+
+define "quotes" such as * _ ?
+
+
+args vs bare args (quotes)
+
+Issues: 
+  - substitution and bold/italics on @data and @args?
+  - substitution before or after bold/italics?
+
+.func .proc .def .var ?
+
+.break to eof ?
+
+.meth? .end  (.else?)
+
+.run  Arbitrary Ruby code?
+
+safe level?
+other langs??
+configurable delimiters (tables, etc.)
+
+** __ `` ?
+
+$var.subvar
+
+$$func $$func(params)
+
+.say
+.debug
+.dump
+
+exceptions?
+
+.if, .else ?
+
+
+.index 
+.indexable
+
+Assignment
+----------
+myvar=foo
+myvar.x = "This and that"
+$myvar
+$myvar.x
+$(myvar.x)
+
+Functions
+---------
+$$func
+$$func.blah
+$$(func.blah)
+$$proc ?
+$$(func args)
+
+Predef functions?
+-----------------
+$$sourceline
+$index
+
+What is Livetext?
+-----------------
+It's a text transformer
+Agnostic about output format
+Like a macro processor but not
+Like markdown but not
+Like erb or HAML but not
+Later on - language agnostic?
+Like an old-fashioned text formatter, but extensible
+Plugin-oriented
+Aims to be easy/flexible but not too dangerous
+Predefine but don't clutter namespace
+Mention softcover
+
+Tutorial
+--------
+What is it?
+Any text file is (probably) valid
+Simple built-in methods
+Pass-through mode
+Comments
+Methods with bodies
+Changing sigils
+Reusing text and code
+Predefined stuff: methods, functions, variables, libs?
+Defining your own code: inline, methods, func, proc, ...
+require, include
+variables
+functions
+
+Mixins etc
+----------
+PlainHTML
+PDFout
+Bookish
+InlineMarkdown
+Pygments
+
+
+Logic:
+------
+Handle . .. .name 
+In each body:
+  - allow . and ..
+  - handle ..name
+  - disallow .name ?
+  - handle italics
+  - handle substitution
+

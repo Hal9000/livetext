@@ -1,0 +1,16 @@
+.def alpha
+   text = _body.join
+   text.gsub!(/\n/, " ")
+   words = text.split.sort
+   words.each {|w| _puts "    #{w}" }
+.end
+Here is an alphabetized list:
+
+.alpha
+fishmonger anarchist aardvark glyph gryphon
+halcyon zymurgy mataeotechny zootrope
+pareidolia manicotti quark bellicose anamorphic
+cytology fusillade ectomorph
+.end
+
+I hope that worked.

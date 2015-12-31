@@ -1,0 +1,18 @@
+.comment
+This is
+a comment
+.end
+abc 123
+xyz
+.comment
+And so is this.
+.end
+
+one
+more
+time
+.comment
+And so
+is
+this
+.end

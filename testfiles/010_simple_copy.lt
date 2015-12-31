@@ -1,0 +1,6 @@
+The copy command
+copies any file
+without interpretation,
+such as:
+.copy simplefile.inc
+That is all.

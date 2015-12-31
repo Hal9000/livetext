@@ -1,0 +1,23 @@
+.def alpha
+   cols = _args.first
+   cols = "1" if cols == ""
+   cols = cols.to_i
+   raise "Columns must be 1-5" unless cols.between?(1,5)
+   text = _body.join
+   text.gsub!(/\n/, " ")
+   words = text.split.sort
+   words.each_slice(cols) do |row| 
+     row.each {|w| _print '%-15s' % w }
+     _puts 
+   end
+.end
+Here is an alphabetized list:
+
+.alpha 3
+fishmonger anarchist aardvark glyph gryphon
+halcyon zymurgy mataeotechny zootrope
+pareidolia manicotti quark bellicose anamorphic
+cytology fusillade ectomorph
+.end
+
+I hope that worked a second time.
