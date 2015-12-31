@@ -311,6 +311,7 @@ Create predefined variables and functions (e.g., `($_source_file), `$(_line), `(
 Support markdown-style bold/italics? (`_markdown replaces `_formatting method)
 Allow turning on/off: formatting, variable interpolation, function interpolation?
 `.require with file and sigil parameters
+Investigate "common intermediate format" - output renderers all read it
 Comments passed through (e.g. as HTML comments)
 `.run to execute arbitrary Ruby code inline?
 Concept of `.proc (guaranteed to return no value, produce no output)?
