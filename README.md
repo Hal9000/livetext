@@ -56,7 +56,7 @@ A Livetext file is simply a text file which may have commands interspersed. A co
 simply a period followed by a name and optional parameters (at the beginning of a line).  
 
 The period is configurable if you want to use another character. The names are (for now)
-actual Ruby method names, so names such as `to_s and <tt>inspect</tt> are currently not allowed.  
+actual Ruby method names, so names such as <tt>to_s</tt> and <tt>inspect</tt> are currently not allowed.  
 
 Currently I am mostly emitting "dumb HTML" or Markdown as output. In theory, you can write
 code (or use someone else's) to manipulate text in any way and output any format. Technically,
@@ -155,7 +155,7 @@ This is all summarized in this example (taken from one of the testcases):
 
 The module <tt>Livetext::Standard</tt> contains the set of standard or predefined methods. Their 
 names are essentially the same as the names of the dot-commands, with occasional exceptions.
-(For example, it is impractical to use the name <tt>def</tt> as a method name, so we use `_def instead.)
+(For example, it is impractical to use the name <tt>def</tt> as a method name, so we use <tt>_def</tt> instead.)
 Here is the current list:
 
 <table>
@@ -172,7 +172,7 @@ Here is the current list:
 </td>
 </tr>
 <tr>
-<td width=3%><td width=10%> `_def </td><td> Define a new method inline
+<td width=3%><td width=10%> <tt>_def</tt> </td><td> Define a new method inline
 </td>
 </tr>
 <tr>
@@ -630,15 +630,15 @@ the text. Here's an example.
 What can we see from this example? First of all, notice that the part
 between <tt>.def</tt> and <tt>.end</tt> (the body of the method) really is just Ruby
 code. The method takes no parameters because parameter passing is 
-handled inside the Livetext engine and the instance variable `@_args is
+handled inside the Livetext engine and the instance variable <tt>@_args</tt> is
 initialized to the contents of this array. We usually refer to the
-`@_args array only through the method `_args which returns it.
+<tt>@_args</tt> array only through the method <tt>_args</tt> which returns it.
 
-The `_args method is also an iterator. If a block is attached, that block
+The <tt>_args</tt> method is also an iterator. If a block is attached, that block
 will be called for every argument.
 
 We then create a string using these parameters and call it using the
-`_puts method. This really does do a <tt>puts</tt> call, but it applies it to
+<tt>_puts</tt> method. This really does do a <tt>puts</tt> call, but it applies it to
 wherever the output is currently being sent (defaulting to STDOUT).
 
 All the "helper" methods start with an underscore so as to avoid name
@@ -659,35 +659,35 @@ What are some other helper methods? Here's a list.
 
 <table>
 <tr>
-<td width=3%><td width=10%>`_args </td><td> Returns an array of arguments for the method (or an enumerator for that array)
+<td width=3%><td width=10%><tt>_args</tt> </td><td> Returns an array of arguments for the method (or an enumerator for that array)
 </td>
 </tr>
 <tr>
-<td width=3%><td width=10%>`_data </td><td> A single "unsplit" string of all arguments in raw form
+<td width=3%><td width=10%><tt>_data</tt> </td><td> A single "unsplit" string of all arguments in raw form
 </td>
 </tr>
 <tr>
-<td width=3%><td width=10%>`_body </td><td> Returns a string (or enumerator) giving access to the text block (preceding <tt>.end</tt>)
+<td width=3%><td width=10%><tt>_body</tt> </td><td> Returns a string (or enumerator) giving access to the text block (preceding <tt>.end</tt>)
 </td>
 </tr>
 <tr>
-<td width=3%><td width=10%>`_puts </td><td> Write a line to output (STDOUT or wherever)
+<td width=3%><td width=10%><tt>_puts</tt> </td><td> Write a line to output (STDOUT or wherever)
 </td>
 </tr>
 <tr>
-<td width=3%><td width=10%>`_print </td><td> Write a line to output (STDOUT or wherever) without a newline
+<td width=3%><td width=10%><tt>_print</tt> </td><td> Write a line to output (STDOUT or wherever) without a newline
 </td>
 </tr>
 <tr>
-<td width=3%><td width=10%>`_formatting </td><td> A function transforming boldface, italics, and monospace (Livetext conventions)
+<td width=3%><td width=10%><tt>_formatting</tt> </td><td> A function transforming boldface, italics, and monospace (Livetext conventions)
 </td>
 </tr>
 <tr>
-<td width=3%><td width=10%>`_var_substitution </td><td> Substitute variables into a string
+<td width=3%><td width=10%><tt>_var_substitution</tt> </td><td> Substitute variables into a string
 </td>
 </tr>
 <tr>
-<td width=3%><td width=10%>`_passthru </td><td> Feed a line directly into output after transforming and substituting
+<td width=3%><td width=10%><tt>_passthru</tt> </td><td> Feed a line directly into output after transforming and substituting
 </td>
 </tr>
 </table>
@@ -891,7 +891,7 @@ This list is not prioritized yet.
 </li>
 <li>Document API fully
 </li>
-<li>Add `_raw_args and let `_args honor quotes
+<li>Add <tt>_raw_args</tt> and let <tt>_args</tt> honor quotes
 </li>
 <li>Support quotes in <tt>.set</tt> values
 </li>
@@ -899,9 +899,9 @@ This list is not prioritized yet.
 </li>
 <li>Support functions (`($$func)) including namespacing
 </li>
-<li>Create predefined variables and functions (e.g., <tt>$_source_file</tt>, `$(_line), <tt>$$_today</tt>)
+<li>Create predefined variables and functions (e.g., <tt>$_source_file</tt>, <tt>$(_line),</tt> <tt>$$_today</tt>)
 </li>
-<li>Support markdown-style bold/italics? (`_markdown replaces `_formatting method)
+<li>Support markdown-style bold/italics? (`_markdown replaces <tt>_formatting</tt> method)
 </li>
 <li>Allow turning on/off: formatting, variable interpolation, function interpolation?
 </li>

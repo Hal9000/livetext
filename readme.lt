@@ -60,7 +60,7 @@ a block of lines rather than just a few parameters. (A text block is like a here
 There is no method name corresponding to the `.end command.
 
 .p The file extension I've chosen is `.lt (though this may change). *Note: The source for this 
-README is a `.lt file which uses its own little _ad _hoc library (called `readme.rb). Refer to
+README is a `.lt file which uses its own little _(ad hoc) library (called `(readme.rb)). Refer to
 the repo to see these.
 
 .section Syntax, comments, and more
@@ -181,9 +181,9 @@ the text. Here's an example.
 .p What can we see from this example? First of all, notice that the part
 between `.def and `.end (the body of the method) really is just Ruby
 code. The method takes no parameters because parameter passing is 
-handled inside the Livetext engine and the instance variable `@\_args is
+handled inside the Livetext engine and the instance variable `@_args is
 initialized to the contents of this array. We usually refer to the
-`@\_args array only through the method `_args which returns it.
+`@_args array only through the method `_args which returns it.
 
 The `_args method is also an iterator. If a block is attached, that block
 will be called for every argument.

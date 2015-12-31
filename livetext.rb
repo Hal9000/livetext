@@ -82,9 +82,9 @@ module Livetext::Helpers
     line.gsub!(rbp) { $1 + "<b>" + $2 + "</b>" }
     line.gsub!(rcp) { $1 + "<tt>" + $2 + "</tt>" }
     # Non-parenthesized (delimited by space)
-    ri, rb, rc = /(^| )\_([^ *_`]+?)( |$)/,  
-                 /(^| )\*([^ *_`]+?)( |$)/,  
-                 /(^| )\`([^ *_`]+?)( |$)/  
+    ri, rb, rc = /(^| )\_([^ ]+?)( |$)/,  
+                 /(^| )\*([^ ]+?)( |$)/,  
+                 /(^| )\`([^ ]+?)( |$)/  
     line.gsub!(ri) { $1 + "<i>" + $2 + "</i>" + $3 }
     line.gsub!(rb) { $1 + "<b>" + $2 + "</b>" + $3}
     line.gsub!(rc) { $1 + "<tt>" + $2 + "</tt>" + $3 }
