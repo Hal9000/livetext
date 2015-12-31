@@ -1,5 +1,5 @@
 .mixin tutorial
-.title Livetext: A smart preprocessor for text
+.title Livetext: A smart processor for text
 
 .p Livetext is simply a tool for transforming text from one format into another. The source file
 has commands embedded in it, and the output is dependent on those commands.  
@@ -19,27 +19,26 @@ dumb and not extensible at all.
 extensions. Then my old solutions would be like subsets of the new format. This was a generalization
 similar to the way we began several years ago to view HTML as a subset of XML.  
 
-.section So what is Livetext really?
+.section What is Livetext really?
 
 .p Here goes:
 .list
 It's a text transformer
-It's Ruby-based
-It's basically agnostic about output format
+It's Ruby-based (later on, more language agnostic)
+It's (potentially) agnostic about output format
 It's designed to be flexible, extensible, and easy
-Later on, maybe more language agnostic?
 It's designed to be "plugin" oriented
 It's like an old-fashioned text formatter (but extensible)
 It's like a macro processor (but not)
 It's like markdown and others (but not)
 It's like erb or HAML (but not)
-It's powerful but hopefully not too dangerous
+It's powerful but not too dangerous
 It's not necesarily a markdown replacement
 It's definitely not a softcover replacement
 It could possibly augment markdown, softcover, others
 .end
 
-.section Enough! How does it work?
+.section How does it work?
 
 .p A Livetext file is simply a text file which may have commands interspersed. A command is
 simply a period followed by a name and optional parameters (at the beginning of a line).  
@@ -83,7 +82,30 @@ Some methods accept multiple lines of text, terminated by a `.end tag.
 
 .section Boldface and italics
 
-FIXME
+.p Very commonly we want to format short words or phrases in italics, boldface, or a monospaced
+(fixed width) font. The Markdown spec provides ways to do this that are fairly intuitive; but I
+personally don't like them. My own notation works a different way.
+
+.p First of all, note that these don't work across source lines; they're strictly intra-line.
+You may need (for example) an italicized phrase that spans across a newline; at present, you'll
+need a workaround for that.
+
+.p I find that most short items I want to format are single tokens. Therefore I use a prefixed
+character in front of such a token: Underscore for italics, asterisk for boldface, and backtick
+for "code font." The formatting ends when the first blank space is encountered, without any 
+kind of suffixed character. (This behavior may change to include certain punctuation marks as
+terminators.)
+
+.p Of course, there are cases where this won't work; a formatted string may contain spaces, or it
+may exclude characters before the blank space. In this case, we can use an opening parenthesis 
+after the prefix and a closing parenthesis at the end of the string.
+
+.p This means that it can be difficult to include a left paren inside a formatted token. I'm thinking
+about that. It also means that a "literal" prefix character must be escaped.
+
+.p This is all summarized in this example (taken from one of the testcases):
+
+.testcase 015_basic_formatting
 
 .section Standard methods
 

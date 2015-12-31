@@ -1,0 +1,8 @@
+Here are examples of *boldface and _italics and `code
+as well as *(more complex) examples of _(italicized text)
+and `(code font).
+
+Here are some random punctuation marks:
+# . @ * _ ` : ; % ^ & $
+
+Oops, forgot to escape these:  \* \_ \`

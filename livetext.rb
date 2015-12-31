@@ -75,17 +75,23 @@ module Livetext::Helpers
   end
 
   def _formatting(line)
-    rip, rbp, rcp = /(^| )_\(([^)]+?)\)/,  /(^| )\*\(([^)]+?)\)/,  /(^| )`\(([^)]+?)\)/  
-    line.gsub!(rip) { " <i>" + $2 + "</i>" }
-    line.gsub!(rbp) { " <b>" + $2 + "</b>" }
-    line.gsub!(rcp) { " <tt>" + $2 + "</tt>" }
+    rip, rbp, rcp = /(^| )_\(([^)]+?)\)/,  
+                    /(^| )\*\(([^)]+?)\)/,  
+                    /(^| )`\(([^)]+?)\)/  
+    line.gsub!(rip) { $1 + "<i>" + $2 + "</i>" }
+    line.gsub!(rbp) { $1 + "<b>" + $2 + "</b>" }
+    line.gsub!(rcp) { $1 + "<tt>" + $2 + "</tt>" }
     # Non-parenthesized (delimited by space)
-  orig = line.dup
-    ri, rb, rc = /(^| )_(.+?) /,  /(^| )\*(.+?) /,  /(^| )`(.+?) /  
-    line.gsub!(ri) { " <i>" + $2 + "</i> " }
-    line.gsub!(rb) { " <b>" + $2 + "</b> " }
-    line.gsub!(rc) { " <tt>" + $2 + "</tt> " }
-# @tty.puts "Line: #{orig}\nNow:  #{line}\n " if orig != line
+    ri, rb, rc = /(^| )\_([^ *_`]+?)( |$)/,  
+                 /(^| )\*([^ *_`]+?)( |$)/,  
+                 /(^| )\`([^ *_`]+?)( |$)/  
+    line.gsub!(ri) { $1 + "<i>" + $2 + "</i>" + $3 }
+    line.gsub!(rb) { $1 + "<b>" + $2 + "</b>" + $3}
+    line.gsub!(rc) { $1 + "<tt>" + $2 + "</tt>" + $3 }
+    # Now unescape the escaped prefix characters
+    line.gsub!(/\\\*/, "*")
+    line.gsub!(/\\_/, "_")
+    line.gsub!(/\\`/, "`")
     line
   end
 
