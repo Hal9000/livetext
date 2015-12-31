@@ -1,8 +1,24 @@
-MainSigil = "."
-Sigils = [MainSigil]
-Space = " "
-
 class Livetext
+  Version = "0.0.1"
+
+  MainSigil = "."
+  Sigils = [MainSigil]
+  Space = " "
+
+  Objects = { MainSigil => nil }
+
+  Disallowed = [:_data=, :bar, :foo, :nil?, :===, :=~, :!~, :eql?, :hash, :<=>, 
+                :class, :singleton_class, :clone, :dup, :taint, :tainted?, 
+                :untaint, :untrust, :untrusted?, :trust, :freeze, :frozen?, 
+                :to_s, :inspect, :methods, :singleton_methods, :protected_methods, 
+                :private_methods, :public_methods, :instance_variables, 
+                :instance_variable_get, :instance_variable_set, 
+                :instance_variable_defined?, :remove_instance_variable, 
+                :instance_of?, :kind_of?, :is_a?, :tap, :send, :public_send, 
+                :respond_to?, :extend, :display, :method, :public_method, 
+                :singleton_method, :define_singleton_method, :object_id, :to_enum, 
+                :enum_for, :pretty_inspect, :==, :equal?, :!, :!=, :instance_eval, 
+                :instance_exec, :__send__, :__id__, :__binding__]
 end
 
 module Livetext::Helpers
@@ -27,9 +43,9 @@ module Livetext::Helpers
     end
   end
 
-  def _comment?(str, sigil=::MainSigil)
-    c1 = sigil + ::Space
-    c2 = sigil + sigil + ::Space
+  def _comment?(str, sigil=Livetext::MainSigil)
+    c1 = sigil + Livetext::Space
+    c2 = sigil + sigil + Livetext::Space
     str.index(c1) == 0 || str.index(c2) == 0
   end
 
@@ -38,14 +54,14 @@ module Livetext::Helpers
     return false
   end
 
-  def _end?(str, sigil=::MainSigil)
+  def _end?(str, sigil=Livetext::MainSigil)
     cmd = sigil + "end"
     return false if str.index(cmd) != 0 
     return false unless _trailing?(str[5])
     return true
   end
 
-  def _raw_body(tag = "__EOF__", sigil = ::MainSigil)
+  def _raw_body(tag = "__EOF__", sigil = Livetext::MainSigil)
     lines = []
     loop do
       line = @input.next  # no chomp needed
@@ -59,7 +75,7 @@ module Livetext::Helpers
     end
   end
 
-  def _body(sigil=::MainSigil)
+  def _body(sigil=Livetext::MainSigil)
     lines = []
     loop do
       line = @input.next  # no chomp needed
@@ -130,9 +146,9 @@ module Livetext::Standard
   def sigil
     char = _args.first
     raise "'#{char}' is not a single character" if char.length > 1
-    obj = ::Objects[::MainSigil]
-    ::Objects.replace(char => obj)
-    ::MainSigil.replace(char)
+    obj = Livetext::Objects[Livetext::MainSigil]
+    Livetext::Objects.replace(char => obj)
+    Livetext::MainSigil.replace(char)
   end
 
   def _def
@@ -155,7 +171,7 @@ module Livetext::Standard
     file = _args.first
     lines = ::File.readlines(file)
     array = lines + @input.to_a
-    @input = array.each
+    @input = array.each # FIXME .with_index
   end
 
   def mixin
@@ -198,20 +214,6 @@ class Livetext::System < BasicObject
 end
 
 
-Objects = { MainSigil => nil }
-
-Disallowed = [:_data=, :bar, :foo, :nil?, :===, :=~, :!~, :eql?, :hash, :<=>, 
-              :class, :singleton_class, :clone, :dup, :taint, :tainted?, 
-              :untaint, :untrust, :untrusted?, :trust, :freeze, :frozen?, 
-              :to_s, :inspect, :methods, :singleton_methods, :protected_methods, 
-              :private_methods, :public_methods, :instance_variables, 
-              :instance_variable_get, :instance_variable_set, 
-              :instance_variable_defined?, :remove_instance_variable, 
-              :instance_of?, :kind_of?, :is_a?, :tap, :send, :public_send, 
-              :respond_to?, :extend, :display, :method, :public_method, 
-              :singleton_method, :define_singleton_method, :object_id, :to_enum, 
-              :enum_for, :pretty_inspect, :==, :equal?, :!, :!=, :instance_eval, 
-              :instance_exec, :__send__, :__id__, :__binding__]
 
 def rx(str, space=nil)
   Regexp.compile("^" + Regexp.escape(str) + "#{space}")
@@ -224,20 +226,20 @@ def handle_sscomment(sigil, line)
 end
 
 def handle_ssname(sigil, line)
-  obj = Objects[sigil]
+  obj = Livetext::Objects[sigil]
   blank = line.index(" ")
   name = line[2..(blank-1)]
-  abort "Name '#{name}' is not permitted" if Disallowed.include?(name.to_sym)
+  abort "Name '#{name}' is not permitted" if Livetext::Disallowed.include?(name.to_sym)
   obj._data = line[(blank+1)..-1].chomp
   name = "_def" if name == "def"
   obj.send(name)
 end
 
 def handle_sname(sigil, line)
-  obj = Objects[sigil]
+  obj = Livetext::Objects[sigil]
   blank = line.index(" ") || -1  # maybe no blank?
   name = line[1..(blank-1)]
-  abort "Name '#{name}' is not permitted" if Disallowed.include?(name.to_sym)
+  abort "Name '#{name}' is not permitted" if Livetext::Disallowed.include?(name.to_sym)
   obj._data = line[(blank+1)..-1].chomp
   name = "_def" if name == "def"
   obj.send(name)
@@ -245,9 +247,9 @@ end
 
 def handle(line)
   nomarkup = true
-  Sigils.each do |sigil|
-    scomment  = rx(sigil, Space)  # apply these in order
-    sscomment = rx(sigil + sigil, Space)
+  Livetext::Sigils.each do |sigil|
+    scomment  = rx(sigil, Livetext::Space)  # apply these in order
+    sscomment = rx(sigil + sigil, Livetext::Space)
     ssname    = rx(sigil + sigil)
     sname     = rx(sigil)
     case 
@@ -260,7 +262,7 @@ def handle(line)
       when line =~ sname
         handle_sname(sigil, line)
       else
-        obj = Objects[sigil]
+        obj = Livetext::Objects[sigil]
         obj._passthru(line)
     end
   end
@@ -271,7 +273,7 @@ if $0 == __FILE__
   file = File.open(ARGV[0])
 
   source = file.each_line
-  Objects[MainSigil] = sys = Livetext::System.new(source)
+  sys = Livetext::Objects[Livetext::MainSigil] = Livetext::System.new(source)
 
   loop do
     line = sys._source.next
