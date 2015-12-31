@@ -36,6 +36,7 @@ class TestingLiveText < MiniTest::Test
   def test_013_example_alpha;       external_files end
   def test_014_example_alpha2;      external_files end
   def test_015_basic_formatting;    external_files end
+  def test_016_single_raw_line;     external_files end
 
 end
 
