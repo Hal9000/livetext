@@ -9,6 +9,9 @@
 /test/version_tmp/
 /tmp/
 
+/testfiles/*.out
+/testfiles/*.err
+
 ## Specific to RubyMotion:
 .dat*
 .repl_history
