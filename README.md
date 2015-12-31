@@ -1,121 +1,123 @@
-<p><center><h2>Livetext: A smart processor for text</h2></center></p>
+<center><h2>Livetext: A smart processor for text</h2></center>
 
-<p>Livetext is simply a tool for transforming text from one format into another. The source file
-has commands embedded in it, and the output is dependent on those commands.  </p>
+Livetext is simply a tool for transforming text from one format into another. The source file
+has commands embedded in it, and the output is dependent on those commands.  
 
-<p>Why is this special? It&#39;s very flexible, very extensible, and it&#39;s extensible <i>in Ruby</i>.  </p>
+Why is this special? It's very flexible, very extensible, and it's extensible <i>in Ruby</i>.  
 
-<p><br><br><b><font size=+1>Why Livetext?</font></b><br></p>
+<br><br><b><font size=+1>Why Livetext?</font></b><br>
 
-<p>Livetext grew out of several motivations. One was a desire for a markup language that would permit
-me to write articles (and even books) in my own way and on my own terms. I&#39;ve done this more
-than once (and I know others who have, as well).   </p>
+Livetext grew out of several motivations. One was a desire for a markup language that would permit
+me to write articles (and even books) in my own way and on my own terms. I've done this more
+than once (and I know others who have, as well).   
 
-<p>I liked Softcover, but I found it to be very complex. I never liked Markdown much -- it is very
-dumb and not extensible at all.  </p>
+I liked Softcover, but I found it to be very complex. I never liked Markdown much -- it is very
+dumb and not extensible at all.  
 
-<p>I wanted something that had the basic functionality of all my ad hoc solutions but allowed 
+I wanted something that had the basic functionality of all my ad hoc solutions but allowed 
 extensions. Then my old solutions would be like subsets of the new format. This was a generalization
-similar to the way we began several years ago to view HTML as a subset of XML.  </p>
+similar to the way we began several years ago to view HTML as a subset of XML.  
 
-<p><br><br><b><font size=+1>What is Livetext really?</font></b><br></p>
+<br><br><b><font size=+1>What is Livetext really?</font></b><br>
 
-<p>Here goes:
+Here goes:
 <ul>
-<li>It&#39;s a text transformer
+<li>It's a text transformer
 </li>
-<li>It&#39;s Ruby-based (later on, more language agnostic)
+<li>It's Ruby-based (later on, more language agnostic)
 </li>
-<li>It&#39;s (potentially) agnostic about output format
+<li>It's (potentially) agnostic about output format
 </li>
-<li>It&#39;s designed to be flexible, extensible, and easy
+<li>It's designed to be flexible, extensible, and easy
 </li>
-<li>It&#39;s designed to be &quot;plugin&quot; oriented
+<li>It's designed to be "plugin" oriented
 </li>
-<li>It&#39;s like an old-fashioned text formatter (but extensible)
+<li>It's like an old-fashioned text formatter (but extensible)
 </li>
-<li>It&#39;s like a macro processor (but not)
+<li>It's like a macro processor (but not)
 </li>
-<li>It&#39;s like markdown and others (but not)
+<li>It's like markdown and others (but not)
 </li>
-<li>It&#39;s like erb or HAML (but not)
+<li>It's like erb or HAML (but not)
 </li>
-<li>It&#39;s powerful but not too dangerous
+<li>It's powerful but not too dangerous
 </li>
-<li>It&#39;s not necesarily a markdown replacement
+<li>It's not necesarily a markdown replacement
 </li>
-<li>It&#39;s definitely not a softcover replacement
+<li>It's definitely not a softcover replacement
 </li>
 <li>It could possibly augment markdown, softcover, others
 </li>
-</ul></p>
+</ul>
 
-<p><br><br><b><font size=+1>How does it work?</font></b><br></p>
+<br><br><b><font size=+1>How does it work?</font></b><br>
 
-<p>A Livetext file is simply a text file which may have commands interspersed. A command is
-simply a period followed by a name and optional parameters (at the beginning of a line).  </p>
+A Livetext file is simply a text file which may have commands interspersed. A command is
+simply a period followed by a name and optional parameters (at the beginning of a line).  
 
-<p>The period is configurable if you want to use another character. The names are (for now)
-actual Ruby method names, so names such as `to_s and <tt>inspect</tt> are currently not allowed.  </p>
+The period is configurable if you want to use another character. The names are (for now)
+actual Ruby method names, so names such as `to_s and <tt>inspect</tt> are currently not allowed.  
 
-<p>Currently I am mostly emitting &quot;dumb HTML&quot; or Markdown as output. In theory, you can write
-code (or use someone else&#39;s) to manipulate text in any way and output any format. Technically,
-you could even emit PDF, PNG, or SVG formats.</p>
+Currently I am mostly emitting "dumb HTML" or Markdown as output. In theory, you can write
+code (or use someone else's) to manipulate text in any way and output any format. Technically,
+you could even emit PDF, PNG, or SVG formats.
 
-<p>It&#39;s possible to embed comments in the text, or even to pass them through to the output 
-in commented form.  </p>
 
-<p>The command <tt>.end</tt> is special, marking the end of a body of text. Some commands may operate on
+It's possible to embed comments in the text, or even to pass them through to the output 
+in commented form.  
+
+The command <tt>.end</tt> is special, marking the end of a body of text. Some commands may operate on
 a block of lines rather than just a few parameters. (A text block is like a here-document.)
-There is no method name corresponding to the <tt>.end</tt> command.</p>
+There is no method name corresponding to the <tt>.end</tt> command.
 
-<p>The file extension I&#39;ve chosen is <tt>.lt</tt> (though this may change). <b>Note:</b> The source for this 
-README is a <tt>.lt</tt> file which uses its own little <i>ad</i> _hoc library (called <tt>readme.rb).</tt> Refer to
-the repo to see these.</p>
+The file extension I've chosen is <tt>.lt</tt> (though this may change). <b>Note:</b> The source for this 
+README is a <tt>.lt</tt> file which uses its own little <i>ad hoc</i> library (called <tt>readme.rb</tt>). Refer to
+the repo to see these.
 
-<p><br><br><b><font size=+1>Syntax, comments, and more</font></b><br></p>
+<br><br><b><font size=+1>Syntax, comments, and more</font></b><br>
 
-<p>At first, my idea was to provide predefined commands and allow user-defined commands (to be 
-distinguished by a leading <tt>.</tt> or <tt>..</tt> markers). So the single and double dots are both legal. </p>
+At first, my idea was to provide predefined commands and allow user-defined commands (to be 
+distinguished by a leading <tt>.</tt> or <tt>..</tt> markers). So the single and double dots are both legal. 
 
-<p>However, my concept at present is that the double dots (currently unused) will be used for 
-subcommmands.</p>
+However, my concept at present is that the double dots (currently unused) will be used for 
+subcommmands.
 
-<p>User-defined commands may be added to the standard namespace marked with a period. They may
+User-defined commands may be added to the standard namespace marked with a period. They may
 also be preceded by a specified character other than the period and thus stored in their own
-namespace. More on that later.</p>
+namespace. More on that later.
 
-<p>When a leading period (or double period) is followed by a space, that line is a comment.
+When a leading period (or double period) is followed by a space, that line is a comment.
 When it is follwed by a name, that name is typically understood to be a method name. Any 
 remaining text on the line is treated as a parameter list to be accessed by that method.
-Some methods accept multiple lines of text, terminated by a <tt>.end</tt> tag.</p>
+Some methods accept multiple lines of text, terminated by a <tt>.end</tt> tag.
 
-<p><br><br><b><font size=+1>Boldface and italics</font></b><br></p>
+<br><br><b><font size=+1>Boldface and italics</font></b><br>
 
-<p>Very commonly we want to format short words or phrases in italics, boldface, or a monospaced
+Very commonly we want to format short words or phrases in italics, boldface, or a monospaced
 (fixed width) font. The Markdown spec provides ways to do this that are fairly intuitive; but I
-personally don&#39;t like them. My own notation works a different way.</p>
+personally don't like them. My own notation works a different way.
 
-<p>First of all, note that these don&#39;t work across source lines; they&#39;re strictly intra-line.
-You may need (for example) an italicized phrase that spans across a newline; at present, you&#39;ll
-need a workaround for that.</p>
+First of all, note that these don't work across source lines; they're strictly intra-line.
+You may need (for example) an italicized phrase that spans across a newline; at present, you'll
+need a workaround for that.
 
-<p>I find that most short items I want to format are single tokens. Therefore I use a prefixed
+I find that most short items I want to format are single tokens. Therefore I use a prefixed
 character in front of such a token: Underscore for italics, asterisk for boldface, and backtick
-for &quot;code font.&quot; The formatting ends when the first blank space is encountered, without any 
+for "code font." The formatting ends when the first blank space is encountered, without any 
 kind of suffixed character. (This behavior may change to include certain punctuation marks as
-terminators.)</p>
+terminators.)
 
-<p>Of course, there are cases where this won&#39;t work; a formatted string may contain spaces, or it
+Of course, there are cases where this won't work; a formatted string may contain spaces, or it
 may exclude characters before the blank space. In this case, we can use an opening parenthesis 
-after the prefix and a closing parenthesis at the end of the string.</p>
+after the prefix and a closing parenthesis at the end of the string.
 
-<p>This means that it can be difficult to include a left paren inside a formatted token. I&#39;m thinking
-about that. It also means that a &quot;literal&quot; prefix character must be escaped.</p>
+This means that it can be difficult to include a left paren inside a formatted token. I'm thinking
+about that. It also means that a "literal" prefix character must be escaped.
 
-<p>This is all summarized in this example (taken from one of the testcases):</p>
+This is all summarized in this example (taken from one of the testcases):
 
-<p><b>Test: <tt>015_basic_formatting</tt></b><br>
+
+<b>Test: <tt>015\_basic\_formatting</tt></b><br>
     <center>
     <table width=80% cellpadding=4>
     <tr>
@@ -124,37 +126,37 @@ about that. It also means that a &quot;literal&quot; prefix character must be es
     </tr>
     <tr>
       <td width=50% bgcolor=#fec0fe valign=top>
-        <pre> Here are examples of *boldface and _italics and <code>code
+        <pre> Here are examples of *boldface and \_italics and `code
  as well as *(more complex) examples of \_(italicized text)
- and</code>(code font).</p>
-
-<p>Here are some random punctuation marks:
- # . @ * _ ` : ; % ^ &amp; $</p>
-
-<p>Oops, forgot to escape these:  * \_ `
+ and `(code font).
+ 
+ Here are some random punctuation marks:
+ # . @ * \_ ` : ; % ^ & $
+ 
+ Oops, forgot to escape these:  \* \\_ \`
 </pre>
       </td>
       <td width=50% bgcolor=lightgray valign=top>
         <pre> Here are examples of <b>boldface</b> and <i>italics</i> and <tt>code</tt>
  as well as <b>more complex</b> examples of <i>italicized text</i>
- and <tt>code font</tt>.</p>
-
-<p>Here are some random punctuation marks:
- # . @ * _ ` : ; % ^ &amp; $</p>
-
-<p>Oops, forgot to escape these:  * _ `
+ and <tt>code font</tt>.
+ 
+ Here are some random punctuation marks:
+ # . @ * \_ ` : ; % ^ & $
+ 
+ Oops, forgot to escape these:  * \_ `
 </pre>
       </td>
     </tr>
     </table>
-    </center></p>
+    </center>
 
-<p><br><br><b><font size=+1>Standard methods</font></b><br></p>
+<br><br><b><font size=+1>Standard methods</font></b><br>
 
-<p>The module <tt>Livetext::Standard</tt> contains the set of standard or predefined methods. Their 
+The module <tt>Livetext::Standard</tt> contains the set of standard or predefined methods. Their 
 names are essentially the same as the names of the dot-commands, with occasional exceptions.
 (For example, it is impractical to use the name <tt>def</tt> as a method name, so we use `_def instead.)
-Here is the current list:</p>
+Here is the current list:
 
 <table>
 <tr>
@@ -199,11 +201,12 @@ Here is the current list:</p>
 </tr>
 </table>
 
-<p><br><br><b><font size=+1>Examples from the tests</font></b><br></p>
+<br><br><b><font size=+1>Examples from the tests</font></b><br>
 
-<p>Here are some tests from the suite. The file name reflects the general purpose of the test.</p>
+Here are some tests from the suite. The file name reflects the general purpose of the test.
 
-<p><b>Test: <tt>001_hello_world</tt></b><br>
+
+<b>Test: <tt>001\_hello\_world</tt></b><br>
     <center>
     <table width=80% cellpadding=4>
     <tr>
@@ -223,9 +226,9 @@ Here is the current list:</p>
       </td>
     </tr>
     </table>
-    </center></p>
+    </center>
 
-<p><b>Test: <tt>002_comments_ignored_1</tt></b><br>
+<b>Test: <tt>002\_comments\_ignored\_1</tt></b><br>
     <center>
     <table width=80% cellpadding=4>
     <tr>
@@ -252,9 +255,9 @@ Here is the current list:</p>
       </td>
     </tr>
     </table>
-    </center></p>
+    </center>
 
-<p><b>Test: <tt>003_comments_ignored_2</tt></b><br>
+<b>Test: <tt>003\_comments\_ignored\_2</tt></b><br>
     <center>
     <table width=80% cellpadding=4>
     <tr>
@@ -281,9 +284,9 @@ Here is the current list:</p>
       </td>
     </tr>
     </table>
-    </center></p>
+    </center>
 
-<p><b>Test: <tt>004_sigil_can_change</tt></b><br>
+<b>Test: <tt>004\_sigil\_can\_change</tt></b><br>
     <center>
     <table width=80% cellpadding=4>
     <tr>
@@ -316,9 +319,9 @@ Here is the current list:</p>
       </td>
     </tr>
     </table>
-    </center></p>
+    </center>
 
-<p><b>Test: <tt>005_block_comment</tt></b><br>
+<b>Test: <tt>005\_block\_comment</tt></b><br>
     <center>
     <table width=80% cellpadding=4>
     <tr>
@@ -335,9 +338,9 @@ Here is the current list:</p>
  xyz
  .comment
  And so is this.
- .end</p>
-
-<p>one
+ .end
+ 
+ one
  more
  time
  .comment
@@ -349,18 +352,18 @@ Here is the current list:</p>
       </td>
       <td width=50% bgcolor=lightgray valign=top>
         <pre> abc 123
- xyz</p>
-
-<p>one
+ xyz
+ 
+ one
  more
  time
 </pre>
       </td>
     </tr>
     </table>
-    </center></p>
+    </center>
 
-<p><b>Test: <tt>006_def_method</tt></b><br>
+<b>Test: <tt>006\_def\_method</tt></b><br>
     <center>
     <table width=80% cellpadding=4>
     <tr>
@@ -372,8 +375,8 @@ Here is the current list:</p>
         <pre> abc
  123
  .def foobar
- ::STDERR.puts &quot;This is the&quot;
- ::STDERR.puts &quot;foobar method&quot;
+ ::STDERR.puts "This is the"
+ ::STDERR.puts "foobar method"
  .end
  xyz
  .foobar
@@ -391,9 +394,9 @@ Here is the current list:</p>
       </td>
     </tr>
     </table>
-    </center></p>
+    </center>
 
-<p><b>Test: <tt>007_simple_vars</tt></b><br>
+<b>Test: <tt>007\_simple\_vars</tt></b><br>
     <center>
     <table width=80% cellpadding=4>
     <tr>
@@ -407,8 +410,8 @@ Here is the current list:</p>
  .set name=GulliverFoyle,nation=Terra
  Hi, there.
  $name is my name, and $nation is my nation.
- I&#39;m $name, from $nation.
- That&#39;s all.
+ I'm $name, from $nation.
+ That's all.
 </pre>
       </td>
       <td width=50% bgcolor=lightgray valign=top>
@@ -416,15 +419,15 @@ Here is the current list:</p>
  some text.
  Hi, there.
  GulliverFoyle is my name, and Terra is my nation.
- I&#39;m GulliverFoyle, from Terra.
- That&#39;s all.
+ I'm GulliverFoyle, from Terra.
+ That's all.
 </pre>
       </td>
     </tr>
     </table>
-    </center></p>
+    </center>
 
-<p><b>Test: <tt>008_simple_include</tt></b><br>
+<b>Test: <tt>008\_simple\_include</tt></b><br>
     <center>
     <table width=80% cellpadding=4>
     <tr>
@@ -453,9 +456,9 @@ Here is the current list:</p>
       </td>
     </tr>
     </table>
-    </center></p>
+    </center>
 
-<p><b>Test: <tt>009_simple_mixin</tt></b><br>
+<b>Test: <tt>009\_simple\_mixin</tt></b><br>
     <center>
     <table width=80% cellpadding=4>
     <tr>
@@ -466,10 +469,10 @@ Here is the current list:</p>
       <td width=50% bgcolor=#fec0fe valign=top>
         <pre> Here I am
  testing a simple mixin
- .mixin simple_mixin
+ .mixin simple\_mixin
  Now call it:
- .hello_world
- That&#39;s all.
+ .hello\_world
+ That's all.
 </pre>
       </td>
       <td width=50% bgcolor=lightgray valign=top>
@@ -477,14 +480,14 @@ Here is the current list:</p>
  testing a simple mixin
  Now call it:
  Hello, world.
- That&#39;s all.
+ That's all.
 </pre>
       </td>
     </tr>
     </table>
-    </center></p>
+    </center>
 
-<p><b>Test: <tt>010_simple_copy</tt></b><br>
+<b>Test: <tt>010\_simple\_copy</tt></b><br>
     <center>
     <table width=80% cellpadding=4>
     <tr>
@@ -513,9 +516,9 @@ Here is the current list:</p>
       </td>
     </tr>
     </table>
-    </center></p>
+    </center>
 
-<p><b>Test: <tt>011_copy_is_raw</tt></b><br>
+<b>Test: <tt>011\_copy\_is\_raw</tt></b><br>
     <center>
     <table width=80% cellpadding=4>
     <tr>
@@ -527,7 +530,7 @@ Here is the current list:</p>
         <pre> A copy command
  does not interpret its input:
  .copy rawtext.inc
- That&#39;s all.
+ That's all.
 </pre>
       </td>
       <td width=50% bgcolor=lightgray valign=top>
@@ -536,15 +539,15 @@ Here is the current list:</p>
  This is not a comment:
  .comment woohoo!
  This is not a method:
- .no_such_method
- That&#39;s all.
+ .no\_such\_method
+ That's all.
 </pre>
       </td>
     </tr>
     </table>
-    </center></p>
+    </center>
 
-<p><b>Test: <tt>012_raw_text_block</tt></b><br>
+<b>Test: <tt>012\_raw\_text\_block</tt></b><br>
     <center>
     <table width=80% cellpadding=4>
     <tr>
@@ -557,47 +560,47 @@ Here is the current list:</p>
  with no interpretation or processing:
  .raw
  .comment
- This isn&#39;t a
+ This isn't a
  real comment.
- .end  This isn&#39;t picked up.</p>
-
-<p>.not_a_method</p>
-
-<p>And this stuff won&#39;t be munged: <code>alpha \_beta *gamma
- Or this:</code>(alpha male) _(beta max) *(gamma rays)
- __EOF__</p>
-
-<p>I hope that worked.
+ .end  This isn't picked up.
+ 
+ .not\_a\_method
+ 
+ And this stuff won't be munged: `alpha \_beta *gamma
+ Or this: `(alpha male) \_(beta max) *(gamma rays)
+ \_\_EOF\_\_
+ 
+ I hope that worked.
 </pre>
       </td>
       <td width=50% bgcolor=lightgray valign=top>
         <pre> This text block will be passed thru
  with no interpretation or processing:
  .comment
- This isn&#39;t a
+ This isn't a
  real comment.
- .end  This isn&#39;t picked up.</p>
-
-<p>.not_a_method</p>
-
-<p>And this stuff won&#39;t be munged: <code>alpha \_beta *gamma
- Or this:</code>(alpha male) _(beta max) *(gamma rays)</p>
-
-<p>I hope that worked.
+ .end  This isn't picked up.
+ 
+ .not\_a\_method
+ 
+ And this stuff won't be munged: `alpha \_beta *gamma
+ Or this: `(alpha male) \_(beta max) *(gamma rays)
+ 
+ I hope that worked.
 </pre>
       </td>
     </tr>
     </table>
-    </center></p>
+    </center>
 
-<p><br><br><b><font size=+1>Writing custom methods</font></b><br></p>
+<br><br><b><font size=+1>Writing custom methods</font></b><br>
 
-<p>Suppose you wanted to write a method called <tt>chapter</tt> that would simply
+Suppose you wanted to write a method called <tt>chapter</tt> that would simply
 output a chapter number and title with certain heading tags and a
-horizontal rule following. There is more than one way to do this.</p>
+horizontal rule following. There is more than one way to do this.
 
-<p>The simplest way is just to define a method inline with the rest of 
-the text. Here&#39;s an example.</p>
+The simplest way is just to define a method inline with the rest of 
+the text. Here's an example.
 
 <pre>
      .comment
@@ -624,25 +627,25 @@ the text. Here&#39;s an example.</p>
      were striking thirteen.
 </pre>
 
-<p>What can we see from this example? First of all, notice that the part
+What can we see from this example? First of all, notice that the part
 between <tt>.def</tt> and <tt>.end</tt> (the body of the method) really is just Ruby
 code. The method takes no parameters because parameter passing is 
-handled inside the Livetext engine and the instance variable <code>@_args is
+handled inside the Livetext engine and the instance variable `@_args is
 initialized to the contents of this array. We usually refer to the
-</code>@<em>args array only through the method `</em>args which returns it.</p>
+`@_args array only through the method `_args which returns it.
 
-<p>The `_args method is also an iterator. If a block is attached, that block
-will be called for every argument.</p>
+The `_args method is also an iterator. If a block is attached, that block
+will be called for every argument.
 
-<p>We then create a string using these parameters and call it using the
+We then create a string using these parameters and call it using the
 `_puts method. This really does do a <tt>puts</tt> call, but it applies it to
-wherever the output is currently being sent (defaulting to STDOUT).</p>
+wherever the output is currently being sent (defaulting to STDOUT).
 
-<p>All the &quot;helper&quot; methods start with an underscore so as to avoid name
+All the "helper" methods start with an underscore so as to avoid name
 collisions. These are all stored in the <tt>Livetext::Helpers</tt> module
-(which also has some methods you will never use).</p>
+(which also has some methods you will never use).
 
-<p>Here is the HTML output of the previous example:</p>
+Here is the HTML output of the previous example:
 
 <pre>
      &lt;h3&gt;Chapter 1&lt;/h3&gt;
@@ -652,7 +655,7 @@ collisions. These are all stored in the <tt>Livetext::Helpers</tt> module
      were striking thirteen.
 </pre>
 
-<p>What are some other helper methods? Here&#39;s a list.</p>
+What are some other helper methods? Here's a list.
 
 <table>
 <tr>
@@ -689,16 +692,17 @@ collisions. These are all stored in the <tt>Livetext::Helpers</tt> module
 </tr>
 </table>
 
-<p>Note that the last three methods are typically <i>not</i> called in your own code. They could be,
-but it remains to be seen whether something that advanced is useful.</p>
+Note that the last three methods are typically <i>not</i> called in your own code. They could be,
+but it remains to be seen whether something that advanced is useful.
 
-<p><br><br><b><font size=+1>More examples</font></b><br></p>
+<br><br><b><font size=+1>More examples</font></b><br>
 
-<p>Suppose you wanted to take a list of words, more than one per line, and alphabetize them.
-Let&#39;s write a method called <tt>alpha</tt> for that. This exercise and the next one are implemented 
-in the test suite.</p>
+Suppose you wanted to take a list of words, more than one per line, and alphabetize them.
+Let's write a method called <tt>alpha</tt> for that. This exercise and the next one are implemented 
+in the test suite.
 
-<p><b>Test: <tt>013_example_alpha</tt></b><br>
+
+<b>Test: <tt>013\_example\_alpha</tt></b><br>
     <center>
     <table width=80% cellpadding=4>
     <tr>
@@ -708,56 +712,56 @@ in the test suite.</p>
     <tr>
       <td width=50% bgcolor=#fec0fe valign=top>
         <pre> .def alpha
-    text = _body.join
-    text.gsub!(/\n/, &quot; &quot;)
+    text = \_body.join
+    text.gsub!(/\n/, " ")
     words = text.split.sort
-    words.each {|w| _puts &quot;    #{w}&quot; }
+    words.each {|w| \_puts "    #{w}" }
  .end
- Here is an alphabetized list:</p>
-
-<p>.alpha
+ Here is an alphabetized list:
+ 
+ .alpha
  fishmonger anarchist aardvark glyph gryphon
  halcyon zymurgy mataeotechny zootrope
  pareidolia manicotti quark bellicose anamorphic
  cytology fusillade ectomorph
- .end</p>
-
-<p>I hope that worked.
+ .end
+ 
+ I hope that worked.
 </pre>
       </td>
       <td width=50% bgcolor=lightgray valign=top>
-        <pre> Here is an alphabetized list:</p>
-
-<pre><code> aardvark
- anamorphic
- anarchist
- bellicose
- cytology
- ectomorph
- fishmonger
- fusillade
- glyph
- gryphon
- halcyon
- manicotti
- mataeotechny
- pareidolia
- quark
- zootrope
- zymurgy
-</code></pre>
-
-<p>I hope that worked.
+        <pre> Here is an alphabetized list:
+ 
+     aardvark
+     anamorphic
+     anarchist
+     bellicose
+     cytology
+     ectomorph
+     fishmonger
+     fusillade
+     glyph
+     gryphon
+     halcyon
+     manicotti
+     mataeotechny
+     pareidolia
+     quark
+     zootrope
+     zymurgy
+ 
+ I hope that worked.
 </pre>
       </td>
     </tr>
     </table>
-    </center></p>
+    </center>
 
-<p>I&#39;ll let that code stand on its own. Now suppose you wanted to allow columnar output. Let&#39;s
-have the user specify a number of columns (from 1 to 5, defaulting to 1).</p>
+I'll let that code stand on its own. Now suppose you wanted to allow columnar output. Let's
+have the user specify a number of columns (from 1 to 5, defaulting to 1).
 
-<p><b>Test: <tt>014_example_alpha2</tt></b><br>
+
+<b>Test: <tt>014\_example\_alpha2</tt></b><br>
     <center>
     <table width=80% cellpadding=4>
     <tr>
@@ -767,53 +771,53 @@ have the user specify a number of columns (from 1 to 5, defaulting to 1).</p>
     <tr>
       <td width=50% bgcolor=#fec0fe valign=top>
         <pre> .def alpha
-    cols = _args.first
-    cols = &quot;1&quot; if cols == &quot;&quot;
-    cols = cols.to_i
-    raise &quot;Columns must be 1-5&quot; unless cols.between?(1,5)
-    text = _body.join
-    text.gsub!(/\n/, &quot; &quot;)
+    cols = \_args.first
+    cols = "1" if cols == ""
+    cols = cols.to\_i
+    raise "Columns must be 1-5" unless cols.between?(1,5)
+    text = \_body.join
+    text.gsub!(/\n/, " ")
     words = text.split.sort
-    words.each_slice(cols) do |row|
-      row.each {|w| _print &#39;%-15s&#39; % w }
-      _puts
+    words.each\_slice(cols) do |row|
+      row.each {|w| \_print '%-15s' % w }
+      \_puts
     end
  .end
- Here is an alphabetized list:</p>
-
-<p>.alpha 3
+ Here is an alphabetized list:
+ 
+ .alpha 3
  fishmonger anarchist aardvark glyph gryphon
  halcyon zymurgy mataeotechny zootrope
  pareidolia manicotti quark bellicose anamorphic
  cytology fusillade ectomorph
- .end</p>
-
-<p>I hope that worked a second time.
+ .end
+ 
+ I hope that worked a second time.
 </pre>
       </td>
       <td width=50% bgcolor=lightgray valign=top>
-        <pre> Here is an alphabetized list:</p>
-
-<p>aardvark       anamorphic     anarchist
+        <pre> Here is an alphabetized list:
+ 
+ aardvark       anamorphic     anarchist
  bellicose      cytology       ectomorph
  fishmonger     fusillade      glyph
  gryphon        halcyon        manicotti
  mataeotechny   pareidolia     quark
- zootrope       zymurgy</p>
-
-<p>I hope that worked a second time.
+ zootrope       zymurgy
+ 
+ I hope that worked a second time.
 </pre>
       </td>
     </tr>
     </table>
-    </center></p>
+    </center>
 
-<p>What if we wanted to store the code outside the text file? There is more than one way to 
-do this.</p>
+What if we wanted to store the code outside the text file? There is more than one way to 
+do this.
 
-<p>Let&#39;s assume we have a file called <tt>mylib.rb</tt> in the same directory as the file we&#39;re processing.
-(Issues such as paths and security have not been addressed yet.) We&#39;ll stick the actual Ruby code
-in here (and nothing else).</p>
+Let's assume we have a file called <tt>mylib.rb</tt> in the same directory as the file we're processing.
+(Issues such as paths and security have not been addressed yet.) We'll stick the actual Ruby code
+in here (and nothing else).
 
 <pre>
    # File: mylib.rb
@@ -833,7 +837,7 @@ in here (and nothing else).</p>
    end
 </pre>
 
-<p>Now the <tt>.lt</tt> file can be written this way:</p>
+Now the <tt>.lt</tt> file can be written this way:
 
 <pre>
     .mixin mylib
@@ -849,20 +853,20 @@ in here (and nothing else).</p>
     I hope that worked a second time.
 </pre>
 
-<p>The output, of course, is the same.</p>
+The output, of course, is the same.
 
-<p>There is an important feature that has not yet been implemented (the
-<tt>require</tt> method). Like Ruby&#39;s <tt>require</tt>, it will grab Ruby code and 
+There is an important feature that has not yet been implemented (the
+<tt>require</tt> method). Like Ruby's <tt>require</tt>, it will grab Ruby code and 
 load it; however, unlike <tt>mixin</tt>, it will load it into a customized
 object and associate a new sigil with it. So for example, the command
 <tt>.foobar</tt> would refer to a method in the <tt>Livetext::Standard</tt> class 
 (whether predefined or user-defined). If we did a <tt>require</tt> on a file
 and associated the sigil <tt>#</tt> with it, then <tt>#foobar</tt> would be a method
-on that new custom object. I will implement this soon.</p>
+on that new custom object. I will implement this soon.
 
-<p><br><br><b><font size=+1>Issues, open questions, and to-do items</font></b><br></p>
+<br><br><b><font size=+1>Issues, open questions, and to-do items</font></b><br>
 
-<p>This list is not prioritized yet.</p>
+This list is not prioritized yet.
 
 <ol>
 <li>Add versioning information 
@@ -958,3 +962,4 @@ on that new custom object. I will implement this soon.</p>
 <li>HTML helper? (in their own library?)
 </li>
 </ol>
+
