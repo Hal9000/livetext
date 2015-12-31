@@ -1,5 +1,0 @@
-cp  013_example_alpha.err    014_example_alpha2.err
-cp  013_example_alpha.erx    014_example_alpha2.erx
-cp  013_example_alpha.exp    014_example_alpha2.exp
-cp  013_example_alpha.lt     014_example_alpha2.lt
-cp  013_example_alpha.out    014_example_alpha2.out

@@ -1,3 +1,0 @@
-livetext.rb:192:in `initialize': No such file or directory @ rb_sysopen - testfiles/010_copy_is_raw.lt (Errno::ENOENT)
-	from livetext.rb:192:in `open'
-	from livetext.rb:192:in `<main>'
