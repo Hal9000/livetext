@@ -27,7 +27,8 @@ module Livetext::Helpers
   end
 
   def _data=(str)
-    @_data = str
+    str ||= ""
+    @_data = str 
     @_args = str.split
   end
 
@@ -175,9 +176,11 @@ module Livetext::Standard
   end
 
   def mixin
-    file = _args.first + ".rb"
-    text = ::File.read(file)
-    self.class.class_eval(text)
+    _args.each do |arg|
+      file = arg + ".rb"
+      text = ::File.read(file)
+      self.class.class_eval(text)
+    end
   end
 
   def copy
@@ -209,7 +212,9 @@ class Livetext::System < BasicObject
 
   def method_missing(name, *args)
     # Idea: Capture source line for error messages
-    abort "  Error: Method '#{name}' is not defined."
+    _puts "  Error: Method '#{name}' is not defined."
+    puts caller.map {|x| "  " + x }
+    exit
   end
 end
 
@@ -237,10 +242,11 @@ end
 
 def handle_sname(sigil, line)
   obj = Livetext::Objects[sigil]
-  blank = line.index(" ") || -1  # maybe no blank?
+  line = line.chomp
+  blank = line.index(" ") || line.size  # maybe no blank?
   name = line[1..(blank-1)]
   abort "Name '#{name}' is not permitted" if Livetext::Disallowed.include?(name.to_sym)
-  obj._data = line[(blank+1)..-1].chomp
+  obj._data = line[(blank+1)..-1]
   name = "_def" if name == "def"
   obj.send(name)
 end
