@@ -289,7 +289,7 @@ end
 
 def table
   num, title = @_data.split(" ", 2)
-  delim = "~~"
+  delim = " :: "
   @output.puts "<br><center><table border=1 width=90% cellpadding=5>"
   _body do |line|
     cells = line.split(delim)
@@ -315,7 +315,7 @@ def table_old
   rows, cols, num, title = @_data.split(" ", 4)
   rows = rows.to_i
   cols = cols.to_i
-  delim = "~~"
+  delim = " :: "
   @output.puts "<br><center><table border=1 width=90% cellpadding=5>"
   rows.times do |row|
     cells = @input.next.split(delim)
