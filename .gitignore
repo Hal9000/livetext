@@ -11,6 +11,8 @@
 
 /testfiles/*.out
 /testfiles/*.err
+/testfiles/*.md
+/testfiles/*.html
 
 ## Specific to RubyMotion:
 .dat*
