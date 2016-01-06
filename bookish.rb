@@ -291,10 +291,22 @@ def table
   num, title = @_data.split(" ", 2)
   delim = " :: "
   @output.puts "<br><center><table border=1 width=90% cellpadding=5>"
-  _body do |line|
+  lines = _body
+  maxw = nil
+  lines.each do |line|
+    cells = line.split(delim)
+    wide = cells.map {|x| x.length }
+    maxw = [0] * cells.size
+    maxw = maxw.map.with_index {|x, i| [x, wide[i]].max }
+  end
+
+  sum = maxw.inject(0, :+)
+  maxw.map! {|x| (x/sum*100).floor }
+
+  lines.each do |line|
     cells = line.split(delim)
     @output.puts "<tr>"
-    cells.each {|cell| @output.puts "  <td>#{cell}</td>" }
+    cells.each.with_index {|cell, i| @output.puts "  <td width=#{maxw}%>#{cell}</td>" }
     @output.puts "</tr>"
   end
   @output.puts "</table>"
@@ -312,20 +324,17 @@ def toc
 end
 
 def table_old
-  rows, cols, num, title = @_data.split(" ", 4)
-  rows = rows.to_i
-  cols = cols.to_i
+  num, title = @_data.split(" ", 2)
   delim = " :: "
   @output.puts "<br><center><table border=1 width=90% cellpadding=5>"
-  rows.times do |row|
-    cells = @input.next.split(delim)
-    nc = cells.size
-    raise "Expected #{cols} cells, not #{nc}" if nc != cols
+  _body do |line|
+    cells = line.split(delim)
     @output.puts "<tr>"
     cells.each {|cell| @output.puts "  <td>#{cell}</td>" }
     @output.puts "</tr>"
   end
   @output.puts "</table>"
+  @toc << "        Table #{num} #{title}"
   @output.puts "<br><b>Table #{num} &nbsp;&nbsp; #{title}</b></center><br>"
 end
 
