@@ -1,64 +1,71 @@
-configurable sigils
+Mostly done
+-----------
+define variables
+define methods
+allow switching sigils, etc.
+.raw
+.mixin
+.include
 double sigil + blank = true comment 
 sigil + blank = passthru comment 
 double sigil + token = internal sigil
+.comment/.end
+.func
 
-define variables, functions, methods
-warn when overriding?
 
-allow switching sigils, etc.
-
+To Be Done
+----------
+better variable support
 need a 'require' (with sigil?)
-need include
-.raw
-.args
-.mixin
-.include
-
-BEGIN/END for require or mixin?
-
-comment!  pass this thru as comment
-comments/end
-comments!/end
-
-define "quotes" such as * _ ?
-
-
+em dash
+variable for source file
+variable for line number
+ignore trailing punctuation for * _ `
 args vs bare args (quotes)
-
-Issues: 
-  - substitution and bold/italics on @data and @args?
-  - substitution before or after bold/italics?
-
-.func .proc .def .var ?
-
+comment!  pass this thru as comment
+comment!/end
+.proc
 .break to eof ?
-
-.meth? .end  (.else?)
-
-.run  Arbitrary Ruby code?
-
-safe level?
-other langs??
-configurable delimiters (tables, etc.)
-
-** __ `` ?
-
+warn when overriding?
+.meth?/.end  (.else?)
 $var.subvar
-
 $$func $$func(params)
 
+
+
+Undecided
+---------
+encourage overriding passthru?
+disallow leading underscore
+HTML entities?
+explicit Unicode support?
+intermediate format prior to output?
 .say
 .debug
 .dump
-
+links? 
+images?
+safe level?
 exceptions?
-
 .if, .else ?
+.shell ?
+table styles?
+define "quotes" such as * _ ?
+Issues: 
+  - substitution and bold/italics on @data and @args?
+  - substitution before or after bold/italics?
+.run  Arbitrary Ruby code?
+BEGIN/END for require or mixin?
+other langs??
+configurable delimiters (tables, etc.)
 
 
+
+For bookish
+-----------
 .index 
 .indexable
+
 
 Assignment
 ----------
