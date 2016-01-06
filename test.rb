@@ -11,7 +11,7 @@ class TestingLiveText < MiniTest::Test
     name = "testfiles/#{base}.xxx"
     src, out, exp = name.sub(/xxx/, "lt"), name.sub(/xxx/, "out"), name.sub(/xxx/, "exp")
     err, erx = name.sub(/xxx/, "err"), name.sub(/xxx/, "erx")
-    system("./livetext #{src} >#{out} 2>#{err}")
+    system("ruby ./livetext.rb #{src} >#{out} 2>#{err}")
     output, expected, errors, errexp = File.read(out), File.read(exp), File.read(err), File.read(erx)
     out_ok = output == expected
     err_ok = errors == errexp

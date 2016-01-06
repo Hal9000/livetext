@@ -1,20 +1,20 @@
 #!/usr/bin/env ruby
 
-Dir = File.dirname(__FILE__)
+CWD = File.dirname(__FILE__)
 
 def handle_lt(src)
   mfile = src.sub(/\.lt/, ".md")
   hfile = src.sub(/\.lt/, ".html")
   # abort "#{mfile} is newer than #{src}! Aborting" if File.mtime(mfile) > File.mtime(src)
-  cmd = "cat #{src} | ruby #{Dir}/livetext.rb | tee #{mfile} | ruby misc/markdown.rb >#{hfile}"
-  puts "Writing: #{mfile} #{hfile}"
+  cmd = "cat #{src} | ruby #{CWD}/livetext.rb | tee #{mfile} | markdown >#{hfile}"
+  STDERR.puts "Writing: #{mfile} #{hfile}"
   system(cmd)
 end
 
 def handle_md(src)
   hfile = src.sub(/\.md/, ".html")
-  cmd = "cat #{src} | ruby misc/markdown.rb >#{hfile}"
-  puts "Writing: #{hfile}"
+  cmd = "cat #{src} | markdown >#{hfile}"
+  STDERR.puts "Writing: #{hfile}"
   system(cmd)
 end
 
