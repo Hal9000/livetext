@@ -1,5 +1,7 @@
 require 'pry'
 
+Dir = File.dirname(__FILE__)
+
 class Enumerator
   def remaining
     array = []
@@ -194,7 +196,7 @@ module Livetext::Standard
   end
 
   def mixin
-    file = _args.first + ".rb"
+    file = "#{Dir}/" + _args.first + ".rb"
     return if @_mixins.include?(file)
     @_mixins << file
     text = ::File.read(file)
