@@ -85,6 +85,7 @@ module Livetext::Helpers
       break if @line.chomp.strip == tag
       lines << @line
     end
+    _optional_blank_line
     if block_given?
       lines.each {|line| yield @line }
     else
@@ -100,6 +101,7 @@ module Livetext::Helpers
       next if _comment?(@line, sigil)
       lines << @line  # _formatting(line)  # FIXME ?? 
     end
+    _optional_blank_line
     if block_given?
       lines.each {|line| yield line }
     else
@@ -174,7 +176,6 @@ end
 module Livetext::Standard
   def comment
     junk = _body  # do nothing with contents
-    _optional_blank_line
   end
 
   def errout
@@ -196,6 +197,7 @@ module Livetext::Standard
     obj = Livetext::Objects[Livetext::MainSigil]
     Livetext::Objects.replace(char => obj)
     Livetext::MainSigil.replace(char)
+    _optional_blank_line
   end
 
   def _def
@@ -204,7 +206,6 @@ module Livetext::Standard
     str += _body.join("\n")
     str += "end\n"
     eval str
-    _optional_blank_line
   end
 
   def set
@@ -247,7 +248,6 @@ module Livetext::Standard
   def raw
     # No processing at all (terminate with __EOF__)
     _puts _raw_body  
-    _optional_blank_line
   end
 
   def debug
