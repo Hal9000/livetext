@@ -56,6 +56,10 @@ module Livetext::Helpers
     end
   end
 
+  def _optional_blank_line
+    @line = _next_line if _peek_next_line =~ /^ *$/
+  end
+
   def _comment?(str, sigil=Livetext::MainSigil)
     c1 = sigil + Livetext::Space
     c2 = sigil + sigil + Livetext::Space
@@ -146,21 +150,44 @@ module Livetext::Helpers
     @output.print *args
   end
 
+  def _peek_next_line
+    @input.peek
+  end
+
   def _next_line
     @line = @input.next
+    _debug "Line: #@line"
     @lnum ||= 0
     @lnum += 1
     @line
+  end
+
+  def _debug=(val)
+    @_debug = val
+  end
+
+  def _debug(*args)
+    @tty.puts *args if @_debug
   end
 end
 
 module Livetext::Standard
   def comment
     junk = _body  # do nothing with contents
+    _optional_blank_line
   end
 
   def errout
     @tty.puts _data
+  end
+
+  def say
+    errout
+    _optional_blank_line
+  end
+
+  def quit
+    exit
   end
 
   def sigil
@@ -177,6 +204,7 @@ module Livetext::Standard
     str += _body.join("\n")
     str += "end\n"
     eval str
+    _optional_blank_line
   end
 
   def set
@@ -185,6 +213,7 @@ module Livetext::Standard
       var, val = a.split("=")
       @vars[var] = val
     end
+    _optional_blank_line
   end
 
   def _include
@@ -193,6 +222,7 @@ module Livetext::Standard
     rem = @input.remaining
     array = lines + rem
     @input = array.each # FIXME .with_index
+    _optional_blank_line
   end
 
   def mixin
@@ -201,11 +231,13 @@ module Livetext::Standard
     @_mixins << file
     text = ::File.read(file)
     self.class.class_eval(text)
+    _optional_blank_line
   end
 
   def copy
     file = _args.first
     @output.puts ::File.readlines(file)
+    _optional_blank_line
   end
 
   def r
@@ -215,6 +247,13 @@ module Livetext::Standard
   def raw
     # No processing at all (terminate with __EOF__)
     _puts _raw_body  
+    _optional_blank_line
+  end
+
+  def debug
+    arg = _args.first
+    self._debug = true
+    self._debug = false if arg == "off"
   end
 end
 
@@ -240,7 +279,6 @@ class Livetext::System < BasicObject
 end
 
 
-
 def rx(str, space=nil)
   Regexp.compile("^" + Regexp.escape(str) + "#{space}")
 end
@@ -264,6 +302,7 @@ end
 def handle_ssname(sigil, line)
   obj = Livetext::Objects[sigil]
   name = _get_name(obj, sigil, line)
+  obj._debug "  Calling #{name}"
   obj.send(name)
 end
 

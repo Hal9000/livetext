@@ -288,7 +288,9 @@ def subsec
 end
 
 def table
-  num, title = @_data.split(" ", 2)
+  @table_num ||= 0
+  @table_num += 1
+  title = @_data
   delim = " :: "
   @output.puts "<br><center><table border=1 width=90% cellpadding=5>"
   lines = _body
@@ -310,32 +312,29 @@ def table
     @output.puts "</tr>"
   end
   @output.puts "</table>"
-  @toc << "        Table #{num} #{title}"
-  @output.puts "<br><b>Table #{num} &nbsp;&nbsp; #{title}</b></center><br>"
+  @toc << "        Table #@chapter.#@table_num #{title}"
+  @output.puts "<br><b>Table #@chapter.@table_num &nbsp;&nbsp; #{title}</b></center><br>"
 end
 
 def toc
+  @toc_file = @_args.first
+  @toc = ::File.new(@toc_file, "w")
+  _body {|line| @toc.puts line + "\n  " }
+end
+
+def toc!
+  @toc.close
+end
+
+def old_toc
   file = @_args.first
   if file.nil?
     @toc = []
   else
-    ::File.write(file, @toc.join)
+    ::File.open(file, "a") do |f| 
+      _body {|line| f.puts line + "\n  " }
+    end
   end
-end
-
-def table_old
-  num, title = @_data.split(" ", 2)
-  delim = " :: "
-  @output.puts "<br><center><table border=1 width=90% cellpadding=5>"
-  _body do |line|
-    cells = line.split(delim)
-    @output.puts "<tr>"
-    cells.each {|cell| @output.puts "  <td>#{cell}</td>" }
-    @output.puts "</tr>"
-  end
-  @output.puts "</table>"
-  @toc << "        Table #{num} #{title}"
-  @output.puts "<br><b>Table #{num} &nbsp;&nbsp; #{title}</b></center><br>"
 end
 
 def missing
