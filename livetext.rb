@@ -220,6 +220,17 @@ module Livetext::Standard
   def _include
     file = _args.first
     lines = ::File.readlines(file)
+    lines.each {|line| _debug " inc: #{line}" }
+    rem = @input.remaining
+    array = lines + rem
+    @input = array.each # FIXME .with_index
+    _optional_blank_line
+  end
+
+  def include!
+    file = _args.first
+    lines = ::File.readlines(file) rescue []
+    lines.each {|line| _debug " inc: #{line}" }
     rem = @input.remaining
     array = lines + rem
     @input = array.each # FIXME .with_index
