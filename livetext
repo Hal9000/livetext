@@ -8,7 +8,7 @@ def handle_lt(src)
   # abort "#{mfile} is newer than #{src}! Aborting" if File.mtime(mfile) > File.mtime(src)
 # cmd = "cat #{src} | ruby #{CWD}/livetext.rb | tee #{mfile} | markdown >#{hfile}"
   cmd = "cat #{src} | ruby #{CWD}/livetext.rb >#{hfile}"
-  STDERR.puts "Writing: #{mfile} #{hfile}"
+  STDERR.puts "Writing: #{hfile}"
   system(cmd)
 end
 

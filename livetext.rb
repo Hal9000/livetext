@@ -109,19 +109,20 @@ module Livetext::Helpers
   end
 
   def _formatting(line)
+    # Parenthesized
     rip, rbp, rcp = /(^| )_\(([^)]+?)\)/,  
                     /(^| )\*\(([^)]+?)\)/,  
-                    /(^| )`\(([^)]+?)\)/  
-    line.gsub!(rip) { $1 + "<i>" + $2 + "</i>" }
-    line.gsub!(rbp) { $1 + "<b>" + $2 + "</b>" }
-    line.gsub!(rcp) { $1 + "<tt>" + $2 + "</tt>" }
+                    /`\(([^)]+?)\)/  
+    line.gsub!(rip) { $1.to_s + "<i>" + $2.to_s + "</i>" }
+    line.gsub!(rbp) { $1.to_s + "<b>" + $2.to_s + "</b>" }
+    line.gsub!(rcp) { "<tt>" + $1.to_s + "</tt>" }
     # Non-parenthesized (delimited by space)
     ri, rb, rc = /(^| )\_([^ ]+?)( |$)/,  
                  /(^| )\*([^ ]+?)( |$)/,  
-                 /(^| )\`([^ ]+?)( |$)/  
-    line.gsub!(ri) { $1 + "<i>" + $2 + "</i>" + $3 }
-    line.gsub!(rb) { $1 + "<b>" + $2 + "</b>" + $3}
-    line.gsub!(rc) { $1 + "<tt>" + $2 + "</tt>" + $3 }
+                 /\`([^ ]+?)( |$)/  
+    line.gsub!(ri) { $1.to_s + "<i>" + $2.to_s + "</i>" + $3.to_s }
+    line.gsub!(rb) { $1.to_s + "<b>" + $2.to_s + "</b>" + $3.to_s }
+    line.gsub!(rc) { "<tt>" + $1.to_s + "</tt>" + $2.to_s }
     # Now unescape the escaped prefix characters
     line.gsub!(/\\\*/, "*")
     line.gsub!(/\\_/, "_")

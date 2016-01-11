@@ -179,10 +179,10 @@ end
   def ruby
     file = @_args.first 
     if file.nil?
-      code = ""
+      code = "# Ruby code\n"
       _body {|line| code << line }
     else
-      code = ::File.read(file)
+      code = "# Ruby code\n\n" + ::File.read(file)
     end
 
     _process_code(code)
@@ -239,11 +239,14 @@ end
 def alpha_columns
   n = @_args.first.to_i   # FIXME: what if missing?
   words = []
-  _body {|line| words << line }
+  _body do |line| 
+    words << line.chomp
+  end
   words.sort!
-  @output.puts "<table>"
-  words.each_slice(n) do |*w|
-    @output.puts "<tr><td>" + w.join("</td><td>") + "</td></tr>"
+  @output.puts "<table cellpadding=10>"
+  words.each_slice(n) do |w|
+    items = w.map {|x| "<tt>#{x}</tt>" }
+    @output.puts "<tr><td width=5%></td><td>" + items.join("</td><td>") + "</td></tr>"
   end
   @output.puts "</table>"
 end
