@@ -1,4 +1,3 @@
-require 'pry'
 
 CWD = File.dirname(__FILE__)
 
@@ -139,6 +138,7 @@ module Livetext::Helpers
   end
 
   def _passthru(line)
+    _puts "<p>" if line == "\n"
     _formatting(line)
     _var_substitution(line)
     _puts line
