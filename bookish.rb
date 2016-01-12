@@ -299,6 +299,7 @@ def table
   lines = _body
   maxw = nil
   lines.each do |line|
+    _formatting(line)
     cells = line.split(delim)
     wide = cells.map {|x| x.length }
     maxw = [0] * cells.size

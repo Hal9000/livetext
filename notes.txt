@@ -17,6 +17,7 @@ To Be Done
 ----------
 better variable support
 need a 'require' (with sigil?)
+Prioritized formatting: markdown b/i/c, lt b/i/c, emdash, varsub, funcsub, etc.?
 em dash
 variable for source file
 variable for line number
