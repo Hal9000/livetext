@@ -208,7 +208,7 @@ end
     lexer = @_args.empty? ? :elixir : @_args.first.to_sym   # ruby or elixir
     code = ""
     code << "# Ruby code\n\n" if lexer == :ruby
-    _body {|line| code << line }
+    _body {|line| code << "  " + line }
     text = ::Pygments.highlight(code, lexer: lexer, options: {})  # no line numbers
     PygmentFix.pyg_finalize(text, lexer)
     @output.puts text + "\n<br>"
