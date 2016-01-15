@@ -268,7 +268,7 @@ def chapter
   @chapter = @_args.first.to_i
   @sec = @sec2 = 0
   title = @_data.split(" ",2)[1]
-  @toc << "<b>#@chapter</b> #{title}\n"
+  @toc << "<br><b>#@chapter</b> #{title}<br>"
   @output.puts "<title>#{@chapter}. #{title}</title>"
   @output.puts <<-HTML
     <h2>Chapter #{@chapter}</h1>
@@ -282,14 +282,14 @@ def sec
   @sec2 = 0
   @section = "#@chapter.#@sec"
 # _errout("section #@section")
-  @toc << "#{_nbsp(3)}<b>#@section</b> #@_data\n"
+  @toc << "#{_nbsp(3)}<b>#@section</b> #@_data<br>"
   @output.puts "<br><h3>#@section #{@_data}</h3>\n"
 end
 
 def subsec
   @sec2 += 1
   @subsec = "#@chapter.#@sec.#@sec2"
-  @toc << "#{_nbsp(6)}<b>#@subsec</b> #@_data\n"
+  @toc << "#{_nbsp(6)}<b>#@subsec</b> #@_data<br>"
 # _errout("section #@subsec")
   @output.puts "<br><h3>#@subsec #{@_data}</h3>\n"
 end
@@ -320,7 +320,7 @@ def table
     @output.puts "</tr>"
   end
   @output.puts "</table>"
-  @toc << "#{_nbsp(8)}<b>Table #@chapter.#@table_num</b> #{title}\n"
+  @toc << "#{_nbsp(8)}<b>Table #@chapter.#@table_num</b> #{title}<br>"
   @output.puts "<br><b>Table #@chapter.#@table_num &nbsp;&nbsp; #{title}</b></center><br>"
 end
 

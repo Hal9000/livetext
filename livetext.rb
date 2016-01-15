@@ -192,6 +192,12 @@ module Livetext::Standard
     exit
   end
 
+  def file
+    fn = @_args.first
+    @output.close
+    @output = File.open(fn, "w")
+  end
+
   def sigil
     char = _args.first
     raise "'#{char}' is not a single character" if char.length > 1
