@@ -331,10 +331,15 @@ def toc
 end
 
 def toc!
+  new_file = _args.first
+  _debug "  About to close @toc"
   @toc.close
-  new_file = @toc_file.sub(/\..*$/, ".toc")
+  _debug "  Closed @toc"
   _debug "  Moving #@toc_file to #{new_file}"
   system("cp #@toc_file #{new_file}")
+  _debug "  Finished move operation"
+rescue => err
+  _errout "Exception: #{err.inspect}"
 end
 
 def old_toc

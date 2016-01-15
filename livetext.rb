@@ -194,7 +194,7 @@ module Livetext::Standard
 
   def file
     fn = @_args.first
-    @output.close
+    @output.close unless @output == STDOUT
     @output = File.open(fn, "w")
   end
 
