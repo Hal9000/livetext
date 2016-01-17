@@ -1,6 +1,8 @@
 
 CWD = File.dirname(__FILE__)
 
+require_relative "./pyggish"
+
 class Enumerator
   def remaining
     array = []
@@ -192,10 +194,30 @@ module Livetext::Standard
     exit
   end
 
-  def file
-    fn = @_args.first
+  def outdir
+    @_outdir = @_args.first
+  end
+
+  def _output(name)
     @output.close unless @output == STDOUT
-    @output = File.open(fn, "w")
+    @output = File.open(name, "w")
+  end
+
+  def output
+    fn = @_args.first
+    _output(fn)
+  end
+
+  def next_output
+    fn, dir = @_args
+    _output(fn, dir)
+  end
+
+  def _next_output(tag = "sec", dir = @_outdir)
+    @_file_num ||= 0
+    @_file_num += 1
+    name = "#{dir}/#{'%03d' % @_file_num}_#{tag}.html"
+    _output(name)
   end
 
   def sigil
@@ -286,6 +308,7 @@ class Livetext::System < BasicObject
     @tty = ::File.open("/dev/tty", "w")
     @vars = {}
     @_mixins = []
+    @_outdir = "."
   end
 
   def method_missing(name, *args)
