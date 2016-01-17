@@ -209,15 +209,15 @@ module Livetext::Standard
   end
 
   def next_output
-    fn, dir = @_args
-    _output(fn, dir)
+    @_file_num, tag = @_args.first.to_i, tag
+    _next_output(tag)
   end
 
-  def _next_output(tag = "sec", dir = @_outdir)
+  def _next_output(tag = "sec")
     @_file_num ||= 0
-    @_file_num += 1
-    name = "#{dir}/#{'%03d' % @_file_num}_#{tag}.html"
+    name = "#{@_outdir}/#{'%03d' % @_file_num}_#{tag}.html"
     _output(name)
+    @_file_num += 1
   end
 
   def sigil
@@ -258,7 +258,10 @@ module Livetext::Standard
 
   def include!
     file = _args.first
-    lines = ::File.readlines(file) rescue []
+    existing = File.exist?(file)
+    return if not existing
+    lines = ::File.readlines(file)
+    File.delete(file)
     lines.each {|line| _debug " inc: #{line}" }
     rem = @input.remaining
     array = lines + rem

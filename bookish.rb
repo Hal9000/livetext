@@ -17,7 +17,6 @@ end
 
 def _colorize(code, lexer=:elixir)
   text = ::Pygments.highlight(code, lexer: lexer, options: {linenos: "table"})
-  sleep 0.01
   _debug "--- in _colorize: text = #{text.inspect}"
   PygmentFix.pyg_finalize(text, lexer)
   text
@@ -209,17 +208,6 @@ def toc!
   _debug "  Finished move operation"
 rescue => err
   _errout "Exception: #{err.inspect}"
-end
-
-def old_toc
-  file = @_args.first
-  if file.nil?
-    @toc = []
-  else
-    ::File.open(file, "a") do |f| 
-      _body {|line| f.puts line + "\n  " }
-    end
-  end
 end
 
 def missing

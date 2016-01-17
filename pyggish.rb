@@ -86,7 +86,7 @@ module PygmentFix   # Remove CSS for Jutoh
     code.gsub!(/<span class="[np]">/, "")
     code.gsub!(/<\/span>/, "")
     color = _codebar_color(lexer)
-    code.sub!(/<td class="linenos"/, "<td width=5%></td><td width=5% bgcolor=#{color}")
+    code.sub!(/<td class="linenos"/, "<td width=6%></td><td width=5% bgcolor=#{color}")
     code.gsub!(/ class="[^"]*?"/, "")    # Get rid of remaining Pygments CSS
     lines = code.split("\n")
     n1 = lines.index {|x| x =~ /<pre>/ }

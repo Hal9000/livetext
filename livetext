@@ -6,15 +6,7 @@ def handle_lt(src)
   mfile = src.sub(/\.lt/, ".md")
   hfile = src.sub(/\.lt/, ".html")
   # abort "#{mfile} is newer than #{src}! Aborting" if File.mtime(mfile) > File.mtime(src)
-# cmd = "cat #{src} | ruby #{CWD}/livetext.rb | tee #{mfile} | markdown >#{hfile}"
   cmd = "cat #{src} | ruby #{CWD}/livetext.rb >#{hfile}"
-  STDERR.puts "Writing: #{hfile}"
-  system(cmd)
-end
-
-def handle_md(src)
-  hfile = src.sub(/\.md/, ".html")
-  cmd = "cat #{src} | markdown >#{hfile}"
   STDERR.puts "Writing: #{hfile}"
   system(cmd)
 end
@@ -25,9 +17,8 @@ def clean_all
   files = Dir["*.lt"]
   outfiles = []
   files.each do |file|
-    f2, f3 = file.sub(/.lt$/, ".md"), file.sub(/.lt$/, ".html")
+    f2 = file.sub(/.lt$/, ".html")
     outfiles << f2 if File.exist?(f2) #  && File.mtime(f2) > File.mtime(file)
-    outfiles << f3 if File.exist?(f3) #  && File.mtime(f3) > File.mtime(file)
   end
   puts "Cleaning: #{outfiles.inspect}"
   system("rm -f #{outfiles.join(' ')}")
@@ -47,8 +38,6 @@ src = ARGV.first
 case
   when src =~ /.lt$/
     handle_lt(src)
-  when src =~ /.md$/
-    handle_md(src)
   else
     abort "Unknown file extension"
 end
