@@ -122,7 +122,7 @@ def _nbsp(n)
 end
 
 def _slug(str)
-  s2 = str.chomp.strip.gsub(/[?:,]/,"").gsub(/ /, "-").downcase
+  s2 = str.chomp.strip.gsub(/[?:,()]/,"").gsub(/ /, "-").downcase
 # _errout "SLUG: #{str} => #{s2}"
   s2
 end
@@ -132,6 +132,7 @@ def chapter
   @chapter = @_args.first.to_i
   @sec = @sec2 = 0
   title = @_data.split(" ",2)[1]
+::STDERR.puts "foo = #@foo"
   @toc << "<br><b>#@chapter</b> #{title}<br>"
   _next_output(_slug(title))
   @output.puts "<title>#{@chapter}. #{title}</title>"
@@ -193,19 +194,15 @@ def table
 end
 
 def toc
-  @toc_file = @_args.first
+  @toc_file = "toc.tmp"
   @toc = ::File.new(@toc_file, "w")
   _body {|line| @toc.puts line + "\n  " }
 end
 
 def toc!
-  new_file = _args.first
-  _debug "  About to close @toc"
+# new_file = _args.first
   @toc.close
-  _debug "  Closed @toc"
-  _debug "  Moving #@toc_file to #{new_file}"
-  system("cp #@toc_file #{new_file}")
-  _debug "  Finished move operation"
+# system("cp #@toc_file #@_outdir/#{new_file}")
 rescue => err
   _errout "Exception: #{err.inspect}"
 end
@@ -226,5 +223,9 @@ def quote
   @output.puts "<blockquote>"
   @output.puts _body
   @output.puts "</blockquote>"
+end
+
+def init_bookish
+  @foo = 999; @toc_file = "toc.tmp"; @toc = ::File.new(@toc_file, "w")
 end
 

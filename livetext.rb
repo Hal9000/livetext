@@ -191,11 +191,21 @@ module Livetext::Standard
   end
 
   def quit
+    @output.close
     exit
   end
 
   def outdir
     @_outdir = @_args.first
+    _optional_blank_line
+  end
+
+  def outdir!  # FIXME ?
+    @_outdir = @_args.first
+    raise "No output directory specified" if @_outdir.nil?
+    raise "No output directory specified" if @_outdir.empty?
+    system("rm #@_outdir/*.html")
+    _optional_blank_line
   end
 
   def _output(name)
@@ -209,15 +219,15 @@ module Livetext::Standard
   end
 
   def next_output
-    @_file_num, tag = @_args.first.to_i, tag
-    _next_output(tag)
+    tag, num = @_args
+    _next_output(tag, num)
+    _optional_blank_line
   end
 
-  def _next_output(tag = "sec")
-    @_file_num ||= 0
-    name = "#{@_outdir}/#{'%03d' % @_file_num}_#{tag}.html"
+  def _next_output(tag = "sec", num = nil)
+    @_file_num = num ? num : @_file_num + 1
+    name = "#{@_outdir}/#{'%03d' % @_file_num}-#{tag}.html"
     _output(name)
-    @_file_num += 1
   end
 
   def sigil
@@ -312,6 +322,7 @@ class Livetext::System < BasicObject
     @vars = {}
     @_mixins = []
     @_outdir = "."
+    @_file_num = 0
   end
 
   def method_missing(name, *args)
