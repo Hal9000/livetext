@@ -1,8 +1,10 @@
 The .r can be used to output single lines
 without interpretation:
+<p>
 
 .comment This is not a real comment.
 This is not _italics or *boldface
 This is not a $variable reference
+<p>
 
 That's all.

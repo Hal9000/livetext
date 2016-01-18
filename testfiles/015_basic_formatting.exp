@@ -1,8 +1,10 @@
 Here are examples of <b>boldface</b> and <i>italics</i> and <tt>code</tt>
 as well as <b>more complex</b> examples of <i>italicized text</i>
 and <tt>code font</tt>.
+<p>
 
 Here are some random punctuation marks:
 # . @ * _ ` : ; % ^ & $
+<p>
 
 Oops, forgot to escape these:  * _ `

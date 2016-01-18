@@ -119,12 +119,12 @@ module Livetext::Helpers
     line.gsub!(rbp) { $1.to_s + "<b>" + $2.to_s + "</b>" }
     line.gsub!(rcp) { "<tt>" + $1.to_s + "</tt>" }
     # Non-parenthesized (delimited by space)
-    ri, rb, rc = /(^| )\_([^ ]+?)( |$)/,  
-                 /(^| )\*([^ ]+?)( |$)/,  
-                 /\`([^ ]+?)( |$)/  
+    ri, rb, rc = /(^| |[^\\])\_([^ ]+?)( |$)/,  
+                 /(^| |[^\\])\*([^ ]+?)( |$)/,  
+                 /(^| |[^\\])\`([^ ]+?)( |$)/  
     line.gsub!(ri) { $1.to_s + "<i>" + $2.to_s + "</i>" + $3.to_s }
     line.gsub!(rb) { $1.to_s + "<b>" + $2.to_s + "</b>" + $3.to_s }
-    line.gsub!(rc) { "<tt>" + $1.to_s + "</tt>" + $2.to_s }
+    line.gsub!(rc) { $1.to_s + "<tt>" + $2.to_s + "</tt>" + $3.to_s }
     # Now unescape the escaped prefix characters
     line.gsub!(/\\\*/, "*")
     line.gsub!(/\\_/, "_")
@@ -226,6 +226,7 @@ module Livetext::Standard
 
   def _next_output(tag = "sec", num = nil)
     @_file_num = num ? num : @_file_num + 1
+    @_file_num = @_file_num.to_i
     name = "#{@_outdir}/#{'%03d' % @_file_num}-#{tag}.html"
     _output(name)
   end
@@ -280,11 +281,14 @@ module Livetext::Standard
   end
 
   def mixin
-    file = "#{CWD}/" + _args.first + ".rb"
+    name = _args.first
+    file = "#{CWD}/" + name + ".rb"
+    init = "init_#{name}"
     return if @_mixins.include?(file)
     @_mixins << file
     text = ::File.read(file)
     self.class.class_eval(text)
+    self.send(init) if self.respond_to? init
     _optional_blank_line
   end
 
