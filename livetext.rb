@@ -210,12 +210,13 @@ module Livetext::Standard
 
   def _output(name)
     @output.close unless @output == STDOUT
-    @output = File.open(name, "w")
+    @output = File.open(@_outdir + "/" + name, "w")
   end
 
   def output
-    fn = @_args.first
-    _output(fn)
+    name = @_args.first
+    _debug "Redirecting output to: #{name}"
+    _output(name)
   end
 
   def next_output
@@ -227,7 +228,7 @@ module Livetext::Standard
   def _next_output(tag = "sec", num = nil)
     @_file_num = num ? num : @_file_num + 1
     @_file_num = @_file_num.to_i
-    name = "#{@_outdir}/#{'%03d' % @_file_num}-#{tag}.html"
+    name = "#{'%03d' % @_file_num}-#{tag}.html"
     _output(name)
   end
 

@@ -132,7 +132,6 @@ def chapter
   @chapter = @_args.first.to_i
   @sec = @sec2 = 0
   title = @_data.split(" ",2)[1]
-::STDERR.puts "foo = #@foo"
   @toc << "<br><b>#@chapter</b> #{title}<br>"
   _next_output(_slug(title))
   @output.puts "<title>#{@chapter}. #{title}</title>"
@@ -193,23 +192,16 @@ def table
   @output.puts "<b>Table #@chapter.#@table_num &nbsp;&nbsp; #{title}</b></center><br>"
 end
 
-def toc
-  @toc_file = "toc.tmp"
-  @toc = ::File.new(@toc_file, "w")
-  _body {|line| @toc.puts line + "\n  " }
-end
-
 def toc!
-# new_file = _args.first
+  _debug "Closing TOC"
   @toc.close
-# system("cp #@toc_file #@_outdir/#{new_file}")
 rescue => err
   _errout "Exception: #{err.inspect}"
 end
 
 def missing
   @output.puts "<br><font color=red><i>[Material missing"
-  @output.puts @_data unless @_data.empty?
+  @output.puts ": #@_data" unless @_data.empty?
   @output.puts "]</i></font><br>\n "
 end
 
@@ -226,6 +218,7 @@ def quote
 end
 
 def init_bookish
-  @foo = 999; @toc_file = "toc.tmp"; @toc = ::File.new(@toc_file, "w")
+  @toc_file = "toc.tmp"
+  @toc = ::File.new(@toc_file, "w")
 end
 
