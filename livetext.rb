@@ -211,6 +211,7 @@ module Livetext::Standard
   def _output(name)
     @output.close unless @output == STDOUT
     @output = File.open(@_outdir + "/" + name, "w")
+    @output.puts "<meta charset='UTF-8'>\n\n"
   end
 
   def output

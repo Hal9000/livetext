@@ -122,7 +122,7 @@ def _nbsp(n)
 end
 
 def _slug(str)
-  s2 = str.chomp.strip.gsub(/[?:,()]/,"").gsub(/ /, "-").downcase
+  s2 = str.chomp.strip.gsub(/[?:,()\/]/,"").gsub(/ /, "-").downcase
 # _errout "SLUG: #{str} => #{s2}"
   s2
 end
@@ -200,6 +200,8 @@ rescue => err
 end
 
 def missing
+  text = @_data
+  @toc << "#{_nbsp(8)}<font color=red>TBD: #@_data</font><br>"
   @output.puts "<br><font color=red><i>[Material missing"
   @output.puts ": #@_data" unless @_data.empty?
   @output.puts "]</i></font><br>\n "
