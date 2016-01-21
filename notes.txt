@@ -15,6 +15,10 @@ double sigil + token = internal sigil
 
 To Be Done
 ----------
+Bug: Optional blank line at EOF causes problem
+turn "blank=para" on/off?
+keyword args
+.defaults
 better variable support
 need a 'require' (with sigil?)
 .init ?
