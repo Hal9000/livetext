@@ -25,9 +25,24 @@ def text
     self.font_family = 'Helvetica'
     self.fill = 'red'
     self.stroke = 'transparent'  # transparent
-    self.pointsize = 32
+    self.pointsize = 80
     self.font_weight = BoldWeight
-    self.gravity = NorthGravity
+    self.gravity = CenterGravity
+  end
+  _optional_blank_line
+end
+
+def text!
+  x, y, width, height = @_data.split(" ", 5)
+  str = _body.join
+  x, y, width, height = x.to_i, y.to_i, width.to_i, height.to_i
+  @canvas.annotate(@image, width, height, x, y, str) do 
+    self.font_family = 'Helvetica'
+    self.fill = 'red'
+    self.stroke = 'transparent'  # transparent
+    self.pointsize = 80
+    self.font_weight = BoldWeight
+    self.gravity = CenterGravity
   end
   _optional_blank_line
 end
