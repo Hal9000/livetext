@@ -24,8 +24,8 @@ def rectangle
   width, height = wxh.split("x").map(&:to_i)
   stroke_width = stroke_width.to_i
   _debug "rectangle: x=#{x} y=#{y} width=#{width} height=#{height} "
-  @canvas.stroke = stroke_color
-  @canvas.stroke_width = stroke_width
+  @canvas.stroke(stroke_color)
+  @canvas.stroke_width(stroke_width)
   @canvas.rectangle(x, y, x+width, y+height)
 end
 
