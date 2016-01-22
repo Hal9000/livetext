@@ -18,32 +18,48 @@ def canvas
   _optional_blank_line
 end
 
-def text
-  x, y, width, height, str = @_data.split(" ", 5)
-  x, y, width, height = x.to_i, y.to_i, width.to_i, height.to_i
+def pen
+  @fill, @stroke = _args
+  @stroke = "black" if @stroke.nil? || @stroke.empty?
+  _debug "pen: fill=#@fill stroke=#@stroke"
+  _optional_blank_line
+end
+
+def font
+  size, font = _args
+  font = "Helvetica" if font.nil? || font.empty? 
+  size = "32" if size.nil? || size.empty? 
+  @size, @font = size.to_i, font
+  _debug "font: size=#@size font=#@font"
+  _optional_blank_line
+end
+
+def _text(xy, wxh, str, weight, gravity)
+  x, y = xy.split(",").map(&:to_i)
+  width, height = wxh.split("x").map(&:to_i)
+  font, fill, stroke, size = @font, @fill, @stroke, @size
   @canvas.annotate(@image, width, height, x, y, str) do 
-    self.font_family = 'Helvetica'
-    self.fill = 'red'
-    self.stroke = 'transparent'  # transparent
-    self.pointsize = 80
-    self.font_weight = BoldWeight
-    self.gravity = CenterGravity
+    self.font_family = font
+    self.fill = fill
+    self.stroke = stroke
+    self.pointsize = size
+    self.font_weight = weight
+    self.gravity = gravity
   end
+end
+
+def text
+  xy, wxh, str = _data.split
+  weight, gravity = BoldWeight, CenterGravity
+  _text(xy, wxh, str, weight, gravity)
   _optional_blank_line
 end
 
 def text!
-  x, y, width, height = @_data.split(" ", 5)
+  xy, wxh = _data.split
   str = _body.join
-  x, y, width, height = x.to_i, y.to_i, width.to_i, height.to_i
-  @canvas.annotate(@image, width, height, x, y, str) do 
-    self.font_family = 'Helvetica'
-    self.fill = 'red'
-    self.stroke = 'transparent'  # transparent
-    self.pointsize = 80
-    self.font_weight = BoldWeight
-    self.gravity = CenterGravity
-  end
+  weight, gravity = BoldWeight, CenterGravity
+  _text(xy, wxh, str, weight, gravity)
   _optional_blank_line
 end
 
