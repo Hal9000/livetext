@@ -140,8 +140,29 @@ module Livetext::Helpers
     end
   end
 
+  def para
+    @para = true
+  end
+
+  def nopara
+    @para = false
+  end
+
+  def nopass
+    @passthru = false
+  end
+
+  def passthru
+    @passthru = true
+  end
+
+  def _para
+    @para ? "<p>" : "\n"
+  end
+
   def _passthru(line)
-    _puts "<p>" if line == "\n"
+    return unless @passthru
+    _puts _para if line == "\n"
     _formatting(line)
     _var_substitution(line)
     _puts line
@@ -329,6 +350,8 @@ class Livetext::System < BasicObject
     @_mixins = []
     @_outdir = "."
     @_file_num = 0
+    @passthru = true
+    @para = true
   end
 
   def method_missing(name, *args)

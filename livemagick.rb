@@ -18,6 +18,17 @@ def canvas
   _optional_blank_line
 end
 
+def rectangle
+  xy, wxh, stroke_color, stroke_width = _args
+  x, y = xy.split(",").map(&:to_i)
+  width, height = wxh.split("x").map(&:to_i)
+  stroke_width = stroke_width.to_i
+  _debug "rectangle: x=#{x} y=#{y} width=#{width} height=#{height} "
+  @canvas.stroke = stroke_color
+  @canvas.stroke_width = stroke_width
+  @canvas.rectangle(x, y, x+width, y+height)
+end
+
 def pen
   @fill, @stroke = _args
   @stroke = "black" if @stroke.nil? || @stroke.empty?
