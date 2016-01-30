@@ -1,0 +1,19 @@
+.mixin livemagick
+
+.nopass
+
+.image 800 600 skyblue
+.canvas green 1 0
+.pen red red
+.font 80 Arial
+
+.rectangle 100,100 300x300 green 9
+
+.text! 150,200 500x200 
+This is
+only
+a test.
+.end
+.draw
+.save! myfile.jpg
+
