@@ -41,7 +41,7 @@ def _nbsp(n)
 end
 
 def _slug(str)
-  s2 = str.chomp.strip.gsub(/[?:,()\/]/,"").gsub(/ /, "-").downcase
+  s2 = str.chomp.strip.gsub(/[?:,()'"\/]/,"").gsub(/ /, "-").downcase
 # _errout "SLUG: #{str} => #{s2}"
   s2
 end
