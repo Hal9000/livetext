@@ -22,6 +22,7 @@ keyword args
 better variable support
 need a 'require' (with sigil?)
 .init ?
+.method or .private
 Prioritized formatting: markdown b/i/c, lt b/i/c, emdash, varsub, funcsub, etc.?
 em dash
 variable for source file

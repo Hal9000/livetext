@@ -100,3 +100,87 @@ module PygmentFix   # Remove CSS for Jutoh
     code
   end
 end
+
+# Was in 'bookish':
+
+include PygmentFix
+
+def _process_code(text)
+  lines = text.split("\n")
+  lines = lines.select {|x| x !~ /##~ omit/ }
+  @refs = {}
+  lines.each.with_index do |line, i|
+    if line =~ /##~ ref/
+      frag, name = line.split(/ *##~ ref/)
+      @refs[name.strip] = i
+      line.replace(frag)
+    end
+  end
+  lines.map! {|line| "  " + line }
+  text.replace(lines.join("\n"))
+end
+
+def _colorize(code, lexer=:elixir)
+  text = ::Pygments.highlight(code, lexer: lexer, options: {linenos: "table"})
+  _debug "--- in _colorize: text = #{text.inspect}"
+  PygmentFix.pyg_finalize(text, lexer)
+  text
+end
+
+def _colorize!(code, lexer=:elixir)
+  text = ::Pygments.highlight(code, lexer: lexer, options: {})
+  _debug "--- in _colorize!: text = #{text.inspect}"
+  PygmentFix.pyg_finalize(text, lexer)
+  text
+end
+
+def ruby
+  file = @_args.first 
+  if file.nil?
+    code = "# Ruby code\n"
+    _body {|line| code << line }
+  else
+    code = "# Ruby code\n\n" + ::File.read(file)
+  end
+
+  _process_code(code)
+  html = _colorize(code, :ruby)
+  @output.puts "\n#{html}\n "
+end
+
+def elixir
+  file = @_args.first 
+  if file.nil?
+    code = ""
+    _body {|line| code << line }
+  else
+    code = ::File.read(file)
+  end
+
+  _process_code(code)
+  html = _colorize(code, :elixir)
+  @output.puts "\n#{html}\n "
+end
+
+def fragment
+# debug
+  lexer = @_args.empty? ? :elixir : @_args.first.to_sym   # ruby or elixir
+  _debug "-- fragment: lexer = #{lexer.inspect}"
+  code = ""
+  code << "# Ruby code\n\n" if lexer == :ruby
+  _body {|line| code << "  " + line }
+  _debug "code = \n#{code}\n-----"
+  params = "(code, lexer: #{lexer.inspect}, options: {})"
+  _debug "-- pygments params = #{params}"
+  text = _colorize!(code, lexer)
+  text ||= "ERROR IN HIGHLIGHTER"
+  _debug "text = \n#{text.inspect}\n-----"
+# PygmentFix.pyg_finalize(text, lexer)
+  @output.puts text + "\n<br>"
+end
+
+def code
+  text = ""
+  _body {|line| @output.puts "    " + line }
+end
+

@@ -140,29 +140,9 @@ module Livetext::Helpers
     end
   end
 
-  def para
-    @para = true
-  end
-
-  def nopara
-    @para = false
-  end
-
-  def nopass
-    @passthru = false
-  end
-
-  def passthru
-    @passthru = true
-  end
-
-  def _para
-    @para ? "<p>" : "\n"
-  end
-
   def _passthru(line)
-    return unless @passthru
-    _puts _para if line == "\n"
+    return if @_nopass
+    _puts "<p>" if line == "\n" and ! @_nopara
     _formatting(line)
     _var_substitution(line)
     _puts line
@@ -269,6 +249,8 @@ module Livetext::Standard
     str += _body.join("\n")
     str += "end\n"
     eval str
+  rescue => err
+    _errout "Syntax error in definition:\n#{err}\n#$!"
   end
 
   def set
@@ -335,6 +317,10 @@ module Livetext::Standard
     self._debug = true
     self._debug = false if arg == "off"
   end
+
+  def nopara
+    @_nopara = true
+  end
 end
 
 class Livetext::System < BasicObject
@@ -350,8 +336,8 @@ class Livetext::System < BasicObject
     @_mixins = []
     @_outdir = "."
     @_file_num = 0
-    @passthru = true
-    @para = true
+    @_nopass = false
+    @_nopara = false
   end
 
   def method_missing(name, *args)
@@ -393,7 +379,14 @@ end
 def handle_sname(sigil, line)
   obj = Livetext::Objects[sigil]
   name = _get_name(obj, sigil, line)
+  unless obj.respond_to?(name)
+    raise "'#{name}' is unknown."
+  end
+# STDERR.puts "Method name = '#{name}'"
   obj.send(name)
+rescue => err
+  puts "ERROR: #{err}"
+  puts $!
 end
 
 def handle(line)
