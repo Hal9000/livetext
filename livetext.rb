@@ -423,5 +423,7 @@ if $0 == __FILE__
     line = sys._next_line
     handle(line)
   end
+
+  sys.finalize if sys.respond_to?(:finalize)
 end
 
