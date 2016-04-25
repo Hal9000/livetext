@@ -322,6 +322,12 @@ module Livetext::Standard
     @_nopara = true
   end
 
+  def heading
+    _print "<center><font size=+1><b>"
+    _print _data
+    _print "</b></font></center>"
+  end
+
   def newpage
     _puts '<p style="page-break-after:always;"></p>'
   end
