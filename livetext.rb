@@ -321,6 +321,10 @@ module Livetext::Standard
   def nopara
     @_nopara = true
   end
+
+  def newpage
+    _puts '<p style="page-break-after:always;"></p>'
+  end
 end
 
 class Livetext::System < BasicObject
