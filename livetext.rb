@@ -185,6 +185,11 @@ module Livetext::Standard
 
   def shell
     cmd = _data
+    system(cmd)
+  end
+
+  def shell!
+    cmd = _data
     _errout("Running: #{cmd}")
     system(cmd)
   end
@@ -195,11 +200,10 @@ module Livetext::Standard
 
   def say
     str = _var_substitution(_data)
-#   _errout str
     _optional_blank_line
   end
 
-  def say!
+  def banner
     str = _var_substitution(_data)
     n = str.length - 1
     _errout "-"*n
@@ -231,16 +235,37 @@ module Livetext::Standard
     @output.puts "<meta charset='UTF-8'>\n\n"
   end
 
+  def _append(name)
+    @output.close unless @output == STDOUT
+    @output = File.open(@_outdir + "/" + name, "a")
+    @output.puts "<meta charset='UTF-8'>\n\n"
+  end
+
   def output
     name = @_args.first
     _debug "Redirecting output to: #{name}"
     _output(name)
   end
 
+  def append
+    file = @_args[0]
+    _append(file)
+  end
+
   def next_output
     tag, num = @_args
     _next_output(tag, num)
     _optional_blank_line
+  end
+
+  def cleanup
+    @_args.each do |item| 
+      if ::File.directory?(item)
+        system("rm #{item}/*")
+      else
+        ::FileUtils.rm(item)
+      end
+    end
   end
 
   def _next_output(tag = "sec", num = nil)
