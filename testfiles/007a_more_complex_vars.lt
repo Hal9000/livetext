@@ -1,0 +1,5 @@
+Just some more text.
+.set bday="May 31", date="5/31"
+My birthday is $bday, so they tell me.
+That's $date if you're American.
+That's all.

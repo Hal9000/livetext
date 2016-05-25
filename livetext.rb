@@ -138,6 +138,7 @@ module Livetext::Helpers
       rx = /#{name}\b/
       line.gsub!(rx, val)
     end
+    line
   end
 
   def _passthru(line)
@@ -182,13 +183,28 @@ module Livetext::Standard
     junk = _body  # do nothing with contents
   end
 
+  def shell
+    cmd = _data
+    _errout("Running: #{cmd}")
+    system(cmd)
+  end
+
   def errout
     @tty.puts _data
   end
 
   def say
-    errout
+    str = _var_substitution(_data)
+#   _errout str
     _optional_blank_line
+  end
+
+  def say!
+    str = _var_substitution(_data)
+    n = str.length - 1
+    _errout "-"*n
+    _errout str
+    _errout "-"*n
   end
 
   def quit
@@ -253,10 +269,16 @@ module Livetext::Standard
     _errout "Syntax error in definition:\n#{err}\n#$!"
   end
 
+  def nopass
+    @_nopass = true
+  end
+
   def set
-    assigns = _data.chomp.split(",")
+    assigns = _data.chomp.split(/, */)
     assigns.each do |a| 
       var, val = a.split("=")
+      val = val[1..-2] if val[0] == ?" and val[-1] == ?"
+      val = val[1..-2] if val[0] == ?' and val[-1] == ?'
       @vars[var] = val
     end
     _optional_blank_line
@@ -288,11 +310,11 @@ module Livetext::Standard
   def mixin
     name = _args.first
     file = "#{CWD}/" + name + ".rb"
-    init = "init_#{name}"
     return if @_mixins.include?(file)
     @_mixins << file
     text = ::File.read(file)
     self.class.class_eval(text)
+    init = "init_#{name}"
     self.send(init) if self.respond_to? init
     _optional_blank_line
   end
@@ -330,6 +352,9 @@ module Livetext::Standard
 
   def newpage
     _puts '<p style="page-break-after:always;"></p>'
+  end
+
+  def invoke(str)
   end
 end
 
@@ -396,7 +421,7 @@ def handle_sname(sigil, line)
   obj.send(name)
 rescue => err
   puts "ERROR: #{err}"
-  puts $!
+  puts err.backtrace
 end
 
 def handle(line)

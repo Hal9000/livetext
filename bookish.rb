@@ -8,9 +8,9 @@ def hardbreaks?
 end
 
 def list
-  @output.puts "<ul>"
-  _body {|line| @output.puts "<li>#{line}</li>" }
-  @output.puts "</ul>"
+  _puts "<ul>"
+  _body {|line| _puts "<li>#{line}</li>" }
+  _puts "</ul>"
 end
 
 def alpha_columns
@@ -20,12 +20,12 @@ def alpha_columns
     words << line.chomp
   end
   words.sort!
-  @output.puts "<table cellpadding=10>"
+  _puts "<table cellpadding=10>"
   words.each_slice(n) do |w|
     items = w.map {|x| "<tt>#{x}</tt>" }
-    @output.puts "<tr><td width=5%></td><td>" + items.join("</td><td>") + "</td></tr>"
+    _puts "<tr><td width=5%></td><td>" + items.join("</td><td>") + "</td></tr>"
   end
-  @output.puts "</table>"
+  _puts "</table>"
 end
 
 def comment
@@ -46,6 +46,11 @@ def _slug(str)
   s2
 end
 
+def image
+  name = @_args[0]
+  _puts "<img src='#{name}'></img>"
+end
+
 def chapter
 # _errout("chapter")
   @chapter = @_args.first.to_i
@@ -53,8 +58,8 @@ def chapter
   title = @_data.split(" ",2)[1]
   @toc << "<br><b>#@chapter</b> #{title}<br>"
   _next_output(_slug(title))
-  @output.puts "<title>#{@chapter}. #{title}</title>"
-  @output.puts <<-HTML
+  _puts "<title>#{@chapter}. #{title}</title>"
+  _puts <<-HTML
     <h2>Chapter #{@chapter}</h1>
     <h1>#{title}</h1>
 
@@ -68,7 +73,7 @@ def sec
 # _errout("section #@section")
   @toc << "#{_nbsp(3)}<b>#@section</b> #@_data<br>"
   _next_output(_slug(@_data))
-  @output.puts "<h3>#@section #{@_data}</h3>\n"
+  _puts "<h3>#@section #{@_data}</h3>\n"
 end
 
 def subsec
@@ -77,7 +82,7 @@ def subsec
   @toc << "#{_nbsp(6)}<b>#@subsec</b> #@_data<br>"
 # _errout("section #@subsec")
   _next_output(_slug(@_data))
-  @output.puts "<h3>#@subsec #{@_data}</h3>\n"
+  _puts "<h3>#@subsec #{@_data}</h3>\n"
 end
 
 def table
@@ -85,7 +90,7 @@ def table
   @table_num += 1
   title = @_data
   delim = " :: "
-  @output.puts "<br><center><table border=1 width=90% cellpadding=5>"
+  _puts "<br><center><table border=1 width=90% cellpadding=5>"
   lines = _body
   maxw = nil
   lines.each do |line|
@@ -101,14 +106,14 @@ def table
 
   lines.each do |line|
     cells = line.split(delim)
-    @output.puts "<tr>"
-    cells.each.with_index {|cell, i| @output.puts "  <td width=#{maxw}%>#{cell}</td>" }
-    @output.puts "</tr>"
+    _puts "<tr>"
+    cells.each.with_index {|cell, i| _puts "  <td width=#{maxw}%>#{cell}</td>" }
+    _puts "</tr>"
   end
-  @output.puts "</table>"
+  _puts "</table>"
   @toc << "#{_nbsp(8)}<b>Table #@chapter.#@table_num</b> #{title}<br>"
   _next_output(_slug("table_#{title}"))
-  @output.puts "<b>Table #@chapter.#@table_num &nbsp;&nbsp; #{title}</b></center><br>"
+  _puts "<b>Table #@chapter.#@table_num &nbsp;&nbsp; #{title}</b></center><br>"
 end
 
 def toc!
@@ -121,21 +126,21 @@ end
 def missing
   text = @_data
   @toc << "#{_nbsp(8)}<font color=red>TBD: #@_data</font><br>"
-  @output.puts "<br><font color=red><i>[Material missing"
-  @output.puts ": #@_data" unless @_data.empty?
-  @output.puts "]</i></font><br>\n "
+  _puts "<br><font color=red><i>[Material missing"
+  _puts ": #@_data" unless @_data.empty?
+  _puts "]</i></font><br>\n "
 end
 
 def note
-  @output.puts "<br><font color=red><i>Note: "
-  @output.puts @_data 
-  @output.puts "</i></font><br>\n "
+  _puts "<br><font color=red><i>Note: "
+  _puts @_data 
+  _puts "</i></font><br>\n "
 end
 
 def quote
-  @output.puts "<blockquote>"
-  @output.puts _body
-  @output.puts "</blockquote>"
+  _puts "<blockquote>"
+  _puts _body
+  _puts "</blockquote>"
 end
 
 def init_bookish

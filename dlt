@@ -1,1 +1,1 @@
-cp livetext* bookish.rb pyggish.rb ~/bin
+cp livetext* bookish.rb pyggish.rb calibre.rb ~/bin

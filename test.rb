@@ -28,6 +28,7 @@ class TestingLiveText < MiniTest::Test
   def test_005_block_comment;       external_files end
   def test_006_def_method;          external_files end
   def test_007_simple_vars;         external_files end
+  def test_007a_more_complex_vars;  external_files end
   def test_008_simple_include;      external_files end
   def test_009_simple_mixin;        external_files end
   def test_010_simple_copy;         external_files end
