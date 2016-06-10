@@ -13,6 +13,20 @@ def list
   _puts "</ul>"
 end
 
+def list!
+  _puts "<ul>"
+  lines = _body.each   # {|line| _puts "<li>#{line}</li>" }
+  loop do 
+    line = lines.next
+    if line[0] == " "
+      _puts line
+    else
+      _puts "<li>#{line}</li>"
+    end
+  end
+  _puts "</ul>"
+end
+
 def alpha_columns
   n = @_args.first.to_i   # FIXME: what if missing?
   words = []
