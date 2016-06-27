@@ -179,8 +179,15 @@ def fragment
   @output.puts text + "\n<br>"
 end
 
-def code
-  text = ""
+def code       # FIXME ?
+  text = ""   
   _body {|line| @output.puts "    " + line }
 end
+
+def mono
+  _puts "<pre>"
+  _body {|line| _puts "    " + line }
+  _puts "</pre>"
+end
+
 

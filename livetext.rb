@@ -1,3 +1,4 @@
+require 'fileutils'
 
 CWD = File.dirname(__FILE__)
 
@@ -110,26 +111,60 @@ module Livetext::Helpers
     end
   end
 
+  def _basic_format(line, delim, tag)
+    s = line.each_char
+    c = s.next
+    last = nil
+    getch = -> { last = c; c = s.next }
+    buffer = ""
+    loop do
+      case c
+        when " "
+          buffer << " "
+          last = " "
+        when delim
+          if last == " " || last == nil
+            buffer << "<#{tag}>"
+            c = getch.call
+            if c == "("
+              loop { getch.call; break if c == ")"; buffer << c }
+              buffer << "</#{tag}>"
+            else
+              loop { buffer << c; getch.call; break if c == " " || c == nil || c == "\n" }
+              buffer << "</#{tag}>"
+              buffer << " " if c == " "
+            end
+          else
+            buffer << delim
+          end
+      else
+        buffer << c
+      end
+      getch.call
+    end
+    buffer
+  end
+
+  def _handle_escapes(str, set)
+    # str = str.dup
+    set.each_char do |ch|
+      str.gsub!("\\#{ch}", ch)
+    end
+    str
+  end
+
   def _formatting(line)
-    # Parenthesized
-    rip, rbp, rcp = /(^| )_\(([^)]+?)\)/,  
-                    /(^| )\*\(([^)]+?)\)/,  
-                    /`\(([^)]+?)\)/  
-    line.gsub!(rip) { $1.to_s + "<i>" + $2.to_s + "</i>" }
-    line.gsub!(rbp) { $1.to_s + "<b>" + $2.to_s + "</b>" }
-    line.gsub!(rcp) { "<tt>" + $1.to_s + "</tt>" }
-    # Non-parenthesized (delimited by space)
-    ri, rb, rc = /(^| |[^\\])\_([^ ]+?)( |$)/,  
-                 /(^| |[^\\])\*([^ ]+?)( |$)/,  
-                 /(^| |[^\\])\`([^ ]+?)( |$)/  
-    line.gsub!(ri) { $1.to_s + "<i>" + $2.to_s + "</i>" + $3.to_s }
-    line.gsub!(rb) { $1.to_s + "<b>" + $2.to_s + "</b>" + $3.to_s }
-    line.gsub!(rc) { $1.to_s + "<tt>" + $2.to_s + "</tt>" + $3.to_s }
-    # Now unescape the escaped prefix characters
-    line.gsub!(/\\\*/, "*")
-    line.gsub!(/\\_/, "_")
-    line.gsub!(/\\`/, "`")
+    line = _basic_format(line, "_", "i")
+    line = _basic_format(line, "*", "b")
+    line = _basic_format(line, "`", "tt")
+    line = _handle_escapes(line, "_*`")
     line
+  end
+
+  def OLD_formatting(line)
+    l2 = _formatting(line)
+    line.replace(l2)
+    return line
   end
 
   def _var_substitution(line)
@@ -144,7 +179,7 @@ module Livetext::Helpers
   def _passthru(line)
     return if @_nopass
     _puts "<p>" if line == "\n" and ! @_nopara
-    _formatting(line)
+    OLD_formatting(line)
     _var_substitution(line)
     _puts line
   end

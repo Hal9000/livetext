@@ -4,7 +4,7 @@ and <tt>code font</tt>.
 <p>
 
 Here are some random punctuation marks:
-# . @ * _ ` : ; % ^ & $
+# . @ <b> <i></b> <tt></i></tt> : ; % ^ & $
 <p>
 
 Oops, forgot to escape these:  * _ `

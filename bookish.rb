@@ -18,6 +18,7 @@ def list!
   lines = _body.each   # {|line| _puts "<li>#{line}</li>" }
   loop do 
     line = lines.next
+    line = _formatting(line)
     if line[0] == " "
       _puts line
     else
@@ -137,11 +138,24 @@ rescue => err
   _errout "Exception: #{err.inspect}"
 end
 
+def toc2
+  file = @_args[0]
+  @toc.close
+  ::File.write(file, <<-EOS)
+<p style="page-break-after:always;"></p>
+<meta charset='UTF-8'>
+
+<center><h3>Fake (non-hyperlinked) Table of Contents</h3></center>
+
+EOS
+  system("cat toc.tmp >>#{file}")
+end
+
 def missing
   text = @_data
   @toc << "#{_nbsp(8)}<font color=red>TBD: #@_data</font><br>"
-  _puts "<br><font color=red><i>[Material missing"
-  _puts ": #@_data" unless @_data.empty?
+  _print "<br><font color=red><i>[Material missing"
+  _print ": #@_data" unless @_data.empty?
   _puts "]</i></font><br>\n "
 end
 
