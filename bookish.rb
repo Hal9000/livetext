@@ -145,7 +145,7 @@ def toc2
 <p style="page-break-after:always;"></p>
 <meta charset='UTF-8'>
 
-<center><h3>Fake (non-hyperlinked) Table of Contents</h3></center>
+<center><h2>Fake (non-hyperlinked) Table of Contents</h2></center>
 
 EOS
   system("cat toc.tmp >>#{file}")
