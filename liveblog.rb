@@ -22,6 +22,7 @@ end
 
 def _passthru(line)
   @dest << line
+  @dest << "<p>" if line == "\n" and ! @_nopara
 end
 
 def title 
@@ -62,7 +63,7 @@ end
 def finalize
   @meta.slug = _slug(@meta.title)
   @meta.body = @body
-  @list = {}    # FIXME Make hash by perspective
+  @list = {}
   @meta.perspectives.each {|per| generate(per) }
   deploy
 end
@@ -71,7 +72,6 @@ end
 
 def generate(perspec)
   dir = "perspectives/#{perspec}"
-  _errout("dir = #{dir}")
   out =  "#{dir}/compiled/#{@meta.slug}.html"
   @post_header = ::File.read("#{dir}/post_header.html")
   @post_trailer = ::File.read("#{dir}/post_trailer.html")
@@ -100,19 +100,20 @@ rescue => err
   ::STDERR.puts "#{err}\n#{err.backtrace.map {|x| "  " + x }.join("\n") }"
 end
 
-def generate_index(perspec) # FIXME
+def generate_index(perspec)
   dir = "perspectives/#{perspec}"
   cdir = "perspectives/#{perspec}/compiled"
-  posts = ::Dir["#{cdir}/*.yaml"].sort {|a,b| b <=> a }
-  out = ::File.read("#{dir}/blogheader.html")
+  posts = ::Dir["#{cdir}/*.yaml"].map {|x| [x, ::YAML.load(::File.read(x))] }
+  posts = posts.sort {|a,b| b[1]["pubdate"] <=> a[1]["pubdate"] }
 
   server, destdir = @deployment[perspec]
 
-  posts.each do |fname|
-    meta = ::YAML.load(::File.read(fname))
-#   name2 = fname.sub("compiled",)   # FIXME
-    name2 = fname.sub("compiled",destdir)
-    html = name2.sub(/yaml/, "html")
+  out = ::File.read("#{cdir}/blog_header.html")
+
+  posts.each do |fname, meta|
+    name2 = destdir + ::File.basename(fname)
+    _errout "name2 = #{name2}"
+    html = perspec + "/" + ::File.basename(fname).sub(/yaml/, "html")
     out << <<-HTML
     <br>
     <font size=+1>#{meta["pubdate"]}&nbsp;&nbsp;</font>
@@ -148,7 +149,7 @@ def deploy # FIXME
     server, dir = @deployment[per]
     cmd = "scp #{files.join(' ')} root@#{server}:#{dir}"
     puts cmd
-#   system cmd
+    system cmd
   end
 end
 

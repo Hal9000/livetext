@@ -66,6 +66,15 @@ def image
   _puts "<img src='#{name}'></img>"
 end
 
+def figure
+  name = @_args[0]
+  num = @_args[1]
+  title = @_args[2..-1].join(" ")
+  title = _formatting(title)
+  _puts "<img src='#{name}'></img>"
+  _puts "<center><b>Figure #{num}</b> #{title}</center>"
+end
+
 def chapter
 # _errout("chapter")
   @chapter = @_args.first.to_i
@@ -157,6 +166,11 @@ def missing
   _print "<br><font color=red><i>[Material missing"
   _print ": #@_data" unless @_data.empty?
   _puts "]</i></font><br>\n "
+end
+
+def TBC
+  @toc << "#{_nbsp(8)}<font color=red>To be continued...</font><br>"
+  _print "<br><font color=red><i>To be continued...</i></font><br>"
 end
 
 def note
