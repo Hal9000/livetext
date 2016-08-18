@@ -55,7 +55,7 @@ end
 
 def _slug(str)
   date = @meta.pubdate
-  s2 = date + "-" + str.chomp.strip.gsub(/[?:,\.()'"\/]/,"").gsub(/ /, "-").downcase
+  s2 = str.chomp.strip.gsub(/[?:,\.()'"\/]/,"").gsub(/ /, "-").downcase  # + "-" + date
   # _errout "SLUG: #{str} => #{s2}"
   s2
 end
@@ -73,8 +73,8 @@ end
 def generate(perspec)
   dir = "perspectives/#{perspec}"
   out =  "#{dir}/compiled/#{@meta.slug}.html"
-  @post_header = ::File.read("#{dir}/post_header.html")
-  @post_trailer = ::File.read("#{dir}/post_trailer.html")
+# @post_header = ::File.read("#{dir}/post_header.html")
+# @post_trailer = ::File.read("#{dir}/post_trailer.html")
   @template = ::File.read("#{dir}/template.html")
 
   title = @meta.title
@@ -87,6 +87,7 @@ def generate(perspec)
   tweet.gsub!("'",'&#39;')
 
   text = eval("<<HEREDOC\n#@template\nHEREDOC")
+  ::STDERR.puts "OUTPUT:\n#{text}"
   _errout "Writing #{text.size} bytes to #{out}"
   ::File.write(out, text)
 
