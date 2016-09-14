@@ -451,9 +451,6 @@ end
 def handle_scomment(sigil, line)
 end
 
-def handle_sscomment(sigil, line)
-end
-
 def _get_name(obj, sigil, line)
   blank = line.index(" ") || line.index("\n")
   name = line[1..(blank-1)]
@@ -464,12 +461,12 @@ def _get_name(obj, sigil, line)
   name
 end
 
-def handle_ssname(sigil, line)
-  obj = Livetext::Objects[sigil]
-  name = _get_name(obj, sigil, line)
-  obj._debug "  Calling #{name}"
-  obj.send(name)
-end
+# def handle_ssname(sigil, line)
+#   obj = Livetext::Objects[sigil]
+#   name = _get_name(obj, sigil, line)
+#   obj._debug "  Calling #{name}"
+#   obj.send(name)
+# end
 
 def handle_sname(sigil, line)
   obj = Livetext::Objects[sigil]
@@ -480,7 +477,7 @@ def handle_sname(sigil, line)
 # STDERR.puts "Method name = '#{name}'"
   obj.send(name)
 rescue => err
-  puts "ERROR: #{err}"
+  puts "ERROR on #@file line #@num: #{err}"
   puts err.backtrace
 end
 
@@ -488,16 +485,16 @@ def handle(line)
   nomarkup = true
   Livetext::Sigils.each do |sigil|
     scomment  = rx(sigil, Livetext::Space)  # apply these in order
-    sscomment = rx(sigil + sigil, Livetext::Space)
-    ssname    = rx(sigil + sigil)
+  # sscomment = rx(sigil + sigil, Livetext::Space)
+  # ssname    = rx(sigil + sigil)
     sname     = rx(sigil)
     case 
       when line =~ scomment
         handle_scomment(sigil, line)
-      when line =~ sscomment
-        handle_sscomment(sigil, line)
-      when line =~ ssname
-        handle_ssname(sigil, line)
+  #   when line =~ sscomment
+  #     handle_sscomment(sigil, line)
+  #   when line =~ ssname
+  #     handle_ssname(sigil, line)
       when line =~ sname
         handle_sname(sigil, line)
       else
@@ -513,9 +510,11 @@ if $0 == __FILE__
 
   source = file.each_line
   sys = Livetext::Objects[Livetext::MainSigil] = Livetext::System.new(source)
+  @num = 0
 
   loop do
     line = sys._next_line
+    @num += 1
     handle(line)
   end
 

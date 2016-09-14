@@ -23,7 +23,7 @@ class TestingLiveText < MiniTest::Test
 
   def test_001_hello_world;         external_files end
   def test_002_comments_ignored_1;  external_files end
-  def test_003_comments_ignored_2;  external_files end
+# def test_003_comments_ignored_2;  external_files end
   def test_004_sigil_can_change;    external_files end
   def test_005_block_comment;       external_files end
   def test_006_def_method;          external_files end
