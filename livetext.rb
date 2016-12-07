@@ -296,7 +296,7 @@ module Livetext::Standard
   def cleanup
     @_args.each do |item| 
       if ::File.directory?(item)
-        system("rm #{item}/*")
+        system("rm -f #{item}/*")
       else
         ::FileUtils.rm(item)
       end
