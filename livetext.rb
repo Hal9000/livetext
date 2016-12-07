@@ -326,7 +326,7 @@ module Livetext::Standard
     str += "end\n"
     eval str
   rescue => err
-    _errout "Syntax error in definition:\n#{err}\n#$!"
+    STDERR.puts "Syntax error in definition:\n#{err}\n#$!"
   end
 
   def nopass
@@ -412,6 +412,7 @@ module Livetext::Standard
 
   def newpage
     _puts '<p style="page-break-after:always;"></p>'
+    _puts "<p/>"
   end
 
   def invoke(str)
@@ -475,10 +476,14 @@ def handle_sname(sigil, line)
     raise "'#{name}' is unknown."
   end
 # STDERR.puts "Method name = '#{name}'"
-  obj.send(name)
-rescue => err
-  puts "ERROR on #@file line #@num: #{err}"
-  puts err.backtrace
+  if name == "notes"
+    obj.notes
+  else
+    obj.send(name)
+  end
+#rescue 
+#  STDERR.puts "ERROR on #@file line #@num"
+#  STDERR.puts err.backtrace
 end
 
 def handle(line)

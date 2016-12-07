@@ -5,7 +5,7 @@
 .image 800 600 skyblue
 .canvas green 1 0
 .pen red red
-.font 80 Arial
+.font 80 AvantGarde
 
 .rectangle 100,100 300x300 green 9
 
@@ -15,5 +15,6 @@ only
 a test.
 .end
 .draw
-.save! myfile.jpg
+.save! somefile.jpg
+
 

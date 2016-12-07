@@ -90,6 +90,20 @@ def chapter
   HTML
 end
 
+def chapterN
+  @chapter += 1
+  @sec = @sec2 = 0
+  title = @_data    # .split(" ",2)[1]
+  @toc << "<br><b>#@chapter</b> #{title}<br>"
+  _next_output(_slug(title))
+  _puts "<title>#{@chapter}. #{title}</title>"
+  _puts <<-HTML
+    <h2>Chapter #{@chapter}</h1>
+    <h1>#{title}</h1>
+
+  HTML
+end
+
 def sec
   @sec += 1
   @sec2 = 0
@@ -188,5 +202,6 @@ end
 def init_bookish
   @toc_file = "toc.tmp"
   @toc = ::File.new(@toc_file, "w")
+  @chapter = -1
 end
 
