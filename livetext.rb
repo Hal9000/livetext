@@ -225,7 +225,7 @@ module Livetext::Standard
 
   def shell!
     cmd = _data
-    _errout("Running: #{cmd}")
+#   _errout("Running: #{cmd}")
     system(cmd)
   end
 
@@ -260,7 +260,7 @@ module Livetext::Standard
     @_outdir = @_args.first
     raise "No output directory specified" if @_outdir.nil?
     raise "No output directory specified" if @_outdir.empty?
-    system("rm #@_outdir/*.html")
+    system("rm -f #@_outdir/*.html")
     _optional_blank_line
   end
 

@@ -7,7 +7,7 @@ def epub!
   if ::File.directory?(src)
     files = ::Dir["#{src}/*"].grep /\.html$/
     cmd = "cat #{files.join(' ')} >TEMP.html"
-    puts "Running:  #{cmd}"
+#   puts "Running:  #{cmd}"
     system(cmd)
   else
     raise "Not supported yet"
@@ -16,7 +16,7 @@ def epub!
   cmd = "ebook-convert "
   cmd << "TEMP.html #{out}.epub "
   cmd << "--cover #@cover " if @cover
-  puts "Running:  #{cmd}"
+# puts "Running:  #{cmd}"
   system(cmd)
 
   str = `links -dump TEMP.html | wc -w`
