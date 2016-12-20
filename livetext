@@ -6,7 +6,8 @@ def handle_lt(src)
   mfile = src.sub(/\.lt/, ".md")
   hfile = src.sub(/\.lt/, ".html")
   # abort "#{mfile} is newer than #{src}! Aborting" if File.mtime(mfile) > File.mtime(src)
-  cmd = "cat #{src} | ruby #{CWD}/livetext.rb"
+# cmd = "cat #{src} | ruby #{CWD}/livetext.rb"
+  cmd = "ruby #{CWD}/livetext.rb #{src}"
   system(cmd)
 end
 

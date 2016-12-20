@@ -198,8 +198,8 @@ module Livetext::Helpers
 
   def _next_line
     @line = @input.next
-    _debug "Line: #@line"
-    @lnum ||= 0
+    _debug "Line: #@lnum: #@line"
+    # @lnum ||= 0
     @lnum += 1
     @line
   end
@@ -347,6 +347,8 @@ module Livetext::Standard
   def _include
     file = _args.first
     lines = ::File.readlines(file)
+    @file = file
+STDERR.puts "_include: ****** Set @file = #@file"
     lines.each {|line| _debug " inc: #{line}" }
     rem = @input.remaining
     array = lines + rem
@@ -356,6 +358,8 @@ module Livetext::Standard
 
   def include!
     file = _args.first
+    @file = file
+STDERR.puts "include!: ****** Set @file = #@file"
     existing = File.exist?(file)
     return if not existing
     lines = ::File.readlines(file)
@@ -372,6 +376,8 @@ module Livetext::Standard
     file = "#{CWD}/" + name + ".rb"
     return if @_mixins.include?(file)
     @_mixins << file
+    @file = file
+STDERR.puts "mixin: ****** Set @file = #@file"
     text = ::File.read(file)
     self.class.class_eval(text)
     init = "init_#{name}"
@@ -381,6 +387,8 @@ module Livetext::Standard
 
   def copy
     file = _args.first
+    @file = file
+STDERR.puts "copy: ****** Set @file = #@file"
     @output.puts ::File.readlines(file)
     _optional_blank_line
   end
@@ -424,6 +432,8 @@ class Livetext::System < BasicObject
   include ::Livetext::Helpers
   include ::Livetext::Standard
 
+  attr_accessor :file, :lnum
+
   def initialize(input = ::STDIN, output = ::STDOUT)
     @input = input
     @output = output
@@ -434,6 +444,8 @@ class Livetext::System < BasicObject
     @_file_num = 0
     @_nopass = false
     @_nopara = false
+
+    @lnum = 0
   end
 
   def method_missing(name, *args)
@@ -462,18 +474,12 @@ def _get_name(obj, sigil, line)
   name
 end
 
-# def handle_ssname(sigil, line)
-#   obj = Livetext::Objects[sigil]
-#   name = _get_name(obj, sigil, line)
-#   obj._debug "  Calling #{name}"
-#   obj.send(name)
-# end
-
 def handle_sname(sigil, line)
   obj = Livetext::Objects[sigil]
   name = _get_name(obj, sigil, line)
   unless obj.respond_to?(name)
-    raise "'#{name}' is unknown."
+    STDERR.puts "'#{name}' is unknown:  file #@file  line #@lnum"
+    return
   end
 # STDERR.puts "Method name = '#{name}'"
   if name == "notes"
@@ -481,25 +487,19 @@ def handle_sname(sigil, line)
   else
     obj.send(name)
   end
-#rescue 
-#  STDERR.puts "ERROR on #@file line #@num"
-#  STDERR.puts err.backtrace
+rescue => err
+  STDERR.puts "ERROR on #@file line #@lnum"
+  STDERR.puts err.backtrace
 end
 
 def handle(line)
   nomarkup = true
   Livetext::Sigils.each do |sigil|
     scomment  = rx(sigil, Livetext::Space)  # apply these in order
-  # sscomment = rx(sigil + sigil, Livetext::Space)
-  # ssname    = rx(sigil + sigil)
     sname     = rx(sigil)
     case 
       when line =~ scomment
         handle_scomment(sigil, line)
-  #   when line =~ sscomment
-  #     handle_sscomment(sigil, line)
-  #   when line =~ ssname
-  #     handle_ssname(sigil, line)
       when line =~ sname
         handle_sname(sigil, line)
       else
@@ -515,11 +515,13 @@ if $0 == __FILE__
 
   source = file.each_line
   sys = Livetext::Objects[Livetext::MainSigil] = Livetext::System.new(source)
-  @num = 0
+  sys.file = ARGV[0]
+  sys.lnum = 0
+
+STDERR.puts "$0: ****** Set sys.file = #{sys.file}"
 
   loop do
     line = sys._next_line
-    @num += 1
     handle(line)
   end
 

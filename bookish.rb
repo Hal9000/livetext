@@ -94,6 +94,7 @@ def chapterN
   @chapter += 1
   @sec = @sec2 = 0
   title = @_data    # .split(" ",2)[1]
+  _errout("Chapter #@chapter: #{title}")
   @toc << "<br><b>#@chapter</b> #{title}<br>"
   _next_output(_slug(title))
   _puts "<title>#{@chapter}. #{title}</title>"
