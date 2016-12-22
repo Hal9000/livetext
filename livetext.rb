@@ -425,6 +425,22 @@ STDERR.puts "copy: ****** Set @file = #@file"
 
   def invoke(str)
   end
+
+  def dlist
+    delim = "~~"
+    _puts "<table>"
+    _body do |line|
+# @tty.puts "Line = #{line}"
+      line = _formatting(line)
+# @tty.puts "Line = #{line}\n "
+      term, defn = line.split(delim)
+      _puts "<tr>"
+      _puts "<td width=3%><td width=10%>#{term}</td><td>#{defn}</td>"
+      _puts "</tr>"
+    end
+    _puts "</table>"
+  end
+
 end
 
 class Livetext::System < BasicObject
