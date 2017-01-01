@@ -21,7 +21,7 @@ class Livetext
 
   Objects = { MainSigil => nil }
 
-  Disallowed = [:_data=, :bar, :foo, :nil?, :===, :=~, :!~, :eql?, :hash, :<=>, 
+  Disallowed = [:_data=, :nil?, :===, :=~, :!~, :eql?, :hash, :<=>, 
                 :class, :singleton_class, :clone, :dup, :taint, :tainted?, 
                 :untaint, :untrust, :untrusted?, :trust, :freeze, :frozen?, 
                 :to_s, :inspect, :methods, :singleton_methods, :protected_methods, 
@@ -146,7 +146,7 @@ module Livetext::Helpers
   end
 
   def _handle_escapes(str, set)
-    # str = str.dup
+    str = str.dup
     set.each_char do |ch|
       str.gsub!("\\#{ch}", ch)
     end
@@ -198,9 +198,8 @@ module Livetext::Helpers
 
   def _next_line
     @line = @input.next
-    _debug "Line: #@lnum: #@line"
-    # @lnum ||= 0
     @lnum += 1
+    _debug "Line: #@lnum: #@line"
     @line
   end
 
@@ -348,7 +347,7 @@ module Livetext::Standard
     file = _args.first
     lines = ::File.readlines(file)
     @file = file
-STDERR.puts "_include: ****** Set @file = #@file"
+# STDERR.puts "_include: ****** Set @file = #@file"
     lines.each {|line| _debug " inc: #{line}" }
     rem = @input.remaining
     array = lines + rem
@@ -359,7 +358,7 @@ STDERR.puts "_include: ****** Set @file = #@file"
   def include!
     file = _args.first
     @file = file
-STDERR.puts "include!: ****** Set @file = #@file"
+# STDERR.puts "include!: ****** Set @file = #@file"
     existing = File.exist?(file)
     return if not existing
     lines = ::File.readlines(file)
@@ -377,7 +376,7 @@ STDERR.puts "include!: ****** Set @file = #@file"
     return if @_mixins.include?(file)
     @_mixins << file
     @file = file
-STDERR.puts "mixin: ****** Set @file = #@file"
+# STDERR.puts "mixin: ****** Set @file = #@file"
     text = ::File.read(file)
     self.class.class_eval(text)
     init = "init_#{name}"
@@ -388,7 +387,7 @@ STDERR.puts "mixin: ****** Set @file = #@file"
   def copy
     file = _args.first
     @file = file
-STDERR.puts "copy: ****** Set @file = #@file"
+# STDERR.puts "copy: ****** Set @file = #@file"
     @output.puts ::File.readlines(file)
     _optional_blank_line
   end
@@ -464,6 +463,10 @@ class Livetext::System < BasicObject
     @lnum = 0
   end
 
+  def where
+    "Line #@lnum of #@file"
+  end
+
   def method_missing(name, *args)
     # Idea: Capture source line for error messages
     _puts "  Error: Method '#{name}' is not defined."
@@ -480,13 +483,18 @@ end
 def handle_scomment(sigil, line)
 end
 
+def _disallowed?(name)
+  Livetext::Disallowed.include?(name.to_sym)
+end
+
 def _get_name(obj, sigil, line)
   blank = line.index(" ") || line.index("\n")
   name = line[1..(blank-1)]
-  abort "Name '#{name}' is not permitted" if Livetext::Disallowed.include?(name.to_sym)
+  abort "#{obj.where}: Name '#{name}' is not permitted" if _disallowed?(name)
   obj._data = line[(blank+1)..-1]
   name = "_def" if name == "def"
   name = "_include" if name == "include"
+  abort "#{obj.where}: mismatched 'end'" if name == "end"
   name
 end
 
@@ -494,7 +502,7 @@ def handle_sname(sigil, line)
   obj = Livetext::Objects[sigil]
   name = _get_name(obj, sigil, line)
   unless obj.respond_to?(name)
-    STDERR.puts "'#{name}' is unknown:  file #@file  line #@lnum"
+    abort "#{obj.where}: '#{name}' is unknown"
     return
   end
 # STDERR.puts "Method name = '#{name}'"
@@ -504,7 +512,7 @@ def handle_sname(sigil, line)
     obj.send(name)
   end
 rescue => err
-  STDERR.puts "ERROR on #@file line #@lnum"
+  STDERR.puts "ERROR on #{obj.file} line #{obj.lnum}"
   STDERR.puts err.backtrace
 end
 
@@ -534,7 +542,7 @@ if $0 == __FILE__
   sys.file = ARGV[0]
   sys.lnum = 0
 
-STDERR.puts "$0: ****** Set sys.file = #{sys.file}"
+# STDERR.puts "$0: ****** Set sys.file = #{sys.file}"
 
   loop do
     line = sys._next_line
