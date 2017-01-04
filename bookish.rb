@@ -7,6 +7,10 @@ def hardbreaks?
   @hard
 end
 
+def credit
+  # really just a place marker in source
+end
+
 def list
   _puts "<ul>"
   _body {|line| _puts "<li>#{line}</li>" }
