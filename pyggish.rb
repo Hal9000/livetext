@@ -1,5 +1,6 @@
 require 'pygments'
 
+# noinspection ALL
 module PygmentFix   # Remove CSS for Jutoh
   Styles = {
     :c  => "#408080-i",  # Comment

@@ -12,6 +12,7 @@ class Enumerator
   end
 end
 
+# noinspection ALL
 class Livetext
   Version = "0.0.1"
 
@@ -35,6 +36,7 @@ class Livetext
                 :instance_exec, :__send__, :__id__, :__binding__]
 end
 
+# noinspection ALL
 module Livetext::Helpers
   def _source
     @input
@@ -212,6 +214,7 @@ module Livetext::Helpers
   end
 end
 
+# noinspection ALL
 module Livetext::Standard
   def comment
     junk = _body  # do nothing with contents
@@ -442,6 +445,7 @@ module Livetext::Standard
 
 end
 
+# noinspection ALL
 class Livetext::System < BasicObject
   include ::Kernel
   include ::Livetext::Helpers

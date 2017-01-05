@@ -2,6 +2,7 @@ require 'minitest/autorun'
 
 require_relative './livetext'
 
+# noinspection ALL
 class TestingLiveText < MiniTest::Test
 
   def external_files

@@ -1,3 +1,4 @@
+# noinspection RubyQuotedStringsInspection
 def hardbreaks
   @hard = false
   @hard = true unless @_args.first == "off"
@@ -48,7 +49,7 @@ def alpha_columns
 end
 
 def comment
-  _body {|line| }  # ignore body
+  _body { }  # ignore body
 end
 
 def _errout(*args)
@@ -150,7 +151,7 @@ def table
   lines.each do |line|
     cells = line.split(delim)
     _puts "<tr>"
-    cells.each.with_index {|cell, i| _puts "  <td width=#{maxw}%>#{cell}</td>" }
+    cells.each.with_index {|cell, i| ; _puts "  <td width=#{maxw}%>#{cell}</td>" }
     _puts "</tr>"
   end
   _puts "</table>"
@@ -180,7 +181,6 @@ EOS
 end
 
 def missing
-  text = @_data
   @toc << "#{_nbsp(8)}<font color=red>TBD: #@_data</font><br>"
   _print "<br><font color=red><i>[Material missing"
   _print ": #@_data" unless @_data.empty?
