@@ -41,4 +41,3 @@ class TestingLiveText < MiniTest::Test
   def test_016_single_raw_line;     external_files end
 
 end
-
