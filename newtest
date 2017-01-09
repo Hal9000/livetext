@@ -4,5 +4,7 @@ mkdir testfiles/$1
 
 cd testfiles/$1
 
+touch expected-output.txt expected-error.txt
+
 vi -O source.ltx exp expected-output.txt expected-error.txt
 

@@ -14,7 +14,7 @@ end
 
 # noinspection ALL
 class Livetext
-  Version = "0.0.1"
+  Version = "0.1.1"
 
   MainSigil = "."
   Sigils = [MainSigil]
@@ -34,9 +34,90 @@ class Livetext
                 :singleton_method, :define_singleton_method, :object_id, :to_enum, 
                 :enum_for, :pretty_inspect, :==, :equal?, :!, :!=, :instance_eval, 
                 :instance_exec, :__send__, :__id__, :__binding__]
+
+  class << self
+    attr_reader :main
+  end
+
+  def self.handle_line(line)
+    nomarkup = true
+    Livetext::Sigils.each do |sigil|
+      scomment  = rx(sigil, Livetext::Space)  # apply these in order
+      sname     = rx(sigil)
+      case 
+        when line =~ scomment
+          handle_scomment(sigil, line)
+        when line =~ sname
+          handle_sname(sigil, line)
+        else
+          obj = Livetext::Objects[sigil]
+          obj._passthru(line)
+      end
+    end
+  end
+
+
+  def self.handle_file(file)
+    file = File.new(file) if file.is_a? String
+    source = file.each_line
+    @main = Livetext::Objects[Livetext::MainSigil] = Livetext::System.new(source)
+    @main.file = ARGV[0]
+    @main.lnum = 0
+
+    loop do
+      line = @main._next_line
+      handle_line(line)
+    end
+
+    @main.finalize if @main.respond_to?(:finalize)
+  end
+
+  def self.rx(str, space=nil)
+    Regexp.compile("^" + Regexp.escape(str) + "#{space}")
+  end
+
+  def self.handle_scomment(sigil, line)
+  end
+
+  def self._disallowed?(name)
+    Livetext::Disallowed.include?(name.to_sym)
+  end
+
+  def self._get_name(obj, sigil, line)
+    blank = line.index(" ") || line.index("\n")
+    name = line[1..(blank-1)]
+    abort "#{obj.where}: Name '#{name}' is not permitted" if _disallowed?(name)
+    obj._data = line[(blank+1)..-1]
+    name = "_def" if name == "def"
+    name = "_include" if name == "include"
+    abort "#{obj.where}: mismatched 'end'" if name == "end"
+    name
+  end
+
+  def self.handle_sname(sigil, line)
+    obj = Livetext::Objects[sigil]
+    name = _get_name(obj, sigil, line)
+    unless obj.respond_to?(name)
+      abort "#{obj.where}: '#{name}' is unknown"
+      return
+    end
+  # STDERR.puts "Method name = '#{name}'"
+    if name == "notes"
+      obj.notes
+    else
+      obj.send(name)
+    end
+  rescue => err
+    STDERR.puts "ERROR on #{obj.file} line #{obj.lnum}"
+    STDERR.puts err.backtrace
+  end
+
 end
 
-# noinspection ALL
+class Livetext::Functions
+  # Functions will go here... user-def and pre-def??
+end
+
 module Livetext::Helpers
   def _source
     @input
@@ -113,6 +194,10 @@ module Livetext::Helpers
     end
   end
 
+  def _body!(sigil=Livetext::MainSigil)
+    _body(sigil).join("\n")
+  end
+
   def _basic_format(line, delim, tag)
     s = line.each_char
     c = s.next
@@ -169,7 +254,17 @@ module Livetext::Helpers
     return line
   end
 
-  def _var_substitution(line)
+  def _var_substitution(line)   # FIXME handle functions separately later??
+    fobj = ::Livetext::Functions.new
+    @funcs = ::Livetext::Functions.instance_methods
+    @funcs.each do |func|
+      name = ::Regexp.escape("$$#{func}")
+      rx = /#{name}\b/
+      line.gsub!(rx) do |str| 
+        val = fobj.send(func)
+        str.sub(rx, val)
+      end
+    end
     @vars.each_pair do |var, val|
       name = ::Regexp.escape("$#{var}")
       rx = /#{name}\b/
@@ -214,7 +309,6 @@ module Livetext::Helpers
   end
 end
 
-# noinspection ALL
 module Livetext::Standard
   def comment
     junk = _body  # do nothing with contents
@@ -222,12 +316,24 @@ module Livetext::Standard
 
   def shell
     cmd = _data
+    _errout("Running: #{cmd}")
     system(cmd)
+  end
+
+  def func
+    fname = @_args[0]
+
+    # temporary for testing
+    func_def = <<-EOS
+      def #{fname}
+        #{_body!}
+      end
+    EOS
+    ::Livetext::Functions.class_eval func_def
   end
 
   def shell!
     cmd = _data
-#   _errout("Running: #{cmd}")
     system(cmd)
   end
 
@@ -445,7 +551,11 @@ module Livetext::Standard
 
 end
 
-# noinspection ALL
+class Livetext
+  METHS = (Livetext::Standard.instance_methods - Object.methods).sort
+end
+
+
 class Livetext::System < BasicObject
   include ::Kernel
   include ::Livetext::Helpers
@@ -479,80 +589,10 @@ class Livetext::System < BasicObject
   end
 end
 
-
-def rx(str, space=nil)
-  Regexp.compile("^" + Regexp.escape(str) + "#{space}")
-end
-
-def handle_scomment(sigil, line)
-end
-
-def _disallowed?(name)
-  Livetext::Disallowed.include?(name.to_sym)
-end
-
-def _get_name(obj, sigil, line)
-  blank = line.index(" ") || line.index("\n")
-  name = line[1..(blank-1)]
-  abort "#{obj.where}: Name '#{name}' is not permitted" if _disallowed?(name)
-  obj._data = line[(blank+1)..-1]
-  name = "_def" if name == "def"
-  name = "_include" if name == "include"
-  abort "#{obj.where}: mismatched 'end'" if name == "end"
-  name
-end
-
-def handle_sname(sigil, line)
-  obj = Livetext::Objects[sigil]
-  name = _get_name(obj, sigil, line)
-  unless obj.respond_to?(name)
-    abort "#{obj.where}: '#{name}' is unknown"
-    return
-  end
-# STDERR.puts "Method name = '#{name}'"
-  if name == "notes"
-    obj.notes
-  else
-    obj.send(name)
-  end
-rescue => err
-  STDERR.puts "ERROR on #{obj.file} line #{obj.lnum}"
-  STDERR.puts err.backtrace
-end
-
-def handle(line)
-  nomarkup = true
-  Livetext::Sigils.each do |sigil|
-    scomment  = rx(sigil, Livetext::Space)  # apply these in order
-    sname     = rx(sigil)
-    case 
-      when line =~ scomment
-        handle_scomment(sigil, line)
-      when line =~ sname
-        handle_sname(sigil, line)
-      else
-        obj = Livetext::Objects[sigil]
-        obj._passthru(line)
-    end
-  end
-end
+### FIXME - these are all top-level methods
 
 
 if $0 == __FILE__
-  file = File.open(ARGV[0]) rescue STDIN
-
-  source = file.each_line
-  sys = Livetext::Objects[Livetext::MainSigil] = Livetext::System.new(source)
-  sys.file = ARGV[0]
-  sys.lnum = 0
-
-# STDERR.puts "$0: ****** Set sys.file = #{sys.file}"
-
-  loop do
-    line = sys._next_line
-    handle(line)
-  end
-
-  sys.finalize if sys.respond_to?(:finalize)
+  Livetext.handle_file(ARGV[0] || STDIN)
 end
 
