@@ -2,6 +2,8 @@ require 'fileutils'
 
 CWD = File.dirname(__FILE__)
 
+TTY = ::File.open("/dev/tty", "w")
+
 require_relative "./pyggish"
 
 class Enumerator
@@ -305,7 +307,7 @@ module Livetext::Helpers
   end
 
   def _debug(*args)
-    @tty.puts *args if @_debug
+    TTY.puts *args if @_debug
   end
 end
 
@@ -338,7 +340,7 @@ module Livetext::Standard
   end
 
   def errout
-    @tty.puts _data
+    TTY.puts _data
   end
 
   def say
@@ -538,9 +540,9 @@ module Livetext::Standard
     delim = "~~"
     _puts "<table>"
     _body do |line|
-# @tty.puts "Line = #{line}"
+# TTY.puts "Line = #{line}"
       line = _formatting(line)
-# @tty.puts "Line = #{line}\n "
+# TTY.puts "Line = #{line}\n "
       term, defn = line.split(delim)
       _puts "<tr>"
       _puts "<td width=3%><td width=10%>#{term}</td><td>#{defn}</td>"
@@ -566,7 +568,6 @@ class Livetext::System < BasicObject
   def initialize(input = ::STDIN, output = ::STDOUT)
     @input = input
     @output = output
-    @tty = ::File.open("/dev/tty", "w")
     @vars = {}
     @_mixins = []
     @_outdir = "."
