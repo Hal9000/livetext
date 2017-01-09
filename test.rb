@@ -27,6 +27,7 @@ class TestingLiveText < MiniTest::Test
 
     assert(out_ok, bad_out)
     assert(err_ok, bad_err)
+    system("rm -f #{out} #{err}")  # only on success
   end
 
   def test_hello_world;         external_files end
