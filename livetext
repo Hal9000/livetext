@@ -2,9 +2,9 @@
 
 CWD = File.dirname(__FILE__)
 
-def handle_lt(src)
-  mfile = src.sub(/\.lt/, ".md")
-  hfile = src.sub(/\.lt/, ".html")
+def handle_ltx(src)
+  mfile = src.sub(/\.ltx/, ".md")
+  hfile = src.sub(/\.ltx/, ".html")
   # abort "#{mfile} is newer than #{src}! Aborting" if File.mtime(mfile) > File.mtime(src)
 # cmd = "cat #{src} | ruby #{CWD}/livetext.rb"
   cmd = "ruby #{CWD}/livetext.rb #{src}"
@@ -14,10 +14,10 @@ end
 # Main
 
 def clean_all
-  files = Dir["*.lt"]
+  files = Dir["*.ltx"]
   outfiles = []
   files.each do |file|
-    f2 = file.sub(/.lt$/, ".html")
+    f2 = file.sub(/.ltx$/, ".html")
     outfiles << f2 if File.exist?(f2) #  && File.mtime(f2) > File.mtime(file)
   end
   puts "Cleaning: #{outfiles.inspect}"
@@ -36,8 +36,8 @@ end
 src = ARGV.first
 
 case
-  when src =~ /.lt$/
-    handle_lt(src)
+  when src =~ /.ltx$/
+    handle_ltx(src)
   else
     abort "Unknown file extension"
 end
