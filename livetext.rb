@@ -103,7 +103,7 @@ class Livetext
       abort "#{obj.where}: '#{name}' is unknown"
       return
     end
-  # STDERR.puts "Method name = '#{name}'"
+
     if name == "notes"
       obj.notes
     else
@@ -116,8 +116,14 @@ class Livetext
 
 end
 
-class Livetext::Functions
-  # Functions will go here... user-def and pre-def??
+class Livetext::Functions    # Functions will go here... user-def AND pre-def??
+  def date
+    Time.now.strftime("%F")
+  end
+
+  def time
+    Time.now.strftime("%F")
+  end
 end
 
 module Livetext::Helpers
@@ -323,9 +329,7 @@ module Livetext::Standard
   end
 
   def func
-    fname = @_args[0]
-
-    # temporary for testing
+    fname = @_args[0]   # FIXME: don't permit 'initialize' (others?)
     func_def = <<-EOS
       def #{fname}
         #{_body!}
@@ -432,7 +436,7 @@ module Livetext::Standard
   def _def
     name = _args[0]
     str = "def #{name}\n"
-    str += _body.join("\n")
+    str += _body!
     str += "end\n"
     eval str
   rescue => err
