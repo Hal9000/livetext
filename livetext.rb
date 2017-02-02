@@ -14,7 +14,6 @@ class Enumerator
   end
 end
 
-# noinspection ALL
 class Livetext
   Version = "0.1.1"
 
@@ -71,7 +70,10 @@ class Livetext
       handle_line(line)
     end
 
-    @main.finalize if @main.respond_to?(:finalize)
+    val = @main.finalize if @main.respond_to?(:finalize)
+    val
+  rescue => err
+    STDERR.puts "handle_file: #{err}"
   end
 
   def self.rx(str, space=nil)

@@ -6,14 +6,13 @@ def init_liveblog
   @body = ""
   @dest = @teaser
   @meta = ::OpenStruct.new
-  @perspectives = ::Dir.entries("perspectives") - %w[. ..]
+  @views = ::Dir.entries("views") - %w[. ..]
   @deployment = {}
-  @perspectives.each do |per|
-    file = "perspectives/#{per}/deploy"
+  @views.each do |per|
+    file = "views/#{per}/deploy"
     server, destdir = ::File.readlines(file).map {|x| x.chomp }
     @deployment[per] = [server, destdir]
   end
-  ::STDERR.puts @deployment.inspect
 end
 
 def _errout(*args)
@@ -21,8 +20,9 @@ def _errout(*args)
 end
 
 def _passthru(line)
+  OLD_formatting(line)
+  _var_substitution(line)
   @dest << line
-  @dest << "<p>" if line == "\n" and ! @_nopara
 end
 
 def title 
@@ -43,78 +43,82 @@ def categories
   @meta.categories = _args
 end
 
-def perspectives
+def views
   _debug "data = #{_args}"
-  @meta.perspectives = _args # + ["main"]
+  @meta.views = _args # + ["main"]
 end
 
 def readmore
   @meta.teaser = @dest
-  @dest = @body
+  @dest = @dest + @body
+end
+
+def liveblog_version
 end
 
 def _slug(str)
   date = @meta.pubdate
-  s2 = str.chomp.strip.gsub(/[?:,\.()'"\/]/,"").gsub(/ /, "-").downcase  # + "-" + date
+  s2 = date + "-" + str.chomp.strip.gsub(/[?:,\.()'"\/]/,"").gsub(/ /, "-").downcase
   # _errout "SLUG: #{str} => #{s2}"
   s2
 end
 
 def finalize
   @meta.slug = _slug(@meta.title)
-  @meta.body = @body
-  @list = {}
-  @meta.perspectives.each {|per| generate(per) }
-  deploy
+  @meta.body = @dest
+# @list = {}    # FIXME Make hash by view
+# @meta.views.each {|per| generate(per) }
+# deploy
+  p @meta
+  @meta
 end
 
 #####
 
-def generate(perspec)
-  dir = "perspectives/#{perspec}"
+def generate(view)
+  dir = "views/#{view}"
+  _errout("dir = #{dir}")
   out =  "#{dir}/compiled/#{@meta.slug}.html"
-# @post_header = ::File.read("#{dir}/post_header.html")
-# @post_trailer = ::File.read("#{dir}/post_trailer.html")
+  @post_header = ::File.read("#{dir}/post_header.html")
+  @post_trailer = ::File.read("#{dir}/post_trailer.html")
   @template = ::File.read("#{dir}/template.html")
 
   title = @meta.title
   title.gsub!("'",'&#39;')
   title.gsub!('"','_')
   teaser = @meta.teaser
-  server, dir = @deployment[perspec]
+  server, dir = @deployment[view]
   url = "http://#{server}/#{server}/#{@meta.slug}.html"
   tweet = "&#34;#{title}&#34;\n"
   tweet.gsub!("'",'&#39;')
 
   text = eval("<<HEREDOC\n#@template\nHEREDOC")
-  ::STDERR.puts "OUTPUT:\n#{text}"
   _errout "Writing #{text.size} bytes to #{out}"
   ::File.write(out, text)
 
   metaname = out.sub(/html/, "yaml")
   _errout "Writing #{@meta.to_yaml.size} bytes to #{metaname}"
   ::File.write(metaname, @meta.to_yaml)
-  @list[perspec] ||= []
-  @list[perspec] << out << metaname
-  generate_index(perspec)
+  @list[view] ||= []
+  @list[view] << out << metaname
+  generate_index(view)
 rescue => err
   ::STDERR.puts "#{err}\n#{err.backtrace.map {|x| "  " + x }.join("\n") }"
 end
 
-def generate_index(perspec)
-  dir = "perspectives/#{perspec}"
-  cdir = "perspectives/#{perspec}/compiled"
-  posts = ::Dir["#{cdir}/*.yaml"].map {|x| [x, ::YAML.load(::File.read(x))] }
-  posts = posts.sort {|a,b| b[1]["pubdate"] <=> a[1]["pubdate"] }
+def generate_index(view) # FIXME
+  dir = "views/#{view}"
+  cdir = "views/#{view}/compiled"
+  posts = ::Dir["#{cdir}/*.yaml"].sort {|a,b| b <=> a }
+  out = ::File.read("#{dir}/blogheader.html")
 
-  server, destdir = @deployment[perspec]
+  server, destdir = @deployment[view]
 
-  out = ::File.read("#{cdir}/blog_header.html")
-
-  posts.each do |fname, meta|
-    name2 = destdir + ::File.basename(fname)
-    _errout "name2 = #{name2}"
-    html = perspec + "/" + ::File.basename(fname).sub(/yaml/, "html")
+  posts.each do |fname|
+    meta = ::YAML.load(::File.read(fname))
+#   name2 = fname.sub("compiled",)   # FIXME
+    name2 = fname.sub("compiled",destdir)
+    html = name2.sub(/yaml/, "html")
     out << <<-HTML
     <br>
     <font size=+1>#{meta["pubdate"]}&nbsp;&nbsp;</font>
@@ -132,7 +136,8 @@ def generate_index(perspec)
   </html>
   HTML
   ::File.write("#{cdir}/index.html", out)
-  @list[perspec] << "#{cdir}/index.html"
+  @list[view] << "#{cdir}/index.html"
+  _errout @list.inspect
 end
 
 def deploy # FIXME
@@ -154,6 +159,14 @@ def deploy # FIXME
   end
 end
 
+def redeploy(per)
+  puts "Redeploying:"
+  server, dir = @deployment[per]
+  cmd = "scp #{files.join(' ')} root@#{server}:#{dir}"
+  puts cmd
+# system cmd
+end
+
 ################ Logic...
 
 =begin
@@ -161,19 +174,19 @@ end
    specify file name
    output metadata (yaml), html
    output task list??
- How handle perspectives?
+ How handle views?
  Generate indices
  Deploy
 
-Handling perspectives:
-  Each perspective has its own index
+Handling views:
+  Each view has its own index
   Separate boilerplate (header/trailer)
   Separate deployments (separate host info)
   'main' linked to default?
-  'test' perspective
-  generate is now dependent on perspective
+  'test' view
+  generate is now dependent on view
 
-Under perspective dir:
+Under view dir:
   header/trailer
   index
   host info? (only for deploy)
