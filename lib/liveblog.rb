@@ -6,13 +6,13 @@ def init_liveblog
   @body = ""
   @dest = @teaser
   @meta = ::OpenStruct.new
-  @views = ::Dir.entries("views") - %w[. ..]
+# @views = ::Dir.entries("#{@config.root}/views") - %w[. ..]
   @deployment = {}
-  @views.each do |per|
-    file = "views/#{per}/deploy"
-    server, destdir = ::File.readlines(file).map {|x| x.chomp }
-    @deployment[per] = [server, destdir]
-  end
+# @views.each do |per|
+#   file = ""#{@config.root}views/#{per}/deploy"
+#   server, destdir = ::File.readlines(file).map {|x| x.chomp }
+#   @deployment[per] = [server, destdir]
+# end
 end
 
 def _errout(*args)

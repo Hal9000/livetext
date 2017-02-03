@@ -1,6 +1,6 @@
 require 'fileutils'
 
-CWD = File.dirname(__FILE__)
+CWD = "."   # File.dirname(__FILE__)
 
 TTY = ::File.open("/dev/tty", "w")
 
@@ -475,7 +475,7 @@ module Livetext::Standard
   def include!
     file = _args.first
     @file = file
-# STDERR.puts "include!: ****** Set @file = #@file"
+# TTY.puts "include!: ****** file = #{file}"
     existing = File.exist?(file)
     return if not existing
     lines = ::File.readlines(file)
@@ -493,7 +493,7 @@ module Livetext::Standard
     return if @_mixins.include?(file)
     @_mixins << file
     @file = file
-# STDERR.puts "mixin: ****** Set @file = #@file"
+# TTY.puts "mixin: ****** file = #{file} "
     text = ::File.read(file)
     self.class.class_eval(text)
     init = "init_#{name}"
@@ -504,7 +504,7 @@ module Livetext::Standard
   def copy
     file = _args.first
     @file = file
-# STDERR.puts "copy: ****** Set @file = #@file"
+# TTY.puts "copy: ****** file = #{file}"
     @output.puts ::File.readlines(file)
     _optional_blank_line
   end

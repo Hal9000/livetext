@@ -34,9 +34,9 @@ def dlist
   delim = "~~"
   _puts "<table>"
   _body do |line|
-@tty.puts "Line = #{line}"
-    line = _formatting(line)
-@tty.puts "Line = #{line}\n "
+# @tty.puts "Line = #{line}"
+    line = OLD_formatting(line)
+# @tty.puts "Line = #{line}\n "
     term, defn = line.split(delim)
     _puts "<tr>"
     _puts "<td width=3%><td width=10%>#{term}</td><td>#{defn}</td>"
@@ -52,7 +52,8 @@ end
 
 def inout
   src, out = _args
-  t1, t2 = ::File.readlines(src), ::File.readlines(out)
+  t1 = ::File.readlines(src) rescue (abort "t1 = #{src}")
+  t2 = ::File.readlines(out) rescue (abort "t2 = #{out}")
   # To pacify markdown for README (FIXME later)
   t1 = t1.map {|x| " " + x.sub(/ +$/,"").gsub(/_/, "\\_") }.join
   t2 = t2.map {|x| " " + x.sub(/ +$/,"").gsub(/_/, "\\_") }.join
@@ -82,7 +83,7 @@ end
 def testcase
   name = _args.first
   _puts "\n<b>Test: <tt>#{name.gsub(/_/, "\\_")}</tt></b><br>"
-  src, exp = "testfiles/#{name}.lt", "testfiles/#{name}.exp"
+  src, exp = "test/testfiles/#{name}/source.ltx", "test/testfiles/#{name}/expected-output.txt"
   @_args = [src, exp]   # Better way to do this??
   inout                 # Weird - only place I've done this yet.
 end

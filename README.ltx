@@ -1,4 +1,4 @@
-.mixin tutorial
+.mixin lib/tutorial
 .title Livetext: A smart processor for text
 
 .p Livetext is simply a tool for transforming text from one format into another. The source file
@@ -105,7 +105,7 @@ about that. It also means that a "literal" prefix character must be escaped.
 
 .p This is all summarized in this example (taken from one of the testcases):
 
-.testcase 015_basic_formatting
+.testcase basic_formatting
 
 .section Standard methods
 
@@ -131,18 +131,17 @@ Here is the current list:
 
 Here are some tests from the suite. The file name reflects the general purpose of the test.
 
-.testcase 001_hello_world
-.testcase 002_comments_ignored_1
-.testcase 003_comments_ignored_2
-.testcase 004_sigil_can_change
-.testcase 005_block_comment
-.testcase 006_def_method
-.testcase 007_simple_vars
-.testcase 008_simple_include
-.testcase 009_simple_mixin
-.testcase 010_simple_copy
-.testcase 011_copy_is_raw
-.testcase 012_raw_text_block
+.testcase hello_world
+.testcase comments_ignored_1
+.testcase sigil_can_change
+.testcase block_comment
+.testcase def_method
+.testcase simple_vars
+.testcase simple_include
+.testcase simple_mixin
+.testcase simple_copy
+.testcase copy_is_raw
+.testcase raw_text_block
 
 .section Writing custom methods
 
@@ -228,12 +227,12 @@ but it remains to be seen whether something that advanced is useful.
 Let's write a method called `alpha for that. This exercise and the next one are implemented 
 in the test suite.
 
-.testcase 013_example_alpha
+.testcase example_alpha
 
 .p I'll let that code stand on its own. Now suppose you wanted to allow columnar output. Let's
 have the user specify a number of columns (from 1 to 5, defaulting to 1).
 
-.testcase 014_example_alpha2
+.testcase example_alpha2
 
 .p What if we wanted to store the code outside the text file? There is more than one way to 
 do this.
