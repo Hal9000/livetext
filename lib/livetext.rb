@@ -15,7 +15,7 @@ class Enumerator
 end
 
 class Livetext
-  Version = "0.1.1"
+  VERSION = "0.5.2"
 
   MainSigil = "."
   Sigils = [MainSigil]
