@@ -15,7 +15,7 @@ class Enumerator
 end
 
 class Livetext
-  VERSION = "0.5.2"
+  VERSION = "0.5.4"
 
   MainSigil = "."
   Sigils = [MainSigil]
@@ -460,21 +460,32 @@ module Livetext::Standard
     _optional_blank_line
   end
 
+  def _pushfile(fname)
+    @source_files ||= []
+    @source_files.push(@file)
+    @file = fname
+  end
+
+  def _popfile
+    @file = @source_files.pop
+  end
+
   def _include
     file = _args.first
     lines = ::File.readlines(file)
-    @file = file
+    _pushfile(file)
 # STDERR.puts "_include: ****** Set @file = #@file"
     lines.each {|line| _debug " inc: #{line}" }
     rem = @input.remaining
     array = lines + rem
     @input = array.each # FIXME .with_index
     _optional_blank_line
+    _popfile
   end
 
   def include!
     file = _args.first
-    @file = file
+    _pushfile
 # TTY.puts "include!: ****** file = #{file}"
     existing = File.exist?(file)
     return if not existing
@@ -485,6 +496,7 @@ module Livetext::Standard
     array = lines + rem
     @input = array.each # FIXME .with_index
     _optional_blank_line
+    _popfile
   end
 
   def mixin
@@ -492,21 +504,23 @@ module Livetext::Standard
     file = "#{CWD}/" + name + ".rb"
     return if @_mixins.include?(file)
     @_mixins << file
-    @file = file
+    _pushfile(file)
 # TTY.puts "mixin: ****** file = #{file} "
     text = ::File.read(file)
     self.class.class_eval(text)
     init = "init_#{name}"
     self.send(init) if self.respond_to? init
     _optional_blank_line
+    _popfile
   end
 
   def copy
     file = _args.first
-    @file = file
+    _pushfile(file)
 # TTY.puts "copy: ****** file = #{file}"
     @output.puts ::File.readlines(file)
     _optional_blank_line
+    _popfile
   end
 
   def r
