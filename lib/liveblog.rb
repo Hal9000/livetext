@@ -6,10 +6,10 @@ def init_liveblog
   @body = ""
   @dest = @teaser
   @meta = ::OpenStruct.new
-# @views = ::Dir.entries("#{@config.root}/views") - %w[. ..]
-  @deployment = {}
+# @views = ::Dir.entries("views") - %w[. ..]
+# @deployment = {}
 # @views.each do |per|
-#   file = ""#{@config.root}views/#{per}/deploy"
+#   file = "views/#{per}/deploy"
 #   server, destdir = ::File.readlines(file).map {|x| x.chomp }
 #   @deployment[per] = [server, destdir]
 # end
@@ -20,6 +20,7 @@ def _errout(*args)
 end
 
 def _passthru(line)
+  @dest << "<p>" if line == "\n" and ! @_nopara
   OLD_formatting(line)
   _var_substitution(line)
   @dest << line
@@ -27,6 +28,7 @@ end
 
 def title 
   @meta.title = _data
+  @dest << "<h1>#{@meta.title}</h1>"
 end
 
 def pubdate 
@@ -56,20 +58,30 @@ end
 def liveblog_version
 end
 
-def _slug(str)
-  date = @meta.pubdate
-  s2 = date + "-" + str.chomp.strip.gsub(/[?:,\.()'"\/]/,"").gsub(/ /, "-").downcase
-  # _errout "SLUG: #{str} => #{s2}"
-  s2
+def list
+  @dest << "<ul>"
+  _body {|line| @dest << "<li>#{line}</li>" }
+  @dest << "</ul>"
+end
+
+def list!
+  @dest << "<ul>"
+  lines = _body.each   # {|line| @dest << "<li>#{line}</li>" }
+  loop do 
+    line = lines.next
+    line = _formatting(line)
+    if line[0] == " "
+      @dest << line
+    else
+      @dest << "<li>#{line}</li>"
+    end
+  end
+  @dest << "</ul>"
 end
 
 def finalize
-  @meta.slug = _slug(@meta.title)
+  @meta.slug = make_slug(@meta.title, @config.sequence)
   @meta.body = @dest
-# @list = {}    # FIXME Make hash by view
-# @meta.views.each {|per| generate(per) }
-# deploy
-  p @meta
   @meta
 end
 
@@ -125,7 +137,7 @@ def generate_index(view) # FIXME
     <font size=+2 color=blue><a href=../#{html} style="text-decoration: none">#{meta["title"]}</font></a>
     <br>
     #{meta["teaser"]}  
-    <a href=../#{html} style="text-decoration: none">Read more...</a>
+    <a href=../#{html} style="text-decoration: none"><br>Read more...</a>
     <br><br>
     <hr>
     HTML

@@ -15,7 +15,7 @@ class Enumerator
 end
 
 class Livetext
-  VERSION = "0.5.4"
+  VERSION = "0.5.6"
 
   MainSigil = "."
   Sigils = [MainSigil]
@@ -57,12 +57,16 @@ class Livetext
     end
   end
 
-
   def self.handle_file(file)
-    file = File.new(file) if file.is_a? String
+    fname = "<<none>>"
+    if file.is_a? String
+      fname = file
+      file = File.new(fname) 
+    end
     source = file.each_line
     @main = Livetext::Objects[Livetext::MainSigil] = Livetext::System.new(source)
-    @main.file = ARGV[0]
+    @main._pushfile(fname)
+    @main.file = fname
     @main.lnum = 0
 
     loop do
@@ -75,6 +79,7 @@ class Livetext
   rescue => err
     STDERR.puts "handle_file: #{err}"
   end
+
 
   def self.rx(str, space=nil)
     Regexp.compile("^" + Regexp.escape(str) + "#{space}")
@@ -125,6 +130,11 @@ class Livetext::Functions    # Functions will go here... user-def AND pre-def??
 
   def time
     Time.now.strftime("%F")
+  end
+
+  def basename
+    file = ::Livetext.main.file
+    ::File.basename(file, ".*")
   end
 end
 
@@ -464,6 +474,7 @@ module Livetext::Standard
     @source_files ||= []
     @source_files.push(@file)
     @file = fname
+    @file
   end
 
   def _popfile

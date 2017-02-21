@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'livetext'
-  s.version     = '0.5.4'
-  s.date        = '2017-02-09'
+  s.version     = '0.5.6'
+  s.date        = '2017-02-21'
   s.summary     = "A smart processor for text"
   s.description = "A smart text processor extensible in Ruby"
   s.authors     = ["Hal Fulton"]
@@ -103,5 +103,5 @@ Gem::Specification.new do |s|
                      ./test/testfiles/single_raw_line/source.ltx
                     ]
   s.homepage    = 'https://github.com/Hal9000/livetext'
-  s.license       = "Ruby's"
+  s.license       = "Ruby's license"
 end
