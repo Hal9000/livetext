@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'livetext'
-  s.version     = '0.5.6'
-  s.date        = '2017-02-21'
+  s.version     = '0.5.7'
+  s.date        = '2017-03-07'
   s.summary     = "A smart processor for text"
   s.description = "A smart text processor extensible in Ruby"
   s.authors     = ["Hal Fulton"]
@@ -10,15 +10,15 @@ Gem::Specification.new do |s|
                      ./bin
                      ./bin/livetext
                      ./lib
-                     ./lib/bookish.rb
-                     ./lib/calibre.rb
-                     ./lib/liveblog.rb
-                     ./lib/livemagick.rb
                      ./lib/livetext.rb
-                     ./lib/markdown.rb
-                     ./lib/pyggish.rb
-                     ./lib/tutorial.rb
-                     ./livetext-0.5.2.gem
+                     ./dsl
+                     ./dsl/bookish.rb
+                     ./dsl/calibre.rb
+                     ./dsl/liveblog.rb
+                     ./dsl/livemagick.rb
+                     ./dsl/markdown.rb
+                     ./dsl/pyggish.rb
+                     ./dsl/tutorial.rb
                      ./livetext.gemspec
                      ./notes.txt
                      ./README.html
