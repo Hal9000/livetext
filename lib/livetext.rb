@@ -17,11 +17,7 @@ end
 class Livetext
   VERSION = "0.5.8"
 
-  MainSigil = "."
-  Sigils = [MainSigil]
   Space = " "
-
-  Objects = { MainSigil => nil }
 
   Disallowed = [:_data=, :nil?, :===, :=~, :!~, :eql?, :hash, :<=>, 
                 :class, :singleton_class, :clone, :dup, :taint, :tainted?, 
@@ -42,18 +38,17 @@ class Livetext
 
   def self.handle_line(line)
     nomarkup = true
-    Livetext::Sigils.each do |sigil|
-      scomment  = rx(sigil, Livetext::Space)  # apply these in order
-      sname     = rx(sigil)
-      case 
-        when line =~ scomment
-          handle_scomment(sigil, line)
-        when line =~ sname
-          handle_sname(sigil, line)
-        else
-          obj = Livetext::Objects[sigil]
-          obj._passthru(line)
-      end
+    sigil = "."
+    scomment  = rx(sigil, Livetext::Space)  # apply these in order
+    sname     = rx(sigil)
+    case 
+      when line =~ scomment
+        handle_scomment(sigil, line)
+      when line =~ sname
+        handle_sname(sigil, line)
+      else
+        obj = @main    # Livetext::Objects[sigil]
+        obj._passthru(line)
     end
   end
 
@@ -64,7 +59,7 @@ class Livetext
       file = File.new(fname) 
     end
     source = file.each_line
-    @main = Livetext::Objects[Livetext::MainSigil] = Livetext::System.new(source)
+    @main = Livetext::System.new(source)
     @main._pushfile(fname)
     @main.file = fname
     @main.lnum = 0
@@ -104,7 +99,7 @@ class Livetext
   end
 
   def self.handle_sname(sigil, line)
-    obj = Livetext::Objects[sigil]
+    obj = @main   # Livetext::Objects[sigil]
     name = _get_name(obj, sigil, line)
     unless obj.respond_to?(name)
       abort "#{obj.where}: '#{name}' is unknown"
@@ -165,7 +160,7 @@ module Livetext::Helpers
     @line = _next_line if _peek_next_line =~ /^ *$/
   end
 
-  def _comment?(str, sigil=Livetext::MainSigil)
+  def _comment?(str, sigil=".")
     c1 = sigil + Livetext::Space
     c2 = sigil + sigil + Livetext::Space
     str.index(c1) == 0 || str.index(c2) == 0
@@ -176,14 +171,14 @@ module Livetext::Helpers
     return false
   end
 
-  def _end?(str, sigil=Livetext::MainSigil)
+  def _end?(str, sigil=".")
     cmd = sigil + "end"
     return false if str.index(cmd) != 0 
     return false unless _trailing?(str[5])
     return true
   end
 
-  def _raw_body(tag = "__EOF__", sigil = Livetext::MainSigil)
+  def _raw_body(tag = "__EOF__", sigil = ".")
     lines = []
     loop do
       @line = _next_line
@@ -198,7 +193,7 @@ module Livetext::Helpers
     end
   end
 
-  def _body(sigil=Livetext::MainSigil)
+  def _body(sigil=".")
     lines = []
     loop do
       @line = _next_line  # no chomp needed
@@ -214,7 +209,7 @@ module Livetext::Helpers
     end
   end
 
-  def _body!(sigil=Livetext::MainSigil)
+  def _body!(sigil=".")
     _body(sigil).join("\n")
   end
 
@@ -330,6 +325,7 @@ module Livetext::Helpers
 end
 
 module Livetext::Standard
+
   def comment
     junk = _body  # do nothing with contents
   end
@@ -436,15 +432,6 @@ module Livetext::Standard
     _output(name)
   end
 
-  def sigil
-    char = _args.first
-    raise "'#{char}' is not a single character" if char.length > 1
-    obj = Livetext::Objects[Livetext::MainSigil]
-    Livetext::Objects.replace(char => obj)
-    Livetext::MainSigil.replace(char)
-    _optional_blank_line
-  end
-
   def _def
     name = _args[0]
     str = "def #{name}\n"
@@ -497,7 +484,6 @@ module Livetext::Standard
   def include!
     file = _args.first
     _pushfile
-# TTY.puts "include!: ****** file = #{file}"
     existing = File.exist?(file)
     return if not existing
     lines = ::File.readlines(file)
@@ -516,11 +502,15 @@ module Livetext::Standard
     return if @_mixins.include?(file)
     file = "./#{name}.rb" unless File.exist?(file)
     raise "No such file: #{name}.rb found" unless File.exist?(file)
+
     @_mixins << file
     _pushfile(file)
-# TTY.puts "mixin: ****** file = #{file} "
-    text = ::File.read(file)
-    self.class.class_eval(text)
+    main = Livetext.main
+    m0 = main.methods.reject {|x| x.to_s[0] == "_" }
+    self.class.class_eval(::File.read(file))
+    m1 = main.methods.reject {|x| x.to_s[0] == "_" }
+    $meths[file] = m1 - m0
+TTY.puts "commands = #{$meths.inspect}"
     init = "init_#{name}"
     self.send(init) if self.respond_to? init
     _optional_blank_line
@@ -623,8 +613,7 @@ class Livetext::System < BasicObject
   end
 end
 
-### FIXME - these are all top-level methods
-
+$meths = {}
 
 if $0 == __FILE__
   Livetext.handle_file(ARGV[0] || STDIN)

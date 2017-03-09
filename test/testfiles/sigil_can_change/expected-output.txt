@@ -1,6 +1,0 @@
-abc 123
-this is a test
-. this is not a comment
-more stuff
-.this means nothing
-still more stuff

@@ -39,7 +39,7 @@ class TestingLiveText < MiniTest::Test
   def test_simple_vars;         external_files end
   def test_more_complex_vars;   external_files end
 
-  def test_sigil_can_change;    external_files end
+# def test_sigil_can_change;    external_files end
 
   def test_def_method;          external_files end
 

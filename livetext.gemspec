@@ -1,4 +1,5 @@
 Gem::Specification.new do |s|
+  system("rm *.gem")
   s.name        = 'livetext'
   s.version     = '0.5.8'
   s.date        = '2017-03-08'
