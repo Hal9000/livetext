@@ -1,8 +1,8 @@
 Gem::Specification.new do |s|
-  system("rm *.gem")
+  system("rm -f *.gem")
   s.name        = 'livetext'
-  s.version     = '0.5.8'
-  s.date        = '2017-03-08'
+  s.version     = '0.5.9'
+  s.date        = '2017-03-09'
   s.summary     = "A smart processor for text"
   s.description = "A smart text processor extensible in Ruby"
   s.authors     = ["Hal Fulton"]
@@ -78,10 +78,6 @@ Gem::Specification.new do |s|
                      ./test/testfiles/raw_text_block/expected-error.txt
                      ./test/testfiles/raw_text_block/expected-output.txt
                      ./test/testfiles/raw_text_block/source.ltx
-                     ./test/testfiles/sigil_can_change
-                     ./test/testfiles/sigil_can_change/expected-error.txt
-                     ./test/testfiles/sigil_can_change/expected-output.txt
-                     ./test/testfiles/sigil_can_change/source.ltx
                      ./test/testfiles/simple_copy
                      ./test/testfiles/simple_copy/expected-error.txt
                      ./test/testfiles/simple_copy/expected-output.txt
