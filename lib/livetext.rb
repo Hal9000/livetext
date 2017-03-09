@@ -1,10 +1,10 @@
 require 'fileutils'
 
-CWD = "."   # File.dirname(__FILE__)
+Plugins = File.expand_path(File.join(File.dirname(__FILE__), "../dsl"))
 
 TTY = ::File.open("/dev/tty", "w")
 
-require_relative "./pyggish"
+require_relative "#{Plugins}/pyggish"
 
 class Enumerator
   def remaining
@@ -15,7 +15,7 @@ class Enumerator
 end
 
 class Livetext
-  VERSION = "0.5.6"
+  VERSION = "0.5.8"
 
   MainSigil = "."
   Sigils = [MainSigil]
@@ -512,8 +512,10 @@ module Livetext::Standard
 
   def mixin
     name = _args.first
-    file = "#{CWD}/" + name + ".rb"
+    file = "#{Plugins}/" + name + ".rb"
     return if @_mixins.include?(file)
+    file = "./#{name}.rb" unless File.exist?(file)
+    raise "No such file: #{name}.rb found" unless File.exist?(file)
     @_mixins << file
     _pushfile(file)
 # TTY.puts "mixin: ****** file = #{file} "

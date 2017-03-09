@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'livetext'
-  s.version     = '0.5.7'
-  s.date        = '2017-03-07'
+  s.version     = '0.5.8'
+  s.date        = '2017-03-08'
   s.summary     = "A smart processor for text"
   s.description = "A smart text processor extensible in Ruby"
   s.authors     = ["Hal Fulton"]
