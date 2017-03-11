@@ -1,7 +1,9 @@
+require_relative "./lib/livetext"
+
 Gem::Specification.new do |s|
   system("rm -f *.gem")
   s.name        = 'livetext'
-  s.version     = '0.5.9'
+  s.version     = Livetext::VERSION
   s.date        = '2017-03-09'
   s.summary     = "A smart processor for text"
   s.description = "A smart text processor extensible in Ruby"

@@ -15,7 +15,7 @@ class Enumerator
 end
 
 class Livetext
-  VERSION = "0.5.9"
+  VERSION = "0.6.0"
 
   Space = " "
 
