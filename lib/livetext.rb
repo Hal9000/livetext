@@ -15,7 +15,7 @@ class Enumerator
 end
 
 class Livetext
-  VERSION = "0.6.1"
+  VERSION = "0.6.3"
 
   Space = " "
 
@@ -112,7 +112,8 @@ class Livetext
       obj.send(name)
     end
   rescue => err
-    STDERR.puts "ERROR on #{obj.file} line #{obj.lnum}"
+    STDERR.puts "ERROR on #{obj.file} line #{obj.lnum} : #{err}"
+    STDERR.puts "  self = #{self.inspect}   ivars = #{self.class.instance_variables}"
     STDERR.puts err.backtrace
   end
 
@@ -510,7 +511,10 @@ module Livetext::Standard
 
     @_mixins << file
     _pushfile(file)
-    newmod = Module.new
+    newmod = Livetext.main
+    newmod.extend(::Kernel)
+    newmod.extend(::Livetext::Standard)
+    newmod.extend(::Livetext::Helpers)
     $mods << newmod
     Object.const_set(name.capitalize, newmod)
     newmod.instance_eval(File.read(file))
@@ -637,7 +641,7 @@ class Livetext::System < BasicObject
         return
       end
     end
-TTY.puts "Got here"
+# TTY.puts "Got here"
     _puts "  Error: Method '#{name}' is not defined."
     puts caller.map {|x| "  " + x }
     exit

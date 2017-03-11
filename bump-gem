@@ -34,6 +34,6 @@ update = <<-EOF
 EOF
 system(update)
 
-path = puts `gem which livetext`.sub(/lib.livetext.rb/,"bin")
+path = `gem which livetext`.chomp.sub(/lib.livetext.rb/,"bin")
 
 puts "\nexport PATH=#{path}:$PATH"
