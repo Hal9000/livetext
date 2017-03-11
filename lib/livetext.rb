@@ -15,7 +15,7 @@ class Enumerator
 end
 
 class Livetext
-  VERSION = "0.6.3"
+  VERSION = "0.6.4"
 
   Space = " "
 
@@ -633,15 +633,14 @@ class Livetext::System < BasicObject
   end
 
   def method_missing(name, *args)
-# TTY.puts $mods.inspect
+    name = "_def" if name == "def"
+    name = "_include" if name == "include"
     $mods.reverse.each do |mod|
-#TTY.puts "mod methods = #{mod.module_methods.inspect}"
       if mod.respond_to?(name)
         mod.send(name, *args)
         return
       end
     end
-# TTY.puts "Got here"
     _puts "  Error: Method '#{name}' is not defined."
     puts caller.map {|x| "  " + x }
     exit
