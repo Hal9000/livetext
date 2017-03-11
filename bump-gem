@@ -1,0 +1,39 @@
+#!/usr/bin/env ruby
+
+require 'date'
+require_relative "lib/livetext"
+
+today = Date.today.strftime("%Y-%m-%d")
+version = Livetext::VERSION
+
+system("git pull")
+gs = `git status 2>&1`
+
+if gs =~ /not staged for commit/
+  puts gs
+  puts "\n\n Possible bad git status. Continue? (y/n/auto)"
+  resp = gets.chomp
+  case resp 
+    when "y"     # do nothing
+    when "auto"  # fix automatically
+      puts "Fixing automatically...\n "
+      system("git add -u && git commit -m 'Autofix v #{version} on #{today}' && git push")
+      puts "Now continuing..."
+    else         # assume "no"
+      puts "Exiting.\n "
+      exit
+  end
+else
+end
+
+update = <<-EOF
+  gem build livetext.gemspec && 
+  gem push livetext-*.gem && 
+  gem uninstall livetext && 
+  gem install livetext
+EOF
+system(update)
+
+path = puts `gem which livetext`.sub(/lib.livetext.rb/,"bin")
+
+puts "\nexport PATH=#{path}:$PATH"

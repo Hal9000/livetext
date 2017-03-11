@@ -1,10 +1,11 @@
+require 'date'
 require_relative "./lib/livetext"
 
 Gem::Specification.new do |s|
   system("rm -f *.gem")
   s.name        = 'livetext'
   s.version     = Livetext::VERSION
-  s.date        = '2017-03-09'
+  s.date        = Date.today.strftime("%Y-%m-%d")
   s.summary     = "A smart processor for text"
   s.description = "A smart text processor extensible in Ruby"
   s.authors     = ["Hal Fulton"]
@@ -30,9 +31,6 @@ Gem::Specification.new do |s|
                      ./test
                      ./test/cleanup
                      ./test/newtest
-                     ./test/rawtext.inc
-                     ./test/simple_mixin.rb
-                     ./test/simplefile.inc
                      ./test/test.rb
                      ./test/testfiles
                      ./test/testfiles/basic_formatting
