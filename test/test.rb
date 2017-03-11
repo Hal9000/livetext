@@ -7,27 +7,29 @@ require 'livetext'
 
 class TestingLiveText < MiniTest::Test
 
+  TTY = File.open("/dev/tty","w")
+
   def external_files
     tag = caller[0]
     n1, n2 = tag.index("`")+6, tag.index("'")-1
     base = tag[n1..n2]
-    name = "test/testfiles/#{base}/xxx"
+    origin = Dir.pwd
+    Dir.chdir("test/testfiles/#{base}") do
+      src, out, exp = "source.ltx", "actual-output.txt", "expected-output.txt"
+      err, erx = "actual-error.txt", "expected-error.txt"
+      cmd = "../../../bin/livetext #{src} >#{out} 2>#{err}"
+      system(cmd)
+      output, expected, errors, errexp = File.read(out), File.read(exp), File.read(err), File.read(erx)
 
-    src, out, exp = name.sub(/xxx/, "source.ltx"), name.sub(/xxx/, "actual-output.txt"), name.sub(/xxx/, "expected-output.txt")
-    err, erx = name.sub(/xxx/, "actual-error.txt"), name.sub(/xxx/, "expected-error.txt")
-    cmd = "./bin/livetext #{src} >#{out} 2>#{err}"
-    # puts cmd
-    system(cmd)
-    output, expected, errors, errexp = File.read(out), File.read(exp), File.read(err), File.read(erx)
+      out_ok = output == expected
+      err_ok = errors == errexp
+      bad_out = "--- Expected: \n#{expected}\n--- Output:  \n#{output}\n"
+      bad_err = "--- Error Expected: \n#{errexp}\n--- Error Output:  \n#{errors}\n"
 
-    out_ok = output == expected
-    err_ok = errors == errexp
-    bad_out = "--- Expected: \n#{expected}\n--- Output:  \n#{output}\n"
-    bad_err = "--- Error Expected: \n#{errexp}\n--- Error Output:  \n#{errors}\n"
-
-    assert(out_ok, bad_out)
-    assert(err_ok, bad_err)
-    system("rm -f #{out} #{err}")  # only on success
+      assert(out_ok, bad_out)
+      assert(err_ok, bad_err)
+      system("rm -f #{out} #{err}")  # only on success
+    end
   end
 
   def test_hello_world;         external_files end
@@ -38,8 +40,6 @@ class TestingLiveText < MiniTest::Test
 
   def test_simple_vars;         external_files end
   def test_more_complex_vars;   external_files end
-
-# def test_sigil_can_change;    external_files end
 
   def test_def_method;          external_files end
 

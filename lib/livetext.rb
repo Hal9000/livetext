@@ -101,12 +101,12 @@ class Livetext
   def self.handle_sname(sigil, line)
     obj = @main   # Livetext::Objects[sigil]
     name = _get_name(obj, sigil, line)
-    unless obj.respond_to?(name)
-      abort "#{obj.where}: '#{name}' is unknown"
-      return
-    end
+#   unless obj.respond_to?(name)
+#     abort "#{obj.where}: '#{name}' is unknown"
+#     return
+#   end
 
-    if name == "notes"
+    if name == "notes"    # FIXME wtf
       obj.notes
     else
       obj.send(name)
@@ -134,6 +134,11 @@ class Livetext::Functions    # Functions will go here... user-def AND pre-def??
 end
 
 module Livetext::Helpers
+
+  def _check_existence(file)
+    raise "No such file found" unless File.exist?(file)
+  end
+
   def _source
     @input
   end
@@ -497,6 +502,25 @@ module Livetext::Standard
   end
 
   def mixin
+    name = _args.first   # Expect a module name
+    file = "#{Plugins}/" + name.downcase + ".rb"
+    return if @_mixins.include?(file)
+    file = "./#{name}.rb" unless File.exist?(file)
+    _check_existence(file)
+
+    @_mixins << file
+    _pushfile(file)
+    newmod = Module.new
+    $mods << newmod
+    Object.const_set(name.capitalize, newmod)
+    newmod.instance_eval(File.read(file))
+    init = "init_#{name}"
+    self.send(init) if self.respond_to? init
+    _optional_blank_line
+    _popfile
+  end
+
+  def old_mixin
     name = _args.first
     file = "#{Plugins}/" + name + ".rb"
     return if @_mixins.include?(file)
@@ -510,7 +534,6 @@ module Livetext::Standard
     self.class.class_eval(::File.read(file))
     m1 = main.methods.reject {|x| x.to_s[0] == "_" }
     $meths[file] = m1 - m0
-TTY.puts "commands = #{$meths.inspect}"
     init = "init_#{name}"
     self.send(init) if self.respond_to? init
     _optional_blank_line
@@ -520,8 +543,8 @@ TTY.puts "commands = #{$meths.inspect}"
   def copy
     file = _args.first
     _pushfile(file)
-# TTY.puts "copy: ****** file = #{file}"
-    @output.puts ::File.readlines(file)
+    text = ::File.readlines(file)
+    @output.puts text
     _optional_blank_line
     _popfile
   end
@@ -606,14 +629,22 @@ class Livetext::System < BasicObject
   end
 
   def method_missing(name, *args)
-    # Idea: Capture source line for error messages
+# TTY.puts $mods.inspect
+    $mods.reverse.each do |mod|
+#TTY.puts "mod methods = #{mod.module_methods.inspect}"
+      if mod.respond_to?(name)
+        mod.send(name, *args)
+        return
+      end
+    end
+TTY.puts "Got here"
     _puts "  Error: Method '#{name}' is not defined."
     puts caller.map {|x| "  " + x }
     exit
   end
 end
 
-$meths = {}
+$mods = []
 
 if $0 == __FILE__
   Livetext.handle_file(ARGV[0] || STDIN)
