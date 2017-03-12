@@ -1,4 +1,3 @@
-# noinspection RubyQuotedStringsInspection
 def hardbreaks
   @hard = false
   @hard = true unless @_args.first == "off"

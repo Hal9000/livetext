@@ -42,13 +42,9 @@ class Livetext
     scomment  = rx(sigil, Livetext::Space)  # apply these in order
     sname     = rx(sigil)
     case 
-      when line =~ scomment
-        handle_scomment(sigil, line)
-      when line =~ sname
-        handle_sname(sigil, line)
-      else
-        obj = @main    # Livetext::Objects[sigil]
-        obj._passthru(line)
+      when line =~ scomment;   handle_scomment(sigil, line)
+      when line =~ sname;      handle_sname(sigil, line)
+      else                     @main._passthru(line)
     end
   end
 
@@ -60,7 +56,7 @@ class Livetext
     end
     source = file.each_line
     @main = Livetext::System.new(source)
-    @main._pushfile(fname)
+#   @main._switch_file(fname)
     @main.file = fname
     @main.lnum = 0
 
@@ -87,34 +83,32 @@ class Livetext
     Livetext::Disallowed.include?(name.to_sym)
   end
 
-  def self._get_name(obj, sigil, line)
+  def self._get_name(sigil, line)
     blank = line.index(" ") || line.index("\n")
     name = line[1..(blank-1)]
-    abort "#{obj.where}: Name '#{name}' is not permitted" if _disallowed?(name)
-    obj._data = line[(blank+1)..-1]
+    abort "#{@main.where}: Name '#{name}' is not permitted" if _disallowed?(name)
+    @main._data = line[(blank+1)..-1]
     name = "_def" if name == "def"
     name = "_include" if name == "include"
-    abort "#{obj.where}: mismatched 'end'" if name == "end"
+    abort "#{@main.where}: mismatched 'end'" if name == "end"
     name
   end
 
   def self.handle_sname(sigil, line)
-    obj = @main   # Livetext::Objects[sigil]
-    name = _get_name(obj, sigil, line)
-#   unless obj.respond_to?(name)
-#     abort "#{obj.where}: '#{name}' is unknown"
-#     return
-#   end
-
-    if name == "notes"    # FIXME wtf
-      obj.notes
-    else
-      obj.send(name)
+    name = _get_name(sigil, line)
+    unless @main.respond_to?(name)
+      raise "'#{name}' is unknown"
+      return
     end
+
+    @main.send(name)
+
   rescue => err
-    STDERR.puts "ERROR on #{obj.file} line #{obj.lnum} : #{err}"
-    STDERR.puts "  self = #{self.inspect}   ivars = #{self.class.instance_variables}"
+    STDERR.puts "ERROR on #{@main.file} line #{@main.lnum} : #{err}"
+#   STDERR.puts "  self = #{self.inspect}  @main = #{@main.inspect}"
+    STDERR.puts "  sources = #{@main.source_files.inspect}"
     STDERR.puts err.backtrace
+    STDERR.puts "--- Methods = #{(@main.methods - Object.methods).sort}\n "
   end
 
 end
@@ -463,10 +457,12 @@ module Livetext::Standard
     _optional_blank_line
   end
 
-  def _pushfile(fname)
+  def _switch_file(fname)
+::STDERR.puts "  switching to #{fname}, pushing #@file"
     @source_files ||= []
     @source_files.push(@file)
     @file = fname
+::STDERR.puts "  sources = #{@source_files.inspect}"
     @file
   end
 
@@ -477,7 +473,7 @@ module Livetext::Standard
   def _include
     file = _args.first
     lines = ::File.readlines(file)
-    _pushfile(file)
+    _switch_file(file)
 # STDERR.puts "_include: ****** Set @file = #@file"
     lines.each {|line| _debug " inc: #{line}" }
     rem = @input.remaining
@@ -489,7 +485,7 @@ module Livetext::Standard
 
   def include!
     file = _args.first
-    _pushfile
+    _switch_file(file)
     existing = File.exist?(file)
     return if not existing
     lines = ::File.readlines(file)
@@ -510,14 +506,12 @@ module Livetext::Standard
     _check_existence(file)
 
     @_mixins << file
-    _pushfile(file)
-    newmod = Livetext.main
-    newmod.extend(::Kernel)
-    newmod.extend(::Livetext::Standard)
-    newmod.extend(::Livetext::Helpers)
-    $mods << newmod
-    Object.const_set(name.capitalize, newmod)
-    newmod.instance_eval(File.read(file))
+    _switch_file(file)
+    modname = name.capitalize
+    string = "module ::#{modname}\n" + File.read(file) + "\nend"
+    eval(string)
+    newmod = Object.const_get("::" + modname)
+    Livetext.main.extend(newmod)    # CRAP
     init = "init_#{name}"
     self.send(init) if self.respond_to? init
     _optional_blank_line
@@ -532,7 +526,7 @@ module Livetext::Standard
     raise "No such file: #{name}.rb found" unless File.exist?(file)
 
     @_mixins << file
-    _pushfile(file)
+    _switch_file(file)
     main = Livetext.main
     m0 = main.methods.reject {|x| x.to_s[0] == "_" }
     self.class.class_eval(::File.read(file))
@@ -546,7 +540,7 @@ module Livetext::Standard
 
   def copy
     file = _args.first
-    _pushfile(file)
+    _switch_file(file)
     text = ::File.readlines(file)
     @output.puts text
     _optional_blank_line
@@ -590,9 +584,7 @@ module Livetext::Standard
     delim = "~~"
     _puts "<table>"
     _body do |line|
-# TTY.puts "Line = #{line}"
       line = _formatting(line)
-# TTY.puts "Line = #{line}\n "
       term, defn = line.split(delim)
       _puts "<tr>"
       _puts "<td width=3%><td width=10%>#{term}</td><td>#{defn}</td>"
@@ -608,18 +600,19 @@ class Livetext
 end
 
 
-class Livetext::System < BasicObject
+class Livetext::System # < BasicObject
   include ::Kernel
   include ::Livetext::Helpers
   include ::Livetext::Standard
 
-  attr_accessor :file, :lnum
+  attr_accessor :file, :lnum, :source_files
 
   def initialize(input = ::STDIN, output = ::STDOUT)
     @input = input
     @output = output
     @vars = {}
     @_mixins = []
+    @source_files = []
     @_outdir = "."
     @_file_num = 0
     @_nopass = false
@@ -632,22 +625,23 @@ class Livetext::System < BasicObject
     "Line #@lnum of #@file"
   end
 
-  def method_missing(name, *args)
-    name = "_def" if name == "def"
-    name = "_include" if name == "include"
-    $mods.reverse.each do |mod|
-      if mod.respond_to?(name)
-        mod.send(name, *args)
-        return
-      end
-    end
-    _puts "  Error: Method '#{name}' is not defined."
-    puts caller.map {|x| "  " + x }
-    exit
-  end
-end
+#   def method_missing(name, *args)
+# ::TTY.puts "MM: #{name}"
+#     name = "_def" if name.to_s == "def"
+#     name = "_include" if name.to_s == "include"
+#     @main.send(name, *args)
+# #     $mods.reverse.each do |mod|
+# #       if mod.respond_to?(name)
+# #         mod.send(name, *args)
+# #         return
+# #       end
+# #     end
+#     _puts "  Error: Method '#{name}' is not defined (from method_missing)"
+#     puts caller.map {|x| "  " + x }
+#     exit
+#   end
 
-$mods = []
+end
 
 if $0 == __FILE__
   Livetext.handle_file(ARGV[0] || STDIN)
