@@ -48,6 +48,32 @@ class Livetext
     end
   end
 
+  def self.nextline
+    return nil if @sources.empty?
+    line = @sources.last[0].next
+    @sources.last[2] += 1
+    line
+  rescue StopIteration
+    @sources.pop
+    retry  
+  end
+
+  def self.process_file(fname, &block)
+    @sources ||= []
+    e = File.readlines(fname).map(&:chomp).each
+    @sources.push [e, fname, 0]
+    loop do 
+      line = nextline
+      break if line.nil?
+      block.call(line)    # handle_line(line)
+    end
+#   @sources.pop  # FIXME ?
+  end
+
+  def self.grab_file(fname)
+    File.read(fname)
+  end
+
   def self.handle_file(file)
     fname = "<<none>>"
     if file.is_a? String
@@ -61,7 +87,7 @@ class Livetext
 
     loop do
       line = @main._next_line
-      handle_line(line)
+      ::Livetext.handle_line(line)
     end
 
     val = @main.finalize if @main.respond_to?(:finalize)
@@ -482,18 +508,12 @@ module Livetext::Standard
 
   def _include
     file = _args.first
-    lines = ::File.readlines(file)
-    _switch_file(file)
-# STDERR.puts "_include: ****** Set @file = #@file"
-    lines.each {|line| _debug " inc: #{line}" }
-    rem = @input.remaining
-    array = lines + rem
-    @input = array.each # FIXME .with_index
+    ::Livetext.process_file(file) {|line| ::Livetext.handle_line(line) }
     _optional_blank_line
-    _popfile
+#   _popfile
   end
 
-  def include!
+  def include!    # FIXME huh?
     file = _args.first
     _switch_file(file)
     existing = File.exist?(file)
@@ -505,7 +525,7 @@ module Livetext::Standard
     array = lines + rem
     @input = array.each # FIXME .with_index
     _optional_blank_line
-    _popfile
+#   _popfile
   end
 
   def mixin
@@ -516,16 +536,16 @@ module Livetext::Standard
     _check_existence(file)
 
     @_mixins << file
-    _switch_file(file)
+    meths = ::Livetext.grab_file(file)
     modname = name.gsub("/","_").capitalize
-    string = "module ::#{modname}\n" + File.read(file) + "\nend"
+    string = "module ::#{modname}\n#{meths}\nend"
     eval(string)
     newmod = Object.const_get("::" + modname)
-    Livetext.main.extend(newmod)    # CRAP
+    Livetext.main.extend(newmod)
     init = "init_#{name}"
     self.send(init) if self.respond_to? init
     _optional_blank_line
-    _popfile
+#   _popfile
   end
 
   def old_mixin
@@ -536,7 +556,7 @@ module Livetext::Standard
     raise "No such file: #{name}.rb found" unless File.exist?(file)
 
     @_mixins << file
-    _switch_file(file)
+    process_file(file)
     main = Livetext.main
     m0 = main.methods.reject {|x| x.to_s[0] == "_" }
     self.class.class_eval(::File.read(file))
@@ -550,11 +570,8 @@ module Livetext::Standard
 
   def copy
     file = _args.first
-    _switch_file(file)
-    text = ::File.readlines(file)
-    @output.puts text
+    @output.puts ::Livetext.grab_file(file)
     _optional_blank_line
-    _popfile
   end
 
   def r
@@ -623,7 +640,6 @@ class Livetext::System # < BasicObject
     @vars = {}
     @_mixins = []
     @source_files = []
-    @sources = []
     @_outdir = "."
     @_file_num = 0
     @_nopass = false
@@ -655,6 +671,6 @@ class Livetext::System # < BasicObject
 end
 
 if $0 == __FILE__
-  Livetext.handle_file(ARGV[0] || STDIN)
+  Livetext.process_file(ARGV[0] || STDIN) {|line| Livetext.handle_line(line) }
 end
 
