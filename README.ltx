@@ -1,4 +1,4 @@
-.mixin lib/tutorial
+.mixin dsl/tutorial
 .title Livetext: A smart processor for text
 
 .p Livetext is simply a tool for transforming text from one format into another. The source file
@@ -59,8 +59,8 @@ in commented form.
 a block of lines rather than just a few parameters. (A text block is like a here-document.)
 There is no method name corresponding to the `.end command.
 
-.p The file extension I've chosen is `.lt (though this may change). *Note: The source for this 
-README is a `.lt file which uses its own little _(ad hoc) library (called `(readme.rb)). Refer to
+.p The file extension I've chosen is `.ltx (though this may change). *Note: The source for this 
+README is a `.ltx file which uses its own little _(ad hoc) library (called `(readme.rb)). Refer to
 the repo to see these.
 
 .section Syntax, comments, and more
@@ -117,7 +117,7 @@ Here is the current list:
 .dlist
  `comment ~~ Start a comment block
  `errout ~~ Write an error message to STDERR
- `sigil ~~ Change the default sigil from `. to some other character
+ `sigil ~~ Change the default sigil from `. to some other character (*(removed for now))
  `_def ~~ Define a new method inline
  `set ~~ Assign values to variables for later interpolation
  `include ~~ Include an outside text file (to be interpreted as Livetext)
@@ -259,7 +259,7 @@ def alpha
 end
 .end
 
-.p Now the `.lt file can be written this way:
+.p Now the `.ltx file can be written this way:
 
 .code
  .mixin mylib

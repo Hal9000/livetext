@@ -15,7 +15,7 @@ class Enumerator
 end
 
 class Livetext
-  VERSION = "0.6.5"
+  VERSION = "0.6.6"
 
   Space = " "
 
@@ -56,7 +56,6 @@ class Livetext
     end
     source = file.each_line
     @main = Livetext::System.new(source)
-#   @main._switch_file(fname)
     @main.file = fname
     @main.lnum = 0
 
@@ -70,7 +69,6 @@ class Livetext
   rescue => err
     STDERR.puts "handle_file: #{err}"
   end
-
 
   def self.rx(str, space=nil)
     Regexp.compile("^" + Regexp.escape(str) + "#{space}")
@@ -106,9 +104,9 @@ class Livetext
   rescue => err
     STDERR.puts "ERROR on #{@main.file} line #{@main.lnum} : #{err}"
 #   STDERR.puts "  self = #{self.inspect}  @main = #{@main.inspect}"
-    STDERR.puts "  sources = #{@main.source_files.inspect}"
+#   STDERR.puts "  sources = #{@main.source_files.inspect}"
     STDERR.puts err.backtrace
-    STDERR.puts "--- Methods = #{(@main.methods - Object.methods).sort}\n "
+#   STDERR.puts "--- Methods = #{(@main.methods - Object.methods).sort}\n "
   end
 
 end
@@ -305,14 +303,23 @@ module Livetext::Helpers
   end
 
   def _peek_next_line
+    ## @sources.last[0].peek
     @input.peek
+##rescue StopIteration
+##  @sources.pop
+##  retry
   end
 
   def _next_line
+    ## @line = @sources.last[0].next
+    ## @sources.last[2] += 1
     @line = @input.next
     @lnum += 1
     _debug "Line: #@lnum: #@line"
     @line
+##rescue StopIteration
+##  @sources.pop
+##  retry
   end
 
   def _debug=(val)
@@ -457,16 +464,19 @@ module Livetext::Standard
     _optional_blank_line
   end
 
-  def _switch_file(fname)
-::STDERR.puts "  switching to #{fname}, pushing #@file"
+  def _switch_file(fname)  # FIXME
+##  gen = File.readlines.each
+##  @sources.push([gen, fname, 0]) # always reading from top of stack (@sources.last)
+
+    # old code:
     @source_files ||= []
     @source_files.push(@file)
     @file = fname
-::STDERR.puts "  sources = #{@source_files.inspect}"
+# ::STDERR.puts "  sources = #{@source_files.inspect}"
     @file
   end
 
-  def _popfile
+  def _popfile    ## Kill references to this
     @file = @source_files.pop
   end
 
@@ -507,7 +517,7 @@ module Livetext::Standard
 
     @_mixins << file
     _switch_file(file)
-    modname = name.capitalize
+    modname = name.gsub("/","_").capitalize
     string = "module ::#{modname}\n" + File.read(file) + "\nend"
     eval(string)
     newmod = Object.const_get("::" + modname)
@@ -613,6 +623,7 @@ class Livetext::System # < BasicObject
     @vars = {}
     @_mixins = []
     @source_files = []
+    @sources = []
     @_outdir = "."
     @_file_num = 0
     @_nopass = false
