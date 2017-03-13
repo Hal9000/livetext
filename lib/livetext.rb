@@ -15,7 +15,7 @@ class Enumerator
 end
 
 class Livetext
-  VERSION = "0.6.6"
+  VERSION = "0.6.7"
 
   Space = " "
 
@@ -37,6 +37,7 @@ class Livetext
   end
 
   def self.handle_line(line)
+# ::TTY.puts "---- hline - #{line.inspect}"
     nomarkup = true
     sigil = "."
     scomment  = rx(sigil, Livetext::Space)  # apply these in order
@@ -48,20 +49,29 @@ class Livetext
     end
   end
 
+  def self.peek_nextline
+    @sources.last[0].peek
+  rescue StopIteration
+#   @sources.pop   # FIXME??
+    nil
+  end
+
   def self.nextline
     return nil if @sources.empty?
     line = @sources.last[0].next
     @sources.last[2] += 1
     line
   rescue StopIteration
-    @sources.pop
-    retry  
+#   @sources.pop   # FIXME??
+#   retry  
   end
 
   def self.process_file(fname, &block)
+    block ||= proc {|line| handle_line(line) }
     @sources ||= []
-    e = File.readlines(fname).map(&:chomp).each
-    @sources.push [e, fname, 0]
+    enum = File.readlines(fname).each
+    @main ||= Livetext::System.new(enum)
+    @sources.push [enum, fname, 0]
     loop do 
       line = nextline
       break if line.nil?
@@ -86,7 +96,7 @@ class Livetext
     @main.lnum = 0
 
     loop do
-      line = @main._next_line
+      line = ::Livetext.nextline
       ::Livetext.handle_line(line)
     end
 
@@ -108,7 +118,7 @@ class Livetext
   end
 
   def self._get_name(sigil, line)
-    blank = line.index(" ") || line.index("\n")
+    blank = line.index(" ") || -1     # line.index("\n")
     name = line[1..(blank-1)]
     abort "#{@main.where}: Name '#{name}' is not permitted" if _disallowed?(name)
     @main._data = line[(blank+1)..-1]
@@ -181,7 +191,7 @@ module Livetext::Helpers
   end
 
   def _optional_blank_line
-    @line = _next_line if _peek_next_line =~ /^ *$/
+    @line = ::Livetext.nextline if ::Livetext.peek_nextline =~ /^ *$/
   end
 
   def _comment?(str, sigil=".")
@@ -205,7 +215,7 @@ module Livetext::Helpers
   def _raw_body(tag = "__EOF__", sigil = ".")
     lines = []
     loop do
-      @line = _next_line
+      @line = ::Livetext.nextline
       break if @line.chomp.strip == tag
       lines << @line
     end
@@ -220,7 +230,7 @@ module Livetext::Helpers
   def _body(sigil=".")
     lines = []
     loop do
-      @line = _next_line  # no chomp needed
+      @line = ::Livetext.nextline  # no chomp needed
       break if _end?(@line, sigil)
       next if _comment?(@line, sigil)
       lines << @line  # _formatting(line)  # FIXME ?? 
@@ -328,25 +338,21 @@ module Livetext::Helpers
     @output.print *args
   end
 
-  def _peek_next_line
-    ## @sources.last[0].peek
-    @input.peek
-##rescue StopIteration
-##  @sources.pop
-##  retry
-  end
+#   def peek_next_line
+#     @sources.last[0].peek
+#   rescue StopIteration
+#     @sources.pop
+#     nil
+#   end
 
-  def _next_line
-    ## @line = @sources.last[0].next
-    ## @sources.last[2] += 1
-    @line = @input.next
-    @lnum += 1
-    _debug "Line: #@lnum: #@line"
-    @line
-##rescue StopIteration
-##  @sources.pop
-##  retry
-  end
+#  def _next_line
+#    @line = @sources.last[0].next
+#    @sources.last[2] += 1
+#    _debug "Line: #@lnum: #@line"
+#    @line
+#  rescue StopIteration
+#    nil
+#  end
 
   def _debug=(val)
     @_debug = val
@@ -490,32 +496,15 @@ module Livetext::Standard
     _optional_blank_line
   end
 
-  def _switch_file(fname)  # FIXME
-##  gen = File.readlines.each
-##  @sources.push([gen, fname, 0]) # always reading from top of stack (@sources.last)
-
-    # old code:
-    @source_files ||= []
-    @source_files.push(@file)
-    @file = fname
-# ::STDERR.puts "  sources = #{@source_files.inspect}"
-    @file
-  end
-
-  def _popfile    ## Kill references to this
-    @file = @source_files.pop
-  end
-
   def _include
     file = _args.first
-    ::Livetext.process_file(file) {|line| ::Livetext.handle_line(line) }
+    ::Livetext.process_file(file)  # {|line| ::Livetext.handle_line(line) }
     _optional_blank_line
-#   _popfile
   end
 
   def include!    # FIXME huh?
     file = _args.first
-    _switch_file(file)
+#   _switch_file(file)
     existing = File.exist?(file)
     return if not existing
     lines = ::File.readlines(file)
@@ -525,17 +514,16 @@ module Livetext::Standard
     array = lines + rem
     @input = array.each # FIXME .with_index
     _optional_blank_line
-#   _popfile
   end
 
   def mixin
     name = _args.first   # Expect a module name
     file = "#{Plugins}/" + name.downcase + ".rb"
-    return if @_mixins.include?(file)
+    return if @_mixins.include?(name)
     file = "./#{name}.rb" unless File.exist?(file)
     _check_existence(file)
 
-    @_mixins << file
+    @_mixins << name
     meths = ::Livetext.grab_file(file)
     modname = name.gsub("/","_").capitalize
     string = "module ::#{modname}\n#{meths}\nend"
@@ -545,7 +533,6 @@ module Livetext::Standard
     init = "init_#{name}"
     self.send(init) if self.respond_to? init
     _optional_blank_line
-#   _popfile
   end
 
   def old_mixin
@@ -556,7 +543,7 @@ module Livetext::Standard
     raise "No such file: #{name}.rb found" unless File.exist?(file)
 
     @_mixins << file
-    process_file(file)
+#   process_file(file)
     main = Livetext.main
     m0 = main.methods.reject {|x| x.to_s[0] == "_" }
     self.class.class_eval(::File.read(file))
@@ -565,7 +552,6 @@ module Livetext::Standard
     init = "init_#{name}"
     self.send(init) if self.respond_to? init
     _optional_blank_line
-    _popfile
   end
 
   def copy
@@ -671,6 +657,6 @@ class Livetext::System # < BasicObject
 end
 
 if $0 == __FILE__
-  Livetext.process_file(ARGV[0] || STDIN) {|line| Livetext.handle_line(line) }
+  Livetext.process_file(ARGV[0] || STDIN) # {|line| Livetext.handle_line(line) }
 end
 
