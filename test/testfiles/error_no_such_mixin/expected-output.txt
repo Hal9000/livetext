@@ -1,0 +1,6 @@
+Test that 
+we give an error
+when a mixin does not
+exist:
+<p>
+

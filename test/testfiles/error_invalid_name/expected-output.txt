@@ -1,0 +1,5 @@
+This file has
+a defined method
+that is invalid:
+<p>
+

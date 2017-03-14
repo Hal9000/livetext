@@ -1,1 +1,1 @@
-ERROR on source.ltx line 4 : 'foobar' is unknown
+Error: Name 'foobar' is unknown (at source.ltx line 4)

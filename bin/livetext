@@ -5,7 +5,8 @@ require_relative '../lib/livetext'
 def handle_ltx(src)
   abort "Unknown file extension" unless src =~ /.ltx$/
 
-  Livetext.process_file(src)
+  x = Livetext.new
+  x.process_file(src)
 end
 
 # Main

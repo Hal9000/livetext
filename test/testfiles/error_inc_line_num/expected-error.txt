@@ -1,1 +1,1 @@
-ERROR on file2.ltx line 5 : 'foobar' is unknown
+Error: Name 'foobar' is unknown (at file2.ltx line 5)

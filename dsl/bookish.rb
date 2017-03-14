@@ -128,6 +128,27 @@ def subsec
   _puts "<h3>#@subsec #{@_data}</h3>\n"
 end
 
+def table2
+  title = _data
+  wide = "90"
+  extra = _args[2]
+  delim = " :: "
+  _puts "<br><center><table border=1 width=#{wide}% cellpadding=5>"
+  lines = _body
+  lines.map! {|line| _formatting(line) }
+
+  lines.each do |line|
+    cells = line.split(delim)
+    percent = (100/cells.size.to_f).round
+    _puts "<tr>"
+    cells.each {|cell| _puts "  <td width=#{percent}% #{extra}>#{cell}</td>" }
+    _puts "</tr>"
+  end
+  _puts "</table></center><br><br>"
+
+  _optional_blank_line
+end
+
 def table
   @table_num ||= 0
   @table_num += 1

@@ -25,11 +25,17 @@ class Livetext
                 :enum_for, :pretty_inspect, :==, :equal?, :!, :!=, :instance_eval, 
                 :instance_exec, :__send__, :__id__, :__binding__]
 
-  class << self
-    attr_reader :main
+  class Functions    # Functions will go here... user-def AND pre-def??
+    def date
+      Time.now.strftime("%F")
+    end
+
+    def time
+      Time.now.strftime("%F")
+    end
   end
 
-  def self.handle_line(line, sigil=".")
+  def handle_line(line, sigil=".")
     nomarkup = true
     # FIXME inefficient
     scomment  = rx(sigil, Livetext::Space)  # apply these in order
@@ -39,18 +45,18 @@ class Livetext
     elsif line =~ sname 
       handle_sname(line)
     else
-      @main._passthru(line)
+      _passthru(line)
     end
   end
 
-  def self.peek_nextline
+  def peek_nextline
     @sources.last[0].peek
   rescue StopIteration
     @sources.pop
     nil
   end
 
-  def self.nextline
+  def nextline
     return nil if @sources.empty?
     line = @sources.last[0].next
     @sources.last[2] += 1
@@ -60,10 +66,9 @@ class Livetext
     nil
   end
 
-  def self.process_file(fname)
-    @sources ||= []
+  def process_file(fname)
     enum = File.readlines(fname).each
-    @main ||= Livetext.new(enum)
+    _check_existence(fname, "No such file '#{fname}' to process")
     @sources.push [enum, fname, 0]
     loop do 
       line = nextline
@@ -72,76 +77,56 @@ class Livetext
     end
   end
 
-  def self.grab_file(fname)
+  def grab_file(fname)
     File.read(fname)
   end
 
-  def self.rx(str, space=nil)
+  def rx(str, space=nil)
     Regexp.compile("^" + Regexp.escape(str) + "#{space}")
   end
 
-  def self.handle_scomment(line, sigil=".")
+  def handle_scomment(line, sigil=".")
   end
 
-  def self._disallowed?(name)
+  def _disallowed?(name)
     Livetext::Disallowed.include?(name.to_sym)
   end
 
-  def self._get_name(line, sigil=".")
-    blank = line.index(" ") || -1     # line.index("\n")
-    name = line[1..(blank-1)]
-    abort "#{@main.where}: Name '#{name}' is not permitted" if _disallowed?(name)
-    @main._data = line[(blank+1)..-1]
+  def _get_name(line, sigil=".")
+    name, @_data = line.split(" ", 2)
+    name = name[1..-1]  # chop off sigil
+    @_args = @_data.split
+    _error! "Name '#{name}' is not permitted" if _disallowed?(name)
     name = "_def" if name == "def"
     name = "_include" if name == "include"
-    abort "#{@main.where}: mismatched 'end'" if name == "end"
+    _error! "Mismatched 'end'" if name == "end"
     name
   end
 
-  def self.handle_sname(line, sigil=".")
+  def handle_sname(line, sigil=".")
     name = _get_name(line, sigil=".")
-    unless @main.respond_to?(name)
-      raise "'#{name}' is unknown"
+    unless self.respond_to?(name)
+      _error! "Name '#{name}' is unknown"
       return
     end
-    @main.send(name)
+    self.send(name)
   rescue => err
-    STDERR.puts "ERROR on #{@sources.last[1]} line #{@sources.last[2]} : #{err}"
-    exit
+    _error!(err)
   end
-
-class Functions    # Functions will go here... user-def AND pre-def??
-  def date
-    Time.now.strftime("%F")
-  end
-
-  def time
-    Time.now.strftime("%F")
-  end
-
-  def basename
-    file = ::Livetext.main.file
-    ::File.basename(file, ".*")
-  end
-end
 
 # include ::Livetext::Helpers
-  def _check_existence(file)
-    raise "No such file found" unless File.exist?(file)
+  def _error!(err, abort=true, trace=false)
+    STDERR.puts "Error: #{err} (at #{@sources.last[1]} line #{@sources.last[2]})"
+    STDERR.puts err.backtrace if trace
+    exit if abort
+  end
+
+  def _check_existence(file, msg)
+    _error! msg unless File.exist?(file)
   end
 
   def _source
     @input
-  end
-
-  def _data=(str)
-    str ||= ""
-    @_data = str 
-    @_args = str.split
-  end
-
-  def _data
-    @_data
   end
 
   def _args
@@ -153,7 +138,7 @@ end
   end
 
   def _optional_blank_line
-    @line = ::Livetext.nextline if ::Livetext.peek_nextline =~ /^ *$/
+    @line = nextline if peek_nextline =~ /^ *$/
   end
 
   def _comment?(str, sigil=".")
@@ -177,7 +162,7 @@ end
   def _raw_body(tag = "__EOF__", sigil = ".")
     lines = []
     loop do
-      @line = ::Livetext.nextline
+      @line = nextline
       break if @line.chomp.strip == tag
       lines << @line
     end
@@ -192,7 +177,7 @@ end
   def _body(sigil=".")
     lines = []
     loop do
-      @line = ::Livetext.nextline  # no chomp needed
+      @line = nextline
       break if _end?(@line, sigil)
       next if _comment?(@line, sigil)
       lines << @line
@@ -303,33 +288,35 @@ end
   end
 
 # include ::Livetext::Standard
+
   def comment
     junk = _body  # do nothing with contents
   end
 
   def shell
-    cmd = _data
+    cmd = @_data
     _errout("Running: #{cmd}")
     system(cmd)
   end
 
   def func
-    fname = @_args[0]   # FIXME: don't permit 'initialize' (others?)
+    funcname = @_args[0]
+    _error! "Illegal name '#{funcname}'" if _disallowed?(funcname)
     func_def = <<-EOS
-      def #{fname}
+      def #{funcname}
         #{_body!}
       end
     EOS
-    ::Livetext::Functions.class_eval func_def
+    Livetext::Functions.class_eval func_def
   end
 
   def shell!
-    cmd = _data
+    cmd = @_data
     system(cmd)
   end
 
   def errout
-    TTY.puts _data
+    TTY.puts @_data
   end
 
   def say
@@ -410,13 +397,14 @@ end
   end
 
   def _def
-    name = _args[0]
+    name = @_args[0]
     str = "def #{name}\n"
+    raise "Illegal name '#{name}'" if _disallowed?(name)
     str += _body!
     str += "end\n"
     eval str
   rescue => err
-    STDERR.puts "Syntax error in definition:\n#{err}\n#$!"
+    _error!(err)
   end
 
   def nopass
@@ -424,7 +412,7 @@ end
   end
 
   def set
-    assigns = _data.chomp.split(/, */)
+    assigns = @_data.chomp.split(/, */)
     assigns.each do |a| 
       var, val = a.split("=")
       val = val[1..-2] if val[0] == ?" and val[-1] == ?"
@@ -435,13 +423,14 @@ end
   end
 
   def _include
-    file = _args.first
-    ::Livetext.process_file(file)
+    file = @_args.first
+    _check_existence(file, "No such include file '#{file}'")
+    process_file(file)
     _optional_blank_line
   end
 
   def include!    # FIXME huh?
-    file = _args.first
+    file = @_args.first
     return unless File.exist?(file)
 
     lines = process_file(file)
@@ -450,32 +439,33 @@ end
   end
 
   def mixin
-    name = _args.first   # Expect a module name
+    name = @_args.first   # Expect a module name
     file = "#{Plugins}/" + name.downcase + ".rb"
     return if @_mixins.include?(name)
     file = "./#{name}.rb" unless File.exist?(file)
-    _check_existence(file)
+    _check_existence(file, "No such mixin '#{name}'")
 
     @_mixins << name
-    meths = ::Livetext.grab_file(file)
+    meths = grab_file(file)
     modname = name.gsub("/","_").capitalize
     string = "module ::#{modname}\n#{meths}\nend"
     eval(string)
     newmod = Object.const_get("::" + modname)
-    Livetext.main.extend(newmod)
+    self.extend(newmod)
     init = "init_#{name}"
     self.send(init) if self.respond_to? init
     _optional_blank_line
   end
 
   def copy
-    file = _args.first
-    @output.puts ::Livetext.grab_file(file)
+    file = @_args.first
+    _check_existence(file, "No such file '#{file}' to copy")
+    @output.puts grab_file(file)
     _optional_blank_line
   end
 
   def r
-    _puts _data  # No processing at all
+    _puts @_data  # No processing at all
   end
 
   def raw
@@ -484,7 +474,7 @@ end
   end
 
   def debug
-    arg = _args.first
+    arg = @_args.first
     self._debug = true
     self._debug = false if arg == "off"
   end
@@ -495,7 +485,7 @@ end
 
   def heading
     _print "<center><font size=+1><b>"
-    _print _data
+    _print @_data
     _print "</b></font></center>"
   end
 
@@ -530,16 +520,13 @@ end
     @vars = {}
     @_mixins = []
     @source_files = []
+    @sources = []
     @_outdir = "."
     @_file_num = 0
     @_nopass = false
     @_nopara = false
 
     @lnum = 0
-  end
-
-  def where
-    "Line #@lnum of #@file"
   end
 
 #   def method_missing(name, *args)
@@ -561,6 +548,7 @@ end
 end
 
 if $0 == __FILE__
-  Livetext.process_file(ARGV[0] || STDIN)
+  x = Livetext.new
+  x.process_file(ARGV[0] || STDIN)
 end
 
