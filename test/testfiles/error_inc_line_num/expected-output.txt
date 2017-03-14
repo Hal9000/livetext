@@ -1,0 +1,7 @@
+This is my 
+source file
+which includes file2 here:
+  This is file2
+  which has an error
+  about an unknown command
+  in line 5

@@ -1,10 +1,14 @@
-mkdir testfiles/$1
+mkdir test/testfiles/$1
 
 # actual-error.txt        actual-output.txt       expected-error.txt      expected-output.txt     source.ltx
 
-cd testfiles/$1
+cd test/testfiles/$1
 
 touch expected-output.txt expected-error.txt
 
-vi -O source.ltx exp expected-output.txt expected-error.txt
+vi source.ltx 
+
+livetext source.ltx >expected-output.txt 2>expected-error.txt
+
+vi -O source.ltx expected-output.txt expected-error.txt
 

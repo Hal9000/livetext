@@ -38,6 +38,9 @@ class TestingLiveText < MiniTest::Test
   def test_comments_ignored_1;  external_files end
   def test_block_comment;       external_files end
 
+  def test_error_line_num;      external_files end
+  def test_error_inc_line_num;  external_files end
+
   def test_simple_vars;         external_files end
   def test_more_complex_vars;   external_files end
 
