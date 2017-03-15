@@ -265,6 +265,7 @@ class Livetext
 
   def _passthru(line)
     return if @_nopass
+TTY.puts "nopara = #@_nopara"
     _puts "<p>" if line == "\n" and ! @_nopara
     _formatting(line)
     _substitution(line)
@@ -321,6 +322,7 @@ class Livetext
 
   def say
     str = _substitution(@_data)
+    TTY.puts str
     _optional_blank_line
   end
 
@@ -512,8 +514,6 @@ class Livetext
 
 ######  Livetext
 
-  attr_accessor :file, :lnum, :source_files
-
   def initialize(input = ::STDIN, output = ::STDOUT)
     @input = input
     @output = output
@@ -525,8 +525,6 @@ class Livetext
     @_file_num = 0
     @_nopass = false
     @_nopara = false
-
-    @lnum = 0
   end
 
 #   def method_missing(name, *args)
