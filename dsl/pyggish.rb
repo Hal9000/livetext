@@ -164,7 +164,7 @@ def elixir
 end
 
 def fragment
-  debug
+# debug
   lexer = @_args.empty? ? :elixir : @_args.first.to_sym   # ruby or elixir
   _debug "-- fragment: lexer = #{lexer.inspect}"
   code = ""

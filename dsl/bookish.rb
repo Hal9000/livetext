@@ -129,7 +129,7 @@ def subsec
 end
 
 def table2
-  title = _data
+  title = @_data
   wide = "90"
   extra = _args[2]
   delim = " :: "

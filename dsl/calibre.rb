@@ -1,7 +1,7 @@
 require 'fileutils'
 
 def epub!
-  out = _var_substitution(@_args[0])
+  out = _substitution(@_args[0])
   src = @_args[1]
   @cover = @_args[2]
   if ::File.directory?(src)

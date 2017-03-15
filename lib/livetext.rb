@@ -12,7 +12,7 @@ class Livetext
 
   Space = " "
 
-  Disallowed = [:_data=, :nil?, :===, :=~, :!~, :eql?, :hash, :<=>, 
+  Disallowed = [:nil?, :===, :=~, :!~, :eql?, :hash, :<=>, 
                 :class, :singleton_class, :clone, :dup, :taint, :tainted?, 
                 :untaint, :untrust, :untrusted?, :trust, :freeze, :frozen?, 
                 :to_s, :inspect, :methods, :singleton_methods, :protected_methods, 
@@ -320,12 +320,12 @@ class Livetext
   end
 
   def say
-    str = _substitution(_data)
+    str = _substitution(@_data)
     _optional_blank_line
   end
 
   def banner
-    str = _substitution(_data)
+    str = _substitution(@_data)
     n = str.length - 1
     _errout "-"*n
     _errout str
