@@ -8,7 +8,7 @@ require_relative "#{Plugins}/pyggish"
 
 
 class Livetext
-  VERSION = "0.7.0"
+  VERSION = "0.7.1"
 
   Space = " "
 
