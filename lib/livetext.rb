@@ -1,9 +1,10 @@
+class Livetext
+  VERSION = "0.7.1"
+end
+
 require 'fileutils'
 
 $: << "/Users/Hal/Desktop/Personal/Dropbox/files/livetext/lib"
-
-class Livetext
-end
 
 require 'functions'
 require 'userapi'
@@ -82,8 +83,6 @@ class Livetext
   end
 
 ####
-
-  VERSION = "0.7.1"
 
   Space = " "
 
