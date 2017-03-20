@@ -1,27 +1,27 @@
 .mixin dsl/tutorial
 .title Livetext: A smart processor for text
 
-.p Livetext is simply a tool for transforming text from one format into another. The source file
+Livetext is simply a tool for transforming text from one format into another. The source file
 has commands embedded in it, and the output is dependent on those commands.  
 
-.p Why is this special? It's very flexible, very extensible, and it's extensible _(in Ruby).  
+Why is this special? It's very flexible, very extensible, and it's extensible _(in Ruby).  
 
 .section Why Livetext?
 
-.p Livetext grew out of several motivations. One was a desire for a markup language that would permit
+Livetext grew out of several motivations. One was a desire for a markup language that would permit
 me to write articles (and even books) in my own way and on my own terms. I've done this more
 than once (and I know others who have, as well).   
 
-.p I liked Softcover, but I found it to be very complex. I never liked Markdown much -- it is very
+I liked Softcover, but I found it to be very complex. I never liked Markdown much -- it is very
 dumb and not extensible at all.  
 
-.p I wanted something that had the basic functionality of all my ad hoc solutions but allowed 
+I wanted something that had the basic functionality of all my ad hoc solutions but allowed 
 extensions. Then my old solutions would be like subsets of the new format. This was a generalization
 similar to the way we began several years ago to view HTML as a subset of XML.  
 
 .section What is Livetext really?
 
-.p Here goes:
+Here goes:
 .list
 It's a text transformer
 It's Ruby-based (later on, more language agnostic)
@@ -40,76 +40,76 @@ It could possibly augment markdown, softcover, others
 
 .section How does it work?
 
-.p A Livetext file is simply a text file which may have commands interspersed. A command is
+A Livetext file is simply a text file which may have commands interspersed. A command is
 simply a period followed by a name and optional parameters (at the beginning of a line).  
 
-.p The period is configurable if you want to use another character. The names are (for now)
+The period will be configurable later if you want to use another character. The names are (for now)
 actual Ruby method names, so names such as `to_s and `inspect are currently not allowed.  
 
-.p Currently I am mostly emitting "dumb HTML" or Markdown as output. In theory, you can write
+At present, I am mostly emitting "dumb HTML" or Markdown as output. In theory, you can write
 code (or use someone else's) to manipulate text in any way and output any format. Technically,
 you could even emit PDF, PNG, or SVG formats.
 
 . Idea: Make an RMagick DSL as an example.
 
-.p It's possible to embed comments in the text, or even to pass them through to the output 
+It's possible to embed comments in the text, or even to pass them through to the output 
 in commented form.  
 
-.p The command `.end is special, marking the end of a body of text. Some commands may operate on
+The command `.end is special, marking the end of a body of text. Some commands may operate on
 a block of lines rather than just a few parameters. (A text block is like a here-document.)
 There is no method name corresponding to the `.end command.
 
-.p The file extension I've chosen is `.ltx (though this may change). *Note: The source for this 
+The file extension I've chosen is `.ltx (though this may change). *Note: The source for this 
 README is a `.ltx file which uses its own little _(ad hoc) library (called `(readme.rb)). Refer to
 the repo to see these.
 
 .section Syntax, comments, and more
 
-.p At first, my idea was to provide predefined commands and allow user-defined commands (to be 
+At first, my idea was to provide predefined commands and allow user-defined commands (to be 
 distinguished by a leading `. or `.. markers). So the single and double dots are both legal. 
 
 However, my concept at present is that the double dots (currently unused) will be used for 
 subcommmands.
 
-.p User-defined commands may be added to the standard namespace marked with a period. They may
+User-defined commands may be added to the standard namespace marked with a period. They may
 also be preceded by a specified character other than the period and thus stored in their own
 namespace. More on that later.
 
-.p When a leading period (or double period) is followed by a space, that line is a comment.
+When a leading period (or double period) is followed by a space, that line is a comment.
 When it is follwed by a name, that name is typically understood to be a method name. Any 
 remaining text on the line is treated as a parameter list to be accessed by that method.
 Some methods accept multiple lines of text, terminated by a `.end tag.
 
 .section Boldface and italics
 
-.p Very commonly we want to format short words or phrases in italics, boldface, or a monospaced
+Very commonly we want to format short words or phrases in italics, boldface, or a monospaced
 (fixed width) font. The Markdown spec provides ways to do this that are fairly intuitive; but I
 personally don't like them. My own notation works a different way.
 
-.p First of all, note that these don't work across source lines; they're strictly intra-line.
+First of all, note that these don't work across source lines; they're strictly intra-line.
 You may need (for example) an italicized phrase that spans across a newline; at present, you'll
 need a workaround for that.
 
-.p I find that most short items I want to format are single tokens. Therefore I use a prefixed
+I find that most short items I want to format are single tokens. Therefore I use a prefixed
 character in front of such a token: Underscore for italics, asterisk for boldface, and backtick
 for "code font." The formatting ends when the first blank space is encountered, without any 
 kind of suffixed character. (This behavior may change to include certain punctuation marks as
 terminators.)
 
-.p Of course, there are cases where this won't work; a formatted string may contain spaces, or it
+Of course, there are cases where this won't work; a formatted string may contain spaces, or it
 may exclude characters before the blank space. In this case, we can use an opening parenthesis 
 after the prefix and a closing parenthesis at the end of the string.
 
-.p This means that it can be difficult to include a left paren inside a formatted token. I'm thinking
+This means that it can be difficult to include a left paren inside a formatted token. I'm thinking
 about that. It also means that a "literal" prefix character must be escaped.
 
-.p This is all summarized in this example (taken from one of the testcases):
+This is all summarized in this example (taken from one of the testcases):
 
 .testcase basic_formatting
 
 .section Standard methods
 
-.p The module `Livetext::Standard contains the set of standard or predefined methods. Their 
+The module `Livetext::Standard contains the set of standard or predefined methods. Their 
 names are essentially the same as the names of the dot-commands, with occasional exceptions.
 (For example, it is impractical to use the name `def as a method name, so we use `_def instead.)
 Here is the current list:
@@ -117,14 +117,22 @@ Here is the current list:
 .dlist
  `comment ~~ Start a comment block
  `errout ~~ Write an error message to STDERR
- `sigil ~~ Change the default sigil from `. to some other character (*(removed for now))
- `_def ~~ Define a new method inline
+ `def ~~ Define a new method inline
  `set ~~ Assign values to variables for later interpolation
  `include ~~ Include an outside text file (to be interpreted as Livetext)
  `mixin ~~ Mix this file of Ruby methods into the standard namespace
  `copy ~~ Copy this input file verbatim (no interpretation)
  `r ~~ Pass a single line through without processing
  `raw ~~ Pass this special text block (terminated with `(__EOF__)) directly into output without processing 
+`func ~~ Define a function to be invoked inline
+`say ~~ Print a message to the screen
+`banner ~~ Print a "noticeable" message to the screen
+`quit ~~ End processing and exit
+`nopass ~~ Don't pass lines through (just honor commands)
+`include ~~ Read and process another file (typically a `.ltx file)
+`debug ~~ Turn on debugging
+`nopara ~~ Turn off the "blank line implies new paragraph" switch
+`newpage ~~ Start a new output page
 .end
 
 .section Examples from the tests
@@ -133,7 +141,6 @@ Here are some tests from the suite. The file name reflects the general purpose o
 
 .testcase hello_world
 .testcase comments_ignored_1
-.testcase sigil_can_change
 .testcase block_comment
 .testcase def_method
 .testcase simple_vars
@@ -145,11 +152,11 @@ Here are some tests from the suite. The file name reflects the general purpose o
 
 .section Writing custom methods
 
-.p Suppose you wanted to write a method called `chapter that would simply
+Suppose you wanted to write a method called `chapter that would simply
 output a chapter number and title with certain heading tags and a
 horizontal rule following. There is more than one way to do this.
 
-.p The simplest way is just to define a method inline with the rest of 
+The simplest way is just to define a method inline with the rest of 
 the text. Here's an example.
 
 .code
@@ -177,7 +184,7 @@ the text. Here's an example.
   were striking thirteen.
 .end
 
-.p What can we see from this example? First of all, notice that the part
+What can we see from this example? First of all, notice that the part
 between `.def and `.end (the body of the method) really is just Ruby
 code. The method takes no parameters because parameter passing is 
 handled inside the Livetext engine and the instance variable `@_args is
@@ -187,15 +194,15 @@ initialized to the contents of this array. We usually refer to the
 The `_args method is also an iterator. If a block is attached, that block
 will be called for every argument.
 
-.p We then create a string using these parameters and call it using the
+We then create a string using these parameters and call it using the
 `_puts method. This really does do a `puts call, but it applies it to
 wherever the output is currently being sent (defaulting to STDOUT).
 
-.p All the "helper" methods start with an underscore so as to avoid name
+All the "helper" methods start with an underscore so as to avoid name
 collisions. These are all stored in the `Livetext::Helpers module
 (which also has some methods you will never use).
 
-.p Here is the HTML output of the previous example:
+Here is the HTML output of the previous example:
 
 .code
   <h3>Chapter 1</h3>
@@ -205,7 +212,7 @@ collisions. These are all stored in the `Livetext::Helpers module
   were striking thirteen.
 .end
 
-.p What are some other helper methods? Here's a list.
+What are some other helper methods? Here's a list.
 
 .dlist
 `_args ~~ Returns an array of arguments for the method (or an enumerator for that array)
@@ -218,26 +225,26 @@ collisions. These are all stored in the `Livetext::Helpers module
 `_passthru ~~ Feed a line directly into output after transforming and substituting
 .end
 
-.p Note that the last three methods are typically _not called in your own code. They could be,
+Note that the last three methods are typically _not called in your own code. They could be,
 but it remains to be seen whether something that advanced is useful.
 
 .section More examples
 
-.p Suppose you wanted to take a list of words, more than one per line, and alphabetize them.
+Suppose you wanted to take a list of words, more than one per line, and alphabetize them.
 Let's write a method called `alpha for that. This exercise and the next one are implemented 
 in the test suite.
 
 .testcase example_alpha
 
-.p I'll let that code stand on its own. Now suppose you wanted to allow columnar output. Let's
+I'll let that code stand on its own. Now suppose you wanted to allow columnar output. Let's
 have the user specify a number of columns (from 1 to 5, defaulting to 1).
 
 .testcase example_alpha2
 
-.p What if we wanted to store the code outside the text file? There is more than one way to 
+What if we wanted to store the code outside the text file? There is more than one way to 
 do this.
 
-.p Let's assume we have a file called `mylib.rb in the same directory as the file we're processing.
+Let's assume we have a file called `mylib.rb in the same directory as the file we're processing.
 (Issues such as paths and security have not been addressed yet.) We'll stick the actual Ruby code
 in here (and nothing else).
 
@@ -259,7 +266,7 @@ def alpha
 end
 .end
 
-.p Now the `.ltx file can be written this way:
+Now the `.ltx file can be written this way:
 
 .code
  .mixin mylib
@@ -275,9 +282,9 @@ end
  I hope that worked a second time.
 .end
 
-.p The output, of course, is the same.
+The output, of course, is the same.
 
-.p There is an important feature that has not yet been implemented (the
+There is an important feature that has not yet been implemented (the
 `require method). Like Ruby's `(require), it will grab Ruby code and 
 load it; however, unlike `(mixin), it will load it into a customized
 object and associate a new sigil with it. So for example, the command
@@ -288,7 +295,7 @@ on that new custom object. I will implement this soon.
 
 .section Issues, open questions, and to-do items
 
-.p This list is not prioritized yet.
+This list is not prioritized yet.
 
 .nlist
 Add versioning information 

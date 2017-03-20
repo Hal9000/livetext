@@ -130,7 +130,12 @@ module Livetext::UserAPI
     line.replace(l2)
   end
 
-  def _substitution(line)   # FIXME handle functions separately later??
+  def _func_sub
+  end
+
+  def _substitution(line)
+    # FIXME handle vars/functions separately later??
+    # FIXME permit parameters to functions
     fobj = ::Livetext::Functions.new
     @funcs = ::Livetext::Functions.instance_methods
     @funcs.each do |func|
