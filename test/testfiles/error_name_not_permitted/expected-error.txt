@@ -1,0 +1,1 @@
+Error: Name 'class' is not permitted (at source.ltx line 4)

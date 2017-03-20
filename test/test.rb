@@ -44,6 +44,9 @@ class TestingLiveText < MiniTest::Test
   def test_error_no_such_mixin; external_files end
   def test_error_no_such_inc;   external_files end
   def test_error_no_such_copy;  external_files end
+  def test_error_name_not_permitted;  external_files end
+  def test_error_missing_end;   external_files end
+  def test_error_mismatched_end; external_files end
 
   def test_simple_vars;         external_files end
   def test_more_complex_vars;   external_files end

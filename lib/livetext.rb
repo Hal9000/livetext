@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.7.2"
+  VERSION = "0.7.3"
 end
 
 require 'fileutils'
@@ -46,8 +46,9 @@ class Livetext
     end
 
     def _error!(err, abort=true, trace=false)
-      STDERR.puts "Error: #{err} (at #{@sources.last[1]} line #{@sources.last[2]})"
-#     STDERR.puts err.backtrace if err.respond_to? :backtrace # trace
+      where = @sources.last || @save_location
+      STDERR.puts "Error: #{err} (at #{where[1]} line #{where[2]})"
+      STDERR.puts err.backtrace if trace && err.respond_to?(:backtrace)
       exit if abort
     end
 
@@ -87,9 +88,9 @@ class Livetext
   Space = " "
 
   def initialize(output = ::STDOUT)
+    @source = nil
     @_mixins = []
     @_outdir = "."
-    @_file_num = 0
     @main = Processor.new(self, output)
   end
 

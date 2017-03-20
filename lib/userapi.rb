@@ -43,6 +43,7 @@ module Livetext::UserAPI
 
   def _raw_body(tag = "__EOF__", sigil = ".")
     lines = []
+    @save_location = @sources.last
     loop do
       @line = nextline
       break if @line.chomp.strip == tag
@@ -58,10 +59,11 @@ module Livetext::UserAPI
 
   def _body(sigil=".")
     lines = []
+    @save_location = @sources.last
     loop do
       @line = nextline
       break if _end?(@line, sigil)
-      next if _comment?(@line, sigil)
+      next if _comment?(@line, sigil)   # FIXME?
       lines << @line
     end
     _optional_blank_line
@@ -70,6 +72,8 @@ module Livetext::UserAPI
     else
       lines
     end
+  rescue => err
+    _error!("Expecting .end, found end of file")
   end
 
   def _body!(sigil=".")
