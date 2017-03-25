@@ -13,11 +13,11 @@ Gem::Specification.new do |s|
   s.description = "A smart text processor extensible in Ruby"
   s.authors     = ["Hal Fulton"]
   s.email       = 'rubyhacker@gmail.com'
-  s.executables << "livespec"
+  s.executables << "livetext"
   
   # Files...
   main = Find.find("bin").to_a + Find.find("lib").to_a + Find.find("dsl").to_a 
-  misc = %w[./README.html ./README.ltx ./README.md lietext.gemspec]
+  misc = %w[./README.html ./README.ltx ./README.md livetext.gemspec]
   test = Find.find("test").to_a
 
   s.files       =  main + misc + test
