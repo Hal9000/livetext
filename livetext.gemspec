@@ -1,5 +1,7 @@
 require 'date'
-require_relative "./lib/livetext"
+
+$: << "."
+require "lib/livetext"
 
 Gem::Specification.new do |s|
   system("rm -f *.gem")
@@ -15,6 +17,7 @@ Gem::Specification.new do |s|
                      ./bin/livetext
                      ./lib
                      ./lib/livetext.rb
+                     ./lib/functions.rb
                      ./dsl
                      ./dsl/bookish.rb
                      ./dsl/calibre.rb
@@ -62,10 +65,6 @@ Gem::Specification.new do |s|
                      ./test/testfiles/example_alpha2/expected-output.txt
                      ./test/testfiles/example_alpha2/source.ltx
                      ./test/testfiles/fixit
-                     ./test/testfiles/functions
-                     ./test/testfiles/functions/expected-error.txt
-                     ./test/testfiles/functions/expected-output.txt
-                     ./test/testfiles/functions/source.ltx
                      ./test/testfiles/hello_world
                      ./test/testfiles/hello_world/expected-error.txt
                      ./test/testfiles/hello_world/expected-output.txt

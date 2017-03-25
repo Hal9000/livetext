@@ -164,6 +164,7 @@ module Livetext::Standard
     _check_existence(file, "No such mixin '#{name}'")
 
     @_mixins << name
+STDERR.puts @_mixins.inspect
     meths = grab_file(file)
     modname = name.gsub("/","_").capitalize
     string = "module ::#{modname}\n#{meths}\nend"

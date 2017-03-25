@@ -1,6 +1,5 @@
 require 'pygments'
 
-# noinspection ALL
 module PygmentFix   # Remove CSS for Jutoh
   Styles = {
     :c  => "#408080-i",  # Comment
@@ -104,7 +103,7 @@ end
 
 # Was in 'bookish':
 
-include PygmentFix
+# include PygmentFix
 
 def _process_code(text)
   lines = text.split("\n")

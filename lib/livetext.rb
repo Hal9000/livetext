@@ -1,10 +1,10 @@
 class Livetext
-  VERSION = "0.7.3"
+  VERSION = "0.7.4"
 end
 
 require 'fileutils'
 
-$: << "/Users/Hal/Desktop/Personal/Dropbox/files/livetext/lib"
+$: << "./lib"
 
 require 'functions'
 require 'userapi'
@@ -14,7 +14,7 @@ Plugins = File.expand_path(File.join(File.dirname(__FILE__), "../dsl"))
 
 TTY = ::File.open("/dev/tty", "w")
 
-require_relative "#{Plugins}/pyggish"
+# require_relative "#{Plugins}/pyggish"
 
 
 class Livetext
