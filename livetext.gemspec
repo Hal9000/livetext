@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   # Files...
   main = Find.find("bin").to_a + Find.find("lib").to_a + Find.find("dsl").to_a 
   misc = %w[./README.html ./README.ltx ./README.md lietext.gemspec]
-  test = Find.find("test")
+  test = Find.find("test").to_a
 
   s.files       =  main + misc + test
   s.homepage    = 'https://github.com/Hal9000/livetext'
