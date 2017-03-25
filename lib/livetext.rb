@@ -4,7 +4,9 @@ end
 
 require 'fileutils'
 
-$: << "./lib"
+Path  = File.expand_path(File.join(File.dirname(__FILE__)))
+
+$: << Path
 
 require 'functions'
 require 'userapi'
