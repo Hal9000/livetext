@@ -4,18 +4,26 @@ require_relative '../lib/livetext'
 
 def handle_ltx(src)
   abort "Unknown file extension" unless src =~ /.ltx$/
-
   x = Livetext.new
   x.process_file(src)
 end
 
 # Main
 
-if ARGV.first == "--clean-all"
-  clean_all
-  exit
+case ARGV.first 
+  when  "-v", "--version"
+    puts "livetext version #{Livetext::VERSION}\n "
+    exit
+  when nil
+    puts "Usage: "
+    puts "  livetext -v"
+    puts "  livetext --version"
+    puts "  livetext filename"
+    puts
+    exit
+  else
+    src = ARGV.first
 end
 
-src = ARGV.first
 handle_ltx(src)
 
