@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.7.6"
+  VERSION = "0.7.7"
 end
 
 require 'fileutils'

@@ -65,7 +65,6 @@ class TestingLiveText < MiniTest::Test
   def test_example_alpha2;      external_files end
 
   def test_functions;           external_files end
-
 end
 
 

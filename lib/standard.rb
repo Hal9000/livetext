@@ -1,13 +1,27 @@
 module Livetext::Standard
 
+  SimpleFormats =     # Move this?
+   { b: %w[<b> </b>],
+     i: %w[<i> </i>],
+     t: %w[<tt> </tt>],
+     s: %w[<strike> </strike>] }
+
   def data=(val)
     @_data = val
     @_args = val.split
     @_mixins = []
   end
 
+  def bits  # dumb name - bold, italic, teletype, striketrough
+    b0, b1, i0, i1, t0, t1, s0, s1 = *@_args
+    SimpleFormats[:b] = [b0, b1]
+    SimpleFormats[:i] = [i0, i1]
+    SimpleFormats[:t] = [t0, t1]
+    SimpleFormats[:s] = [s0, s1]
+  end
+
   def comment
-    junk = _body  # do nothing with contents
+    _body
   end
 
   def shell
@@ -69,12 +83,14 @@ module Livetext::Standard
   end
 
   def _output(name)
+    @_outdir ||= "."  # FIXME
     @output.close unless @output == STDOUT
     @output = File.open(@_outdir + "/" + name, "w")
     @output.puts "<meta charset='UTF-8'>\n\n"
   end
 
   def _append(name)
+    @_outdir ||= "."  # FIXME
     @output.close unless @output == STDOUT
     @output = File.open(@_outdir + "/" + name, "a")
     @output.puts "<meta charset='UTF-8'>\n\n"

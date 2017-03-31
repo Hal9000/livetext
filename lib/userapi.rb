@@ -80,6 +80,41 @@ module Livetext::UserAPI
     _body(sigil).join("\n")
   end
 
+  def _new_format(line, delim, sym)
+    d0, d1 = Livetext::Standard::SimpleFormats[sym]
+    s = line.each_char
+    c = s.next
+    last = nil
+    getch = -> { last = c; c = s.next }
+    buffer = ""
+    loop do
+      case c
+        when " "
+          buffer << " "
+          last = " "
+        when delim
+          if last == " " || last == nil
+            buffer << d0
+            c = getch.call
+            if c == "("
+              loop { getch.call; break if c == ")"; buffer << c }
+              buffer << d1
+            else
+              loop { buffer << c; getch.call; break if c == " " || c == nil || c == "\n" }
+              buffer << d1
+              buffer << " " if c == " "
+            end
+          else
+            buffer << delim
+          end
+      else
+        buffer << c
+      end
+      getch.call
+    end
+    buffer
+  end
+
   def _basic_format(line, delim, tag)
     s = line.each_char
     c = s.next
@@ -123,9 +158,13 @@ module Livetext::UserAPI
   end
 
   def _formatting(line)
-    l2 = _basic_format(line, "_", "i")
-    l2 = _basic_format(l2, "*", "b")
-    l2 = _basic_format(l2, "`", "tt")
+#   l2 = _basic_format(line, "_", "i")
+    l2 = _new_format(line, "_", :i)
+#   l2 = _basic_format(l2, "*", "b")
+    l2 = _new_format(l2, "*", :b)
+#   l2 = _basic_format(l2, "`", "tt")
+    l2 = _new_format(l2, "`", :t)
+# Do strikethrough?
     l2 = _handle_escapes(l2, "_*`")
     line.replace(l2)
   end

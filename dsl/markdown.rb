@@ -1,6 +1,11 @@
 # This file is intended to be used via a Livetext .mixin  
 # or the equivalent.
 
+SimpleFormats[:b] = %w[* *]
+SimpleFormats[:i] = %w[_ _]
+SimpleFormats[:t] = %w[` `]
+SimpleFormats[:s] = %w[<strike> </strike>]
+
 def h1; _puts "# #{@_data}"; end       # atx style for now
 def h2; _puts "## #{@_data}"; end
 def h3; _puts "### #{@_data}"; end
