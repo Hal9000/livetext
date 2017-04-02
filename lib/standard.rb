@@ -151,7 +151,7 @@ module Livetext::Standard
       var, val = a.split("=")
       val = val[1..-2] if val[0] == ?" and val[-1] == ?"
       val = val[1..-2] if val[0] == ?' and val[-1] == ?'
-      @vars[var] = val
+      Livetext::Vars[var] = val
     end
     _optional_blank_line
   end

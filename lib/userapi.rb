@@ -1,6 +1,10 @@
 # User API
 
+require 'formatline'
+
 module Livetext::UserAPI
+
+  Parser = ::FormatLine.new
 
   def _check_existence(file, msg)
     _error! msg unless File.exist?(file)
@@ -80,7 +84,9 @@ module Livetext::UserAPI
     _body(sigil).join("\n")
   end
 
-  def _new_format(line, delim, sym)
+  def _full_format(line)
+    Parser.parse(line)
+=begin
     d0, d1 = Livetext::Standard::SimpleFormats[sym]
     s = line.each_char
     c = s.next
@@ -113,6 +119,7 @@ module Livetext::UserAPI
       getch.call
     end
     buffer
+=end
   end
 
   def _basic_format(line, delim, tag)
@@ -159,12 +166,13 @@ module Livetext::UserAPI
 
   def _formatting(line)
 #   l2 = _basic_format(line, "_", "i")
-    l2 = _new_format(line, "_", :i)
+ #  l2 = _new_format(line, "_", :i)
 #   l2 = _basic_format(l2, "*", "b")
-    l2 = _new_format(l2, "*", :b)
+ #  l2 = _new_format(l2, "*", :b)
 #   l2 = _basic_format(l2, "`", "tt")
-    l2 = _new_format(l2, "`", :t)
+ #  l2 = _new_format(l2, "`", :t)
 # Do strikethrough?
+    l2 = _full_format(line)
     l2 = _handle_escapes(l2, "_*`")
     line.replace(l2)
   end
@@ -197,7 +205,7 @@ module Livetext::UserAPI
     return if @_nopass
     _puts "<p>" if line == "\n" and ! @_nopara
     _formatting(line)
-    _substitution(line)
+#   _substitution(line)
     _puts line
   end
 

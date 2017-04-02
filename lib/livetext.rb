@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.7.7"
+  VERSION = "0.7.8"
 end
 
 require 'fileutils'
@@ -11,6 +11,7 @@ $: << Path
 require 'functions'
 require 'userapi'
 require 'standard'
+require 'formatline'
 
 Plugins = File.expand_path(File.join(File.dirname(__FILE__), "../dsl"))
 
@@ -20,6 +21,8 @@ TTY = ::File.open("/dev/tty", "w")
 
 
 class Livetext
+
+  Vars = {}
 
   class Processor
     include Livetext::Standard
@@ -43,7 +46,6 @@ class Livetext
       @_nopass = false
       @_nopara = false
       @output = output
-      @vars = {}
       @sources = []
     end
 
@@ -88,6 +90,8 @@ class Livetext
 ####
 
   Space = " "
+
+  attr_reader :main
 
   def initialize(output = ::STDOUT)
     @source = nil

@@ -1,13 +1,35 @@
 require 'minitest/autorun'
 
 $LOAD_PATH << "./lib"
+
 require 'livetext'
 
 # How these tests work - see the block comment at the bottom.
 
-class TestingLiveText < MiniTest::Test
+class TestingLivetext < MiniTest::Test
 
   TTY = File.open("/dev/tty","w")
+
+  TestLines = []
+
+  f = File.open("test/testfiles/lines.txt")
+  loop do 
+    item = []
+    4.times { item << f.gets.chomp }
+    raise "Oops? #{item.inspect}" unless item.last == ""
+    TestLines << item
+    break if f.eof?
+  end
+
+  TestLines.each.with_index do |item, i|
+    msg, src, exp, blank = *item
+    define_method("test_formatting_#{i}") do
+      x = FormatLine.new
+      actual = x.parse(src)
+#     raise "Hello?"
+      assert_equal(exp, actual, msg)
+    end
+  end
 
   def external_files
     tag = caller[0]
