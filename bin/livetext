@@ -12,14 +12,16 @@ end
 
 case ARGV.first 
   when  "-v", "--version"
-    puts "livetext version #{Livetext::VERSION}\n "
+    puts "#{Livetext::VERSION}\n "
     exit
   when nil
-    puts "Usage: "
-    puts "  livetext -v"
-    puts "  livetext --version"
-    puts "  livetext filename"
-    puts
+    puts <<-EOF
+    Usage: 
+      livetext -v
+      livetext --version
+      livetext filename
+    
+    EOF
     exit
   else
     src = ARGV.first

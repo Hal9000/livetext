@@ -44,17 +44,14 @@ class FormatLine
     @buffer << str
   end
 
-  def varsub(name)
-    Livetext::Vars[name]
-  end
-
   def funcall(name, param)
     fobj = ::Livetext::Functions.new
-    fobj.send(name, param)
+    fobj.param = param
+    fobj.send(name)
   end
 
   def vsub
-    @buffer << varsub(@vname)
+    @buffer << Livetext::Vars[@vname]
     @vname = ""
   end
 
@@ -122,7 +119,7 @@ class FormatLine
               emit("$")
               break
             when Alpha
-              loop { @vname << grab; break unless Alpha2 === peek } 
+              loop { ch = peek; break if ch == EOL; @vname << grab; break unless Alpha2 === peek } 
               vsub
             when "$" 
               case skip
@@ -130,13 +127,15 @@ class FormatLine
                   emit("$$")
                   break
                 when Alpha
-                  loop { @fname << grab; break unless Alpha2 === peek }
+                  loop { ch = peek; break if ch == EOL; @fname << grab; break unless Alpha2 === peek }
                   case peek
                     when " "   # no param - just call
+                      @param = nil
                       fcall    # no param? Hmm
                     when "["   # long param - may have spaces - can hit eol
                       skip
                       loop { break if ["]", EOL].include?(peek); @param << grab }
+                      skip
                       fcall
                     when ":"   # param (single token or to-eol)
                       case skip

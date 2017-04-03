@@ -57,13 +57,13 @@ module Livetext::Standard
   end
 
   def say
-    str = _substitution(@_data)
+    str = _formatting(@_data)
     TTY.puts str
     _optional_blank_line
   end
 
   def banner
-    str = _substitution(@_data)
+    str = _formatting(@_data)
     n = str.length - 1
     _errout "-"*n
     _errout str
@@ -153,6 +153,7 @@ module Livetext::Standard
 
   def set
     assigns = @_data.chomp.split(/, */)
+    # Do a better way?
     assigns.each do |a| 
       var, val = a.split("=")
       val = val[1..-2] if val[0] == ?" and val[-1] == ?"

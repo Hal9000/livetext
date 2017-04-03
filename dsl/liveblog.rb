@@ -21,9 +21,8 @@ end
 
 def _passthru(line)
   @dest << "<p>" if line == "\n" and ! @_nopara
-  OLD_formatting(line)
-  _var_substitution(line)
-  @dest << line
+  l2 = _formatting(line)
+  @dest << l2
 end
 
 def title 
