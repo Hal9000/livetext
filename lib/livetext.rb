@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.7.8"
+  VERSION = "0.7.9"
 end
 
 require 'fileutils'
@@ -17,11 +17,7 @@ Plugins = File.expand_path(File.join(File.dirname(__FILE__), "../dsl"))
 
 TTY = ::File.open("/dev/tty", "w")
 
-# require_relative "#{Plugins}/pyggish"
-
-
 class Livetext
-
   Vars = {}
 
   class Processor
@@ -52,7 +48,7 @@ class Livetext
     def _error!(err, abort=true, trace=false)
       where = @sources.last || @save_location
       STDERR.puts "Error: #{err} (at #{where[1]} line #{where[2]})"
-      STDERR.puts err.backtrace if trace && err.respond_to?(:backtrace)
+      STDERR.puts err.backtrace if @backtrace && err.respond_to?(:backtrace)
       exit if abort
     end
 
@@ -90,8 +86,6 @@ class Livetext
 ####
 
   Space = " "
-
-  attr_reader :main
 
   def initialize(output = ::STDOUT)
     @source = nil

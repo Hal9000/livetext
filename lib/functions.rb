@@ -4,6 +4,6 @@ class Livetext::Functions    # Functions will go here... user-def AND pre-def??
   end
 
   def time
-    Time.now.strftime("%F")
+    Time.now.strftime("%T")
   end
 end

@@ -20,6 +20,12 @@ module Livetext::Standard
     SimpleFormats[:s] = [s0, s1]
   end
 
+  def backtrace
+    arg = @_args.first
+    @backtrace = true
+    @backtrace = false if arg == "off"
+  end
+
   def comment
     _body
   end
