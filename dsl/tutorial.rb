@@ -1,7 +1,5 @@
 require 'cgi'
 
-STDERR.puts "GOT HERE"
-
 def title
   h1
 end
@@ -20,22 +18,6 @@ def rx(str)
   ::Regexp.compile(::Regexp.escape(str))
 end
 
-
-def dlist
-  delim = "%%"
-  _puts "<table>"
-  _body do |line|
-# @tty.puts "Line = #{line}"
-    line = _formatting(line)
-# @tty.puts "Line = #{line}\n "
-    term, defn = line.split(delim)
-    _puts "<tr>"
-    _puts "<td width=3%><td width=10%>#{term}</td><td>#{defn}</td>"
-    _puts "</tr>"
-  end
-  _puts "</table>"
-end
-
 def inout
   src, out = _args
   t1 = ::File.readlines(src) rescue (abort "t1 = #{src}")
@@ -43,8 +25,6 @@ def inout
   # To pacify markdown for README (FIXME later)
   t1 = t1.map {|x| " " + x.sub(/ +$/,"").gsub(/_/, "\\_") }.join
   t2 = t2.map {|x| " " + x.sub(/ +$/,"").gsub(/_/, "\\_") }.join
-# t1 = ::CGI.escape_html(t1)
-# t2 = ::CGI.escape_html(t2)
 
   puts <<-HTML
     <center>
@@ -94,11 +74,9 @@ end
 
 def testcase
   name = _args.first
-# _puts "\n<b>Test: <tt>#{name.gsub(/_/, "\\_")}</tt></b><br>"
   _puts "\n<font size=+1><b>Test: </font><font size=+2><tt>#{name}</tt></font></b></h3><br>"
   src, exp = "test/testfiles/#{name}/source.ltx", "test/testfiles/#{name}/expected-output.txt"
   @_args = [src, exp]   # Better way to do this??
-# inout                 # Weird - only place I've done this yet.
   put_table(src, exp)
   _puts "<br>"
 end

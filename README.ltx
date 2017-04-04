@@ -16,10 +16,11 @@ Livetext grew out of several motivations. One was a desire for a markup language
 me to write articles (and even books) in my own way and on my own terms. I've done this more
 than once (and I know others who have, as well).   
 
-I liked Softcover, but I found it to be very complex. I never liked Markdown much -- it is very
-dumb and not extensible at all.  
+I liked Softcover, but I found it to be very complex. I never liked Markdown much -- I find it very
+dumb, and it's not extensible at all. (In fairness to Markdown, it does serve a different purpose
+in everyday life.)
 
-I wanted something that had the basic functionality of all my ad hoc solutions but allowed 
+I wanted something that had the basic functionality of all my _[ad hoc] solutions but allowed 
 extensions. Then my old solutions would be like subsets of the new format. This was a generalization
 similar to the way we began several years ago to view HTML as a subset of XML.  
 
@@ -56,33 +57,34 @@ you could even emit PDF, PNG, or SVG formats.
 
 . Idea: Make an RMagick DSL as an example.
 
-It's possible to embed comments in the text, or even to pass them through to the output 
-in commented form.  
+It's possible to embed comments in the text. Later it will be possible  to pass 
+them through to the output in commented form.  
 
 The command `.end is special, marking the end of a body of text. Some commands may operate on
 a block of lines rather than just a few parameters. (A text block is like a here-document.)
 There is no method name corresponding to the `.end command.
 
 The file extension I've chosen is `.ltx (though this may change). *Note: The source for this 
-README is a `.ltx file which uses its own little _[ad hoc] library (called ``readme.rb. Refer to
+README is a `.ltx file which uses its own little _[ad hoc] library (called ``tutorial.rb). Refer to
 the repo to see these.
 
 .section Syntax, comments, and more
 
 At first, my idea was to provide predefined commands and allow user-defined commands (to be 
-distinguished by a leading `. or `.. markers). So the single and double dots are both legal. 
+distinguished by a leading `. or `.. marker). So the single and double dots were both legal. 
 
-However, my concept at present is that the double dots (currently unused) will be used for 
+However, my concept at present is that the double dots (currently unused) may be used for 
 subcommmands.
 
-User-defined commands may be added to the standard namespace marked with a period. They may
-also be preceded by a specified character other than the period and thus stored in their own
-namespace. More on that later.
+User-defined commands may be added to the standard namespace. There are plans to 
+permit commands beginning with a specified character other than the period (to 
+be stored in their own namespace.
 
-When a leading period (or double period) is followed by a space, that line is a comment.
-When it is follwed by a name, that name is typically understood to be a method name. Any 
-remaining text on the line is treated as a parameter list to be accessed by that method.
-Some methods accept multiple lines of text, terminated by a `.end tag.
+When a leading period is followed by a space, that line is a comment. When it is 
+follwed by a name, that name is typically understood to be a method name. Any 
+remaining text on the line is treated as a parameter list to be accessed by that 
+method.  Some methods accept a text block (multiple lines of text terminated by 
+a `.end tag).
 
 .section Boldface and italics
 
@@ -97,17 +99,25 @@ need a workaround for that.
 I find that most short items I want to format are single tokens. Therefore I use a prefixed
 character in front of such a token: Underscore for italics, asterisk for boldface, and backtick
 for "code font." The formatting ends when the first blank space is encountered, without any 
-kind of suffixed character. (This behavior may change to include certain punctuation marks as
-terminators.)
+kind of suffixed character. 
+
+I also find it's common to want to terminate such a string with some kind of 
+naturally-occurring punctuation mark. If we double the initial delimiter, it 
+will be understood to terminate at the first period, comma, or right parenthesis.
 
 Of course, there are cases where this won't work; a formatted string may contain spaces, or it
-may exclude characters before the blank space. In this case, we can use an opening parenthesis 
-after the prefix and a closing parenthesis at the end of the string.
+may exclude characters before the blank space. In this case, we can use an opening bracket
+after the prefix and a closing bracket at the end of the string.
 
-This means that it can be difficult to include a left paren inside a formatted token. I'm thinking
-about that. It also means that a "literal" prefix character must be escaped.
+This means that it can be difficult to include brackets inside a formatted token. The solution
+is simply to escape with a backslash.
 
-This is all summarized in this example (taken from one of the testcases):
+A delimiter character sitting by itself need not be escaped. It will be output as a literal.
+
+A delimiter character that is already inside another string need not be escaped. These cannot
+be nested (though there is a way to accomplish this using functions).
+
+Most of this is summarized in this example (taken from one of the testcases):
 
 .testcase basic_formatting
 
@@ -115,28 +125,28 @@ This is all summarized in this example (taken from one of the testcases):
 
 The module `Livetext::Standard contains the set of standard or predefined methods. Their 
 names are essentially the same as the names of the dot-commands, with occasional exceptions.
-(For example, it is impractical to use the name `def as a method name, so we use `_def instead.)
-Here is the current list:
+(For example, it is impractical to use the name `def as a method name, so the module has a
+`_def method instead.) Here is the current list:
 
-.dlist
- `comment %% Start a comment block
- `errout %% Write an error message to STDERR
- `def %% Define a new method inline
- `set %% Assign values to variables for later interpolation
- `include %% Include an outside text file (to be interpreted as Livetext)
- `mixin %% Mix this file of Ruby methods into the standard namespace
- `copy %% Copy this input file verbatim (no interpretation)
- `r %% Pass a single line through without processing
- `raw %% Pass this special text block (terminated with ``__EOF__) directly into output without processing 
-`func %% Define a function to be invoked inline
-`say %% Print a message to the screen
-`banner %% Print a "noticeable" message to the screen
-`quit %% End processing and exit
-`nopass %% Don't pass lines through (just honor commands)
-`include %% Read and process another file (typically a `.ltx file)
-`debug %% Turn on debugging
-`nopara %% Turn off the "blank line implies new paragraph" switch
-`newpage %% Start a new output page
+.dlist %%
+ `comment   %% Start a comment block
+ `errout    %% Write an error message to STDERR
+ `def       %% Define a new method inline
+ `set       %% Assign values to variables for later interpolation
+ `include   %% Include an outside text file (to be interpreted as Livetext)
+ `mixin     %% Mix this file of Ruby methods into the standard namespace
+ `copy      %% Copy this input file verbatim (no interpretation)
+ `r         %% Pass a single line through without processing
+ `raw       %% Pass this special text block (terminated with ``__EOF__) directly into output without processing 
+`func       %% Define a function to be invoked inline
+`say        %% Print a message to the screen
+`banner     %% Print a "noticeable" message to the screen
+`quit       %% End processing and exit
+`nopass     %% Don't pass lines through (just honor commands)
+`include    %% Read and process another file (typically a `.ltx file)
+`debug      %% Turn on debugging
+`nopara     %% Turn off the "blank line implies new paragraph" switch
+`newpage    %% Start a new output page
 .end
 
 .section Examples from the tests
@@ -203,7 +213,7 @@ We then create a string using these parameters and call it using the
 wherever the output is currently being sent (defaulting to STDOUT).
 
 All the "helper" methods start with an underscore so as to avoid name
-collisions. These are all stored in the `Livetext::Helpers module
+collisions. These are all stored in the `Livetext::UserAPI module
 (which also has some methods you will never use).
 
 Here is the HTML output of the previous example:
@@ -219,14 +229,13 @@ Here is the HTML output of the previous example:
 What are some other helper methods? Here's a list.
 
 .dlist
-`_args %% Returns an array of arguments for the method (or an enumerator for that array)
-`_data %% A single "unsplit" string of all arguments in raw form
-`_body %% Returns a string (or enumerator) giving access to the text block (preceding ``.end)
-`_puts %% Write a line to output (STDOUT or wherever)
-`_print %% Write a line to output (STDOUT or wherever) without a newline
+`_args       %% Returns an array of arguments for the method (or an enumerator for that array)
+`_data       %% A single "unsplit" string of all arguments in raw form
+`_body       %% Returns a string (or enumerator) giving access to the text block (preceding ``.end)
+`_puts       %% Write a line to output (STDOUT or wherever)
+`_print      %% Write a line to output (STDOUT or wherever) without a newline
 `_formatting %% A function transforming boldface, italics, and monospace (Livetext conventions)
-`_var_substitution %% Substitute variables into a string
-`_passthru %% Feed a line directly into output after transforming and substituting
+`_passthru   %% Feed a line directly into output after transforming and substituting
 .end
 
 Note that the last three methods are typically _not called in your own code. They could be,
@@ -295,7 +304,7 @@ object and associate a new sigil with it. So for example, the command
 `.foobar would refer to a method in the `Livetext::Standard class 
 (whether predefined or user-defined). If we did a `require on a file
 and associated the sigil `# with it, then `#foobar would be a method
-on that new custom object. I will implement this soon.
+on that new custom object. I plan to implement this later.
 
 .section Issues, open questions, and to-do items
 

@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+system("vi lib/livetext.rb +3")
+
 require 'date'
 require_relative "lib/livetext"
 

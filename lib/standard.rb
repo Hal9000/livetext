@@ -239,7 +239,7 @@ module Livetext::Standard
   end
 
   def dlist
-    delim = "~~"
+    delim = _args.first
     _puts "<table>"
     _body do |line|
       line = _formatting(line)

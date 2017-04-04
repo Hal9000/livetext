@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.1"
+  VERSION = "0.8.2"
 end
 
 require 'fileutils'
@@ -109,9 +109,19 @@ class Livetext
   end
 
   def process_file(fname)
-    enum = File.readlines(fname).each
     raise "No such file '#{fname}' to process" unless File.exist?(fname)
+    enum = File.readlines(fname).each
     @main.source(enum, fname, 0)
+    loop do 
+      line = @main.nextline
+      break if line.nil?
+      process_line(line)
+    end
+  end
+
+  def process(text)
+    enum = text.each_line
+    @main.source(enum, "STDIN", 0)
     loop do 
       line = @main.nextline
       break if line.nil?
