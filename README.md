@@ -871,38 +871,38 @@ on that new custom object. I will implement this soon.
 This list is not prioritized yet.
 <p>
 
-1. ~[Add versioning information 
-2. ~[Clean up code structure
+1. <strike>Add versioning information </strike>
+2. <strike>Clean up code structure</strike>
 3. Add RDoc
-4. ~[Think about command line executable
-5. ~[Write as pure library in addition to executable
-6. ~[Package as gem
-7. Document: `require `include `copy `mixin `errout and others
-8. Need ~much better error checking and corresponding tests
+4. <strike>Think about command line executable</strike>
+5. <strike>Write as pure library in addition to executable</strike>
+6. <strike>Package as gem</strike>
+7. Document: <tt>require</tt> <tt>include</tt> <tt>copy</tt> <tt>mixin</tt> <tt>errout</tt> and others
+8. Need <strike>much</strike> better error checking and corresponding tests
 9. Worry about nesting of elements (probably mostly disallow)
 10. Think about UTF-8
 11. Document API fully
-12. Add `_raw_args and let `_args honor quotes
-13. Support quotes in `.set values
-14. Support "namespaced" variables  (`[.set code.font="whatever"])
-15. ~[Support functions (``$$func) 
+12. Add <tt>_raw_args</tt> and let <tt>_args</tt> honor quotes
+13. Support quotes in <tt>.set</tt> values
+14. Support "namespaced" variables  (<tt>.set code.font="whatever"</tt>)
+15. <strike>Support functions (``$$func) </strike>
 16. Support function namespacing
-17. Create predefined variables (e.g., `[$_source_file], `$[_line])
-18. Create predefined functions (e.g., `[$$_date])
+17. Create predefined variables (e.g., <tt>$_source_file</tt>, <tt>$[_line])</tt>
+18. Create predefined functions (e.g., <tt>$$_date</tt>)
 19. More support for markdown
 20. Allow turning on/off: formatting, variable interpolation, function interpolation?
-21. `.require with file and sigil parameters
+21. <tt>.require</tt> with file and sigil parameters
 22. Investigate "common intermediate format" - output renderers all read it
 23. Comments passed through (e.g. as HTML comments)
-24. `.run to execute arbitrary Ruby code inline?
-25. Concept of `.proc (guaranteed to return no value, produce no output)?
+24. <tt>.run</tt> to execute arbitrary Ruby code inline?
+25. Concept of <tt>.proc</tt> (guaranteed to return no value, produce no output)?
 26. Exceptions??
-27. Ruby `$SAFE levels?
+27. Ruby <tt>$SAFE</tt> levels?
 28. Warn when overriding existing names?
 29. Think about passing data in (erb replacement)
-30. ~]Allow custom ending tag on `raw method
-31. ~[Ignore first blank line after `[.end]? (and after raw-tag?)
-32. Allow/encourage custom `passthru method?
+30. <strike>]Allow</strike> custom ending tag on <tt>raw</tt> method
+31. <strike>Ignore first blank line after `[.end</strike>? (and after raw-tag?)
+32. Allow/encourage custom <tt>passthru</tt> method?
 33. Must have sane support for CSS
 34. Support for Pygments and/or other code processors
 35. Support for gists? arbitrary links? other remote resouces?
@@ -911,12 +911,12 @@ This list is not prioritized yet.
 38. Imagining a lib that can run/test code fragments as part of document generation
 39. Create vim (emacs?) syntax files
 40. Someday: Support other languages (Elixir, Python, ...)
-41. `.pry method?
-42. `.irb method?
+41. <tt>.pry</tt> method?
+42. <tt>.irb</tt> method?
 43. Other debugging features
 44. Feature to "break" to EOF?
-45. `.meth? method ending in `? takes a block that may be processed or thrown away (`.else perhaps?)
-46. `.dump to dump all variables and their values
-47. `.if and `[.else]?
+45. <tt>.meth?</tt> method ending in <tt>?</tt> takes a block that may be processed or thrown away (<tt>.else</tt> perhaps?)
+46. <tt>.dump</tt> to dump all variables and their values
+47. <tt>.if</tt> and <tt>.else</tt>?
 48. Make any/all delimiters configurable
 49. HTML helper? (in their own library?)
