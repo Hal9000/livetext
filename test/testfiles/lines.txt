@@ -254,3 +254,23 @@ Try $$bits
 There is $$bits[some text] here
 There is <b><i><tt><strike>some text</strike></tt></i></b> here
 
+Escaped brackets inside bracketed function parameter
+Here is an $$t[\[:array, :expression\]] with escapes.
+Here is an <tt>[:array, :expression]</tt> with escapes.
+
+Escape brackets inside *
+There are brackets *[\[\]] here
+There are brackets <b>[]</b> here
+
+Escape brackets inside _
+There are brackets _[\[\]] here
+There are brackets <i>[]</i> here
+
+Escape brackets inside `
+There are brackets `[\[\]] here
+There are brackets <tt>[]</tt> here
+
+Escape brackets inside ~
+There are brackets ~[\[\]] here
+There are brackets <strike>[]</strike> here
+

@@ -132,9 +132,16 @@ class FormatLine
                     when " "   # no param - just call
                       @param = nil
                       fcall    # no param? Hmm
-                    when "["   # long param - may have spaces - can hit eol
+                    when "["   # long param
                       skip
-                      loop { break if ["]", EOL].include?(peek); @param << grab }
+                      loop do 
+                        if peek == "\\"
+                          skip
+                          @param << grab
+                        end
+                        break if ["]", EOL].include?(peek)
+                        @param << grab
+                      end
                       skip
                       fcall
                     when ":"   # param (single token or to-eol)
@@ -163,7 +170,15 @@ class FormatLine
               emit "*"
             when "["
               skip
-              loop { break if ["]", EOL].include?(peek); @substr << grab }
+              loop do
+                if peek == "\\"
+                  skip
+                  @substr << grab
+                  next
+                end
+                break if ["]", EOL].include?(peek)
+                @substr << grab
+              end
               skip
               bold
             when Other
@@ -178,12 +193,28 @@ class FormatLine
               emit "_"
             when "["
               skip
-              loop { break if ["]", EOL].include?(peek); @substr << grab }
+              loop do
+                if peek == "\\"
+                  skip
+                  @substr << grab
+                  next
+                end
+                break if ["]", EOL].include?(peek)
+                @substr << grab
+              end
               skip
               italics
             when "_"   # doubled...
               skip
-              loop { break if [".", ",", ")", EOL].include?(peek); @substr << grab }   # ";" ?? FIXME
+              loop do
+                if peek == "\\"
+                  skip
+                  @substr << grab
+                  next
+                end
+                break if [".", ",", ")", EOL].include?(peek)
+                @substr << grab
+              end
               italics
             when Other
               loop { @substr << grab; break if [" ", EOL].include?(peek) }
@@ -197,7 +228,15 @@ class FormatLine
               emit "`"
             when "["
               skip
-              loop { break if ["]", EOL].include?(peek); @substr << grab }
+              loop do
+                if peek == "\\"
+                  skip
+                  @substr << grab
+                  next
+                end
+                break if ["]", EOL].include?(peek)
+                @substr << grab
+              end
               skip
               ttype
             when "`"   # doubled...
@@ -216,7 +255,15 @@ class FormatLine
               emit "~"
             when "["
               skip
-              loop { break if ["]", EOL].include?(peek); @substr << grab }
+              loop do
+                if peek == "\\"
+                  skip
+                  @substr << grab
+                  next
+                end
+                break if ["]", EOL].include?(peek)
+                @substr << grab
+              end
               skip
               strike
             when "~"   # doubled...
