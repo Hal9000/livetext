@@ -1,7 +1,7 @@
 # Livetext: A smart processor for text
 <p>
 
-<b>*This</b> README is currently mangled. Fixes coming soon!<b>*</b>
+<b>This README is currently mangled. Fixes coming soon!</b>
 <p>
 
 Livetext is simply a tool for transforming text from one format into another. The source file
