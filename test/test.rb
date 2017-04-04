@@ -1,4 +1,9 @@
-require 'minitest/autorun'
+def minitest?
+  require 'minitest/autorun'
+end
+
+abort "minitest gem is not installed" unless minitest?
+
 
 $LOAD_PATH << "./lib"
 

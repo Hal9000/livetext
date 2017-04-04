@@ -2,20 +2,25 @@ Mostly done
 -----------
 define variables
 define methods
-allow switching sigils, etc.
 .raw
 .mixin
 .include
-double sigil + blank = true comment 
-sigil + blank = passthru comment 
-double sigil + token = internal sigil
+sigil + blank = true comment 
 .comment/.end
 .func
+ignore trailing punctuation for * _ `
+args vs bare args (quotes)
 
 
 To Be Done
 ----------
-Bug: Optional blank line at EOF causes problem
+Tests: .r .raw .include! etc.
+_prompt
+switch line formatter??
+vim syntax coloring
+allow switching sigils, etc.
+double sigils?
+Bug: Optional blank line at EOF causes problem?
 turn "blank=para" on/off?
 keyword args
 .defaults
@@ -27,8 +32,6 @@ Prioritized formatting: markdown b/i/c, lt b/i/c, emdash, varsub, funcsub, etc.?
 em dash
 variable for source file
 variable for line number
-ignore trailing punctuation for * _ `
-args vs bare args (quotes)
 comment!  pass this thru as comment
 comment!/end
 .proc
@@ -85,10 +88,12 @@ $(myvar.x)
 Functions
 ---------
 $$func
-$$func.blah
+$$func.blah  ? 
 $$(func.blah)
 $$proc ?
-$$(func args)
+$$func[args]
+$$func:arg
+$$func::to_eol
 
 Predef functions?
 -----------------
