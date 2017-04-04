@@ -26,8 +26,12 @@ class TestingLivetext < MiniTest::Test
     define_method("test_formatting_#{i}") do
       x = FormatLine.new
       actual = x.parse(src)
-#     raise "Hello?"
-      assert_equal(exp, actual, msg)
+      if exp[0] == "/" # regex!
+        exp = Regexp.compile(exp[1..-2])   # skip slashes
+        assert_match(exp, actual, msg)
+      else
+        assert_equal(exp, actual, msg)
+      end
     end
   end
 

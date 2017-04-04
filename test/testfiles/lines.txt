@@ -274,3 +274,11 @@ Escape brackets inside ~
 There are brackets ~[\[\]] here
 There are brackets <strike>[]</strike> here
 
+Check output of $$date
+Today is $$date, I guess
+/Today is \d\d\d\d-\d\d-\d\d, I guess/
+
+Check output of $$time
+Tick tock, it's $$time right now
+/Tick tock, it's \d\d:\d\d:\d\d right now/
+

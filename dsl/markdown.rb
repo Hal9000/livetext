@@ -13,6 +13,14 @@ def h4; _puts "#### #{@_data}"; end
 def h5; _puts "##### #{@_data}"; end
 def h6; _puts "###### #{@_data}"; end
 
+def title
+  h1
+end
+
+def section
+  h3
+end
+
 def bq   # block quote
   _body {|line| _puts "> #{line}" }
 end
@@ -23,8 +31,6 @@ def list
   _body {|line| _puts " * #{line}" }
 end
 
-alias nlist olist
-
 def olist   # Doesn't handle paragraphs yet
   n = 0
   _body do |line|
@@ -32,4 +38,6 @@ def olist   # Doesn't handle paragraphs yet
     _puts "#{n}. #{line}"
   end
 end
+
+alias nlist olist
 

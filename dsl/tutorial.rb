@@ -1,11 +1,13 @@
 require 'cgi'
 
+STDERR.puts "GOT HERE"
+
 def title
-  puts "<center><h2>#{@_data}</h2></center>"
+  h1
 end
 
 def section
-  puts "<br>" * 2 + "<b><font size=+1>#{@_data}</font></b>" + "<br>"
+  h3
 end
 
 def code
@@ -18,17 +20,6 @@ def rx(str)
   ::Regexp.compile(::Regexp.escape(str))
 end
 
-def list
-  puts "<ul>"
-  _body {|line| puts "<li>#{_formatting(line)}</li>" }
-  _puts "</ul>"
-end
-
-def nlist
-  puts "<ol>"
-  _body {|line| puts "<li>#{_formatting(line)}</li>" }
-  _puts "</ol>"
-end
 
 def dlist
   delim = "~~"
