@@ -8,7 +8,7 @@
 Livetext is simply a tool for transforming text from one format into another. The source file
 has commands embedded in it, and the output is dependent on those commands.  
 
-Why is this special? It's very flexible, very extensible, and it's extensible _(in Ruby).  
+Why is this special? It's very flexible, very extensible, and it's extensible _[in Ruby].  
 
 .section Why Livetext?
 
@@ -64,7 +64,7 @@ a block of lines rather than just a few parameters. (A text block is like a here
 There is no method name corresponding to the `.end command.
 
 The file extension I've chosen is `.ltx (though this may change). *Note: The source for this 
-README is a `.ltx file which uses its own little _(ad hoc) library (called `(readme.rb)). Refer to
+README is a `.ltx file which uses its own little _[ad hoc] library (called ``readme.rb. Refer to
 the repo to see these.
 
 .section Syntax, comments, and more
@@ -127,7 +127,7 @@ Here is the current list:
  `mixin %% Mix this file of Ruby methods into the standard namespace
  `copy %% Copy this input file verbatim (no interpretation)
  `r %% Pass a single line through without processing
- `raw %% Pass this special text block (terminated with `(__EOF__)) directly into output without processing 
+ `raw %% Pass this special text block (terminated with ``__EOF__) directly into output without processing 
 `func %% Define a function to be invoked inline
 `say %% Print a message to the screen
 `banner %% Print a "noticeable" message to the screen
@@ -221,7 +221,7 @@ What are some other helper methods? Here's a list.
 .dlist
 `_args %% Returns an array of arguments for the method (or an enumerator for that array)
 `_data %% A single "unsplit" string of all arguments in raw form
-`_body %% Returns a string (or enumerator) giving access to the text block (preceding `(.end))
+`_body %% Returns a string (or enumerator) giving access to the text block (preceding ``.end)
 `_puts %% Write a line to output (STDOUT or wherever)
 `_print %% Write a line to output (STDOUT or wherever) without a newline
 `_formatting %% A function transforming boldface, italics, and monospace (Livetext conventions)
@@ -289,8 +289,8 @@ Now the `.ltx file can be written this way:
 The output, of course, is the same.
 
 There is an important feature that has not yet been implemented (the
-`require method). Like Ruby's `(require), it will grab Ruby code and 
-load it; however, unlike `(mixin), it will load it into a customized
+`require method). Like Ruby's ``require, it will grab Ruby code and 
+load it; however, unlike ``mixin, it will load it into a customized
 object and associate a new sigil with it. So for example, the command
 `.foobar would refer to a method in the `Livetext::Standard class 
 (whether predefined or user-defined). If we did a `require on a file
@@ -302,23 +302,25 @@ on that new custom object. I will implement this soon.
 This list is not prioritized yet.
 
 .nlist
-Add versioning information 
-Clean up code structure
+~[Add versioning information 
+~[Clean up code structure
 Add RDoc
-Think about command line executable
-Write as pure library in addition to executable
-Package as gem
+~[Think about command line executable
+~[Write as pure library in addition to executable
+~[Package as gem
 Document: `require `include `copy `mixin `errout and others
-Need much better error checking and corresponding tests
+Need ~much better error checking and corresponding tests
 Worry about nesting of elements (probably mostly disallow)
 Think about UTF-8
 Document API fully
 Add `_raw_args and let `_args honor quotes
 Support quotes in `.set values
-Support "namespaced" variables  (`(.set code.font="whatever"))
-Support functions (`($$func)) including namespacing
-Create predefined variables and functions (e.g., `($_source_file), `$(_line), `($$_today))
-Support markdown-style bold/italics? (`_markdown replaces `_formatting method)
+Support "namespaced" variables  (`[.set code.font="whatever"])
+~[Support functions (``$$func) 
+Support function namespacing
+Create predefined variables (e.g., `[$_source_file], `$[_line])
+Create predefined functions (e.g., `[$$_date])
+More support for markdown
 Allow turning on/off: formatting, variable interpolation, function interpolation?
 `.require with file and sigil parameters
 Investigate "common intermediate format" - output renderers all read it
@@ -329,8 +331,8 @@ Exceptions??
 Ruby `$SAFE levels?
 Warn when overriding existing names?
 Think about passing data in (erb replacement)
-Allow custom ending tag on `raw method
-Ignore first blank line after `(.end)? (and after raw-tag?)
+~]Allow custom ending tag on `raw method
+~[Ignore first blank line after `[.end]? (and after raw-tag?)
 Allow/encourage custom `passthru method?
 Must have sane support for CSS
 Support for Pygments and/or other code processors
@@ -344,9 +346,9 @@ Someday: Support other languages (Elixir, Python, ...)
 `.irb method?
 Other debugging features
 Feature to "break" to EOF?
-`.meth? method ending in `? takes a block that may be processed or thrown away (`(.else) perhaps?)
+`.meth? method ending in `? takes a block that may be processed or thrown away (`.else perhaps?)
 `.dump to dump all variables and their values
-`.if and `(.else)?
+`.if and `[.else]?
 Make any/all delimiters configurable
 HTML helper? (in their own library?)
 .end

@@ -8,7 +8,7 @@ Livetext is simply a tool for transforming text from one format into another. Th
 has commands embedded in it, and the output is dependent on those commands.  
 <p>
 
-Why is this special? It's very flexible, very extensible, and it's extensible <i>(in</i> Ruby).  
+Why is this special? It's very flexible, very extensible, and it's extensible <i>in Ruby</i>.  
 <p>
 
 ### Why Livetext?
@@ -73,7 +73,7 @@ There is no method name corresponding to the <tt>.end</tt> command.
 <p>
 
 The file extension I've chosen is <tt>.ltx</tt> (though this may change). <b>Note:</b> The source for this 
-README is a <tt>.ltx</tt> file which uses its own little <i>(ad</i> hoc) library (called <tt>(readme.rb)).</tt> Refer to
+README is a <tt>.ltx</tt> file which uses its own little <i>ad hoc</i> library (called <tt>readme</tt>.rb. Refer to
 the repo to see these.
 <p>
 
@@ -146,7 +146,7 @@ This is all summarized in this example (taken from one of the testcases):
  and `[code font].
  
  Here are some random punctuation marks:
- \# . @ * \_ ` : ; % ^ & $
+ # . @ * \_ ` : ; % ^ & $
  
  No need to escape these:  * \_ `
 </pre>
@@ -205,7 +205,7 @@ Here is the current list:
 <td width=3%><td width=10%> <tt>r</tt> </td><td> Pass a single line through without processing</td>
 </tr>
 <tr>
-<td width=3%><td width=10%> <tt>raw</tt> </td><td> Pass this special text block (terminated with <tt>(__EOF__))</tt> directly into output without processing </td>
+<td width=3%><td width=10%> <tt>raw</tt> </td><td> Pass this special text block (terminated with <tt>__EOF__</tt>) directly into output without processing </td>
 </tr>
 <tr>
 <td width=3%><td width=10%><tt>func</tt> </td><td> Define a function to be invoked inline</td>
@@ -658,7 +658,7 @@ What are some other helper methods? Here's a list.
 <td width=3%><td width=10%><tt>_data</tt> </td><td> A single "unsplit" string of all arguments in raw form</td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>_body</tt> </td><td> Returns a string (or enumerator) giving access to the text block (preceding <tt>(.end))</tt></td>
+<td width=3%><td width=10%><tt>_body</tt> </td><td> Returns a string (or enumerator) giving access to the text block (preceding <tt></tt>.end)</td>
 </tr>
 <tr>
 <td width=3%><td width=10%><tt>_puts</tt> </td><td> Write a line to output (STDOUT or wherever)</td>
@@ -856,8 +856,8 @@ The output, of course, is the same.
 <p>
 
 There is an important feature that has not yet been implemented (the
-<tt>require</tt> method). Like Ruby's <tt>(require),</tt> it will grab Ruby code and 
-load it; however, unlike <tt>(mixin),</tt> it will load it into a customized
+<tt>require</tt> method). Like Ruby's <tt>require</tt>, it will grab Ruby code and 
+load it; however, unlike <tt>mixin</tt>, it will load it into a customized
 object and associate a new sigil with it. So for example, the command
 <tt>.foobar</tt> would refer to a method in the <tt>Livetext::Standard</tt> class 
 (whether predefined or user-defined). If we did a <tt>require</tt> on a file
@@ -871,50 +871,52 @@ on that new custom object. I will implement this soon.
 This list is not prioritized yet.
 <p>
 
-1. Add versioning information 
-2. Clean up code structure
+1. ~[Add versioning information 
+2. ~[Clean up code structure
 3. Add RDoc
-4. Think about command line executable
-5. Write as pure library in addition to executable
-6. Package as gem
+4. ~[Think about command line executable
+5. ~[Write as pure library in addition to executable
+6. ~[Package as gem
 7. Document: `require `include `copy `mixin `errout and others
-8. Need much better error checking and corresponding tests
+8. Need ~much better error checking and corresponding tests
 9. Worry about nesting of elements (probably mostly disallow)
 10. Think about UTF-8
 11. Document API fully
 12. Add `_raw_args and let `_args honor quotes
 13. Support quotes in `.set values
-14. Support "namespaced" variables  (`(.set code.font="whatever"))
-15. Support functions (`($$func)) including namespacing
-16. Create predefined variables and functions (e.g., `($_source_file), `$(_line), `($$_today))
-17. Support markdown-style bold/italics? (`_markdown replaces `_formatting method)
-18. Allow turning on/off: formatting, variable interpolation, function interpolation?
-19. `.require with file and sigil parameters
-20. Investigate "common intermediate format" - output renderers all read it
-21. Comments passed through (e.g. as HTML comments)
-22. `.run to execute arbitrary Ruby code inline?
-23. Concept of `.proc (guaranteed to return no value, produce no output)?
-24. Exceptions??
-25. Ruby `$SAFE levels?
-26. Warn when overriding existing names?
-27. Think about passing data in (erb replacement)
-28. Allow custom ending tag on `raw method
-29. Ignore first blank line after `(.end)? (and after raw-tag?)
-30. Allow/encourage custom `passthru method?
-31. Must have sane support for CSS
-32. Support for Pygments and/or other code processors
-33. Support for gists? arbitrary links? other remote resouces?
-34. Small libraries for special purposes (books? special Softcover support? blogs? PDF? RMagick?)
-35. Experiment with idea of special libraries having pluggable output formats (via Ruby mixin?)
-36. Imagining a lib that can run/test code fragments as part of document generation
-37. Create vim (emacs?) syntax files
-38. Someday: Support other languages (Elixir, Python, ...)
-39. `.pry method?
-40. `.irb method?
-41. Other debugging features
-42. Feature to "break" to EOF?
-43. `.meth? method ending in `? takes a block that may be processed or thrown away (`(.else) perhaps?)
-44. `.dump to dump all variables and their values
-45. `.if and `(.else)?
-46. Make any/all delimiters configurable
-47. HTML helper? (in their own library?)
+14. Support "namespaced" variables  (`[.set code.font="whatever"])
+15. ~[Support functions (``$$func) 
+16. Support function namespacing
+17. Create predefined variables (e.g., `[$_source_file], `$[_line])
+18. Create predefined functions (e.g., `[$$_date])
+19. More support for markdown
+20. Allow turning on/off: formatting, variable interpolation, function interpolation?
+21. `.require with file and sigil parameters
+22. Investigate "common intermediate format" - output renderers all read it
+23. Comments passed through (e.g. as HTML comments)
+24. `.run to execute arbitrary Ruby code inline?
+25. Concept of `.proc (guaranteed to return no value, produce no output)?
+26. Exceptions??
+27. Ruby `$SAFE levels?
+28. Warn when overriding existing names?
+29. Think about passing data in (erb replacement)
+30. ~]Allow custom ending tag on `raw method
+31. ~[Ignore first blank line after `[.end]? (and after raw-tag?)
+32. Allow/encourage custom `passthru method?
+33. Must have sane support for CSS
+34. Support for Pygments and/or other code processors
+35. Support for gists? arbitrary links? other remote resouces?
+36. Small libraries for special purposes (books? special Softcover support? blogs? PDF? RMagick?)
+37. Experiment with idea of special libraries having pluggable output formats (via Ruby mixin?)
+38. Imagining a lib that can run/test code fragments as part of document generation
+39. Create vim (emacs?) syntax files
+40. Someday: Support other languages (Elixir, Python, ...)
+41. `.pry method?
+42. `.irb method?
+43. Other debugging features
+44. Feature to "break" to EOF?
+45. `.meth? method ending in `? takes a block that may be processed or thrown away (`.else perhaps?)
+46. `.dump to dump all variables and their values
+47. `.if and `[.else]?
+48. Make any/all delimiters configurable
+49. HTML helper? (in their own library?)
