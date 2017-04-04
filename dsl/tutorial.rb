@@ -75,7 +75,7 @@ end
 def testcase
   name = _args.first
   _puts "\n<font size=+1><b>Test: </font><font size=+2><tt>#{name}</tt></font></b></h3><br>"
-  src, exp = "test/testfiles/#{name}/source.ltx", "test/testfiles/#{name}/expected-output.txt"
+  src, exp = "#{Data}/#{name}/source.ltx", "{Data}/#{name}/expected-output.txt"
   @_args = [src, exp]   # Better way to do this??
   put_table(src, exp)
   _puts "<br>"

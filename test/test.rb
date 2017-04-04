@@ -9,15 +9,16 @@ $LOAD_PATH << "./lib"
 
 require 'livetext'
 
-# How these tests work - see the block comment at the bottom.
-
 class TestingLivetext < MiniTest::Test
 
   TTY = File.open("/dev/tty","w")
+  Data = "test/data"
 
   TestLines = []
 
-  f = File.open("test/testfiles/lines.txt")
+  Dir.chdir(Data)
+
+  f = File.open("lines.txt")
   loop do 
     item = []
     4.times { item << f.gets.chomp }
@@ -40,12 +41,16 @@ class TestingLivetext < MiniTest::Test
     end
   end
 
-  def external_files
-    tag = caller[0]
-    n1, n2 = tag.index("`")+6, tag.index("'")-1
-    base = tag[n1..n2]
-    origin = Dir.pwd
-    Dir.chdir("test/testfiles/#{base}") do
+  TestDirs = Dir.entries(".").reject {|f| ! File.directory?(f) } - %w[. ..]
+
+  TestDirs.each do |tdir|
+    define_method("test_#{tdir}") do
+      external_files(tdir)
+    end
+  end
+
+  def external_files(base)
+    Dir.chdir(base) do
       src, out, exp = "source.ltx", "actual-output.txt", "expected-output.txt"
       err, erx = "actual-error.txt", "expected-error.txt"
       cmd = "../../../bin/livetext #{src} >#{out} 2>#{err}"
@@ -63,39 +68,6 @@ class TestingLivetext < MiniTest::Test
     end
   end
 
-  def test_hello_world;         external_files end
-  def test_basic_formatting;    external_files end
-
-  def test_comments_ignored_1;  external_files end
-  def test_block_comment;       external_files end
-
-  def test_error_line_num;      external_files end
-  def test_error_inc_line_num;  external_files end
-  def test_error_invalid_name;  external_files end
-  def test_error_no_such_mixin; external_files end
-  def test_error_no_such_inc;   external_files end
-  def test_error_no_such_copy;  external_files end
-  def test_error_name_not_permitted;  external_files end
-  def test_error_missing_end;   external_files end
-  def test_error_mismatched_end; external_files end
-
-  def test_simple_vars;         external_files end
-  def test_more_complex_vars;   external_files end
-
-  def test_def_method;          external_files end
-
-  def test_single_raw_line;     external_files end
-
-  def test_simple_include;      external_files end
-  def test_simple_mixin;        external_files end
-  def test_simple_copy;         external_files end
-  def test_copy_is_raw;         external_files end
-  def test_raw_text_block;      external_files end
-
-  def test_example_alpha;       external_files end
-  def test_example_alpha2;      external_files end
-
-  def test_functions;           external_files end
 end
 
 
@@ -106,7 +78,7 @@ call external_files.
 
 The external_files method works this way: 
   - If the test (caller) method is test_my_silly_feature, then we will
-    look for a directory called testfiles/my_silly_feature
+    look for a directory called data/my_silly_feature
   - In here, there must be a source.ltx, expected-output.txt, and expected-error.txt
   - Technically, any of these can be empty
   - We run livetext on the source and compare actual vs expected (stdout, stderr)

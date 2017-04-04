@@ -147,10 +147,6 @@ module Livetext::Standard
     _error!(err)
   end
 
-  def nopass
-    @_nopass = true
-  end
-
   def set
     assigns = @_data.chomp.split(/, */)
     # Do a better way?
@@ -218,6 +214,32 @@ module Livetext::Standard
     arg = @_args.first
     self._debug = true
     self._debug = false if arg == "off"
+  end
+
+  def passthru
+    # FIXME - add check for args size (helpers); _onoff helper??
+    onoff = _args.first
+    case onoff
+      when nil;   @_nopass = false
+      when "on";  @_nopass = false
+      when "off"; @_nopass = true
+      else _error!("Unknown arg '#{onoff}'")
+    end
+  end
+
+  def nopass
+    @_nopass = true
+  end
+
+  def para
+    # FIXME - add check for args size (helpers); _onoff helper??
+    onoff = _args.first
+    case onoff
+      when nil;   @_nopara = false
+      when "on";  @_nopara = false
+      when "off"; @_nopara = true
+      else _error!("Unknown arg '#{onoff}'")
+    end
   end
 
   def nopara

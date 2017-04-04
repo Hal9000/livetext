@@ -1,8 +1,8 @@
-mkdir test/testfiles/$1
+mkdir test/data/$1
 
 # actual-error.txt        actual-output.txt       expected-error.txt      expected-output.txt     source.ltx
 
-cd test/testfiles/$1
+cd test/data/$1
 
 touch expected-output.txt expected-error.txt
 
