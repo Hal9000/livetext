@@ -119,24 +119,24 @@ names are essentially the same as the names of the dot-commands, with occasional
 Here is the current list:
 
 .dlist
- `comment ~~ Start a comment block
- `errout ~~ Write an error message to STDERR
- `def ~~ Define a new method inline
- `set ~~ Assign values to variables for later interpolation
- `include ~~ Include an outside text file (to be interpreted as Livetext)
- `mixin ~~ Mix this file of Ruby methods into the standard namespace
- `copy ~~ Copy this input file verbatim (no interpretation)
- `r ~~ Pass a single line through without processing
- `raw ~~ Pass this special text block (terminated with `(__EOF__)) directly into output without processing 
-`func ~~ Define a function to be invoked inline
-`say ~~ Print a message to the screen
-`banner ~~ Print a "noticeable" message to the screen
-`quit ~~ End processing and exit
-`nopass ~~ Don't pass lines through (just honor commands)
-`include ~~ Read and process another file (typically a `.ltx file)
-`debug ~~ Turn on debugging
-`nopara ~~ Turn off the "blank line implies new paragraph" switch
-`newpage ~~ Start a new output page
+ `comment %% Start a comment block
+ `errout %% Write an error message to STDERR
+ `def %% Define a new method inline
+ `set %% Assign values to variables for later interpolation
+ `include %% Include an outside text file (to be interpreted as Livetext)
+ `mixin %% Mix this file of Ruby methods into the standard namespace
+ `copy %% Copy this input file verbatim (no interpretation)
+ `r %% Pass a single line through without processing
+ `raw %% Pass this special text block (terminated with `(__EOF__)) directly into output without processing 
+`func %% Define a function to be invoked inline
+`say %% Print a message to the screen
+`banner %% Print a "noticeable" message to the screen
+`quit %% End processing and exit
+`nopass %% Don't pass lines through (just honor commands)
+`include %% Read and process another file (typically a `.ltx file)
+`debug %% Turn on debugging
+`nopara %% Turn off the "blank line implies new paragraph" switch
+`newpage %% Start a new output page
 .end
 
 .section Examples from the tests
@@ -219,14 +219,14 @@ Here is the HTML output of the previous example:
 What are some other helper methods? Here's a list.
 
 .dlist
-`_args ~~ Returns an array of arguments for the method (or an enumerator for that array)
-`_data ~~ A single "unsplit" string of all arguments in raw form
-`_body ~~ Returns a string (or enumerator) giving access to the text block (preceding `(.end))
-`_puts ~~ Write a line to output (STDOUT or wherever)
-`_print ~~ Write a line to output (STDOUT or wherever) without a newline
-`_formatting ~~ A function transforming boldface, italics, and monospace (Livetext conventions)
-`_var_substitution ~~ Substitute variables into a string
-`_passthru ~~ Feed a line directly into output after transforming and substituting
+`_args %% Returns an array of arguments for the method (or an enumerator for that array)
+`_data %% A single "unsplit" string of all arguments in raw form
+`_body %% Returns a string (or enumerator) giving access to the text block (preceding `(.end))
+`_puts %% Write a line to output (STDOUT or wherever)
+`_print %% Write a line to output (STDOUT or wherever) without a newline
+`_formatting %% A function transforming boldface, italics, and monospace (Livetext conventions)
+`_var_substitution %% Substitute variables into a string
+`_passthru %% Feed a line directly into output after transforming and substituting
 .end
 
 Note that the last three methods are typically _not called in your own code. They could be,

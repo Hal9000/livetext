@@ -22,7 +22,7 @@ end
 
 
 def dlist
-  delim = "~~"
+  delim = "%%"
   _puts "<table>"
   _body do |line|
 # @tty.puts "Line = #{line}"

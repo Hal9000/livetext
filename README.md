@@ -181,58 +181,58 @@ Here is the current list:
 
 <table>
 <tr>
-<td width=3%><td width=10%> <tt>comment</tt> <strike> Start a comment block</strike></td><td></td>
+<td width=3%><td width=10%> <tt>comment</tt> </td><td> Start a comment block</td>
 </tr>
 <tr>
-<td width=3%><td width=10%> <tt>errout</tt> <strike> Write an error message to STDERR</strike></td><td></td>
+<td width=3%><td width=10%> <tt>errout</tt> </td><td> Write an error message to STDERR</td>
 </tr>
 <tr>
-<td width=3%><td width=10%> <tt>def</tt> <strike> Define a new method inline</strike></td><td></td>
+<td width=3%><td width=10%> <tt>def</tt> </td><td> Define a new method inline</td>
 </tr>
 <tr>
-<td width=3%><td width=10%> <tt>set</tt> <strike> Assign values to variables for later interpolation</strike></td><td></td>
+<td width=3%><td width=10%> <tt>set</tt> </td><td> Assign values to variables for later interpolation</td>
 </tr>
 <tr>
-<td width=3%><td width=10%> <tt>include</tt> <strike> Include an outside text file (to be interpreted as Livetext</strike>)</td><td></td>
+<td width=3%><td width=10%> <tt>include</tt> </td><td> Include an outside text file (to be interpreted as Livetext)</td>
 </tr>
 <tr>
-<td width=3%><td width=10%> <tt>mixin</tt> <strike> Mix this file of Ruby methods into the standard namespace</strike></td><td></td>
+<td width=3%><td width=10%> <tt>mixin</tt> </td><td> Mix this file of Ruby methods into the standard namespace</td>
 </tr>
 <tr>
-<td width=3%><td width=10%> <tt>copy</tt> <strike> Copy this input file verbatim (no interpretation</strike>)</td><td></td>
+<td width=3%><td width=10%> <tt>copy</tt> </td><td> Copy this input file verbatim (no interpretation)</td>
 </tr>
 <tr>
-<td width=3%><td width=10%> <tt>r</tt> <strike> Pass a single line through without processing</strike></td><td></td>
+<td width=3%><td width=10%> <tt>r</tt> </td><td> Pass a single line through without processing</td>
 </tr>
 <tr>
-<td width=3%><td width=10%> <tt>raw</tt> <strike> Pass this special text block (terminated with `(__EOF__</strike>)) directly into output without processing </td><td></td>
+<td width=3%><td width=10%> <tt>raw</tt> </td><td> Pass this special text block (terminated with <tt>(__EOF__))</tt> directly into output without processing </td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>func</tt> <strike> Define a function to be invoked inline</strike></td><td></td>
+<td width=3%><td width=10%><tt>func</tt> </td><td> Define a function to be invoked inline</td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>say</tt> <strike> Print a message to the screen</strike></td><td></td>
+<td width=3%><td width=10%><tt>say</tt> </td><td> Print a message to the screen</td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>banner</tt> <strike> Print a "noticeable" message to the screen</strike></td><td></td>
+<td width=3%><td width=10%><tt>banner</tt> </td><td> Print a "noticeable" message to the screen</td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>quit</tt> <strike> End processing and exit</strike></td><td></td>
+<td width=3%><td width=10%><tt>quit</tt> </td><td> End processing and exit</td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>nopass</tt> <strike> Don't pass lines through (just honor commands</strike>)</td><td></td>
+<td width=3%><td width=10%><tt>nopass</tt> </td><td> Don't pass lines through (just honor commands)</td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>include</tt> <strike> Read and process another file (typically a `</strike>.ltx file)</td><td></td>
+<td width=3%><td width=10%><tt>include</tt> </td><td> Read and process another file (typically a <tt>.ltx</tt> file)</td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>debug</tt> <strike> Turn on debugging</strike></td><td></td>
+<td width=3%><td width=10%><tt>debug</tt> </td><td> Turn on debugging</td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>nopara</tt> <strike> Turn off the "blank line implies new paragraph" switch</strike></td><td></td>
+<td width=3%><td width=10%><tt>nopara</tt> </td><td> Turn off the "blank line implies new paragraph" switch</td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>newpage</tt> <strike> Start a new output page</strike></td><td></td>
+<td width=3%><td width=10%><tt>newpage</tt> </td><td> Start a new output page</td>
 </tr>
 </table>
 ### Examples from the tests
@@ -652,28 +652,28 @@ What are some other helper methods? Here's a list.
 
 <table>
 <tr>
-<td width=3%><td width=10%><tt>_args</tt> <strike> Returns an array of arguments for the method (or an enumerator for that array</strike>)</td><td></td>
+<td width=3%><td width=10%><tt>_args</tt> </td><td> Returns an array of arguments for the method (or an enumerator for that array)</td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>_data</tt> <strike> A single "unsplit" string of all arguments in raw form</strike></td><td></td>
+<td width=3%><td width=10%><tt>_data</tt> </td><td> A single "unsplit" string of all arguments in raw form</td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>_body</tt> <strike> Returns a string (or enumerator</strike>) giving access to the text block (preceding <tt>(.end))</tt></td><td></td>
+<td width=3%><td width=10%><tt>_body</tt> </td><td> Returns a string (or enumerator) giving access to the text block (preceding <tt>(.end))</tt></td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>_puts</tt> <strike> Write a line to output (STDOUT or wherever</strike>)</td><td></td>
+<td width=3%><td width=10%><tt>_puts</tt> </td><td> Write a line to output (STDOUT or wherever)</td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>_print</tt> <strike> Write a line to output (STDOUT or wherever</strike>) without a newline</td><td></td>
+<td width=3%><td width=10%><tt>_print</tt> </td><td> Write a line to output (STDOUT or wherever) without a newline</td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>_formatting</tt> <strike> A function transforming boldface</strike>, italics, and monospace (Livetext conventions)</td><td></td>
+<td width=3%><td width=10%><tt>_formatting</tt> </td><td> A function transforming boldface, italics, and monospace (Livetext conventions)</td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>_var_substitution</tt> <strike> Substitute variables into a string</strike></td><td></td>
+<td width=3%><td width=10%><tt>_var_substitution</tt> </td><td> Substitute variables into a string</td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>_passthru</tt> <strike> Feed a line directly into output after transforming and substituting</strike></td><td></td>
+<td width=3%><td width=10%><tt>_passthru</tt> </td><td> Feed a line directly into output after transforming and substituting</td>
 </tr>
 </table>
 Note that the last three methods are typically <i>not</i> called in your own code. They could be,
