@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+require 'rubygems'
+
 require_relative '../lib/livetext'
 
 def handle_ltx(src)
@@ -13,9 +15,11 @@ x = Livetext.new
 case ARGV.first 
   when  "-v", "--version"
     puts "#{Livetext::VERSION}\n "
-  when "-t", "--test"
-    dir = File.dirname(__FILE__)
-    system("ruby #{dir}/../test/test.rb")
+  when "-t", "--test"  # FIXME doesn't work - path problem
+    file = "#{Path}/../test/test.rb"
+    system("ruby #{file}")
+  when "--path"
+    puts Path
   when "-s", "--stdin"
     src = STDIN.read
     x.process(src)

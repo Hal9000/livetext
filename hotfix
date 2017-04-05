@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+lib = `livetext --path`.chomp
+
+system("cp lib/* #{lib}/")
+system("cp dsl/* #{lib}/../dsl/")
+system("cp bin/* #{lib}/../bin/")

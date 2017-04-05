@@ -43,7 +43,7 @@ def views
 end
 
 def readmore
-  @meta.teaser = @dest
+  @meta.teaser = @dest + "<br>"
   @dest = @dest + @body
 end
 
@@ -72,7 +72,7 @@ def list!
 end
 
 def finalize
-STDERR.puts "finalize: @meta = #{@meta.inspect}"
+# STDERR.puts "finalize: @meta = #{@meta.inspect}"
   @meta.slug = make_slug(@meta.title, @config.sequence)
   @meta.body = @dest
   @meta
@@ -160,7 +160,7 @@ def deploy # FIXME
     server, dir = @deployment[per]
     cmd = "scp #{files.join(' ')} root@#{server}:#{dir}"
     puts cmd
-    system cmd
+ #  system cmd
   end
 end
 
