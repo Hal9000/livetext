@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.3"
+  VERSION = "0.8.4"
 end
 
 require 'fileutils'
@@ -94,6 +94,8 @@ class Livetext
     @main = Processor.new(self, output)
   end
 
+  attr_reader :main
+
   def process_line(line, sigil=".")
     nomarkup = true
     # FIXME inefficient
@@ -117,6 +119,7 @@ class Livetext
       break if line.nil?
       process_line(line)
     end
+    finalize if self.respond_to? :finalize
   end
 
   def process(text)

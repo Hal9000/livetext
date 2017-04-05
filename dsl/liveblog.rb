@@ -6,13 +6,6 @@ def init_liveblog
   @body = ""
   @dest = @teaser
   @meta = ::OpenStruct.new
-# @views = ::Dir.entries("views") - %w[. ..]
-# @deployment = {}
-# @views.each do |per|
-#   file = "views/#{per}/deploy"
-#   server, destdir = ::File.readlines(file).map {|x| x.chomp }
-#   @deployment[per] = [server, destdir]
-# end
 end
 
 def _errout(*args)
@@ -21,18 +14,18 @@ end
 
 def _passthru(line)
   @dest << "<p>" if line == "\n" and ! @_nopara
-  l2 = _formatting(line)
-  @dest << l2
+  line = _formatting(line)
+  @dest << line
 end
 
 def title 
-  @meta.title = _data
+  @meta.title = @_data
   @dest << "<h1>#{@meta.title}</h1>"
 end
 
 def pubdate 
   _debug "data = #@_data"
-  match = /(\d{4}).(\d{2}).(\d{2})/.match _data
+  match = /(\d{4}).(\d{2}).(\d{2})/.match @_data
   junk, y, m, d = match.to_a
   y, m, d = y.to_i, m.to_i, d.to_i
   @meta.date = ::Date.new(y, m, d)
@@ -79,6 +72,7 @@ def list!
 end
 
 def finalize
+STDERR.puts "finalize: @meta = #{@meta.inspect}"
   @meta.slug = make_slug(@meta.title, @config.sequence)
   @meta.body = @dest
   @meta

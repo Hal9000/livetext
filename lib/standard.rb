@@ -6,6 +6,8 @@ module Livetext::Standard
      t: %w[<tt> </tt>],
      s: %w[<strike> </strike>] }
 
+  attr_reader :_data
+
   def data=(val)
     @_data = val
     @_args = val.split
@@ -191,6 +193,7 @@ module Livetext::Standard
     self.extend(newmod)
     init = "init_#{name}"
     self.send(init) if self.respond_to? init
+# STDERR.puts "mixin: self = #{self}  @meta = #@meta"
     _optional_blank_line
   end
 
