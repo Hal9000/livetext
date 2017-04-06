@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   
   # Files...
   main = Find.find("bin").to_a + Find.find("lib").to_a + Find.find("dsl").to_a 
-  misc = %w[./README.ltx ./README.md livetext.gemspec]
+  misc = %w[./README.lt3 ./README.md livetext.gemspec]
   test = Find.find("test").to_a
 
   s.files       =  main + misc + test

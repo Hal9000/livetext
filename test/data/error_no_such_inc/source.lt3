@@ -2,7 +2,7 @@ Make sure
 a nonexistent include
 will give an error.
 
-.include nosuchinc.ltx
+.include nosuchinc.lt3
 
 Nothing to
 see here.

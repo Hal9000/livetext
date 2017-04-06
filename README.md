@@ -73,8 +73,8 @@ a block of lines rather than just a few parameters. (A text block is like a here
 There is no method name corresponding to the <tt>.end</tt> command.
 <p>
 
-The file extension I've chosen is <tt>.ltx</tt> (though this may change). <b>Note:</b> The source for this 
-README is a <tt>.ltx</tt> file which uses its own little <i>ad hoc</i> library (called <tt>tutorial</tt>.rb). Refer to
+The file extension I've chosen is <tt>.lt3</tt> (though this may change). <b>Note:</b> The source for this 
+README is a <tt>.lt3</tt> file which uses its own little <i>ad hoc</i> library (called <tt>tutorial</tt>.rb). Refer to
 the repo to see these.
 <p>
 
@@ -236,7 +236,7 @@ names are essentially the same as the names of the dot-commands, with occasional
 <td width=3%><td width=10%><tt>nopass</tt>     %% Don't pass lines through (just honor commands)</td><td></td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>include</tt>    %% Read and process another file (typically a <tt>.ltx</tt> file)</td><td></td>
+<td width=3%><td width=10%><tt>include</tt>    %% Read and process another file (typically a <tt>.lt3</tt> file)</td><td></td>
 </tr>
 <tr>
 <td width=3%><td width=10%><tt>debug</tt>      %% Turn on debugging</td><td></td>
@@ -846,7 +846,7 @@ in here (and nothing else).
      end
    end
 </pre>
-Now the <tt>.ltx</tt> file can be written this way:
+Now the <tt>.lt3</tt> file can be written this way:
 <p>
 
 <pre>

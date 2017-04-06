@@ -32,7 +32,7 @@ end
 update = <<-EOF
   gem build livetext.gemspec && 
   gem push livetext-*.gem && 
-  gem uninstall livetext && 
+  gem uninstall -x livetext && 
   gem install livetext
 EOF
 system(update)

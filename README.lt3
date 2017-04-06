@@ -64,8 +64,8 @@ The command `.end is special, marking the end of a body of text. Some commands m
 a block of lines rather than just a few parameters. (A text block is like a here-document.)
 There is no method name corresponding to the `.end command.
 
-The file extension I've chosen is `.ltx (though this may change). *Note: The source for this 
-README is a `.ltx file which uses its own little _[ad hoc] library (called ``tutorial.rb). Refer to
+The file extension I've chosen is `.lt3 (though this may change). *Note: The source for this 
+README is a `.lt3 file which uses its own little _[ad hoc] library (called ``tutorial.rb). Refer to
 the repo to see these.
 
 .section Syntax, comments, and more
@@ -143,7 +143,7 @@ names are essentially the same as the names of the dot-commands, with occasional
 `banner     %% Print a "noticeable" message to the screen
 `quit       %% End processing and exit
 `nopass     %% Don't pass lines through (just honor commands)
-`include    %% Read and process another file (typically a `.ltx file)
+`include    %% Read and process another file (typically a `.lt3 file)
 `debug      %% Turn on debugging
 `nopara     %% Turn off the "blank line implies new paragraph" switch
 `newpage    %% Start a new output page
@@ -279,7 +279,7 @@ def alpha
 end
 .end
 
-Now the `.ltx file can be written this way:
+Now the `.lt3 file can be written this way:
 
 .code
  .mixin mylib

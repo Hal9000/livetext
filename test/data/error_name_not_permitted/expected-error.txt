@@ -1,1 +1,1 @@
-Error: Name 'class' is not permitted (at source.ltx line 4)
+Error: Name 'class' is not permitted (at source.lt3 line 4)

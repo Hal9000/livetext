@@ -51,7 +51,7 @@ class TestingLivetext < MiniTest::Test
 
   def external_files(base)
     Dir.chdir(base) do
-      src, out, exp = "source.ltx", "actual-output.txt", "expected-output.txt"
+      src, out, exp = "source.lt3", "actual-output.txt", "expected-output.txt"
       err, erx = "actual-error.txt", "expected-error.txt"
       cmd = "../../../bin/livetext #{src} >#{out} 2>#{err}"
       system(cmd)
@@ -79,7 +79,7 @@ call external_files.
 The external_files method works this way: 
   - If the test (caller) method is test_my_silly_feature, then we will
     look for a directory called data/my_silly_feature
-  - In here, there must be a source.ltx, expected-output.txt, and expected-error.txt
+  - In here, there must be a source.lt3, expected-output.txt, and expected-error.txt
   - Technically, any of these can be empty
   - We run livetext on the source and compare actual vs expected (stdout, stderr)
   - The "real" output gets checked first
