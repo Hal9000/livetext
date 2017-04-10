@@ -16,8 +16,12 @@ case ARGV.first
   when  "-v", "--version"
     puts "#{Livetext::VERSION}\n "
   when "-t", "--test"  # FIXME doesn't work - path problem
+puts "bin: pwd = #{Dir.pwd}"
+puts "bin: path = #{Path}"
     file = "#{Path}/../test/test.rb"
-    system("ruby #{file}")
+    cmd = "ruby #{file} cmdline"
+    puts cmd
+    system(cmd)
   when "--path"
     puts Path
   when "-s", "--stdin"

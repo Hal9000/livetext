@@ -12,9 +12,13 @@ require 'livetext'
 class TestingLivetext < MiniTest::Test
 
   TTY = File.open("/dev/tty","w")
-  Data = "test/data"
+
+  dir  = ARGV.first == "cmdline" ? "../" : ""
+  Data = "#{dir}test/data"
 
   TestLines = []
+
+  Dir.chdir `livetext --path`.chomp if ARGV.first == "cmdline"
 
   Dir.chdir(Data)
 
@@ -51,9 +55,12 @@ class TestingLivetext < MiniTest::Test
 
   def external_files(base)
     Dir.chdir(base) do
-      src, out, exp = "source.lt3", "actual-output.txt", "expected-output.txt"
-      err, erx = "actual-error.txt", "expected-error.txt"
-      cmd = "../../../bin/livetext #{src} >#{out} 2>#{err}"
+      src, out, exp = "source.lt3", "/tmp/#{base}--actual-output.txt", "expected-output.txt"
+      err, erx = "/tmp/#{base}--actual-error.txt", "expected-error.txt"
+      cmd = "livetext #{src} >#{out} 2>#{err}"
+      puts
+      puts Dir.pwd
+      puts cmd
       system(cmd)
       output, expected, errors, errexp = File.read(out), File.read(exp), File.read(err), File.read(erx)
 
