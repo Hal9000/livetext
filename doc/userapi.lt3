@@ -1,0 +1,77 @@
+.context ../lib/userapi.rb
+.para off
+.hacktrace
+
+.set nodoc="&nbsp;&nbsp;<b>Not documented yet.</b><br><br>"
+.command ._check_existence(file, msg)
+  $nodoc
+.end
+
+.command ._source
+  $nodoc
+.end
+
+.command ._args
+  $nodoc
+.end
+
+.command ._optional_blank_line
+  $nodoc
+.end
+
+.command ._comment?(str, sigil=".")
+  $nodoc
+.end
+
+.command ._trailing?(char)
+  $nodoc
+.end
+
+.command ._end?(str, sigil=".")
+  $nodoc
+.end
+
+.command ._raw_body(tag = "__EOF__", sigil = ".")
+  $nodoc
+.end
+
+.command ._body(raw=false, sigil=".")
+  $nodoc
+.end
+
+.command ._body_text(raw=false, sigil=".")
+  $nodoc
+.end
+
+.command ._raw_body!(sigil=".")
+  $nodoc
+.end
+
+.command ._handle_escapes(str, set)
+  $nodoc
+.end
+
+.command ._formatting(line)
+  $nodoc
+.end
+
+.command ._passthru(line)
+  $nodoc
+.end
+
+.command ._puts(*args)
+  $nodoc
+.end
+
+.command ._print(*args)
+  $nodoc
+.end
+
+.command ._debug=(val)
+  $nodoc
+.end
+
+.command ._debug(*args)
+  $nodoc
+.end
+

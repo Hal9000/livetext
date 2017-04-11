@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.8"
+  VERSION = "0.8.9"
 end
 
 require 'fileutils'
@@ -152,7 +152,8 @@ class Livetext
   end
 
   def handle_sname(line, sigil=".")
-    name = _get_name(line, sigil=".")
+    name = _get_name(line, sigil)
+#   STDERR.puts name.inspect
     unless @main.respond_to?(name)
       @main._error! "Name '#{name}' is unknown"
       return

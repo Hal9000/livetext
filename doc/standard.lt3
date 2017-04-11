@@ -1,0 +1,199 @@
+.mixin docsen
+.para off
+
+.context standard.rb
+
+.backtrace
+.debug
+
+.set nodoc="&nbsp;&nbsp;<b>Not documented yet.</b><br><br>"
+
+.command .bits
+  $nodoc
+.end
+
+
+.command .backtrace
+Determines whether an error will produce a Ruby backtrace to STDERR. If there is
+no parameter, `on is assumed. You can also specify ``off.
+EXAMPLE
+ .backtrace
+ .backtrace on
+ .backtrace off
+.end
+
+
+.command .comment
+Start a block comment (ignored completely in processing).
+EXAMPLE
+ .comment
+ This is
+ only
+ a comment.
+ .end
+.end
+
+
+.command .shell
+  $nodoc
+.end
+
+
+.command .func
+  $nodoc
+.end
+
+
+.command .shell!
+  $nodoc
+.end
+
+
+.command .errout
+  $nodoc
+.end
+
+
+.command .say
+  Print a message on the terminal (not to STDERR or STDOUT).
+EXAMPLE
+ .say Now generating the index...
+.end
+
+
+.command .banner
+  Print a message bracketed by hyphens (on lines before and after) for visibility.
+EXAMPLE
+ .banner Now generating the index...
+.end
+
+
+.command .quit
+  $nodoc
+.end
+
+
+.command .outdir
+  $nodoc
+.end
+
+
+.command .outdir!
+  $nodoc
+.end
+
+
+.command .output
+  $nodoc
+.end
+
+
+.command .append
+  $nodoc
+.end
+
+
+.command .next_output
+  $nodoc
+.end
+
+
+.command .cleanup
+  $nodoc
+.end
+
+
+.command ._next_output(tag = "sec", num = nil)
+  $nodoc
+.end
+
+
+.command .def
+Define a custom _[ad hoc] command. Refer to the `UserAPI docs for all calls that can be made here.
+EXAMPLE
+  .def mycommand
+    args = _args
+    _puts "First two args: #{args[0]} and #{args[1]}"
+  .end
+.end
+
+
+.command .set
+  $nodoc
+.end
+
+
+.command .include
+  $nodoc
+.end
+
+
+.command .include!
+  $nodoc
+.end
+
+
+.command .mixin
+  $nodoc
+.end
+
+
+.command .copy
+  $nodoc
+.end
+
+
+.command .r
+Output a single "raw" line with no formatting or substitution.
+EXAMPLE
+ . This line will print literally:
+ .r _[Not italics] $ not_a_var $$ not_a_func *[not boldface]
+.end
+
+
+.command .raw
+  $nodoc
+.end
+
+
+.command .debug
+  $nodoc
+.end
+
+
+.command .passthru
+  $nodoc
+.end
+
+
+.command .nopass
+  $nodoc
+.end
+
+
+.command .para
+  $nodoc
+.end
+
+
+.command .nopara
+  $nodoc
+.end
+
+
+.command .heading
+  $nodoc
+.end
+
+
+.command .newpage
+  $nodoc
+.end
+
+
+.command .dlist
+  $nodoc
+.end
+
+
+.finalize

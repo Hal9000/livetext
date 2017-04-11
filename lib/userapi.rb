@@ -60,14 +60,15 @@ module Livetext::UserAPI
     end
   end
 
-  def _body(sigil=".")
+  def _body(raw=false, sigil=".")
     lines = []
     @save_location = @sources.last
     loop do
       @line = nextline
       break if _end?(@line, sigil)
       next if _comment?(@line, sigil)   # FIXME?
-      lines << _formatting(@line)
+      @line = _formatting(@line) unless raw
+      lines << @line
     end
     _optional_blank_line
     if block_given?
@@ -79,7 +80,7 @@ module Livetext::UserAPI
     _error!("Expecting .end, found end of file")
   end
 
-  def _body_text(sigil=".")
+  def _body_text(raw=false, sigil=".")
     _body(sigil).join("\n")
   end
 
