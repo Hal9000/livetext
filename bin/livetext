@@ -12,31 +12,37 @@ end
 
 x = Livetext.new
 
-case ARGV.first 
-  when  "-v", "--version"
-    puts "#{Livetext::VERSION}\n "
-  when "-t", "--test"  # FIXME doesn't work - path problem
-puts "bin: pwd = #{Dir.pwd}"
-puts "bin: path = #{Path}"
-    file = "#{Path}/../test/test.rb"
-    cmd = "ruby #{file} cmdline"
-    puts cmd
-    system(cmd)
-  when "--path"
-    puts Path
-  when "-s", "--stdin"
-    src = STDIN.read
-    x.process(src)
-  when nil
-    puts <<-EOF
-    Usage: 
-      livetext -v
-      livetext --version
-      livetext filename
-    EOF
-    puts
-  when Object
-    src = ARGV.first
-    x.process_file(src)
-end
+@backtrace = false
 
+loop do
+  arg = ARGV.shift
+  break if arg.nil?
+
+  case arg
+    when  "-v", "--version"
+      puts "#{Livetext::VERSION}\n "
+    when "-t", "--test"  # FIXME doesn't work - path problem
+      file = "#{Path}/../test/test.rb"
+      flag = @backtrace ? "-back" : ""
+      cmd = "ruby #{file} cmdline#{flag}"
+      puts cmd
+      system(cmd)
+    when "--path"
+      puts Path
+    when "--backtrace"
+      @backtrace = true
+    when "-s", "--stdin"
+      src = STDIN.read
+      x.process(src)
+    when nil
+      puts <<-EOF
+      Usage: 
+        livetext -v
+        livetext --version
+        livetext filename
+      EOF
+      puts
+    when Object
+      x.process_file(arg, @backtrace)
+  end
+end

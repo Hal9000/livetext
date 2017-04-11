@@ -67,7 +67,7 @@ module Livetext::UserAPI
       @line = nextline
       break if _end?(@line, sigil)
       next if _comment?(@line, sigil)   # FIXME?
-      lines << @line
+      lines << _formatting(@line)
     end
     _optional_blank_line
     if block_given?
@@ -79,8 +79,12 @@ module Livetext::UserAPI
     _error!("Expecting .end, found end of file")
   end
 
-  def _body!(sigil=".")
+  def _body_text(sigil=".")
     _body(sigil).join("\n")
+  end
+
+  def _raw_body!(sigil=".")
+    _raw_body(sigil).join("\n")
   end
 
   def _handle_escapes(str, set)

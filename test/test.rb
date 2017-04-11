@@ -58,9 +58,6 @@ class TestingLivetext < MiniTest::Test
       src, out, exp = "source.lt3", "/tmp/#{base}--actual-output.txt", "expected-output.txt"
       err, erx = "/tmp/#{base}--actual-error.txt", "expected-error.txt"
       cmd = "livetext #{src} >#{out} 2>#{err}"
-      puts
-      puts Dir.pwd
-      puts cmd
       system(cmd)
       output, expected, errors, errexp = File.read(out), File.read(exp), File.read(err), File.read(erx)
 

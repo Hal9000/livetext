@@ -43,7 +43,7 @@ module Livetext::Standard
     _error! "Illegal name '#{funcname}'" if _disallowed?(funcname)
     func_def = <<-EOS
       def #{funcname}
-        #{_body!}
+        #{_body_text}
       end
     EOS
     Livetext::Functions.class_eval func_def
@@ -142,7 +142,7 @@ module Livetext::Standard
     name = @_args[0]
     str = "def #{name}\n"
     raise "Illegal name '#{name}'" if _disallowed?(name)
-    str += _body!
+    str += _raw_body!
     str += "end\n"
     eval str
   rescue => err

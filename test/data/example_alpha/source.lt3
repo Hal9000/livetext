@@ -1,5 +1,5 @@
 .def alpha
-   text = _body.join
+   text = _body_text
    text.gsub!(/\n/, " ")
    words = text.split.sort
    words.each {|w| _puts "    #{w}" }
