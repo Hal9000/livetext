@@ -1,0 +1,112 @@
+.mixin docsen
+
+.context ../dsl/bookish.rb
+
+.para off
+.backtrace
+
+.set nodoc="&nbsp;&nbsp;<b>Not documented yet.</b><br><br>"
+
+.command .hardbreaks
+  $nodoc
+.end
+
+.command .hardbreaks?
+  $nodoc
+.end
+
+.command .credit
+  $nodoc
+.end
+
+.command .list
+  $nodoc
+.end
+
+.command .list!
+  $nodoc
+.end
+
+.command .alpha_columns
+  $nodoc
+.end
+
+.command .comment
+  $nodoc
+.end
+
+.command ._errout(*args)
+  $nodoc
+.end
+
+.command ._nbsp(n)
+  $nodoc
+.end
+
+.command ._slug(str)
+  $nodoc
+.end
+
+.command .image
+  $nodoc
+.end
+
+.command .figure
+  $nodoc
+.end
+
+.command .chapter
+  $nodoc
+.end
+
+.command .chapterN
+  $nodoc
+.end
+
+.command .sec
+  $nodoc
+.end
+
+.command .subsec
+  $nodoc
+.end
+
+.command .table2
+  $nodoc
+.end
+
+.command .table
+  $nodoc
+.end
+
+.command .toc!
+  $nodoc
+.end
+
+.command .toc2
+  $nodoc
+.end
+
+.command .missing
+  $nodoc
+.end
+
+.command .TBC
+  $nodoc
+.end
+
+.command .note
+  $nodoc
+.end
+
+.command .quote
+  $nodoc
+.end
+
+.command .init_bookish
+  $nodoc
+.end
+
+
+.finalize
+ 

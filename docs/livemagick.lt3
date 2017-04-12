@@ -1,0 +1,56 @@
+.mixin docsen
+
+.context ../dsl/livemagick.rb
+
+.para off
+.backtrace
+
+.set nodoc="&nbsp;&nbsp;<b>Not documented yet.</b><br><br>"
+
+.command .image
+  $nodoc
+.end
+
+.command .canvas
+  $nodoc
+.end
+
+.command .rectangle
+  $nodoc
+.end
+
+.command .pen
+  $nodoc
+.end
+
+.command .font
+  $nodoc
+.end
+
+.command ._text(xy, wxh, str, weight, gravity)
+  $nodoc
+.end
+
+.command .text
+  $nodoc
+.end
+
+.command .text!
+  $nodoc
+.end
+
+.command .draw
+  $nodoc
+.end
+
+.command .save
+  $nodoc
+.end
+
+.command .save!
+  $nodoc
+.end
+
+
+.finalize
+ 

@@ -1,0 +1,80 @@
+.mixin docsen
+
+.context ../dsl/liveblog.rb
+
+.para off
+.backtrace
+
+.set nodoc="&nbsp;&nbsp;<b>Not documented yet.</b><br><br>"
+
+.command .init_liveblog
+  $nodoc
+.end
+
+.command ._errout(*args)
+  $nodoc
+.end
+
+.command ._passthru(line)
+  $nodoc
+.end
+
+.command .title 
+  $nodoc
+.end
+
+.command .pubdate 
+  $nodoc
+.end
+
+.command .categories 
+  $nodoc
+.end
+
+.command .views
+  $nodoc
+.end
+
+.command .readmore
+  $nodoc
+.end
+
+.command .liveblog_version
+  $nodoc
+.end
+
+.command .list
+  $nodoc
+.end
+
+.command .list!
+  $nodoc
+.end
+
+.command .finalize
+  $nodoc
+.end
+
+.command .generate(view)
+  $nodoc
+.end
+
+.command .generate_index(view) # FIXME
+  $nodoc
+.end
+
+.command .deploy # FIXME
+  $nodoc
+.end
+
+.command .redeploy(per)
+  $nodoc
+.end
+
+.command .  'main' linked to default?
+  $nodoc
+.end
+
+
+.finalize
+ 

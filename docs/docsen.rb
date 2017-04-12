@@ -1,9 +1,13 @@
-
+require 'date'
 
 def context
   @table ||= {}
   @context = _args.first
-  _puts _block("<h1><b><tt>#@context</tt></b></h1>")
+# _puts _block("<h1><b><tt>#@context</tt></b></h1>")
+  _puts _header("lightblue", 
+                "<h1><b><tt>#@context</tt></b></h1>",
+                "<b>#{Livetext::VERSION.to_s}", 
+                "<b>#{Date.today}</b>")
 end
 
 def _codeblock(text)
@@ -12,11 +16,21 @@ def _codeblock(text)
   "\n</font></td></tr></table>"
 end
 
+def _header(color, *text)
+  str = "<table cellpadding=2 width=100%><tr height=10>\n"
+  text.each do |item|
+    str << "<td bgcolor=#{color}>\n" + 
+    item.chomp + 
+    "\n</td>"
+  end
+  str << "\n</tr></table>"
+  str
+end
+
 def _block(text, color="white", banner=false)
   flag = banner ? "width=100%" : ""
-  "<table cellpadding=2 #{flag}><tr height=10><td bgcolor=#{color}>\n" + 
-  text.chomp + 
-  "\n</td></tr></table>"
+  "<table cellpadding=2 #{flag}><tr height=10>" + 
+  "<td bgcolor=#{color}>\n" + text.chomp + "\n</td></tr></table>"
 end
 
 def command

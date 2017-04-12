@@ -1,0 +1,40 @@
+.mixin docsen
+
+.context ../dsl/tutorial.rb
+
+.para off
+.backtrace
+
+.set nodoc="&nbsp;&nbsp;<b>Not documented yet.</b><br><br>"
+
+.command .title
+  $nodoc
+.end
+
+.command .section
+  $nodoc
+.end
+
+.command .code
+  $nodoc
+.end
+
+.command .rx(str)
+  $nodoc
+.end
+
+.command .inout
+  $nodoc
+.end
+
+.command .put_table(src, exp)
+  $nodoc
+.end
+
+.command .testcase
+  $nodoc
+.end
+
+
+.finalize
+ 

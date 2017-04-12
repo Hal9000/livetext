@@ -1,0 +1,91 @@
+.context ../lib/functions.rb
+.para off
+.hacktrace
+
+.set nodoc="&nbsp;&nbsp;<b>Not documented yet.</b><br><br>"
+.command .class Livetext::Functions    # Functions will go here... user-def AND pre-def??
+  $nodoc
+.end
+
+.command .initialize
+  $nodoc
+.end
+
+.command .param=(str)
+  $nodoc
+.end
+
+.command .date
+  $nodoc
+.end
+
+.command .time
+  $nodoc
+.end
+
+.command .simple_format(*args)
+  $nodoc
+.end
+
+.command .b;    simple_format(:b); end
+  $nodoc
+.end
+
+.command .i;    simple_format(:i); end
+  $nodoc
+.end
+
+.command .t;    simple_format(:t); end
+  $nodoc
+.end
+
+.command .s;    simple_format(:s); end
+  $nodoc
+.end
+
+.command .bi;   simple_format(:b, :i); end
+  $nodoc
+.end
+
+.command .bt;   simple_format(:b, :t); end
+  $nodoc
+.end
+
+.command .bs;   simple_format(:b, :s); end
+  $nodoc
+.end
+
+.command .it;   simple_format(:i, :t); end
+  $nodoc
+.end
+
+.command .is;   simple_format(:i, :s); end
+  $nodoc
+.end
+
+.command .ts;   simple_format(:t, :s); end
+  $nodoc
+.end
+
+.command .bit;  simple_format(:b, :i, :t); end
+  $nodoc
+.end
+
+.command .bis;  simple_format(:b, :i, :s); end
+  $nodoc
+.end
+
+.command .bts;  simple_format(:b, :t, :s); end
+  $nodoc
+.end
+
+.command .its;  simple_format(:i, :t, :s); end
+  $nodoc
+.end
+
+.command .bits; simple_format(:b, :i, :t, :s); end
+  $nodoc
+.end
+
+.finalize
+

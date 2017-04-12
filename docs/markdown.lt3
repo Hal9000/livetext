@@ -1,0 +1,56 @@
+.mixin docsen
+
+.context ../dsl/markdown.rb
+
+.para off
+.backtrace
+
+.set nodoc="&nbsp;&nbsp;<b>Not documented yet.</b><br><br>"
+
+.command .h1; _puts "# #{@_data}"; end       # atx style for now
+  $nodoc
+.end
+
+.command .h2; _puts "## #{@_data}"; end
+  $nodoc
+.end
+
+.command .h3; _puts "### #{@_data}"; end
+  $nodoc
+.end
+
+.command .h4; _puts "#### #{@_data}"; end
+  $nodoc
+.end
+
+.command .h5; _puts "##### #{@_data}"; end
+  $nodoc
+.end
+
+.command .h6; _puts "###### #{@_data}"; end
+  $nodoc
+.end
+
+.command .title
+  $nodoc
+.end
+
+.command .section
+  $nodoc
+.end
+
+.command .bq   # block quote
+  $nodoc
+.end
+
+.command .list
+  $nodoc
+.end
+
+.command .olist   # Doesn't handle paragraphs yet
+  $nodoc
+.end
+
+
+.finalize
+ 

@@ -1,0 +1,77 @@
+.mixin docsen
+
+.context ../lib/livetext.rb
+
+.para off
+.backtrace
+
+.set nodoc="&nbsp;&nbsp;&nbsp;&nbsp;<b>Not documented yet.</b><br><br>"
+
+
+.command .initialize(parent, output)
+  $nodoc
+.end
+
+.command ._error!(err, abort=true, trace=false)
+  $nodoc
+.end
+
+.command ._disallowed?(name)
+  $nodoc
+.end
+
+.command .source(enum, file, line)
+  $nodoc
+.end
+
+.command .peek_nextline
+  $nodoc
+.end
+
+.command .nextline
+  $nodoc
+.end
+
+.command .grab_file(fname)
+  $nodoc
+.end
+
+.command .initialize(output = ::STDOUT)
+  $nodoc
+.end
+
+.command .process_line(line, sigil=".")
+  $nodoc
+.end
+
+.command .process_file(fname, backtrace=false)
+  $nodoc
+.end
+
+.command .process(text)
+  $nodoc
+.end
+
+.command .rx(str, space=nil)
+  $nodoc
+.end
+
+.command .handle_scomment(line, sigil=".")
+  $nodoc
+.end
+
+.command ._get_name(line, sigil=".")
+  $nodoc
+.end
+
+.command .    name = "_def" if name == "def"
+  $nodoc
+.end
+
+.command .handle_sname(line, sigil=".")
+  $nodoc
+.end
+
+
+.finalize
+ 

@@ -1,0 +1,56 @@
+.mixin docsen
+
+.context ../dsl/pyggish.rb
+
+.para off
+.backtrace
+
+.set nodoc="&nbsp;&nbsp;<b>Not documented yet.</b><br><br>"
+
+.command .self.pyg_change(code, klass, style)
+  $nodoc
+.end
+
+.command .self._codebar_color(lexer)
+  $nodoc
+.end
+
+.command .self.pyg_finalize(code, lexer=:elixir)
+  $nodoc
+.end
+
+.command ._process_code(text)
+  $nodoc
+.end
+
+.command ._colorize(code, lexer=:elixir)
+  $nodoc
+.end
+
+.command ._colorize!(code, lexer=:elixir)
+  $nodoc
+.end
+
+.command .ruby
+  $nodoc
+.end
+
+.command .elixir
+  $nodoc
+.end
+
+.command .fragment
+  $nodoc
+.end
+
+.command .code       # FIXME ?
+  $nodoc
+.end
+
+.command .mono
+  $nodoc
+.end
+
+
+.finalize
+ 

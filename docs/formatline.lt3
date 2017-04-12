@@ -1,0 +1,63 @@
+.context ../lib/formatline.rb
+.para off
+.hacktrace
+
+.set nodoc="&nbsp;&nbsp;<b>Not documented yet.</b><br><br>"
+.command .initialize
+  $nodoc
+.end
+
+.command .peek
+  $nodoc
+.end
+
+.command .grab
+  $nodoc
+.end
+
+.command .skip
+  $nodoc
+.end
+
+.command .keep(initial = "")
+  $nodoc
+.end
+
+.command .emit(str = "")
+  $nodoc
+.end
+
+.command .funcall(name, param)
+  $nodoc
+.end
+
+.command .vsub
+  $nodoc
+.end
+
+.command .fcall
+  $nodoc
+.end
+
+.command .bold
+  $nodoc
+.end
+
+.command .ttype
+  $nodoc
+.end
+
+.command .italics
+  $nodoc
+.end
+
+.command .strike
+  $nodoc
+.end
+
+.command .parse(line)
+  $nodoc
+.end
+
+.finalize
+

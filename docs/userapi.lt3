@@ -1,8 +1,9 @@
-.context ../lib/userapi.rb
+.context userapi.rb
 .para off
 .hacktrace
 
 .set nodoc="&nbsp;&nbsp;<b>Not documented yet.</b><br><br>"
+
 .command ._check_existence(file, msg)
   $nodoc
 .end
@@ -74,4 +75,6 @@
 .command ._debug(*args)
   $nodoc
 .end
+
+.finalize
 
