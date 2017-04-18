@@ -19,7 +19,7 @@ loop do
   break if arg.nil?
 
   case arg
-    when  "-v", "--version"
+    when "-v", "--version"
       puts "#{Livetext::VERSION}\n "
     when "-t", "--test"  # FIXME doesn't work - path problem
       file = "#{Path}/../test/test.rb"
@@ -37,9 +37,12 @@ loop do
     when nil
       puts <<-EOF
       Usage: 
+        livetext filename
+        livetext --path
+        livetext -t
+        livetext --test
         livetext -v
         livetext --version
-        livetext filename
       EOF
       puts
     when Object

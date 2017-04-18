@@ -205,7 +205,7 @@ module Livetext::Standard
   end
 
   def r
-  STDERR.puts "@_data = #{@_data.inspect}"
+# STDERR.puts "@_data = #{@_data.inspect}"
     _puts @_data  # No processing at all
   end
 

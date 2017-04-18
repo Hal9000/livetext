@@ -77,6 +77,7 @@ module Livetext::UserAPI
       lines
     end
   rescue => err
+    p err, err.backtrace
     _error!("Expecting .end, found end of file")
   end
 
