@@ -46,7 +46,8 @@ class FormatLine
 
   def funcall(name, param)
     fobj = ::Livetext::Functions.new
-    fobj.param = param
+    ::Livetext::Functions.param = param
+# STDERR.puts "Calling '#{name}' with '#{param}'"
     fobj.send(name)
   end
 
@@ -56,6 +57,7 @@ class FormatLine
   end
 
   def fcall
+#   puts "Calling funcall: #@name(#@param)"
     @buffer << funcall(@fname, @param)
     @fname, @param = "", ""
   end

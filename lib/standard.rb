@@ -42,7 +42,7 @@ module Livetext::Standard
     funcname = @_args[0]
     _error! "Illegal name '#{funcname}'" if _disallowed?(funcname)
     func_def = <<-EOS
-      def #{funcname}
+      def #{funcname}(*args)
         #{_body_text(true)}
       end
     EOS

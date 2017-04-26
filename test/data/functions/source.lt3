@@ -6,23 +6,6 @@ here...
 "Eureka!"
 .end
 
-.func sign
-  str = @_data
-  out = ""
-  wide = str.length + 2
-  out << " "*4 + "+"
-  wide.times { out << "-" }
-  out << "\n" + " "*4
-  out << "| #{str} |\n"
-  out << " "*4 + "+"
-  wide.times { out << "-" }
-  out << "\n\n "
-  STDERR.puts out
-  out
-.end
-
 I am calling $$myfunc here...
 Let's see 
 what happens.
-
-Now I'm trying to make $$sign[A SIGN HERE]...

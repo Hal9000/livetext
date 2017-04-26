@@ -38,6 +38,7 @@ module Livetext::UserAPI
   end
 
   def _end?(str, sigil=".")
+    return false if str.nil?
     cmd = sigil + "end"
     return false if str.index(cmd) != 0 
     return false unless _trailing?(str[5])
@@ -65,6 +66,7 @@ module Livetext::UserAPI
     @save_location = @sources.last
     loop do
       @line = nextline
+      raise if @line.nil?
       break if _end?(@line, sigil)
       next if _comment?(@line, sigil)   # FIXME?
       @line = _formatting(@line) unless raw
@@ -77,7 +79,7 @@ module Livetext::UserAPI
       lines
     end
   rescue => err
-    p err, err.backtrace
+    # FIXME
     _error!("Expecting .end, found end of file")
   end
 

@@ -3,11 +3,13 @@ require 'standard'  # FIXME
 class Livetext::Functions    # Functions will go here... user-def AND pre-def??
   Formats = ::Livetext::Standard::SimpleFormats
 
-  def initialize
-    @param = nil
+  @param = nil
+
+  def self.param
+    @param
   end
 
-  def param=(str)
+  def self.param=(str)
     @param = str
   end
 
@@ -20,9 +22,10 @@ class Livetext::Functions    # Functions will go here... user-def AND pre-def??
   end
 
   def simple_format(*args)
-    @param ||= "NO PARAMETER"
+    param = self.class.param
+    param ||= "NO PARAMETER"
     pairs = Formats.values_at(*args)
-    str = @param.dup
+    str = param.dup
     pairs.reverse.each do |pair|
       str = "#{pair.first}#{str}#{pair.last}"
     end
