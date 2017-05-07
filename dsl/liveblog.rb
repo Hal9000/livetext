@@ -13,6 +13,7 @@ def _errout(*args)
 end
 
 def _passthru(line)
+  return if line.nil?
   @dest << "<p>" if line == "\n" and ! @_nopara
   line = _formatting(line)
   @dest << line
@@ -72,8 +73,8 @@ def list!
 end
 
 def finalize
-# STDERR.puts "finalize: @meta = #{@meta.inspect}"
-  @meta.slug = make_slug(@meta.title, @config.sequence)
+  STDERR.puts "finalize: @meta = #{@meta.inspect}"
+# @meta.slug = make_slug(@meta.title)
   @meta.body = @dest
   @meta
 end

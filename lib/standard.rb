@@ -178,6 +178,7 @@ module Livetext::Standard
   end
 
   def mixin
+STDERR.puts "Got into mixin..."
     name = @_args.first   # Expect a module name
     file = "#{Plugins}/" + name.downcase + ".rb"
     return if @_mixins.include?(name)
@@ -193,7 +194,7 @@ module Livetext::Standard
     self.extend(newmod)
     init = "init_#{name}"
     self.send(init) if self.respond_to? init
-# STDERR.puts "mixin: self = #{self}  @meta = #@meta"
+STDERR.puts "mixin: self = #{self}  @meta = #@meta"
     _optional_blank_line
   end
 

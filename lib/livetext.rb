@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.13"
+  VERSION = "0.8.14"
 end
 
 require 'fileutils'
@@ -120,7 +120,10 @@ class Livetext
       break if line.nil?
       process_line(line)
     end
-    finalize if self.respond_to? :finalize
+STDERR.puts "About to call finalize: main = #{@main.inspect}"
+STDERR.puts "About to call finalize: methods = #{@main.methods.sort.inspect}"
+STDERR.puts "About to call finalize: #{@main.respond_to? :finalize}"
+    @main.finalize if @main.respond_to? :finalize
   end
 
   def process(text)

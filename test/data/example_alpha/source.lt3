@@ -1,4 +1,3 @@
-
 .def alpha
    text = _body.to_a.join(" ")
    words = text.split.sort
