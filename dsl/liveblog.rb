@@ -16,7 +16,7 @@ def _passthru(line)
   return if line.nil?
   @dest << "<p>" if line == "\n" and ! @_nopara
   line = _formatting(line)
-  @dest << line
+  @dest << line + "\n"
 end
 
 def title 

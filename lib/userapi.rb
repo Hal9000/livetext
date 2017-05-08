@@ -112,11 +112,11 @@ module Livetext::UserAPI
   end
 
   def _puts(*args)
-    @output.puts *args
+    @output.puts *args 
   end
 
   def _print(*args)
-    @output.print *args
+    @output.print *args 
   end
 
   def _debug=(val)

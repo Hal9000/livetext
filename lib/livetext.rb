@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.14"
+  VERSION = "0.8.15"
 end
 
 require 'fileutils'
@@ -19,6 +19,8 @@ TTY = ::File.open("/dev/tty", "w")
 
 class Livetext
   Vars = {}
+
+  attr_reader :main
 
   class Processor
     include Livetext::Standard
@@ -43,6 +45,10 @@ class Livetext
       @_nopara = false
       @output = output
       @sources = []
+    end
+
+    def output=(io)
+      @output = io
     end
 
     def _error!(err, abort=true, trace=false)
@@ -94,8 +100,6 @@ class Livetext
     @main = Processor.new(self, output)
   end
 
-  attr_reader :main
-
   def process_line(line, sigil=".")
     nomarkup = true
     # FIXME inefficient
@@ -120,9 +124,20 @@ class Livetext
       break if line.nil?
       process_line(line)
     end
-STDERR.puts "About to call finalize: main = #{@main.inspect}"
-STDERR.puts "About to call finalize: methods = #{@main.methods.sort.inspect}"
-STDERR.puts "About to call finalize: #{@main.respond_to? :finalize}"
+    @main.finalize if @main.respond_to? :finalize
+  end
+
+  def process_file!(fname, backtrace=false)
+    raise "No such file '#{fname}' to process" unless File.exist?(fname)
+    @main.output = StringIO.new
+    enum = File.readlines(fname).each
+    @backtrace = backtrace
+    @main.source(enum, fname, 0)
+    loop do 
+      line = @main.nextline
+      break if line.nil?
+      process_line(line)
+    end
     @main.finalize if @main.respond_to? :finalize
   end
 
