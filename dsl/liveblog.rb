@@ -4,7 +4,7 @@ require 'yaml'
 def init_liveblog
   @teaser = ""
   @body = ""
-  @dest = @teaser
+  @dest = ""
   @meta = ::OpenStruct.new
 end
 
@@ -73,7 +73,7 @@ def list!
 end
 
 def finalize
-  STDERR.puts "finalize: @meta = #{@meta.inspect}"
+# STDERR.puts "finalize: @meta = #{@meta.inspect}"
 # @meta.slug = make_slug(@meta.title)
   @meta.body = @dest
   @meta
@@ -144,6 +144,11 @@ def generate_index(view) # FIXME
   ::File.write("#{cdir}/index.html", out)
   @list[view] << "#{cdir}/index.html"
   _errout @list.inspect
+end
+
+def teaser
+  @meta.teaser = _body_text
+  # FIXME
 end
 
 def deploy # FIXME
