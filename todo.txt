@@ -1,0 +1,2 @@
+   Bug: underscore in code (inline) causes italics
+
