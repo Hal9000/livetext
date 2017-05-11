@@ -6,12 +6,12 @@ SimpleFormats[:i] = %w[_ _]
 SimpleFormats[:t] = %w[` `]
 SimpleFormats[:s] = %w[<strike> </strike>]
 
-def h1; _puts "# #{@_data}"; end       # atx style for now
-def h2; _puts "## #{@_data}"; end
-def h3; _puts "### #{@_data}"; end
-def h4; _puts "#### #{@_data}"; end
-def h5; _puts "##### #{@_data}"; end
-def h6; _puts "###### #{@_data}"; end
+def h1; _puts "# #{@_data}"; _optional_blank_line end       # atx style for now
+def h2; _puts "## #{@_data}"; _optional_blank_line end
+def h3; _puts "### #{@_data}"; _optional_blank_line end
+def h4; _puts "#### #{@_data}"; _optional_blank_line end
+def h5; _puts "##### #{@_data}"; _optional_blank_line end
+def h6; _puts "###### #{@_data}"; _optional_blank_line end
 
 def title
   h1
@@ -24,8 +24,6 @@ end
 def bq   # block quote
   _body {|line| _puts "> #{line}" }
 end
-
-# Asterisks, underscores, and double underscores -- difficult, handle later
 
 def list
   _body {|line| _puts " * #{line}" }
