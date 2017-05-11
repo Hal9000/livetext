@@ -4,7 +4,7 @@ require 'yaml'
 def init_liveblog
   @teaser = ""
   @body = ""
-  @dest = ""
+  @body = ""
   @meta = ::OpenStruct.new
 end
 
@@ -14,14 +14,14 @@ end
 
 def _passthru(line)
   return if line.nil?
-  @dest << "<p>" if line == "\n" and ! @_nopara
+  @body << "<p>" if line == "\n" and ! @_nopara
   line = _formatting(line)
-  @dest << line + "\n"
+  @body << line + "\n"
 end
 
 def title 
   @meta.title = @_data
-  @dest << "<h1>#{@meta.title}</h1>"
+  @body << "<h1>#{@meta.title}</h1>"
 end
 
 def pubdate 
@@ -47,34 +47,33 @@ def liveblog_version
 end
 
 def list
-  @dest << "<ul>"
-  _body {|line| @dest << "<li>#{line}</li>" }
-  @dest << "</ul>"
+  @body << "<ul>"
+  _body {|line| @body << "<li>#{line}</li>" }
+  @body << "</ul>"
 end
 
 def list!
-  @dest << "<ul>"
-  lines = _body.each   # {|line| @dest << "<li>#{line}</li>" }
+  @body << "<ul>"
+  lines = _body.each   # {|line| @body << "<li>#{line}</li>" }
   loop do 
     line = lines.next
     line = _formatting(line)
     if line[0] == " "
-      @dest << line
+      @body << line
     else
-      @dest << "<li>#{line}</li>"
+      @body << "<li>#{line}</li>"
     end
   end
-  @dest << "</ul>"
+  @body << "</ul>"
 end
 
 def finalize
-# STDERR.puts "finalize: @meta = #{@meta.inspect}"
-# @meta.slug = make_slug(@meta.title)
-  @meta.body = @dest
+  @meta.body = @body
   @meta
 end
 
 def teaser
   @meta.teaser = _body_text
+  @body << @meta.teaser + "\n"
   # FIXME
 end
