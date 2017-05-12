@@ -263,6 +263,13 @@ module Livetext::Standard
   def invoke(str)
   end
 
+  def mono
+    _puts "<pre>"
+    _body {|line| puts line }
+    _puts "</pre>"
+    _optional_blank_line
+  end
+
   def dlist
     delim = _args.first
     _puts "<table>"
