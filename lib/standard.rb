@@ -283,4 +283,10 @@ module Livetext::Standard
     _puts "</table>"
   end
 
+  def link
+    url = _args.first
+    text = _args[2..-1].join(" ")
+    _puts "<a href='#{url}'>#{text}</a>"
+  end
+
 end

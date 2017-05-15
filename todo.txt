@@ -1,2 +1,4 @@
+   Add .link, $$link
    Bug: underscore in code (inline) causes italics
+   way to set defaults for images, etc.
 

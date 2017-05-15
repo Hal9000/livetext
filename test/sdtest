@@ -1,0 +1,6 @@
+
+sdiff test/data/$1/expected-output.txt /tmp/$1--actual-output.txt
+
+echo ==========
+
+sdiff test/data/$1/expected-error.txt /tmp/$1--actual-error.txt
