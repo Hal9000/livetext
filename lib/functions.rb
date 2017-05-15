@@ -27,6 +27,11 @@ class Livetext::Functions    # Functions will go here... user-def AND pre-def??
     "<a href='#{url}'>#{text}</a>"
   end
 
+  def yt
+    param = self.class.param
+    "https://www.youtube.com/watch?v=#{param}"
+  end
+
   def simple_format(*args)
     param = self.class.param
     param ||= "NO PARAMETER"

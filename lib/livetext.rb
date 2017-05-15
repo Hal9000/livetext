@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.21"
+  VERSION = "0.8.22"
 end
 
 require 'fileutils'
@@ -124,7 +124,9 @@ class Livetext
       break if line.nil?
       process_line(line)
     end
-    @main.finalize if @main.respond_to? :finalize
+    val = @main.finalize if @main.respond_to? :finalize
+    p val
+    val
   end
 
   def process_file!(fname, backtrace=false)
