@@ -70,13 +70,13 @@ end
 def asset
   @meta.assets ||= []
   @meta.assets += _args
-  STDERR.puts "Asset(s): #{@meta.assets}"
+  STDERR.puts red("\n  [DEBUG] ") + "Asset(s): #{@meta.assets}"
 end
 
 def assets
   @meta.assets ||= []
   @meta.assets += _body
-  STDERR.puts "Assets: #{_body.inspect}"
+  STDERR.puts red("\n  [DEBUG] ") + "Assets: #{_body.inspect}"
 end
 
 def finalize
