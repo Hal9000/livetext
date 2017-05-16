@@ -67,6 +67,18 @@ def list!
   @body << "</ul>"
 end
 
+def asset
+  @meta.assets ||= []
+  @meta.assets += _args
+  STDERR.puts "Asset(s): #{@meta.assets}"
+end
+
+def assets
+  @meta.assets ||= []
+  @meta.assets += _body
+  STDERR.puts "Assets: #{_body.inspect}"
+end
+
 def finalize
   @meta.body = @body
   @meta
