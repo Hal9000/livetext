@@ -1,7 +1,54 @@
 require 'ostruct'
 require 'yaml'
 
+require 'runeblog'  # Now depends explicitly
+
+class ::Livetext::Functions   # do this differently??
+
+  def asset   # FIXME this is baloney...
+  param = Livetext::Functions.param
+  puts "REACHED func_asset"
+     text, name = param.split("|")
+ 
+     # FIXME how should this work?
+#    url = find_asset(name)
+     url = name
+     "<a href='#{url}'>#{text}</a>"
+  end
+
+end
+
+### find_asset
+
+def find_asset(asset)
+  views = @config.views
+  views.each do |view| 
+    vdir = @config.viewdir(view)
+    post_dir = "#{vdir}#{@meta.slug}/assets/"
+    path = post_dir + asset
+    STDERR.puts "  Seeking #{path}"
+    return path if File.exist?(path)
+  end
+  views.each do |view| 
+    dir = @config.viewdir(view) + "/assets/"
+    path = dir + asset
+    STDERR.puts "  Seeking #{path}"
+    return path if File.exist?(path)
+  end
+  top = @root + "/assets/"
+  path = top + asset
+  STDERR.puts "  Seeking #{path}"
+  return path if File.exist?(path)
+
+  return nil
+end
+
+#############
+
 def init_liveblog
+  @blog = RuneBlog.new
+  @config = @blog.read_config
+  @root = @config.root
   @teaser = ""
   @body = ""
   @body = ""
@@ -68,8 +115,9 @@ def list!
 end
 
 def asset
-  @meta.assets ||= []
-  @meta.assets += _args
+  @meta.assets ||= {}
+  list = _args
+  list.each {|asset| @meta.assets[asset] = find_asset(asset) }
   STDERR.puts red("\n  [DEBUG] ") + "Asset(s): #{@meta.assets}"
 end
 

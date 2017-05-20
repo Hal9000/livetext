@@ -27,6 +27,11 @@ class Livetext::Functions    # Functions will go here... user-def AND pre-def??
     "<a href='#{url}'>#{text}</a>"
   end
 
+#   def asset
+#     param = self.class.param
+#     # FIXME how should this work?
+#   end
+
   def yt
     param = self.class.param
     "https://www.youtube.com/watch?v=#{param}"
