@@ -4,8 +4,6 @@ require 'formatline'
 
 module Livetext::UserAPI
 
-  Parser = ::FormatLine.new
-
   def _check_existence(file, msg)
     _error! msg unless File.exist?(file)
   end
@@ -99,15 +97,18 @@ module Livetext::UserAPI
     str
   end
 
-  def _formatting(line)
-    l2 = Parser.parse(line)
+  def _formatting(line, context = nil)
+    @parser ||= ::FormatLine.new
+    l2 = @parser.parse(line, context)
     line.replace(l2)
   end
 
-  def _passthru(line)
+  def _passthru(line, context = nil)
     return if @_nopass
+#   p [@_nopara, line]
     _puts "<p>" if line == "\n" and ! @_nopara
-    _formatting(line)
+#   _puts "<p>" if line == "" and ! @_nopara
+    _formatting(line, context)
     _puts line
   end
 

@@ -49,7 +49,8 @@ class FormatLine
       self.send("func_" + name.to_s, param)
     else
       fobj = ::Livetext::Functions.new
-      ::Livetext::Functions.param = param
+      ::Livetext::Functions.param = param       # is this screwed up???
+      ::Livetext::Functions.context = @context   # is this screwed up???
       fobj.send(name)
     end
   end
@@ -88,7 +89,9 @@ class FormatLine
     @substr = ""
   end
 
-  def parse(line)
+  def parse(line, context = nil)
+    context ||= binding
+    @context = context
     @enum = line.chomp.each_char
     @buffer = ""
     @substr = ""

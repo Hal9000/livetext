@@ -1,6 +1,8 @@
 class Livetext
-  VERSION = "0.8.25"
+  VERSION = "0.8.26"
 end
+
+$Livetext = Livetext
 
 require 'fileutils'
 
@@ -20,7 +22,7 @@ TTY = ::File.open("/dev/tty", "w")
 class Livetext
   Vars = {}
 
-  attr_reader :main
+  attr_reader :main, :context
 
   class Processor
     include Livetext::Standard
@@ -54,6 +56,7 @@ class Livetext
     def _error!(err, abort=true, trace=false)
       where = @sources.last || @save_location
       STDERR.puts "Error: #{err} (at #{where[1]} line #{where[2]})"
+      STDERR.puts err.backtrace
       STDERR.puts err.backtrace if @backtrace && err.respond_to?(:backtrace)
       exit if abort
     end
@@ -100,7 +103,10 @@ class Livetext
     @main = Processor.new(self, output)
   end
 
-  def process_line(line, sigil=".")
+  def process_line(line, context=nil)
+    context ||= binding
+    @context = context
+    sigil = "." # Can't change yet
     nomarkup = true
     # FIXME inefficient
     scomment  = rx(sigil, Livetext::Space)  # apply these in order
@@ -110,19 +116,21 @@ class Livetext
     elsif line =~ sname 
       handle_sname(line)
     else
-      @main._passthru(line)
+      @main._passthru(line, context)
     end
   end
 
-  def process_file(fname, backtrace=false)
+  def process_file(fname, context=nil)
+    context ||= binding
+    @context = context
     raise "No such file '#{fname}' to process" unless File.exist?(fname)
     enum = File.readlines(fname).each
-    @backtrace = backtrace
+    @backtrace = false
     @main.source(enum, fname, 0)
     loop do 
       line = @main.nextline
       break if line.nil?
-      process_line(line)
+      process_line(line, context)
     end
     val = @main.finalize if @main.respond_to? :finalize
     val

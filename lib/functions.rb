@@ -4,13 +4,10 @@ class Livetext::Functions    # Functions will go here... user-def AND pre-def??
   Formats = ::Livetext::Standard::SimpleFormats
 
   @param = nil
+  @context = nil
 
-  def self.param
-    @param
-  end
-
-  def self.param=(str)
-    @param = str
+  class << self
+    attr_accessor :param, :context
   end
 
   def date
