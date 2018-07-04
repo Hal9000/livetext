@@ -40,18 +40,18 @@ def find_asset(asset)
     vdir = @config.viewdir(view)
     post_dir = "#{vdir}#{@meta.slug}/assets/"
     path = post_dir + asset
-    STDERR.puts "  Seeking #{path}"
+    STDERR.puts "          Seeking #{path}"
     return path if File.exist?(path)
   end
   views.each do |view| 
     dir = @config.viewdir(view) + "/assets/"
     path = dir + asset
-    STDERR.puts "  Seeking #{path}"
+    STDERR.puts "          Seeking #{path}"
     return path if File.exist?(path)
   end
   top = @root + "/assets/"
   path = top + asset
-  STDERR.puts "  Seeking #{path}"
+  STDERR.puts "          Seeking #{path}"
   return path if File.exist?(path)
 
   return nil

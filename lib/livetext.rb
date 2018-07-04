@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.26"
+  VERSION = "0.8.27"
 end
 
 $Livetext = Livetext
@@ -56,7 +56,6 @@ class Livetext
     def _error!(err, abort=true, trace=false)
       where = @sources.last || @save_location
       STDERR.puts "Error: #{err} (at #{where[1]} line #{where[2]})"
-      STDERR.puts err.backtrace
       STDERR.puts err.backtrace if @backtrace && err.respond_to?(:backtrace)
       exit if abort
     end
