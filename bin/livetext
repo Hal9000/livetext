@@ -14,38 +14,61 @@ x = Livetext.new
 
 @backtrace = false
 
+def usage
+  puts <<-EOF
+  Usage: 
+    livetext filename
+
+    Read STDIN
+      livetext -s
+      livetext --stdin
+
+    Show help:
+      livetext
+      livetext -h
+      livetext --help
+
+    Show path:
+      livetext -p
+      livetext --path
+
+    Run tests:
+      livetext -t
+      livetext --test
+
+    Show version:
+      livetext -v
+      livetext --version
+
+    Turn on backtrace:
+      livetext -b
+      livetext --backtrace
+  EOF
+  puts
+end
+
 loop do
   arg = ARGV.shift
-  break if arg.nil?
-
   case arg
     when "-v", "--version"
       puts "#{Livetext::VERSION}\n "
-    when "-t", "--test"  # FIXME doesn't work - path problem
+    when "-t", "--test"
       file = "#{Path}/../test/test.rb"
       flag = @backtrace ? "-back" : ""
       cmd = "ruby #{file} cmdline#{flag}"
       puts cmd
       system(cmd)
-    when "--path"
+    when "-p", "--path"
       puts Path
-    when "--backtrace"
+    when "-b", "--backtrace"
       @backtrace = true
     when "-s", "--stdin"
       src = STDIN.read
       x.process(src)
-    when nil
-      puts <<-EOF
-      Usage: 
-        livetext filename
-        livetext --path
-        livetext -t
-        livetext --test
-        livetext -v
-        livetext --version
-      EOF
-      puts
+    when nil, "", "-h", "--help"
+      usage
     when Object
       x.process_file(arg, @backtrace)
   end
+  break if arg.nil?
 end

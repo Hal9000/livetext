@@ -265,7 +265,7 @@ module Livetext::Standard
 
   def mono
     _puts "<pre>"
-    _body {|line| puts line }
+    _body(true) {|line| puts line }
     _puts "</pre>"
     _optional_blank_line
   end
