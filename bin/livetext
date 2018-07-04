@@ -45,10 +45,14 @@ def usage
       livetext --backtrace
   EOF
   puts
+  exit
 end
+
+usage if ARGV.empty?
 
 loop do
   arg = ARGV.shift
+  break if arg.nil?
   case arg
     when "-v", "--version"
       puts "#{Livetext::VERSION}\n "
@@ -65,10 +69,9 @@ loop do
     when "-s", "--stdin"
       src = STDIN.read
       x.process(src)
-    when nil, "", "-h", "--help"
+    when "-h", "--help"
       usage
     when Object
       x.process_file(arg, @backtrace)
   end
-  break if arg.nil?
 end

@@ -186,7 +186,7 @@ end
 
 def mono
   _puts "<pre>"
-  _body {|line| _puts "    " + line }
+  _body(true) {|line| _puts "    " + line }
   _puts "</pre>"
 end
 
