@@ -115,7 +115,7 @@ def sec
   @section = "#@chapter.#@sec"
 # _errout("section #@section")
   @toc << "#{_nbsp(3)}<b>#@section</b> #@_data<br>"
-  _next_output(_slug(@_data))
+# _next_output(_slug(@_data))
   _puts "<h3>#@section #{@_data}</h3>\n"
 end
 
@@ -124,7 +124,7 @@ def subsec
   @subsec = "#@chapter.#@sec.#@sec2"
   @toc << "#{_nbsp(6)}<b>#@subsec</b> #@_data<br>"
 # _errout("section #@subsec")
-  _next_output(_slug(@_data))
+# _next_output(_slug(@_data))
   _puts "<h3>#@subsec #{@_data}</h3>\n"
 end
 
@@ -134,7 +134,7 @@ def table2
   extra = _args[2]
   delim = " :: "
   _puts "<br><center><table border=1 width=#{wide}% cellpadding=5>"
-  lines = _body
+  lines = _body(true)
   lines.map! {|line| _formatting(line) }
 
   lines.each do |line|
@@ -155,7 +155,7 @@ def table
   title = @_data
   delim = " :: "
   _puts "<br><center><table border=1 width=90% cellpadding=5>"
-  lines = _body
+  lines = _body(true)
   maxw = nil
   lines.each do |line|
     _formatting(line)
@@ -176,7 +176,7 @@ def table
   end
   _puts "</table>"
   @toc << "#{_nbsp(8)}<b>Table #@chapter.#@table_num</b> #{title}<br>"
-  _next_output(_slug("table_#{title}"))
+# _next_output(_slug("table_#{title}"))
   _puts "<b>Table #@chapter.#@table_num &nbsp;&nbsp; #{title}</b></center><br>"
 end
 

@@ -168,7 +168,7 @@ def fragment
   _debug "-- fragment: lexer = #{lexer.inspect}"
   code = ""
   code << "# Ruby code\n\n" if lexer == :ruby
-  _body {|line| code << "  " + line }
+  _body(true) {|line| code << "  " + line }
   _debug "code = \n#{code}\n-----"
   params = "(code, lexer: #{lexer.inspect}, options: {})"
   _debug "-- pygments params = #{params}"
