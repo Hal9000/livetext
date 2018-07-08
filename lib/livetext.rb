@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.31"
+  VERSION = "0.8.32"
 end
 
 $Livetext = Livetext

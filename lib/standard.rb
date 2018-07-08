@@ -296,4 +296,38 @@ module Livetext::Standard
     _puts "<a href='#{url}'>#{text}</a>"
   end
 
+  def xtable   # Borrowed from bookish - FIXME
+#   @table_num ||= 0
+#   @table_num += 1
+    title = @_data
+    delim = " :: "
+    _puts "<br><center><table border=1 width=90% cellpadding=5>"
+    lines = _body(true)
+    maxw = nil
+    sep = "\030"
+    lines.each do |line|
+      _formatting(line)
+      line.gsub!("\n", sep)
+      cells = line.split(delim)
+      wide = cells.map {|x| x.length }
+      maxw = [0] * cells.size
+      maxw = maxw.map.with_index {|x, i| [x, wide[i]].max }
+    end
+  
+    sum = maxw.inject(0, :+)
+    maxw.map! {|x| (x/sum*100).floor }
+  
+    lines.each do |line|
+      cells = line.split(delim)
+      _puts "<tr>"
+      cell.gsub!(sep, "\n")
+      cells.each.with_index {|cell, i| ; _puts "  <td>#{cell}</td>" }
+      _puts "</tr>"
+    end
+    _puts "</table>"
+#   @toc << "#{_nbsp(8)}<b>Table #@chapter.#@table_num</b> #{title}<br>"
+  # _next_output(_slug("table_#{title}"))
+#   _puts "<b>Table #@chapter.#@table_num &nbsp;&nbsp; #{title}</b></center><br>"
+  end
+
 end
