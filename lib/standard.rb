@@ -304,10 +304,9 @@ module Livetext::Standard
     _puts "<br><center><table border=1 width=90% cellpadding=5>"
     lines = _body(true)
     maxw = nil
-    sep = "\030"
     lines.each do |line|
-      _formatting(line)
-      line.gsub!("\n", sep)
+      _formatting(line)  # May split into multiple lines!
+      line.gsub!("\n", "")
       cells = line.split(delim)
       wide = cells.map {|x| x.length }
       maxw = [0] * cells.size
@@ -320,8 +319,9 @@ module Livetext::Standard
     lines.each do |line|
       cells = line.split(delim)
       _puts "<tr>"
-      cell.gsub!(sep, "\n")
-      cells.each.with_index {|cell, i| ; _puts "  <td>#{cell}</td>" }
+      cells.each.with_index do |cell, i| 
+        _puts "  <td>#{cell}</td>"
+      end
       _puts "</tr>"
     end
     _puts "</table>"
