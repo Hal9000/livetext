@@ -161,6 +161,13 @@ module Livetext::Standard
     _optional_blank_line
   end
 
+  def heredoc
+    var = @_args[0]
+    str = _body_text
+    Livetext::Vars[var] = str
+    _optional_blank_line
+  end
+
   def _include
     file = @_args.first
     _check_existence(file, "No such include file '#{file}'")
