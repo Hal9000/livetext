@@ -306,7 +306,7 @@ module Livetext::Standard
     maxw = nil
     lines.each do |line|
       _formatting(line)  # May split into multiple lines!
-      line.gsub!("\n", "")
+      line.gsub!(/\n+/, "<br>")
       cells = line.split(delim)
       wide = cells.map {|x| x.length }
       maxw = [0] * cells.size
