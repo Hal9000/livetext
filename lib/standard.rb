@@ -320,7 +320,7 @@ module Livetext::Standard
       cells = line.split(delim)
       _puts "<tr>"
       cells.each.with_index do |cell, i| 
-        _puts "  <td>#{cell}</td>"
+        _puts "  <td valign=top>#{cell}</td>"
       end
       _puts "</tr>"
     end

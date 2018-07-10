@@ -68,7 +68,7 @@ end
 
 def text!
   xy, wxh = _data.split
-  str = _body.join
+  str = _body_text  # .join
   weight, gravity = BoldWeight, CenterGravity
   _text(xy, wxh, str, weight, gravity)
   _optional_blank_line

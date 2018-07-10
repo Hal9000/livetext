@@ -82,7 +82,7 @@ module Livetext::UserAPI
   end
 
   def _body_text(raw=false, sigil=".")
-    _body(sigil).join("\n")
+    _body(sigil).join("")
   end
 
   def _raw_body!(sigil=".")
