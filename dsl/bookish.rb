@@ -42,7 +42,7 @@ def alpha_columns
   _puts "<table cellpadding=10>"
   words.each_slice(n) do |w|
     items = w.map {|x| "<tt>#{x}</tt>" }
-    _puts "<tr><td width=5%></td><td>" + items.join("</td><td>") + "</td></tr>"
+    _puts "<tr><td width=5% valign=top></td><td>" + items.join("</td><td>") + "</td></tr>"
   end
   _puts "</table>"
 end
@@ -141,7 +141,10 @@ def table2
     cells = line.split(delim)
     percent = (100/cells.size.to_f).round
     _puts "<tr>"
-    cells.each {|cell| _puts "  <td width=#{percent}% #{extra}>#{cell}</td>" }
+    cells.each do |cell| 
+      _puts "  <td width=#{percent}% valign=top " + 
+            "#{extra}>#{cell}</td>"
+    end
     _puts "</tr>"
   end
   _puts "</table></center><br><br>"
@@ -171,7 +174,10 @@ def table
   lines.each do |line|
     cells = line.split(delim)
     _puts "<tr>"
-    cells.each.with_index {|cell, i| ; _puts "  <td width=#{maxw}%>#{cell}</td>" }
+    cells.each.with_index do |cell, i| 
+      _puts "  <td width=#{maxw}% valign=top>" + 
+            "#{cell}</td>"
+    end
     _puts "</tr>"
   end
   _puts "</table>"

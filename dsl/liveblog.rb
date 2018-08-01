@@ -4,6 +4,12 @@ require 'pp'
 
 require 'runeblog'  # Now depends explicitly
 
+def quote
+  _puts "<blockquote>"
+  _puts _body
+  _puts "</blockquote>"
+end
+
 class ::Livetext::Functions   # do this differently??
 
   def asset   # FIXME this is baloney...
