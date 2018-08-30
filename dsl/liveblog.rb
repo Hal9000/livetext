@@ -35,7 +35,7 @@ begin
   ThisBlog
 rescue
   ThisBlog    = RuneBlog.new
-  ThisConfig  = ThisBlog.read_config
+  ThisConfig  = ThisBlog.open_blog
 end
 
 ### find_asset

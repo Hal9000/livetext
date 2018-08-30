@@ -138,15 +138,15 @@ names are essentially the same as the names of the dot-commands, with occasional
  `copy      %% Copy this input file verbatim (no interpretation)
  `r         %% Pass a single line through without processing
  `raw       %% Pass this special text block (terminated with ``__EOF__) directly into output without processing 
-`func       %% Define a function to be invoked inline
-`say        %% Print a message to the screen
-`banner     %% Print a "noticeable" message to the screen
-`quit       %% End processing and exit
-`nopass     %% Don't pass lines through (just honor commands)
-`include    %% Read and process another file (typically a `.lt3 file)
-`debug      %% Turn on debugging
-`nopara     %% Turn off the "blank line implies new paragraph" switch
-`newpage    %% Start a new output page
+ `func       %% Define a function to be invoked inline
+ `say        %% Print a message to the screen
+ `banner     %% Print a "noticeable" message to the screen
+ `quit       %% End processing and exit
+ `nopass     %% Don't pass lines through (just honor commands)
+ `include    %% Read and process another file (typically a `.lt3 file)
+ `debug      %% Turn on debugging
+ `nopara     %% Turn off the "blank line implies new paragraph" switch
+ `newpage    %% Start a new output page
 .end
 
 .section Examples from the tests
