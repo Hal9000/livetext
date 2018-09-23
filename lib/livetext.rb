@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.37"
+  VERSION = "0.8.38"
 end
 
 $Livetext = Livetext
@@ -41,11 +41,11 @@ class Livetext
                 :enum_for, :pretty_inspect, :==, :equal?, :!, :!=, :instance_eval, 
                 :instance_exec, :__send__, :__id__, :__binding__]
 
-    def initialize(parent, output)
+    def initialize(parent, output = nil)
       @parent = parent
       @_nopass = false
       @_nopara = false
-      @output = output
+      @output = output || File.open("/dev/null", "w")
       @sources = []
     end
 

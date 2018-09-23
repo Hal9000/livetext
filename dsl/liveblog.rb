@@ -23,7 +23,7 @@ class ::Livetext::Functions   # do this differently??
     text, name = param.split("|")
  
     # FIXME how should this work?
-    view = ThisConfig.view
+    view = ThisBlog.view
     url = find_asset(name)
     "<a href='#{url}'>#{text}</a>"
   end
@@ -35,7 +35,7 @@ begin
   ThisBlog
 rescue
   ThisBlog    = RuneBlog.new
-  ThisConfig  = ThisBlog.open_blog
+# ThisConfig  = ThisBlog.open_blog
 end
 
 ### find_asset
@@ -65,9 +65,9 @@ end
 
 #############
 
-def init_liveblog
+def init_liveblog    # FIXME - a lot of this logic sucks
   @blog = ThisBlog
-  @config = ThisConfig
+  @config = ThisBlog
   @root = @config.root
   @teaser = ""
   @body = ""
