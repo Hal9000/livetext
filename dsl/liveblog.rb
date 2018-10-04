@@ -1,6 +1,6 @@
 require 'ostruct'
-require 'yaml'
 require 'pp'
+require 'date'
 
 require 'runeblog'  # Now depends explicitly
 
