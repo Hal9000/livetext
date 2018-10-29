@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.39"
+  VERSION = "0.8.40"
 end
 
 $Livetext = Livetext
@@ -184,7 +184,8 @@ class Livetext
       @main._error! "Name '#{name}' is unknown"
       return
     end
-    @main.send(name)
+    result = @main.send(name)
+    result
   rescue => err
     @main._error!(err)
   end

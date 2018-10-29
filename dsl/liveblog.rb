@@ -74,12 +74,12 @@ def init_liveblog    # FIXME - a lot of this logic sucks
   @body = ""
   @meta = ::OpenStruct.new
 
-  @deploy ||= {}
+  @publish ||= {}
   @config.views.each do |view|
-    deployment = @config.viewdir(view) + "deploy"
-    raise "File '#{deployment}' not found" unless File.exist?(deployment)
-    lines = File.readlines(deployment).map {|x| x.chomp }
-    @deploy[view] = lines
+    publish = @config.viewdir(view) + "publish"
+    raise "File '#{publish}' not found" unless File.exist?(publish)
+    lines = File.readlines(publish).map {|x| x.chomp }
+    @publish[view] = lines
   end
 end
 
@@ -105,12 +105,18 @@ def pubdate
   junk, y, m, d = match.to_a
   y, m, d = y.to_i, m.to_i, d.to_i
   @meta.date = ::Date.new(y, m, d)
-  @meta.pubdate = "%04d%02d%02d" % [y, m, d]
+  @meta.pubdate = "%04d-%02d-%02d" % [y, m, d]
 end
 
-def categories 
+def categories   # now: tags
   _debug "args = #{_args}"
-  @meta.categories = _args
+  @meta.categories = _args  # phase out
+  @meta.tags = _args
+end
+
+def tags
+  _debug "args = #{_args}"
+  @meta.tags = _args
 end
 
 def views
