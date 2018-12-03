@@ -151,7 +151,7 @@ Most of this is summarized in this example (taken from one of the testcases):
  and `[code font].
  
  Here are some random punctuation marks:
- # . @ * \_ ` : ; % ^ & $
+ \# . @ * \_ ` : ; % ^ & $
  
  No need to escape these:  * \_ `
 </pre>
