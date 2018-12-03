@@ -27,22 +27,20 @@ def inout
   t2 = t2.map {|x| " " + x.sub(/ +$/,"").gsub(/_/, "\\_") }.join
 
   puts <<-HTML
-    <center>
     <table width=80% cellpadding=4>
     <tr>
       <td width=50%><b>Input</b></td>
       <td width=50%><b>Output</b></td>
     </tr>
     <tr>
-      <td width=50% bgcolor=#fec0fe valign=top>
+      <td width=50% bgcolor=#fee0fe valign=top>
         <pre>#{t1}</pre>
       </td>
-      <td width=50% bgcolor=lightgray valign=top>
+      <td width=50% bgcolor=#eeeeee valign=top>
         <pre>#{t2}</pre>
       </td>
     </tr>
     </table>
-    </center>
   HTML
 end
 
@@ -53,29 +51,29 @@ def put_table(src, exp)
   t2 = t2.map {|x| " " + x.sub(/ +$/,"").gsub(/_/, "\\_") }.join
 
   puts <<-HTML
-    <center>
+    <font size=+1>
     <table width=80% cellpadding=4>
     <tr>
       <td width=50%><b>Input</b></td>
       <td width=50%><b>Output</b></td>
     </tr>
     <tr>
-      <td width=50% bgcolor=#fec0fe valign=top>
+      <td width=50% bgcolor=#fee0fe valign=top>
         <pre>#{t1}</pre>
       </td>
-      <td width=50% bgcolor=lightgray valign=top>
+      <td width=50% bgcolor=#eeeeee valign=top>
         <pre>#{t2}</pre>
       </td>
     </tr>
     </table>
-    </center>
+    </font>
   HTML
 end
 
 def testcase
   name = _args.first
   _puts "\n<font size=+1><b>Test: </font><font size=+2><tt>#{name}</tt></font></b></h3><br>"
-  src, exp = "#{Data}/#{name}/source.lt3", "{Data}/#{name}/expected-output.txt"
+  src, exp = "test/data/#{name}/source.lt3", "test/data/#{name}/expected-output.txt"
   @_args = [src, exp]   # Better way to do this??
   put_table(src, exp)
   _puts "<br>"

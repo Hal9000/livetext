@@ -11,6 +11,9 @@ def credit
   # really just a place marker in source
 end
 
+def h1; _puts "<h1>#{@_data}</h1>"; end
+def h3; _puts "<h3>#{@_data}</h3>"; end
+
 def list
   _puts "<ul>"
   _body {|line| _puts "<li>#{line}</li>" }

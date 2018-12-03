@@ -1,6 +1,8 @@
+<style>
+  pre {font-size: 14; bold }
+  tt  {font-size: 14; bold }
+</style>
 # Livetext: A smart processor for text
-<p>
-
 <b>This README is currently mangled. Fixes coming soon!</b>
 <p>
 
@@ -12,8 +14,6 @@ Why is this special? It's very flexible, very extensible, and it's extensible <i
 <p>
 
 ### Why Livetext?
-<p>
-
 Livetext grew out of several motivations. One was a desire for a markup language that would permit
 me to write articles (and even books) in my own way and on my own terms. I've done this more
 than once (and I know others who have, as well).   
@@ -30,8 +30,6 @@ similar to the way we began several years ago to view HTML as a subset of XML.
 <p>
 
 ### What is Livetext really?
-<p>
-
 Here goes:
  * It's a text transformer
  * It's Ruby-based (later on, more language agnostic)
@@ -47,8 +45,6 @@ Here goes:
  * It's definitely not a softcover replacement
  * It could possibly augment markdown, softcover, others
 ### How does it work?
-<p>
-
 A Livetext file is simply a text file which may have commands interspersed. A command is
 simply a period followed by a name and optional parameters (at the beginning of a line).  
 <p>
@@ -79,8 +75,6 @@ the repo to see these.
 <p>
 
 ### Syntax, comments, and more
-<p>
-
 At first, my idea was to provide predefined commands and allow user-defined commands (to be 
 distinguished by a leading <tt>.</tt> or <tt>..</tt> marker). So the single and double dots were both legal. 
 <p>
@@ -102,8 +96,6 @@ a <tt>.end</tt> tag).
 <p>
 
 ### Boldface and italics
-<p>
-
 Very commonly we want to format short words or phrases in italics, boldface, or a monospaced
 (fixed width) font. The Markdown spec provides ways to do this that are fairly intuitive; but I
 personally don't like them. My own notation works a different way.
@@ -146,14 +138,14 @@ Most of this is summarized in this example (taken from one of the testcases):
 
 
 <font size=+1><b>Test: </font><font size=+2><tt>basic_formatting</tt></font></b></h3><br>
-    <center>
+    <font size=+1>
     <table width=80% cellpadding=4>
     <tr>
       <td width=50%><b>Input</b></td>
       <td width=50%><b>Output</b></td>
     </tr>
     <tr>
-      <td width=50% bgcolor=#fec0fe valign=top>
+      <td width=50% bgcolor=#fee0fe valign=top>
         <pre> Here are examples of *boldface and \_italics and `code
  as well as *[more complex] examples of \_[italicized text]
  and `[code font].
@@ -164,7 +156,7 @@ Most of this is summarized in this example (taken from one of the testcases):
  No need to escape these:  * \_ `
 </pre>
       </td>
-      <td width=50% bgcolor=lightgray valign=top>
+      <td width=50% bgcolor=#eeeeee valign=top>
         <pre> Here are examples of <b>boldface</b> and <i>italics</i> and <tt>code</tt>
  as well as <b>more complex</b> examples of <i>italicized text</i>
  and <tt>code font</tt>.
@@ -179,13 +171,11 @@ Most of this is summarized in this example (taken from one of the testcases):
       </td>
     </tr>
     </table>
-    </center>
+    </font>
 <br>
 <p>
 
 ### Standard methods
-<p>
-
 The module <tt>Livetext::Standard</tt> contains the set of standard or predefined methods. Their 
 names are essentially the same as the names of the dot-commands, with occasional exceptions.
 (For example, it is impractical to use the name <tt>def</tt> as a method name, so the module has a
@@ -194,99 +184,97 @@ names are essentially the same as the names of the dot-commands, with occasional
 
 <table>
 <tr>
-<td width=3%><td width=10%> <tt>comment</tt>   %% Start a comment block</td><td></td>
+<td width=3%><td width=10%> <tt>comment</tt>   </td><td> Start a comment block</td>
 </tr>
 <tr>
-<td width=3%><td width=10%> <tt>errout</tt>    %% Write an error message to STDERR</td><td></td>
+<td width=3%><td width=10%> <tt>errout</tt>    </td><td> Write an error message to STDERR</td>
 </tr>
 <tr>
-<td width=3%><td width=10%> <tt>def</tt>       %% Define a new method inline</td><td></td>
+<td width=3%><td width=10%> <tt>def</tt>       </td><td> Define a new method inline</td>
 </tr>
 <tr>
-<td width=3%><td width=10%> <tt>set</tt>       %% Assign values to variables for later interpolation</td><td></td>
+<td width=3%><td width=10%> <tt>set</tt>       </td><td> Assign values to variables for later interpolation</td>
 </tr>
 <tr>
-<td width=3%><td width=10%> <tt>include</tt>   %% Include an outside text file (to be interpreted as Livetext)</td><td></td>
+<td width=3%><td width=10%> <tt>include</tt>   </td><td> Include an outside text file (to be interpreted as Livetext)</td>
 </tr>
 <tr>
-<td width=3%><td width=10%> <tt>mixin</tt>     %% Mix this file of Ruby methods into the standard namespace</td><td></td>
+<td width=3%><td width=10%> <tt>mixin</tt>     </td><td> Mix this file of Ruby methods into the standard namespace</td>
 </tr>
 <tr>
-<td width=3%><td width=10%> <tt>copy</tt>      %% Copy this input file verbatim (no interpretation)</td><td></td>
+<td width=3%><td width=10%> <tt>copy</tt>      </td><td> Copy this input file verbatim (no interpretation)</td>
 </tr>
 <tr>
-<td width=3%><td width=10%> <tt>r</tt>         %% Pass a single line through without processing</td><td></td>
+<td width=3%><td width=10%> <tt>r</tt>         </td><td> Pass a single line through without processing</td>
 </tr>
 <tr>
-<td width=3%><td width=10%> <tt>raw</tt>       %% Pass this special text block (terminated with <tt>__EOF__</tt>) directly into output without processing </td><td></td>
+<td width=3%><td width=10%> <tt>raw</tt>       </td><td> Pass this special text block (terminated with <tt><i>EOF__</tt></i>) directly into output without processing </td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>func</tt>       %% Define a function to be invoked inline</td><td></td>
+<td width=3%><td width=10%> <tt>func</tt>       </td><td> Define a function to be invoked inline</td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>say</tt>        %% Print a message to the screen</td><td></td>
+<td width=3%><td width=10%> <tt>say</tt>        </td><td> Print a message to the screen</td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>banner</tt>     %% Print a "noticeable" message to the screen</td><td></td>
+<td width=3%><td width=10%> <tt>banner</tt>     </td><td> Print a "noticeable" message to the screen</td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>quit</tt>       %% End processing and exit</td><td></td>
+<td width=3%><td width=10%> <tt>quit</tt>       </td><td> End processing and exit</td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>nopass</tt>     %% Don't pass lines through (just honor commands)</td><td></td>
+<td width=3%><td width=10%> <tt>nopass</tt>     </td><td> Don't pass lines through (just honor commands)</td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>include</tt>    %% Read and process another file (typically a <tt>.lt3</tt> file)</td><td></td>
+<td width=3%><td width=10%> <tt>include</tt>    </td><td> Read and process another file (typically a <tt>.lt3</tt> file)</td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>debug</tt>      %% Turn on debugging</td><td></td>
+<td width=3%><td width=10%> <tt>debug</tt>      </td><td> Turn on debugging</td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>nopara</tt>     %% Turn off the "blank line implies new paragraph" switch</td><td></td>
+<td width=3%><td width=10%> <tt>nopara</tt>     </td><td> Turn off the "blank line implies new paragraph" switch</td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>newpage</tt>    %% Start a new output page</td><td></td>
+<td width=3%><td width=10%> <tt>newpage</tt>    </td><td> Start a new output page</td>
 </tr>
 </table>
 ### Examples from the tests
-<p>
-
 Here are some tests from the suite. The file name reflects the general purpose of the test.
 <p>
 
 
 <font size=+1><b>Test: </font><font size=+2><tt>hello_world</tt></font></b></h3><br>
-    <center>
+    <font size=+1>
     <table width=80% cellpadding=4>
     <tr>
       <td width=50%><b>Input</b></td>
       <td width=50%><b>Output</b></td>
     </tr>
     <tr>
-      <td width=50% bgcolor=#fec0fe valign=top>
+      <td width=50% bgcolor=#fee0fe valign=top>
         <pre> Hello,
  world!
 </pre>
       </td>
-      <td width=50% bgcolor=lightgray valign=top>
+      <td width=50% bgcolor=#eeeeee valign=top>
         <pre> Hello,
  world!
 </pre>
       </td>
     </tr>
     </table>
-    </center>
+    </font>
 <br>
 
 <font size=+1><b>Test: </font><font size=+2><tt>comments_ignored_1</tt></font></b></h3><br>
-    <center>
+    <font size=+1>
     <table width=80% cellpadding=4>
     <tr>
       <td width=50%><b>Input</b></td>
       <td width=50%><b>Output</b></td>
     </tr>
     <tr>
-      <td width=50% bgcolor=#fec0fe valign=top>
+      <td width=50% bgcolor=#fee0fe valign=top>
         <pre> . Comments are ignored
  abc 123
  this is a test
@@ -296,7 +284,7 @@ Here are some tests from the suite. The file name reflects the general purpose o
  . end of the file
 </pre>
       </td>
-      <td width=50% bgcolor=lightgray valign=top>
+      <td width=50% bgcolor=#eeeeee valign=top>
         <pre> abc 123
  this is a test
  more stuff
@@ -305,18 +293,18 @@ Here are some tests from the suite. The file name reflects the general purpose o
       </td>
     </tr>
     </table>
-    </center>
+    </font>
 <br>
 
 <font size=+1><b>Test: </font><font size=+2><tt>block_comment</tt></font></b></h3><br>
-    <center>
+    <font size=+1>
     <table width=80% cellpadding=4>
     <tr>
       <td width=50%><b>Input</b></td>
       <td width=50%><b>Output</b></td>
     </tr>
     <tr>
-      <td width=50% bgcolor=#fec0fe valign=top>
+      <td width=50% bgcolor=#fee0fe valign=top>
         <pre> .comment
  This is
  a comment
@@ -338,7 +326,7 @@ Here are some tests from the suite. The file name reflects the general purpose o
  
 </pre>
       </td>
-      <td width=50% bgcolor=lightgray valign=top>
+      <td width=50% bgcolor=#eeeeee valign=top>
         <pre> abc 123
  xyz
  one
@@ -348,19 +336,20 @@ Here are some tests from the suite. The file name reflects the general purpose o
       </td>
     </tr>
     </table>
-    </center>
+    </font>
 <br>
 
 <font size=+1><b>Test: </font><font size=+2><tt>def_method</tt></font></b></h3><br>
-    <center>
+    <font size=+1>
     <table width=80% cellpadding=4>
     <tr>
       <td width=50%><b>Input</b></td>
       <td width=50%><b>Output</b></td>
     </tr>
     <tr>
-      <td width=50% bgcolor=#fec0fe valign=top>
-        <pre> abc
+      <td width=50% bgcolor=#fee0fe valign=top>
+        <pre> .backtrace
+ abc
  123
  .def foobar
  ::STDERR.puts "This is the"
@@ -372,7 +361,7 @@ Here are some tests from the suite. The file name reflects the general purpose o
  123
 </pre>
       </td>
-      <td width=50% bgcolor=lightgray valign=top>
+      <td width=50% bgcolor=#eeeeee valign=top>
         <pre> abc
  123
  xyz
@@ -382,18 +371,18 @@ Here are some tests from the suite. The file name reflects the general purpose o
       </td>
     </tr>
     </table>
-    </center>
+    </font>
 <br>
 
 <font size=+1><b>Test: </font><font size=+2><tt>simple_vars</tt></font></b></h3><br>
-    <center>
+    <font size=+1>
     <table width=80% cellpadding=4>
     <tr>
       <td width=50%><b>Input</b></td>
       <td width=50%><b>Output</b></td>
     </tr>
     <tr>
-      <td width=50% bgcolor=#fec0fe valign=top>
+      <td width=50% bgcolor=#fee0fe valign=top>
         <pre> Just
  some text.
  .set name=GulliverFoyle,nation=Terra
@@ -403,7 +392,7 @@ Here are some tests from the suite. The file name reflects the general purpose o
  That's all.
 </pre>
       </td>
-      <td width=50% bgcolor=lightgray valign=top>
+      <td width=50% bgcolor=#eeeeee valign=top>
         <pre> Just
  some text.
  Hi, there.
@@ -414,18 +403,18 @@ Here are some tests from the suite. The file name reflects the general purpose o
       </td>
     </tr>
     </table>
-    </center>
+    </font>
 <br>
 
 <font size=+1><b>Test: </font><font size=+2><tt>simple_include</tt></font></b></h3><br>
-    <center>
+    <font size=+1>
     <table width=80% cellpadding=4>
     <tr>
       <td width=50%><b>Input</b></td>
       <td width=50%><b>Output</b></td>
     </tr>
     <tr>
-      <td width=50% bgcolor=#fec0fe valign=top>
+      <td width=50% bgcolor=#fee0fe valign=top>
         <pre> Here I am
  .debug
  trying to
@@ -435,7 +424,7 @@ Here are some tests from the suite. The file name reflects the general purpose o
  worked.
 </pre>
       </td>
-      <td width=50% bgcolor=lightgray valign=top>
+      <td width=50% bgcolor=#eeeeee valign=top>
         <pre> Here I am
  trying to
  include
@@ -447,18 +436,18 @@ Here are some tests from the suite. The file name reflects the general purpose o
       </td>
     </tr>
     </table>
-    </center>
+    </font>
 <br>
 
 <font size=+1><b>Test: </font><font size=+2><tt>simple_mixin</tt></font></b></h3><br>
-    <center>
+    <font size=+1>
     <table width=80% cellpadding=4>
     <tr>
       <td width=50%><b>Input</b></td>
       <td width=50%><b>Output</b></td>
     </tr>
     <tr>
-      <td width=50% bgcolor=#fec0fe valign=top>
+      <td width=50% bgcolor=#fee0fe valign=top>
         <pre> Here I am
  testing a simple mixin
  .mixin simple\_mixin
@@ -467,7 +456,7 @@ Here are some tests from the suite. The file name reflects the general purpose o
  That's all.
 </pre>
       </td>
-      <td width=50% bgcolor=lightgray valign=top>
+      <td width=50% bgcolor=#eeeeee valign=top>
         <pre> Here I am
  testing a simple mixin
  Now call it:
@@ -477,18 +466,18 @@ Here are some tests from the suite. The file name reflects the general purpose o
       </td>
     </tr>
     </table>
-    </center>
+    </font>
 <br>
 
 <font size=+1><b>Test: </font><font size=+2><tt>simple_copy</tt></font></b></h3><br>
-    <center>
+    <font size=+1>
     <table width=80% cellpadding=4>
     <tr>
       <td width=50%><b>Input</b></td>
       <td width=50%><b>Output</b></td>
     </tr>
     <tr>
-      <td width=50% bgcolor=#fec0fe valign=top>
+      <td width=50% bgcolor=#fee0fe valign=top>
         <pre> The copy command
  copies any file
  without interpretation,
@@ -497,7 +486,7 @@ Here are some tests from the suite. The file name reflects the general purpose o
  That is all.
 </pre>
       </td>
-      <td width=50% bgcolor=lightgray valign=top>
+      <td width=50% bgcolor=#eeeeee valign=top>
         <pre> The copy command
  copies any file
  without interpretation,
@@ -509,25 +498,25 @@ Here are some tests from the suite. The file name reflects the general purpose o
       </td>
     </tr>
     </table>
-    </center>
+    </font>
 <br>
 
 <font size=+1><b>Test: </font><font size=+2><tt>copy_is_raw</tt></font></b></h3><br>
-    <center>
+    <font size=+1>
     <table width=80% cellpadding=4>
     <tr>
       <td width=50%><b>Input</b></td>
       <td width=50%><b>Output</b></td>
     </tr>
     <tr>
-      <td width=50% bgcolor=#fec0fe valign=top>
+      <td width=50% bgcolor=#fee0fe valign=top>
         <pre> A copy command
  does not interpret its input:
  .copy rawtext.inc
  That's all.
 </pre>
       </td>
-      <td width=50% bgcolor=lightgray valign=top>
+      <td width=50% bgcolor=#eeeeee valign=top>
         <pre> A copy command
  does not interpret its input:
  This is not a comment:
@@ -539,18 +528,18 @@ Here are some tests from the suite. The file name reflects the general purpose o
       </td>
     </tr>
     </table>
-    </center>
+    </font>
 <br>
 
 <font size=+1><b>Test: </font><font size=+2><tt>raw_text_block</tt></font></b></h3><br>
-    <center>
+    <font size=+1>
     <table width=80% cellpadding=4>
     <tr>
       <td width=50%><b>Input</b></td>
       <td width=50%><b>Output</b></td>
     </tr>
     <tr>
-      <td width=50% bgcolor=#fec0fe valign=top>
+      <td width=50% bgcolor=#fee0fe valign=top>
         <pre> This text block will be passed thru
  with no interpretation or processing:
  .raw
@@ -569,7 +558,7 @@ Here are some tests from the suite. The file name reflects the general purpose o
  I hope that worked.
 </pre>
       </td>
-      <td width=50% bgcolor=lightgray valign=top>
+      <td width=50% bgcolor=#eeeeee valign=top>
         <pre> This text block will be passed thru
  with no interpretation or processing:
  .comment
@@ -588,13 +577,11 @@ Here are some tests from the suite. The file name reflects the general purpose o
       </td>
     </tr>
     </table>
-    </center>
+    </font>
 <br>
 <p>
 
 ### Writing custom methods
-<p>
-
 Suppose you wanted to write a method called <tt>chapter</tt> that would simply
 output a chapter number and title with certain heading tags and a
 horizontal rule following. There is more than one way to do this.
@@ -612,16 +599,16 @@ the text. Here's an example.
    
      . This is also a comment, by the way.
      .def chapter
-        params = _args
+        params = &lt;i&gt;args&lt;/i&gt;
         raise &quot;chapter: expecting at least two args&quot; unless params.size &gt; 1
-        num, *title = params     # Chapter number + title
+        num, &lt;b&gt;title&lt;/b&gt; = params     # Chapter number + title
         title = title.join(&quot; &quot;)  # Join all words into one string
         text = &lt;&lt;-HTML
         &lt;h3&gt;Chapter #{num}&lt;/h3&gt;
         &lt;h2&gt;#{title}&lt;/h2&gt;
         &lt;hr&gt;
         HTML
-        _puts text
+        &lt;i&gt;puts&lt;/i&gt; text
      .end
      . Now let&#39;s invoke it...
      .chapter 1 Why I Went to the Woods
@@ -665,25 +652,25 @@ What are some other helper methods? Here's a list.
 
 <table>
 <tr>
-<td width=3%><td width=10%><tt>_args</tt>       %% Returns an array of arguments for the method (or an enumerator for that array)</td><td></td>
+<td width=3%><td width=10%><tt><i>args</tt></i></td><td>%%</td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>_data</tt>       %% A single "unsplit" string of all arguments in raw form</td><td></td>
+<td width=3%><td width=10%><tt><i>data</tt></i></td><td>%%</td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>_body</tt>       %% Returns a string (or enumerator) giving access to the text block (preceding <tt></tt>.end)</td><td></td>
+<td width=3%><td width=10%><tt><i>body</tt></i></td><td>%%</td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>_puts</tt>       %% Write a line to output (STDOUT or wherever)</td><td></td>
+<td width=3%><td width=10%><tt><i>puts</tt></i></td><td>%%</td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>_print</tt>      %% Write a line to output (STDOUT or wherever) without a newline</td><td></td>
+<td width=3%><td width=10%><tt><i>print</tt></i></td><td>%%</td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>_formatting</tt> %% A function transforming boldface, italics, and monospace (Livetext conventions)</td><td></td>
+<td width=3%><td width=10%><tt><i>formatting</tt></i></td><td>%%</td>
 </tr>
 <tr>
-<td width=3%><td width=10%><tt>_passthru</tt>   %% Feed a line directly into output after transforming and substituting</td><td></td>
+<td width=3%><td width=10%><tt><i>passthru</tt></i></td><td>%%</td>
 </tr>
 </table>
 Note that the last three methods are typically <i>not</i> called in your own code. They could be,
@@ -691,8 +678,6 @@ but it remains to be seen whether something that advanced is useful.
 <p>
 
 ### More examples
-<p>
-
 Suppose you wanted to take a list of words, more than one per line, and alphabetize them.
 Let's write a method called <tt>alpha</tt> for that. This exercise and the next one are implemented 
 in the test suite.
@@ -700,17 +685,16 @@ in the test suite.
 
 
 <font size=+1><b>Test: </font><font size=+2><tt>example_alpha</tt></font></b></h3><br>
-    <center>
+    <font size=+1>
     <table width=80% cellpadding=4>
     <tr>
       <td width=50%><b>Input</b></td>
       <td width=50%><b>Output</b></td>
     </tr>
     <tr>
-      <td width=50% bgcolor=#fec0fe valign=top>
+      <td width=50% bgcolor=#fee0fe valign=top>
         <pre> .def alpha
-    text = \_body.join
-    text.gsub!(/\n/, " ")
+    text = \_body.to\_a.join(" ")
     words = text.split.sort
     words.each {|w| \_puts "    #{w}" }
  .end
@@ -727,7 +711,7 @@ in the test suite.
  I hope that worked.
 </pre>
       </td>
-      <td width=50% bgcolor=lightgray valign=top>
+      <td width=50% bgcolor=#eeeeee valign=top>
         <pre> Here is an alphabetized list:
  <p>
  
@@ -755,7 +739,7 @@ in the test suite.
       </td>
     </tr>
     </table>
-    </center>
+    </font>
 <br>
 <p>
 
@@ -765,20 +749,20 @@ have the user specify a number of columns (from 1 to 5, defaulting to 1).
 
 
 <font size=+1><b>Test: </font><font size=+2><tt>example_alpha2</tt></font></b></h3><br>
-    <center>
+    <font size=+1>
     <table width=80% cellpadding=4>
     <tr>
       <td width=50%><b>Input</b></td>
       <td width=50%><b>Output</b></td>
     </tr>
     <tr>
-      <td width=50% bgcolor=#fec0fe valign=top>
+      <td width=50% bgcolor=#fee0fe valign=top>
         <pre> .def alpha
     cols = \_args.first
     cols = "1" if cols == ""
     cols = cols.to\_i
     raise "Columns must be 1-5" unless cols.between?(1,5)
-    text = \_body.join
+    text = \_body\_text
     text.gsub!(/\n/, " ")
     words = text.split.sort
     words.each\_slice(cols) do |row|
@@ -799,7 +783,7 @@ have the user specify a number of columns (from 1 to 5, defaulting to 1).
  I hope that worked a second time.
 </pre>
       </td>
-      <td width=50% bgcolor=lightgray valign=top>
+      <td width=50% bgcolor=#eeeeee valign=top>
         <pre> Here is an alphabetized list:
  <p>
  
@@ -816,7 +800,7 @@ have the user specify a number of columns (from 1 to 5, defaulting to 1).
       </td>
     </tr>
     </table>
-    </center>
+    </font>
 <br>
 <p>
 
@@ -833,16 +817,16 @@ in here (and nothing else).
    # File: mylib.rb
    
    def alpha
-     cols = _args.first
+     cols = &lt;i&gt;args.first&lt;/i&gt;
      cols = &quot;1&quot; if cols == &quot;&quot;
-     cols = cols.to_i
+     cols = cols.to&lt;i&gt;i&lt;/i&gt;
      raise &quot;Columns must be 1-5&quot; unless cols.between?(1,5)
-     text = _body.join
+     text = &lt;i&gt;body.join&lt;/i&gt;
      text.gsub!(/\n/, &quot; &quot;)
      words = text.split.sort
-     words.each_slice(cols) do |row| 
-       row.each {|w| _print &#39;%-15s&#39; % w }
-       _puts 
+     words.each&lt;i&gt;slice(cols)&lt;/i&gt; do |row| 
+       row.each {|w| &lt;i&gt;print&lt;/i&gt; &#39;%-15s&#39; % w }
+       &lt;i&gt;puts&lt;/i&gt; 
      end
    end
 </pre>
@@ -876,8 +860,6 @@ on that new custom object. I plan to implement this later.
 <p>
 
 ### Issues, open questions, and to-do items
-<p>
-
 This list is not prioritized yet.
 <p>
 
@@ -892,13 +874,13 @@ This list is not prioritized yet.
 9. Worry about nesting of elements (probably mostly disallow)
 10. Think about UTF-8
 11. Document API fully
-12. Add <tt>_raw_args</tt> and let <tt>_args</tt> honor quotes
+12. Add <tt><i>raw_args</tt></i> and let <tt><i>args</tt></i> honor quotes
 13. Support quotes in <tt>.set</tt> values
 14. Support "namespaced" variables  (<tt>.set code.font="whatever"</tt>)
-15. <strike>Support functions (``$$func) </strike>
+15. <strike>Support functions (<tt>$$func</tt>) </strike>
 16. Support function namespacing
-17. Create predefined variables (e.g., <tt>$_source_file</tt>, <tt>$[_line])</tt>
-18. Create predefined functions (e.g., <tt>$$_date</tt>)
+17. Create predefined variables (e.g., <tt>$<i>source_file</tt>,</i> <tt>$[<i>line])</tt></i>
+18. Create predefined functions (e.g., <tt>$$<i>date</tt>)</i>
 19. More support for markdown
 20. Allow turning on/off: formatting, variable interpolation, function interpolation?
 21. <tt>.require</tt> with file and sigil parameters
@@ -911,7 +893,7 @@ This list is not prioritized yet.
 28. Warn when overriding existing names?
 29. Think about passing data in (erb replacement)
 30. <strike>]Allow</strike> custom ending tag on <tt>raw</tt> method
-31. <strike>Ignore first blank line after `[.end</strike>? (and after raw-tag?)
+31. <strike>Ignore first blank line after <tt>.end</strike>? (and after raw-tag?)</tt>
 32. Allow/encourage custom <tt>passthru</tt> method?
 33. Must have sane support for CSS
 34. Support for Pygments and/or other code processors

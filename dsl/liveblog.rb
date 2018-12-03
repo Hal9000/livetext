@@ -108,11 +108,11 @@ def pubdate
   @meta.pubdate = "%04d-%02d-%02d" % [y, m, d]
 end
 
-def categories   # now: tags
-  _debug "args = #{_args}"
-  @meta.categories = _args  # phase out
-  @meta.tags = _args
-end
+# def categories   # now: tags
+#   _debug "args = #{_args}"
+#   @meta.categories = _args  # phase out
+#   @meta.tags = _args
+# end
 
 def tags
   _debug "args = #{_args}"
@@ -124,8 +124,14 @@ def views
   @meta.views = _args.dup # + ["main"]
 end
 
-def liveblog_version
+def pin  
+  _debug "data = #{_args}"
+  # verify only already-specified views?
+  @meta.pinned = _args.dup
 end
+
+# def liveblog_version
+# end
 
 def list
   @body << "<ul>"
