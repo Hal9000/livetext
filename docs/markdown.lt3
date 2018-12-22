@@ -1,6 +1,6 @@
 .mixin docsen
 
-.context ../dsl/markdown.rb
+.context ../plugin/markdown.rb
 
 .para off
 .backtrace

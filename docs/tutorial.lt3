@@ -1,6 +1,6 @@
 .mixin docsen
 
-.context ../dsl/tutorial.rb
+.context ../plugin/tutorial.rb
 
 .para off
 .backtrace

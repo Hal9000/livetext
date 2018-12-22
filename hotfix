@@ -3,6 +3,6 @@
 lib = `livetext --path`.chomp
 
 system("cp lib/* #{lib}/")
-system("cp dsl/* #{lib}/../dsl/")
+system("cp plugin/* #{lib}/../plugin/")
 system("cp test/*rb #{lib}/../test/")
 system("cp bin/* #{lib}/../bin/")

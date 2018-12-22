@@ -114,6 +114,11 @@ end
 #   @meta.tags = _args
 # end
 
+def image   # primitive so far
+  _debug "img: huh? <img src=#{_args.first}></img>"
+  @body << "<img src=#{_args.first}></img>"
+end
+
 def tags
   _debug "args = #{_args}"
   @meta.tags = _args

@@ -1,6 +1,6 @@
 .mixin docsen
 
-.context ../dsl/livemagick.rb
+.context ../plugin/livemagick.rb
 
 .para off
 .backtrace

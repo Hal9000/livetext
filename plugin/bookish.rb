@@ -155,6 +155,35 @@ def table2
   _optional_blank_line
 end
 
+def simple_table
+  title = @_data
+  delim = " :: "
+  _puts "<table cellpadding=2>"
+  lines = _body(true)
+  maxw = nil
+  lines.each do |line|
+    _formatting(line)
+    cells = line.split(delim)
+    wide = cells.map {|x| x.length }
+    maxw = [0] * cells.size
+    maxw = maxw.map.with_index {|x, i| [x, wide[i]].max }
+  end
+
+  sum = maxw.inject(0, :+)
+  maxw.map! {|x| (x/sum*100).floor }
+
+  lines.each do |line|
+    cells = line.split(delim)
+    _puts "<tr>"
+    cells.each.with_index do |cell, i| 
+      _puts "  <td width=#{maxw}% valign=top>" + 
+            "#{cell}</td>"
+    end
+    _puts "</tr>"
+  end
+  _puts "</table>"
+end
+
 def table
   @table_num ||= 0
   @table_num += 1

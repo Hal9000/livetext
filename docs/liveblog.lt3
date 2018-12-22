@@ -1,6 +1,6 @@
 .mixin docsen
 
-.context ../dsl/liveblog.rb
+.context ../plugin/liveblog.rb
 
 .para off
 .backtrace

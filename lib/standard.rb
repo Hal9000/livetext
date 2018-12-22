@@ -279,6 +279,18 @@ module Livetext::Standard
 
   def dlist
     delim = _args.first
+    _puts "<dl>"
+    _body do |line|
+      line = _formatting(line)
+      term, defn = line.split(delim)
+      _puts "<dt>#{term}</dt>"
+      _puts "<dd>#{defn}</dd>"
+    end
+    _puts "</dl>"
+  end
+
+  def old_dlist
+    delim = _args.first
     _puts "<table>"
     _body do |line|
       line = _formatting(line)

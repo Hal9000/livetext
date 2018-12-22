@@ -1,6 +1,6 @@
 .mixin docsen
 
-.context ../dsl/calibre.rb
+.context ../plugin/calibre.rb
 
 .para off
 .backtrace

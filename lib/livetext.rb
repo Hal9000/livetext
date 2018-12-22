@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.41"
+  VERSION = "0.8.42"
 end
 
 $Livetext = Livetext
@@ -15,7 +15,7 @@ require 'userapi'
 require 'standard'
 require 'formatline'
 
-Plugins = File.expand_path(File.join(File.dirname(__FILE__), "../dsl"))
+Plugins = File.expand_path(File.join(File.dirname(__FILE__), "../plugin"))
 
 TTY = ::File.open("/dev/tty", "w")
 

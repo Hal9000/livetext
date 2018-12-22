@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.executables << "livetext"
   
   # Files...
-  main = Find.find("bin").to_a + Find.find("lib").to_a + Find.find("dsl").to_a 
+  main = Find.find("bin").to_a + Find.find("lib").to_a + Find.find("plugin").to_a 
   misc = %w[./README.lt3 ./README.md livetext.gemspec]
   test = Find.find("test").to_a
 

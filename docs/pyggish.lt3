@@ -1,6 +1,6 @@
 .mixin docsen
 
-.context ../dsl/pyggish.rb
+.context ../plugin/pyggish.rb
 
 .para off
 .backtrace

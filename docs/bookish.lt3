@@ -1,6 +1,6 @@
 .mixin docsen
 
-.context ../dsl/bookish.rb
+.context ../plugin/bookish.rb
 
 .para off
 .backtrace
