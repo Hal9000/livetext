@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.42"
+  VERSION = "0.8.43"
 end
 
 $Livetext = Livetext
@@ -117,6 +117,20 @@ class Livetext
     else
       @main._passthru(line, context)
     end
+  end
+
+  def process_text(text, *args)
+    text = text.split("\n") if text.is_a? String
+    enum = text.each
+    @backtrace = false
+    @main.source(enum, fname, 0)
+    loop do 
+      line = @main.nextline
+      break if line.nil?
+      process_line(line, context)
+    end
+    val = @main.finalize if @main.respond_to? :finalize
+    val
   end
 
   def process_file(fname, context=nil)

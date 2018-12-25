@@ -22,5 +22,5 @@ Gem::Specification.new do |s|
 
   s.files       =  main + misc + test
   s.homepage    = 'https://github.com/Hal9000/livetext'
-  s.license     = "Ruby's license"
+  s.license     = "Ruby"
 end
