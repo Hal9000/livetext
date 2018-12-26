@@ -30,14 +30,6 @@ class ::Livetext::Functions   # do this differently??
 
 end
 
-
-begin
-  ThisBlog
-rescue
-  ThisBlog    = RuneBlog.new
-# ThisConfig  = ThisBlog.open_blog
-end
-
 ### find_asset
 
 def find_asset(asset)
@@ -66,22 +58,23 @@ end
 #############
 
 def init_liveblog    # FIXME - a lot of this logic sucks
-  @blog = ThisBlog
-  @config = ThisBlog
+  @blog, @meta = Livetext.parameters
+  @config = @blog.config
   @root = @config.root
-  @title = ""
-  @teaser = ""
+  @view = @blog.view.name
+  @vdir = @blog.view.dir
+  @title, @teaser = meta.title, meta.teaser
   @body = ""
-  @body = ""
-  @meta = ::OpenStruct.new
+  @slug = @blog.make_slug(meta)
+  @postdir = @blog.view.dir + "/#@slug"
 
-  @publish ||= {}
-  @config.views.each do |view|
-    publish = @config.viewdir(view) + "publish"
-    raise "File '#{publish}' not found" unless File.exist?(publish)
-    lines = File.readlines(publish).map {|x| x.chomp }
-    @publish[view] = lines
-  end
+# @publish ||= {}
+# @config.views.each do |view|
+#   publish = @config.viewdir(view) + "publish"
+#   raise "File '#{publish}' not found" unless File.exist?(publish)
+#   lines = File.readlines(publish).map {|x| x.chomp }
+#   @publish[view] = lines
+# end
 end
 
 def _errout(*args)
@@ -96,12 +89,14 @@ def _passthru(line, context = nil)
 end
 
 def title 
-  @meta.title = @_data
-  @body << "<h1>#{@meta.title}</h1>"
+  title = @_data
+  raise "Title discrepancy? Found #{title.inspect} != #{@title.inspect}"
+  @body << "<h1>#@title</h1>"
 end
 
 def pubdate 
   _debug "data = #@_data"
+  # Check for discrepancy?
   match = /(\d{4}).(\d{2}).(\d{2})/.match @_data
   junk, y, m, d = match.to_a
   y, m, d = y.to_i, m.to_i, d.to_i
@@ -169,17 +164,30 @@ def assets
 # STDERR.puts red("\n  [DEBUG] ") + "Assets: #{_body.inspect}"
 end
 
-def finalize
-  @meta.body = @body
-File.open("/tmp/lblog.txt", "w") do |f|
-  f.puts 
-  f.puts @meta.inspect
-end
-  @meta
-end
+  def write_post(meta)
+    save = Dir.pwd
+    Dir.chdir(@postdir)
+    meta.views = meta.views.join(" ")
+    meta.tags  = meta.tags.join(" ")
+    File.write("index.html", @body)
+    File.write("teaser.txt", meta.teaser)
+    
+    fields = [:num, :title, :date, :pubdate, :views, :tags]
+    
+    fname2 = "metadata.txt"
+    f2 = File.open(fname2, "w") do |f2| 
+      fields.each {|fld| f2.puts "#{fld}: #{meta.send(fld)}" }
+    end
+    Dir.chdir(save)
+  end
 
 def teaser
   @meta.teaser = _body_text
   @body << @meta.teaser + "\n"
   # FIXME
 end
+
+def finalize
+  write_post(@meta) # FIXME
+end
+

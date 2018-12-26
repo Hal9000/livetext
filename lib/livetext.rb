@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.43"
+  VERSION = "0.8.44"
 end
 
 $Livetext = Livetext
@@ -28,18 +28,22 @@ class Livetext
     include Livetext::Standard
     include Livetext::UserAPI
 
-  Disallowed = [:nil?, :===, :=~, :!~, :eql?, :hash, :<=>, 
-                :class, :singleton_class, :clone, :dup, :taint, :tainted?, 
-                :untaint, :untrust, :untrusted?, :trust, :freeze, :frozen?, 
-                :to_s, :inspect, :methods, :singleton_methods, :protected_methods, 
-                :private_methods, :public_methods, :instance_variables, 
-                :instance_variable_get, :instance_variable_set, 
-                :instance_variable_defined?, :remove_instance_variable, 
-                :instance_of?, :kind_of?, :is_a?, :tap, :send, :public_send, 
-                :respond_to?, :extend, :display, :method, :public_method, 
-                :singleton_method, :define_singleton_method, :object_id, :to_enum, 
-                :enum_for, :pretty_inspect, :==, :equal?, :!, :!=, :instance_eval, 
-                :instance_exec, :__send__, :__id__, :__binding__]
+    Disallowed = [:nil?, :===, :=~, :!~, :eql?, :hash, :<=>, 
+                  :class, :singleton_class, :clone, :dup, :taint, :tainted?, 
+                  :untaint, :untrust, :untrusted?, :trust, :freeze, :frozen?, 
+                  :to_s, :inspect, :methods, :singleton_methods, :protected_methods, 
+                  :private_methods, :public_methods, :instance_variables, 
+                  :instance_variable_get, :instance_variable_set, 
+                  :instance_variable_defined?, :remove_instance_variable, 
+                  :instance_of?, :kind_of?, :is_a?, :tap, :send, :public_send, 
+                  :respond_to?, :extend, :display, :method, :public_method, 
+                  :singleton_method, :define_singleton_method, :object_id, :to_enum, 
+                  :enum_for, :pretty_inspect, :==, :equal?, :!, :!=, :instance_eval, 
+                  :instance_exec, :__send__, :__id__, :__binding__]
+
+    class << self
+      attr_accessor :parameters  # from outside world (process_text)
+    end
 
     def initialize(parent, output = nil)
       @parent = parent
@@ -124,6 +128,7 @@ class Livetext
     enum = text.each
     @backtrace = false
     @main.source(enum, fname, 0)
+    Livetext.parameters = args   # e.g., for liveblog
     loop do 
       line = @main.nextline
       break if line.nil?
