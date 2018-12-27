@@ -13,6 +13,7 @@ end
 class ::Livetext::Functions   # do this differently??
 
   def asset   # FIXME this is baloney...
+    raise "meh"
     param = ::Livetext::Functions.param
     context = ::Livetext::Functions.context
     main = context.eval("@main") rescue "NO MAIN?"
@@ -33,6 +34,7 @@ end
 ### find_asset
 
 def find_asset(asset)
+  raise "meh2"
   views = @config.views
   views.each do |view| 
     vdir = @config.viewdir(view)
@@ -59,14 +61,15 @@ end
 
 def init_liveblog    # FIXME - a lot of this logic sucks
   @blog, @meta = Livetext.parameters
-  @config = @blog.config
-  @root = @config.root
+puts "init: #{[@blog, @meta].inspect}"
+  @root = @blog.root
   @view = @blog.view.name
   @vdir = @blog.view.dir
-  @title, @teaser = meta.title, meta.teaser
+  @title, @teaser = @meta.title, @meta.teaser
   @body = ""
-  @slug = @blog.make_slug(meta)
+  @slug = @blog.make_slug(@meta)
   @postdir = @blog.view.dir + "/#@slug"
+puts "postdir = #{@postdir.inspect}"
 
 # @publish ||= {}
 # @config.views.each do |view|
@@ -89,8 +92,7 @@ def _passthru(line, context = nil)
 end
 
 def title 
-  title = @_data
-  raise "Title discrepancy? Found #{title.inspect} != #{@title.inspect}"
+  title = @_data.chomp
   @body << "<h1>#@title</h1>"
 end
 
@@ -165,11 +167,12 @@ def assets
 end
 
   def write_post(meta)
+puts "\npostdir = #{@postdir.inspect}\n "
     save = Dir.pwd
     Dir.chdir(@postdir)
     meta.views = meta.views.join(" ")
     meta.tags  = meta.tags.join(" ")
-    File.write("index.html", @body)
+    File.write("body.txt", @body)  # Actually HTML...
     File.write("teaser.txt", meta.teaser)
     
     fields = [:num, :title, :date, :pubdate, :views, :tags]
@@ -189,5 +192,6 @@ end
 
 def finalize
   write_post(@meta) # FIXME
+  @meta
 end
 

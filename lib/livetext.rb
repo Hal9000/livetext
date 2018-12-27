@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.44"
+  VERSION = "0.8.45"
 end
 
 $Livetext = Livetext
@@ -24,6 +24,10 @@ class Livetext
 
   attr_reader :main, :context
 
+  class << self
+    attr_accessor :parameters  # from outside world (process_text)
+  end
+
   class Processor
     include Livetext::Standard
     include Livetext::UserAPI
@@ -41,10 +45,6 @@ class Livetext
                   :enum_for, :pretty_inspect, :==, :equal?, :!, :!=, :instance_eval, 
                   :instance_exec, :__send__, :__id__, :__binding__]
 
-    class << self
-      attr_accessor :parameters  # from outside world (process_text)
-    end
-
     def initialize(parent, output = nil)
       @parent = parent
       @_nopass = false
@@ -60,7 +60,8 @@ class Livetext
     def _error!(err, abort=true, trace=false)
       where = @sources.last || @save_location
       STDERR.puts "Error: #{err} (at #{where[1]} line #{where[2]})"
-      STDERR.puts err.backtrace if @backtrace && err.respond_to?(:backtrace)
+#     STDERR.puts err.backtrace if @backtrace && err.respond_to?(:backtrace)
+      STDERR.puts err.backtrace if err.respond_to?(:backtrace)
       exit if abort
     end
 
@@ -123,12 +124,21 @@ class Livetext
     end
   end
 
-  def process_text(text, *args)
+  def process(text)
+    enum = text.each_line
+    @main.source(enum, "STDIN", 0)
+    loop do 
+      line = @main.nextline
+      break if line.nil?
+      process_line(line)
+    end
+  end
+
+  def process_text(text)
     text = text.split("\n") if text.is_a? String
     enum = text.each
     @backtrace = false
-    @main.source(enum, fname, 0)
-    Livetext.parameters = args   # e.g., for liveblog
+    @main.source(enum, "(text)", 0)
     loop do 
       line = @main.nextline
       break if line.nil?
@@ -136,6 +146,9 @@ class Livetext
     end
     val = @main.finalize if @main.respond_to? :finalize
     val
+  rescue => err
+    puts "process_text: err = #{err}"
+    puts err.backtrace.join("\n")
   end
 
   def process_file(fname, context=nil)
@@ -166,16 +179,6 @@ class Livetext
       process_line(line)
     end
     @main.finalize if @main.respond_to? :finalize
-  end
-
-  def process(text)
-    enum = text.each_line
-    @main.source(enum, "STDIN", 0)
-    loop do 
-      line = @main.nextline
-      break if line.nil?
-      process_line(line)
-    end
   end
 
   def rx(str, space=nil)

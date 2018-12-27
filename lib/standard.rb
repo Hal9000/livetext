@@ -10,7 +10,7 @@ module Livetext::Standard
 
   def data=(val)
     @_data = val
-    @_args = val.split
+    @_args = val.split rescue []
     @_mixins = []
   end
 
