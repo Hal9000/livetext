@@ -1,14 +1,14 @@
 class Livetext
-  VERSION = "0.8.47"
+  VERSION = "0.8.50"
+  Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
 $Livetext = Livetext
 
 require 'fileutils'
 
-Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 
-$: << Path
+$: << Livetext::Path
 
 require 'functions'
 require 'userapi'

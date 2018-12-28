@@ -342,4 +342,4 @@ module Livetext::Standard
 #   _puts "<b>Table #@chapter.#@table_num &nbsp;&nbsp; #{title}</b></center><br>"
   end
 
-end
+end 
