@@ -194,4 +194,4 @@ def finalize
   write_post(@meta) # FIXME
   @meta
 end
-
+ 
