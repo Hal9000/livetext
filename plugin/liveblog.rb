@@ -69,7 +69,7 @@ puts "init: #{[@blog, @meta].inspect}"
   @body = ""
   @slug = @blog.make_slug(@meta)
   @postdir = @blog.view.dir + "/#@slug"
-puts "postdir = #{@postdir.inspect}"
+# puts "postdir = #{@postdir.inspect}"
 
 # @publish ||= {}
 # @config.views.each do |view|
@@ -167,7 +167,7 @@ def assets
 end
 
   def write_post(meta)
-puts "\npostdir = #{@postdir.inspect}\n "
+# puts "\npostdir = #{@postdir.inspect}\n "
     save = Dir.pwd
     Dir.chdir(@postdir)
     meta.views = meta.views.join(" ")
