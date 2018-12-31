@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.52"
+  VERSION = "0.8.53"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
@@ -136,7 +136,6 @@ class Livetext
 
   def process_text(text)
     text = text.split("\n") if text.is_a? String
-puts "lt-proc_text: text has #{text.size} lines"
     enum = text.each
     @backtrace = false
     @main.source(enum, "(text)", 0)
@@ -145,9 +144,7 @@ puts "lt-proc_text: text has #{text.size} lines"
       break if line.nil?
       process_line(line, context)
     end
-puts "lt-proc_text: calling finalize... (pwd = #{Dir.pwd})"
     val = @main.finalize if @main.respond_to? :finalize
-puts "lt-proc_text: ...returned from finalize"
     val
   rescue => err
     puts "process_text: err = #{err}"
