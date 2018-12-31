@@ -61,7 +61,7 @@ end
 
 def init_liveblog    # FIXME - a lot of this logic sucks
   @blog, @meta = Livetext.parameters
-puts "init: #{[@blog, @meta].inspect}"
+# puts "init: #{[@blog, @meta].inspect}"
   @root = @blog.root
   @view = @blog.view.name
   @vdir = @blog.view.dir
@@ -167,21 +167,34 @@ def assets
 end
 
   def write_post(meta)
-# puts "\npostdir = #{@postdir.inspect}\n "
     save = Dir.pwd
+# puts "lt write_post: pwd = #{Dir.pwd}"
+    @postdir.gsub!(/\/\//, "/")  # FIXME unneeded?
+# puts "lt write_post: ls -l #@postdir"
+# system("ls -l #@postdir")
+# puts "lt write_post: trying chdir #@postdir"
+    Dir.mkdir(@postdir) unless Dir.exist?(@postdir) # FIXME remember assets!
     Dir.chdir(@postdir)
+# puts "lt write_post: inside #@postdir"
     meta.views = meta.views.join(" ")
     meta.tags  = meta.tags.join(" ")
+# puts "lt write_post: writing body"
     File.write("body.txt", @body)  # Actually HTML...
+# puts "lt write_post: writing teaser"
     File.write("teaser.txt", meta.teaser)
     
     fields = [:num, :title, :date, :pubdate, :views, :tags]
     
     fname2 = "metadata.txt"
+# puts "lt write_post: writing metadata"
     f2 = File.open(fname2, "w") do |f2| 
       fields.each {|fld| f2.puts "#{fld}: #{meta.send(fld)}" }
     end
     Dir.chdir(save)
+# puts "lt write_post: returning (now pwd = #{Dir.pwd})"
+  rescue => err
+    puts "err = #{err}"
+    puts err.backtrace.join("\n")
   end
 
 def teaser

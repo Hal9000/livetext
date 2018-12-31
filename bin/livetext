@@ -57,13 +57,13 @@ loop do
     when "-v", "--version"
       puts "#{Livetext::VERSION}\n "
     when "-t", "--test"
-      file = "#{Path}/../test/test.rb"
+      file = "#{Livetext::Path}/../test/test.rb"
       flag = @backtrace ? "-back" : ""
       cmd = "ruby #{file} cmdline#{flag}"
       puts cmd
       system(cmd)
     when "-p", "--path"
-      puts Path
+      puts Livetext::Path
     when "-b", "--backtrace"
       @backtrace = true
     when "-s", "--stdin"
