@@ -109,7 +109,7 @@ end
 def image   # primitive so far
   _debug "img: huh? <img src=#{_args.first}></img>"
   fname = _args.first
-  path = "assets/#{fname}"
+  path = "../../assets/#{fname}"
   @body << "<img src=#{path}></img>"
 end
 
