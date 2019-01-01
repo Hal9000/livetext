@@ -61,7 +61,6 @@ end
 
 def init_liveblog    # FIXME - a lot of this logic sucks
   @blog, @meta = Livetext.parameters
-# puts "init: #{[@blog, @meta].inspect}"
   @root = @blog.root
   @view = @blog.view.name
   @vdir = @blog.view.dir
@@ -69,15 +68,6 @@ def init_liveblog    # FIXME - a lot of this logic sucks
   @body = ""
   @slug = @blog.make_slug(@meta)
   @postdir = @blog.view.dir + "/#@slug"
-# puts "postdir = #{@postdir.inspect}"
-
-# @publish ||= {}
-# @config.views.each do |view|
-#   publish = @config.viewdir(view) + "publish"
-#   raise "File '#{publish}' not found" unless File.exist?(publish)
-#   lines = File.readlines(publish).map {|x| x.chomp }
-#   @publish[view] = lines
-# end
 end
 
 def _errout(*args)
@@ -109,7 +99,7 @@ end
 def image   # primitive so far
   _debug "img: huh? <img src=#{_args.first}></img>"
   fname = _args.first
-  path = "../../assets/#{fname}"
+  path = "../assets/#{fname}"
   @body << "<img src=#{path}></img>"
 end
 
@@ -168,30 +158,21 @@ end
 
   def write_post(meta)
     save = Dir.pwd
-# puts "lt write_post: pwd = #{Dir.pwd}"
     @postdir.gsub!(/\/\//, "/")  # FIXME unneeded?
-# puts "lt write_post: ls -l #@postdir"
-# system("ls -l #@postdir")
-# puts "lt write_post: trying chdir #@postdir"
     Dir.mkdir(@postdir) unless Dir.exist?(@postdir) # FIXME remember assets!
     Dir.chdir(@postdir)
-# puts "lt write_post: inside #@postdir"
     meta.views = meta.views.join(" ")
     meta.tags  = meta.tags.join(" ")
-# puts "lt write_post: writing body"
     File.write("body.txt", @body)  # Actually HTML...
-# puts "lt write_post: writing teaser"
     File.write("teaser.txt", meta.teaser)
     
     fields = [:num, :title, :date, :pubdate, :views, :tags]
     
     fname2 = "metadata.txt"
-# puts "lt write_post: writing metadata"
     f2 = File.open(fname2, "w") do |f2| 
       fields.each {|fld| f2.puts "#{fld}: #{meta.send(fld)}" }
     end
     Dir.chdir(save)
-# puts "lt write_post: returning (now pwd = #{Dir.pwd})"
   rescue => err
     puts "err = #{err}"
     puts err.backtrace.join("\n")
