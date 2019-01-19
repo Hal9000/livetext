@@ -60,14 +60,13 @@ end
 #############
 
 def init_liveblog    # FIXME - a lot of this logic sucks
-  @blog, @meta = Livetext.parameters
+  @blog, num = Livetext.parameters
+  @meta = OpenStruct.new
+  @meta.num = num
   @root = @blog.root
   @view = @blog.view.name
   @vdir = @blog.view.dir
-  @title, @teaser = @meta.title, @meta.teaser
   @body = ""
-  @slug = @blog.make_slug(@meta)
-  @postdir = @blog.view.dir + "/#@slug"
 end
 
 def _errout(*args)
@@ -83,7 +82,8 @@ end
 
 def title 
   title = @_data.chomp
-  @body << "<h1>#@title</h1>"
+  @meta.title = title
+  @body << "<h1>#{title}</h1>"
 end
 
 def pubdate 
@@ -185,6 +185,8 @@ def teaser
 end
 
 def finalize
+  @slug = @blog.make_slug(@meta)
+  @postdir = @blog.view.dir + "/#@slug"
   write_post(@meta) # FIXME
   @meta
 end

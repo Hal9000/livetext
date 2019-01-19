@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.54"
+  VERSION = "0.8.55"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
