@@ -31,30 +31,17 @@ class ::Livetext::Functions   # do this differently??
 
 end
 
-### find_asset
+### copy_asset
 
-def find_asset(asset)
-  raise "meh2"
-  views = @config.views
-  views.each do |view| 
-    vdir = @config.viewdir(view)
-    post_dir = "#{vdir}#{@meta.slug}/assets/"
-    path = post_dir + asset
-    STDERR.puts "          Seeking #{path}"
-    return path if File.exist?(path)
+def copy_asset(asset)
+  vdir = @blog.view.dir
+  return if File.exist?(vdir + "/" + asset)
+  top = vdir + "/../../"
+  if File.exist?(top + asset)
+    system("cp #{top}/#{asset} #{vdir}/#{asset}")
+    return
   end
-  views.each do |view| 
-    dir = @config.viewdir(view) + "/assets/"
-    path = dir + asset
-    STDERR.puts "          Seeking #{path}"
-    return path if File.exist?(path)
-  end
-  top = @root + "/assets/"
-  path = top + asset
-  STDERR.puts "          Seeking #{path}"
-  return path if File.exist?(path)
-
-  return nil
+  raise "Can't find #{asset.inspect}"
 end
 
 #############
@@ -146,14 +133,13 @@ end
 def asset
   @meta.assets ||= {}
   list = _args
-  list.each {|asset| @meta.assets[asset] = find_asset(asset) }
-# STDERR.puts red("\n  [DEBUG] ") + "Asset(s): #{@meta.assets}"
+  # For now: copies, doesn't keep record
+  list.each {|asset| copy_asset(asset) }
 end
 
 def assets
   @meta.assets ||= []
   @meta.assets += _body
-# STDERR.puts red("\n  [DEBUG] ") + "Assets: #{_body.inspect}"
 end
 
   def write_post(meta)
