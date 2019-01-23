@@ -336,7 +336,7 @@ module Livetext::Standard
       end
       _puts "</tr>"
     end
-    _puts "</table>"
+    _puts "</table></center>"
 #   @toc << "#{_nbsp(8)}<b>Table #@chapter.#@table_num</b> #{title}<br>"
   # _next_output(_slug("table_#{title}"))
 #   _puts "<b>Table #@chapter.#@table_num &nbsp;&nbsp; #{title}</b></center><br>"
