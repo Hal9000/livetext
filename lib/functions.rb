@@ -24,6 +24,13 @@ class Livetext::Functions    # Functions will go here... user-def AND pre-def??
     "<a href='#{url}'>#{text}</a>"
   end
 
+  def br
+    n = self.class.param 
+    n = "1" if n.empty?
+    n = n.to_i
+    "<br>"*n
+  end
+
 #   def asset
 #     param = self.class.param
 #     # FIXME how should this work?

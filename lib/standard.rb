@@ -342,4 +342,11 @@ module Livetext::Standard
 #   _puts "<b>Table #@chapter.#@table_num &nbsp;&nbsp; #{title}</b></center><br>"
   end
 
+  def br
+    n = _args.first || "1"
+    out = ""
+    n.to_i.times { out << "<br>" }
+    _puts out
+  end
+
 end 

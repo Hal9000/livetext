@@ -35,10 +35,10 @@ end
 
 def copy_asset(asset)
   vdir = @blog.view.dir
-  return if File.exist?(vdir + "/" + asset)
-  top = vdir + "/../../"
+  return if File.exist?(vdir + "/assets/" + asset)
+  top = vdir + "/../../assets/"
   if File.exist?(top + asset)
-    system("cp #{top}/#{asset} #{vdir}/#{asset}")
+    system("cp #{top}/#{asset} #{vdir}/assets/#{asset}")
     return
   end
   raise "Can't find #{asset.inspect}"
@@ -51,8 +51,8 @@ def init_liveblog    # FIXME - a lot of this logic sucks
   @meta = OpenStruct.new
   @meta.num = num
   @root = @blog.root
-  @view = @blog.view.name
-  @vdir = @blog.view.dir
+  @view = @blog.view.name rescue nil
+  @vdir = @blog.view.dir rescue nil
   @body = ""
 end
 
@@ -134,6 +134,7 @@ def asset
   @meta.assets ||= {}
   list = _args
   # For now: copies, doesn't keep record
+  # Later: Add to file and uniq; use in publishing
   list.each {|asset| copy_asset(asset) }
 end
 
