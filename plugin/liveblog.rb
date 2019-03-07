@@ -50,7 +50,7 @@ def init_liveblog    # FIXME - a lot of this logic sucks
   @blog, num = Livetext.parameters
   @meta = OpenStruct.new
   @meta.num = num
-  @root = @blog.root
+  @root = @blog.root rescue nil
   @view = @blog.view.name rescue nil
   @vdir = @blog.view.dir rescue nil
   @body = ""
@@ -62,9 +62,9 @@ end
 
 def _passthru(line, context = nil)
   return if line.nil?
-  @body << "<p>" if line == "\n" and ! @_nopara
   line = _formatting(line, context)
   @body << line + "\n"
+  @body << "<p>" if line.empty? && ! @_nopara
 end
 
 def title 
@@ -149,7 +149,7 @@ end
     Dir.mkdir(@postdir) unless Dir.exist?(@postdir) # FIXME remember assets!
     Dir.chdir(@postdir)
     meta.views = meta.views.join(" ")
-    meta.tags  = meta.tags.join(" ")
+    meta.tags  = meta.tags.join(" ") rescue ""
     File.write("body.txt", @body)  # Actually HTML...
     File.write("teaser.txt", meta.teaser)
     
@@ -172,6 +172,10 @@ def teaser
 end
 
 def finalize
+  if @blog.nil?
+    puts @body
+    return
+  end
   @slug = @blog.make_slug(@meta)
   @postdir = @blog.view.dir + "/#@slug"
   write_post(@meta) # FIXME
