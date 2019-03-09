@@ -7,7 +7,7 @@ class FormatLine
   SimpleFormats     = {}
   SimpleFormats[:b] = %w[<b> </b>]
   SimpleFormats[:i] = %w[<i> </i>]
-  SimpleFormats[:t] = %w[<b><tt> </tt></b>]
+  SimpleFormats[:t] = ["<font size=+1><tt>", "</tt></font>"]
   SimpleFormats[:s] = %w[<strike> </strike>]
 
   def initialize
