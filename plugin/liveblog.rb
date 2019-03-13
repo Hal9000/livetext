@@ -92,7 +92,7 @@ end
 
 def tags
   _debug "args = #{_args}"
-  @meta.tags = _args
+  @meta.tags = _args.dup || []
 end
 
 def views
