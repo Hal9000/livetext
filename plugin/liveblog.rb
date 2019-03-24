@@ -5,9 +5,10 @@ require 'date'
 require 'runeblog'  # Now depends explicitly
 
 def quote
-  _puts "<blockquote>"
-  _puts _body
-  _puts "</blockquote>"
+  _passthru "<blockquote>"
+  _passthru _body
+  _passthru "</blockquote>"
+  _optional_blank_line
 end
 
 class ::Livetext::Functions   # do this differently??
@@ -29,6 +30,26 @@ class ::Livetext::Functions   # do this differently??
     "<a href='#{url}'>#{text}</a>"
   end
 
+end
+
+### inset
+
+def inset
+  lines = _body
+  box = []
+  lines.each do |line| 
+    if line[0] == "|"
+      line[0] = ' '
+      box << line
+    end
+    _passthru(line)
+  end
+  lr = _args.first
+  _passthru "<div style='float:#{lr}; width: 25%; padding:8px; padding-right:12px; font-family:verdana'>"
+  _passthru '<b><i>'
+  _passthru box.join("<br>")
+  _passthru_noline '</i></b></div>'
+  _optional_blank_line
 end
 
 ### copy_asset
@@ -67,10 +88,18 @@ def _passthru(line, context = nil)
   @body << "<p>" if line.empty? && ! @_nopara
 end
 
+def _passthru_noline(line, context = nil)
+  return if line.nil?
+  line = _formatting(line, context)
+  @body << line
+  @body << "<p>" if line.empty? && ! @_nopara
+end
+
 def title 
   title = @_data.chomp
   @meta.title = title
   @body << "<h1>#{title}</h1>"
+  _optional_blank_line
 end
 
 def pubdate 
@@ -81,6 +110,7 @@ def pubdate
   y, m, d = y.to_i, m.to_i, d.to_i
   @meta.date = ::Date.new(y, m, d)
   @meta.pubdate = "%04d-%02d-%02d" % [y, m, d]
+  _optional_blank_line
 end
 
 def image   # primitive so far
@@ -88,22 +118,26 @@ def image   # primitive so far
   fname = _args.first
   path = "../assets/#{fname}"
   @body << "<img src=#{path}></img>"
+  _optional_blank_line
 end
 
 def tags
   _debug "args = #{_args}"
   @meta.tags = _args.dup || []
+  _optional_blank_line
 end
 
 def views
   _debug "data = #{_args}"
   @meta.views = _args.dup # + ["main"]
+  _optional_blank_line
 end
 
 def pin  
   _debug "data = #{_args}"
   # verify only already-specified views?
   @meta.pinned = _args.dup
+  _optional_blank_line
 end
 
 # def liveblog_version
@@ -113,6 +147,7 @@ def list
   @body << "<ul>"
   _body {|line| @body << "<li>#{line}</li>" }
   @body << "</ul>"
+  _optional_blank_line
 end
 
 def list!
@@ -128,6 +163,7 @@ def list!
     end
   end
   @body << "</ul>"
+  _optional_blank_line
 end
 
 def asset
@@ -136,34 +172,36 @@ def asset
   # For now: copies, doesn't keep record
   # Later: Add to file and uniq; use in publishing
   list.each {|asset| copy_asset(asset) }
+  _optional_blank_line
 end
 
 def assets
   @meta.assets ||= []
   @meta.assets += _body
+  _optional_blank_line
 end
 
-  def write_post(meta)
-    save = Dir.pwd
-    @postdir.gsub!(/\/\//, "/")  # FIXME unneeded?
-    Dir.mkdir(@postdir) unless Dir.exist?(@postdir) # FIXME remember assets!
-    Dir.chdir(@postdir)
-    meta.views = meta.views.join(" ")
-    meta.tags  = meta.tags.join(" ") rescue ""
-    File.write("body.txt", @body)  # Actually HTML...
-    File.write("teaser.txt", meta.teaser)
-    
-    fields = [:num, :title, :date, :pubdate, :views, :tags]
-    
-    fname2 = "metadata.txt"
-    f2 = File.open(fname2, "w") do |f2| 
-      fields.each {|fld| f2.puts "#{fld}: #{meta.send(fld)}" }
-    end
-    Dir.chdir(save)
-  rescue => err
-    puts "err = #{err}"
-    puts err.backtrace.join("\n")
+def write_post(meta)
+  save = Dir.pwd
+  @postdir.gsub!(/\/\//, "/")  # FIXME unneeded?
+  Dir.mkdir(@postdir) unless Dir.exist?(@postdir) # FIXME remember assets!
+  Dir.chdir(@postdir)
+  meta.views = meta.views.join(" ")
+  meta.tags  = meta.tags.join(" ") rescue ""
+  File.write("body.txt", @body)  # Actually HTML...
+  File.write("teaser.txt", meta.teaser)
+  
+  fields = [:num, :title, :date, :pubdate, :views, :tags]
+  
+  fname2 = "metadata.txt"
+  f2 = File.open(fname2, "w") do |f2| 
+    fields.each {|fld| f2.puts "#{fld}: #{meta.send(fld)}" }
   end
+  Dir.chdir(save)
+rescue => err
+  puts "err = #{err}"
+  puts err.backtrace.join("\n")
+end
 
 def teaser
   @meta.teaser = _body_text
