@@ -38,14 +38,21 @@ def inset
   lines = _body
   box = []
   lines.each do |line| 
-    if line[0] == "|"
+    line = line.dup
+    if line[0] == "/"  # Only into inset
+      line[0] = ' '
+      box << line
+      line.replace(" ")
+    end
+    if line[0] == "|"  # Into inset and body
       line[0] = ' '
       box << line
     end
     _passthru(line)
   end
   lr = _args.first
-  _passthru "<div style='float:#{lr}; width: 25%; padding:8px; padding-right:12px; font-family:verdana'>"
+  wide = _args[1] || "25"
+  _passthru "<div style='float:#{lr}; width: #{wide}%; padding:8px; padding-right:12px; font-family:verdana'>"
   _passthru '<b><i>'
   _passthru box.join("<br>")
   _passthru_noline '</i></b></div>'
