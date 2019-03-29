@@ -43,6 +43,10 @@ def usage
     Turn on backtrace:
       livetext -b
       livetext --backtrace
+
+    Install plugin:
+      livetext -i filename.rb
+      livetext -install filename.rb
   EOF
   puts
   exit
@@ -71,6 +75,9 @@ loop do
       x.process(src)
     when "-h", "--help"
       usage
+    when "-i", "--install"
+      lib = ARGV.shift
+      system("cp #{lib} #{Livetext::Path}/../plugin/")
     when Object
       x.process_file(arg, @backtrace)
   end
