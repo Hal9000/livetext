@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.65"
+  VERSION = "0.8.66"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
@@ -124,6 +124,25 @@ class Livetext
     end
   end
 
+  def transform_line(line, context=nil)
+    result = ""
+    context ||= binding
+    @context = context
+    sigil = "." # Can't change yet
+    nomarkup = true
+    # FIXME inefficient
+    scomment  = rx(sigil, Livetext::Space)  # apply these in order
+    sname     = rx(sigil)
+    if line =~ scomment
+      handle_scomment(line)
+    elsif line =~ sname 
+      handle_sname(line)
+    else
+      result << line
+    end
+    result
+  end
+
   def process(text)
     enum = text.each_line
     @main.source(enum, "STDIN", 0)
@@ -132,6 +151,20 @@ class Livetext
       break if line.nil?
       process_line(line)
     end
+  end
+
+  def transform(text)
+    result = ""
+    enum = text.each_line
+    @main.source(enum, "STDIN", 0)
+    loop do 
+      line = @main.nextline
+      break if line.nil?
+puts "LINE: #{line}"
+      result << transform_line(line)
+puts "result: #{result}"
+    end
+    result
   end
 
   def process_text(text)

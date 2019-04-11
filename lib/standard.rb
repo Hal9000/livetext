@@ -200,6 +200,8 @@ module Livetext::Standard
     self.extend(newmod)
     init = "init_#{name}"
     self.send(init) if self.respond_to? init
+puts "MIXINS: #{@_mixins.inspect}"
+puts "newmod METHODS: #{newmod.instance_methods.sort}"
     _optional_blank_line
   end
 
