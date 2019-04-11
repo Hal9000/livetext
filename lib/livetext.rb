@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.66"
+  VERSION = "0.8.67"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
@@ -154,15 +154,14 @@ class Livetext
   end
 
   def transform(text)
+    @output = File.new("/dev/null", "w")
     result = ""
     enum = text.each_line
     @main.source(enum, "STDIN", 0)
     loop do 
       line = @main.nextline
       break if line.nil?
-puts "LINE: #{line}"
       result << transform_line(line)
-puts "result: #{result}"
     end
     result
   end
