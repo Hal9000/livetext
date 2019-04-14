@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.67"
+  VERSION = "0.8.68"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
@@ -23,6 +23,7 @@ class Livetext
   Vars = {}
 
   attr_reader :main, :context
+  attr_accessor :output
 
   class << self
     attr_accessor :parameters  # from outside world (process_text)
@@ -49,7 +50,7 @@ class Livetext
       @parent = parent
       @_nopass = false
       @_nopara = false
-      @output = output || File.open("/dev/null", "w")
+      ::Livetext.output = output || File.open("/dev/null", "w")
       @sources = []
     end
 
@@ -154,7 +155,7 @@ class Livetext
   end
 
   def transform(text)
-    @output = File.new("/dev/null", "w")
+    # @output = File.new("/dev/null", "w")
     result = ""
     enum = text.each_line
     @main.source(enum, "STDIN", 0)
