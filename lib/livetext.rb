@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.68"
+  VERSION = "0.8.69"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
@@ -23,10 +23,10 @@ class Livetext
   Vars = {}
 
   attr_reader :main, :context
-  attr_accessor :output
 
   class << self
     attr_accessor :parameters  # from outside world (process_text)
+    attr_accessor :output      # both bad solutions?
   end
 
   class Processor
@@ -50,8 +50,16 @@ class Livetext
       @parent = parent
       @_nopass = false
       @_nopara = false
-      ::Livetext.output = output || File.open("/dev/null", "w")
+      @output = ::Livetext.output = (output || File.open("/dev/null", "w"))
       @sources = []
+    end
+
+    def _out(str)
+      if @no_puts
+        @body << str
+      else
+        _puts str
+      end
     end
 
     def output=(io)
@@ -155,16 +163,16 @@ class Livetext
   end
 
   def transform(text)
-    # @output = File.new("/dev/null", "w")
-    result = ""
+    @body = ""
+    @output = ::Livetext.output
     enum = text.each_line
     @main.source(enum, "STDIN", 0)
     loop do 
       line = @main.nextline
       break if line.nil?
-      result << transform_line(line)
+      process_line(line)
     end
-    result
+    @body
   end
 
   def process_text(text)
@@ -234,7 +242,6 @@ class Livetext
 
   def handle_sname(line, sigil=".")
     name = _get_name(line, sigil)
-#   STDERR.puts name.inspect
     unless @main.respond_to?(name)
       @main._error! "Name '#{name}' is unknown"
       return

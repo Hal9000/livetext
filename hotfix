@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-lib = `livetext --path`.chomp
+lib = ARGV.first || `livetext --path`.chomp
 
 system("cp lib/* #{lib}/")
 system("cp plugin/* #{lib}/../plugin/")
