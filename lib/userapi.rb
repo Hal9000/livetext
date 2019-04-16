@@ -104,7 +104,6 @@ module Livetext::UserAPI
   end
 
   def _passthru(line, context = nil)
-    $which = 1
     return if @_nopass
 #   p [@_nopara, line]
     _out "<p>" if line == "\n" and ! @_nopara

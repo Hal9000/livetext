@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.70"
+  VERSION = "0.8.71"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
@@ -129,7 +129,6 @@ class Livetext
   end
 
   def transform_line(line, context=nil)
-    result = ""
     context ||= binding
     @context = context
     sigil = "." # Can't change yet
@@ -142,7 +141,7 @@ class Livetext
     elsif line =~ sname 
       handle_sname(line)
     else
-      result << line
+      @body << line
     end
     result
   end
@@ -165,7 +164,7 @@ class Livetext
     loop do 
       line = @main.nextline
       break if line.nil?
-      process_line(line)
+      process_line(line)  # transform_line ???
     end
     @body
   end
