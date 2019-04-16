@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.69"
+  VERSION = "0.8.70"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
@@ -23,6 +23,7 @@ class Livetext
   Vars = {}
 
   attr_reader :main, :context
+  attr_accessor :no_puts
 
   class << self
     attr_accessor :parameters  # from outside world (process_text)
@@ -50,16 +51,10 @@ class Livetext
       @parent = parent
       @_nopass = false
       @_nopara = false
+      parent.no_puts = output.nil?
+      @body = ""  # not always used
       @output = ::Livetext.output = (output || File.open("/dev/null", "w"))
       @sources = []
-    end
-
-    def _out(str)
-      if @no_puts
-        @body << str
-      else
-        _puts str
-      end
     end
 
     def output=(io)

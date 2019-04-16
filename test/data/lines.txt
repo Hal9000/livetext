@@ -1,22 +1,22 @@
 tick: Single token, beginning of line
 `def is like a reserved word
-<tt>def</tt> is like a reserved word
+<font size=+1><tt>def</tt></font> is like a reserved word
 
 tick: Single token, middle of line
 They say `def is like a reserved word
-They say <tt>def</tt> is like a reserved word
+They say <font size=+1><tt>def</tt></font> is like a reserved word
 
 tick: Single token, end of line
 like a reserved word, is `def
-like a reserved word, is <tt>def</tt>
+like a reserved word, is <font size=+1><tt>def</tt></font>
 
 tick: Bracketed, normal
 This is `[code font] here
-This is <tt>code font</tt> here
+This is <font size=+1><tt>code font</tt></font> here
 
 tick: Bracketed, hits EOL
 This is `[code font here
-This is <tt>code font here</tt>
+This is <font size=+1><tt>code font here</tt></font>
 
 tick: followed by space
 This is not ` code
@@ -28,19 +28,19 @@ This also isn't code: `
 
 tick: Doubled, ignores comma
 This is ``code, of course
-This is <tt>code</tt>, of course
+This is <font size=+1><tt>code</tt></font>, of course
 
 tick: Doubled, ignores period
 This is ``code. Hooray, I guess.
-This is <tt>code</tt>. Hooray, I guess.
+This is <font size=+1><tt>code</tt></font>. Hooray, I guess.
 
 tick: Doubled, ignores right paren
 (By the way, this is ``code)
-(By the way, this is <tt>code</tt>)
+(By the way, this is <font size=+1><tt>code</tt></font>)
 
 tick: Doubled, ignores EOL
 Up to EOL, this is ``code
-Up to EOL, this is <tt>code</tt>
+Up to EOL, this is <font size=+1><tt>code</tt></font>
 
 uscore: Single token, beginning of line
 _This is italics
@@ -88,7 +88,7 @@ Be there in a <i>second</i>
 
 Tick has precedence over underscore
 This is a `piece_of_code here
-This is a <tt>piece_of_code</tt> here
+This is a <font size=+1><tt>piece_of_code</tt></font> here
 
 under: Starts after double quote?
 He said, "_Please go away."
@@ -204,7 +204,7 @@ There is <i>some text</i> here
 
 Try $$t
 There is $$t[some text] here
-There is <tt>some text</tt> here
+There is <font size=+1><tt>some text</tt></font> here
 
 Try $$s
 There is $$s[some text] here
@@ -216,7 +216,7 @@ There is <b><i>some text</i></b> here
 
 Try $$bt
 There is $$bt[some text] here
-There is <b><tt>some text</tt></b> here
+There is <b><font size=+1><tt>some text</tt></font></b> here
 
 Try $$bs
 There is $$bs[some text] here
@@ -224,7 +224,7 @@ There is <b><strike>some text</strike></b> here
 
 Try $$it
 There is $$it[some text] here
-There is <i><tt>some text</tt></i> here
+There is <i><font size=+1><tt>some text</tt></font></i> here
 
 Try $$is
 There is $$is[some text] here
@@ -232,11 +232,11 @@ There is <i><strike>some text</strike></i> here
 
 Try $$ts
 There is $$ts[some text] here
-There is <tt><strike>some text</strike></tt> here
+There is <font size=+1><tt><strike>some text</strike></tt></font> here
 
 Try $$bit
 There is $$bit[some text] here
-There is <b><i><tt>some text</tt></i></b> here
+There is <b><i><font size=+1><tt>some text</tt></font></i></b> here
 
 Try $$bis
 There is $$bis[some text] here
@@ -244,19 +244,19 @@ There is <b><i><strike>some text</strike></i></b> here
 
 Try $$bts
 There is $$bts[some text] here
-There is <b><tt><strike>some text</strike></tt></b> here
+There is <b><font size=+1><tt><strike>some text</strike></tt></font></b> here
 
 Try $$its
 There is $$its[some text] here
-There is <i><tt><strike>some text</strike></tt></i> here
+There is <i><font size=+1><tt><strike>some text</strike></tt></font></i> here
 
 Try $$bits 
 There is $$bits[some text] here
-There is <b><i><tt><strike>some text</strike></tt></i></b> here
+There is <b><i><font size=+1><tt><strike>some text</strike></tt></font></i></b> here
 
 Escaped brackets inside bracketed function parameter
 Here is an $$t[\[:array, :expression\]] with escapes.
-Here is an <tt>[:array, :expression]</tt> with escapes.
+Here is an <font size=+1><tt>[:array, :expression]</tt></font> with escapes.
 
 Escape brackets inside *
 There are brackets *[\[\]] here
@@ -268,7 +268,7 @@ There are brackets <i>[]</i> here
 
 Escape brackets inside `
 There are brackets `[\[\]] here
-There are brackets <tt>[]</tt> here
+There are brackets <font size=+1><tt>[]</tt></font> here
 
 Escape brackets inside ~
 There are brackets ~[\[\]] here

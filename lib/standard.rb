@@ -3,7 +3,7 @@ module Livetext::Standard
   SimpleFormats =     # Move this?
    { b: %w[<b> </b>],
      i: %w[<i> </i>],
-     t: ["<font size=+1><tt>", "</tt></font"],
+     t: ["<font size=+1><tt>", "</tt></font>"],
      s: %w[<strike> </strike>] }
 
   attr_reader :_data

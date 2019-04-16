@@ -5,4 +5,5 @@ lib = ARGV.first || `livetext --path`.chomp
 system("cp lib/* #{lib}/")
 system("cp plugin/* #{lib}/../plugin/")
 system("cp test/*rb #{lib}/../test/")
+system("cp -r test/data/* #{lib}/../test/data/")
 system("cp bin/* #{lib}/../bin/")

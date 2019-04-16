@@ -107,10 +107,18 @@ module Livetext::UserAPI
     $which = 1
     return if @_nopass
 #   p [@_nopara, line]
-    _puts "<p>" if line == "\n" and ! @_nopara
-#   _puts "<p>" if line == "" and ! @_nopara
+    _out "<p>" if line == "\n" and ! @_nopara
+#   _out "<p>" if line == "" and ! @_nopara
     _formatting(line, context)
-    _puts line
+    _out line
+  end
+
+  def _out(str)
+    if @no_puts
+      @body << str
+    else
+      _puts str
+    end
   end
 
   def _puts(*args)

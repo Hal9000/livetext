@@ -1,6 +1,6 @@
-Here are examples of <b>boldface</b> and <i>italics</i> and <tt>code</tt>
+Here are examples of <b>boldface</b> and <i>italics</i> and <font size=+1><tt>code</tt></font>
 as well as <b>more complex</b> examples of <i>italicized text</i>
-and <tt>code font</tt>.
+and <font size=+1><tt>code font</tt></font>.
 <p>
 
 Here are some random punctuation marks:

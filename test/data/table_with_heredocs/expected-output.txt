@@ -10,4 +10,4 @@ Testing heredocs (used in a table)
   <td valign=top>And so<br>is this.<br></td>
   <td valign=top>This is <br>row 2<br>col 2<br></td>
 </tr>
-</table>
+</table></center>
