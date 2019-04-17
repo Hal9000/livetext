@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.71"
+  VERSION = "0.8.72"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
@@ -24,6 +24,7 @@ class Livetext
 
   attr_reader :main, :context
   attr_accessor :no_puts
+  attr_accessor :body
 
   class << self
     attr_accessor :parameters  # from outside world (process_text)
@@ -51,8 +52,7 @@ class Livetext
       @parent = parent
       @_nopass = false
       @_nopara = false
-      parent.no_puts = output.nil?
-      @body = ""  # not always used
+      # Meh?
       @output = ::Livetext.output = (output || File.open("/dev/null", "w"))
       @sources = []
     end
@@ -64,8 +64,7 @@ class Livetext
     def _error!(err, abort=true, trace=false)
       where = @sources.last || @save_location
       STDERR.puts "Error: #{err} (at #{where[1]} line #{where[2]})"
-#     STDERR.puts err.backtrace if @backtrace && err.respond_to?(:backtrace)
-      STDERR.puts err.backtrace if err.respond_to?(:backtrace)
+      STDERR.puts err.backtrace if trace && err.respond_to?(:backtrace)
       exit if abort
     end
 
@@ -108,6 +107,8 @@ class Livetext
     @source = nil
     @_mixins = []
     @_outdir = "."
+    @no_puts = output.nil?
+    @body = ""
     @main = Processor.new(self, output)
   end
 
@@ -128,23 +129,23 @@ class Livetext
     end
   end
 
-  def transform_line(line, context=nil)
-    context ||= binding
-    @context = context
-    sigil = "." # Can't change yet
-    nomarkup = true
-    # FIXME inefficient
-    scomment  = rx(sigil, Livetext::Space)  # apply these in order
-    sname     = rx(sigil)
-    if line =~ scomment
-      handle_scomment(line)
-    elsif line =~ sname 
-      handle_sname(line)
-    else
-      @body << line
-    end
-    result
-  end
+#   def transform_line(line, context=nil)
+#     context ||= binding
+#     @context = context
+#     sigil = "." # Can't change yet
+#     nomarkup = true
+#     # FIXME inefficient
+#     scomment  = rx(sigil, Livetext::Space)  # apply these in order
+#     sname     = rx(sigil)
+#     if line =~ scomment
+#       handle_scomment(line)
+#     elsif line =~ sname 
+#       handle_sname(line)
+#     else
+#       @body << line
+#     end
+#     result
+#   end
 
   def process(text)
     enum = text.each_line
@@ -157,7 +158,6 @@ class Livetext
   end
 
   def transform(text)
-    @body = ""
     @output = ::Livetext.output
     enum = text.each_line
     @main.source(enum, "STDIN", 0)

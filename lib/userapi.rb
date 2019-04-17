@@ -114,7 +114,7 @@ module Livetext::UserAPI
 
   def _out(str)
     if @no_puts
-      @body << str
+      @parent.body << str
     else
       _puts str
     end
