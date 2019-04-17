@@ -206,18 +206,17 @@ module Livetext::Standard
   def copy
     file = @_args.first
     _check_existence(file, "No such file '#{file}' to copy")
-    @output.puts grab_file(file)
+    _out grab_file(file)
     _optional_blank_line
   end
 
   def r
-# STDERR.puts "@_data = #{@_data.inspect}"
-    _puts @_data  # No processing at all
+    _out @_data  # No processing at all
   end
 
   def raw
     # No processing at all (terminate with __EOF__)
-    _puts _raw_body  
+    _out _raw_body  
   end
 
   def debug
@@ -263,57 +262,55 @@ module Livetext::Standard
   end
 
   def newpage
-    _puts '<p style="page-break-after:always;"></p>'
-    _puts "<p/>"
+    _out '<p style="page-break-after:always;"></p>'
+    _out "<p/>"
   end
 
   def invoke(str)
   end
 
   def mono
-    _puts "<pre>"
-    _body(true) {|line| puts line }
-    _puts "</pre>"
+    _out "<pre>"
+    _body(true) {|line| _out line }
+    _out "</pre>"
     _optional_blank_line
   end
 
   def dlist
     delim = _args.first
-    _puts "<dl>"
+    _out "<dl>"
     _body do |line|
       line = _formatting(line)
       term, defn = line.split(delim)
-      _puts "<dt>#{term}</dt>"
-      _puts "<dd>#{defn}</dd>"
+      _out "<dt>#{term}</dt>"
+      _out "<dd>#{defn}</dd>"
     end
-    _puts "</dl>"
+    _out "</dl>"
   end
 
   def old_dlist
     delim = _args.first
-    _puts "<table>"
+    _out "<table>"
     _body do |line|
       line = _formatting(line)
       term, defn = line.split(delim)
-      _puts "<tr>"
-      _puts "<td width=3%><td width=10%>#{term}</td><td>#{defn}</td>"
-      _puts "</tr>"
+      _out "<tr>"
+      _out "<td width=3%><td width=10%>#{term}</td><td>#{defn}</td>"
+      _out "</tr>"
     end
-    _puts "</table>"
+    _out "</table>"
   end
 
   def link
     url = _args.first
     text = _args[2..-1].join(" ")
-    _puts "<a href='#{url}'>#{text}</a>"
+    _out "<a href='#{url}'>#{text}</a>"
   end
 
   def xtable   # Borrowed from bookish - FIXME
-#   @table_num ||= 0
-#   @table_num += 1
     title = @_data
     delim = " :: "
-    _puts "<br><center><table border=1 width=90% cellpadding=5>"
+    _out "<br><center><table border=1 width=90% cellpadding=5>"
     lines = _body(true)
     maxw = nil
     lines.each do |line|
@@ -330,23 +327,20 @@ module Livetext::Standard
   
     lines.each do |line|
       cells = line.split(delim)
-      _puts "<tr>"
+      _out "<tr>"
       cells.each.with_index do |cell, i| 
-        _puts "  <td valign=top>#{cell}</td>"
+        _out "  <td valign=top>#{cell}</td>"
       end
-      _puts "</tr>"
+      _out "</tr>"
     end
-    _puts "</table></center>"
-#   @toc << "#{_nbsp(8)}<b>Table #@chapter.#@table_num</b> #{title}<br>"
-  # _next_output(_slug("table_#{title}"))
-#   _puts "<b>Table #@chapter.#@table_num &nbsp;&nbsp; #{title}</b></center><br>"
+    _out "</table></center>"
   end
 
   def br
     n = _args.first || "1"
     out = ""
     n.to_i.times { out << "<br>" }
-    _puts out
+    _out out
   end
 
 end 

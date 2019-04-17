@@ -1,4 +1,5 @@
 class FormatLine
+
   EOL    = :eol
   Alpha  = /[a-z]/
   Alpha2 = /[a-z0-9_]/
@@ -49,8 +50,8 @@ class FormatLine
       self.send("func_" + name.to_s, param)
     else
       fobj = ::Livetext::Functions.new
-      ::Livetext::Functions.param = param       # is this screwed up???
-      ::Livetext::Functions.context = @context   # is this screwed up???
+      ::Livetext::Functions.param = param        # is this 
+      ::Livetext::Functions.context = @context   #   screwed up???
       fobj.send(name)
     end
   end
@@ -64,6 +65,9 @@ class FormatLine
     @buffer << funcall(@fname, @param)
     @fname, @param = "", ""
   end
+
+# FIXME Much of this should be done via CSS
+# FIXME In particular, strike is deprecated.
 
   def bold
     d0, d1 = SimpleFormats[:b]
@@ -98,10 +102,11 @@ class FormatLine
     @fname  = ""
     @vname  = ""
     @param  = ""
+
+    # FIXME - refactor, generalize, clarify
     
     loop do   # starting state
       char = peek
-  #   puts "char = #{char.inspect}"
       case char
         when "\\"
           char = skip

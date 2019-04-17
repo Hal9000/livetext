@@ -1,12 +1,9 @@
 class Livetext
-  VERSION = "0.8.72"
+  VERSION = "0.8.73"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
-$Livetext = Livetext
-
 require 'fileutils'
-
 
 $: << Livetext::Path
 
@@ -14,6 +11,7 @@ require 'functions'
 require 'userapi'
 require 'standard'
 require 'formatline'
+require 'processor'
 
 Plugins = File.expand_path(File.join(File.dirname(__FILE__), "../plugin"))
 
@@ -26,80 +24,12 @@ class Livetext
   attr_accessor :no_puts
   attr_accessor :body
 
+  # FIXME - phase out stupid 'parameters' method
+
   class << self
     attr_accessor :parameters  # from outside world (process_text)
     attr_accessor :output      # both bad solutions?
   end
-
-  class Processor
-    include Livetext::Standard
-    include Livetext::UserAPI
-
-    Disallowed = [:nil?, :===, :=~, :!~, :eql?, :hash, :<=>, 
-                  :class, :singleton_class, :clone, :dup, :taint, :tainted?, 
-                  :untaint, :untrust, :untrusted?, :trust, :freeze, :frozen?, 
-                  :to_s, :inspect, :methods, :singleton_methods, :protected_methods, 
-                  :private_methods, :public_methods, :instance_variables, 
-                  :instance_variable_get, :instance_variable_set, 
-                  :instance_variable_defined?, :remove_instance_variable, 
-                  :instance_of?, :kind_of?, :is_a?, :tap, :send, :public_send, 
-                  :respond_to?, :extend, :display, :method, :public_method, 
-                  :singleton_method, :define_singleton_method, :object_id, :to_enum, 
-                  :enum_for, :pretty_inspect, :==, :equal?, :!, :!=, :instance_eval, 
-                  :instance_exec, :__send__, :__id__, :__binding__]
-
-    def initialize(parent, output = nil)
-      @parent = parent
-      @_nopass = false
-      @_nopara = false
-      # Meh?
-      @output = ::Livetext.output = (output || File.open("/dev/null", "w"))
-      @sources = []
-    end
-
-    def output=(io)
-      @output = io
-    end
-
-    def _error!(err, abort=true, trace=false)
-      where = @sources.last || @save_location
-      STDERR.puts "Error: #{err} (at #{where[1]} line #{where[2]})"
-      STDERR.puts err.backtrace if trace && err.respond_to?(:backtrace)
-      exit if abort
-    end
-
-    def _disallowed?(name)
-      Disallowed.include?(name.to_sym)
-    end
-
-    def source(enum, file, line)
-      @sources.push([enum, file, line])
-    end
-
-    def peek_nextline
-      @sources.last[0].peek
-    rescue StopIteration
-      @sources.pop
-      nil
-    end
-
-    def nextline
-      return nil if @sources.empty?
-      line = @sources.last[0].next
-      @sources.last[2] += 1
-      line
-    rescue StopIteration
-      @sources.pop
-      nil
-    end
-
-    def grab_file(fname)
-      File.read(fname)
-    end
-
-  end
-
-####
 
   Space = " "
 
@@ -129,27 +59,10 @@ class Livetext
     end
   end
 
-#   def transform_line(line, context=nil)
-#     context ||= binding
-#     @context = context
-#     sigil = "." # Can't change yet
-#     nomarkup = true
-#     # FIXME inefficient
-#     scomment  = rx(sigil, Livetext::Space)  # apply these in order
-#     sname     = rx(sigil)
-#     if line =~ scomment
-#       handle_scomment(line)
-#     elsif line =~ sname 
-#       handle_sname(line)
-#     else
-#       @body << line
-#     end
-#     result
-#   end
-
   def process(text)
     enum = text.each_line
-    @main.source(enum, "STDIN", 0)
+    front = text.match(/.*?\n/).to_a.first.chomp
+    @main.source(enum, "STDIN: '#{front}...'", 0)
     loop do 
       line = @main.nextline
       break if line.nil?
@@ -160,7 +73,8 @@ class Livetext
   def transform(text)
     @output = ::Livetext.output
     enum = text.each_line
-    @main.source(enum, "STDIN", 0)
+    front = text.match(/.*?\n/).to_a.first.chomp
+    @main.source(enum, "STDIN: '#{front}...'", 0)
     loop do 
       line = @main.nextline
       break if line.nil?
@@ -169,11 +83,14 @@ class Livetext
     @body
   end
 
+## FIXME don't need process *and* process_text
+
   def process_text(text)
     text = text.split("\n") if text.is_a? String
     enum = text.each
     @backtrace = false
-    @main.source(enum, "(text)", 0)
+    front = text.match(/.*?\n/).to_a.first.chomp
+    @main.source(enum, "(text): '#{front}...'", 0)
     loop do 
       line = @main.nextline
       break if line.nil?
@@ -186,11 +103,14 @@ class Livetext
     puts err.backtrace.join("\n")
   end
 
+## FIXME process_file[!] should call process[_text]
+
   def process_file(fname, context=nil)
     context ||= binding
     @context = context
     raise "No such file '#{fname}' to process" unless File.exist?(fname)
-    enum = File.readlines(fname).each
+    text = File.readlines(fname)
+    enum = text.each
     @backtrace = false
     @main.source(enum, fname, 0)
     loop do 
@@ -223,10 +143,7 @@ class Livetext
   def handle_scomment(line, sigil=".")
   end
 
-  def _get_name(line, sigil=".")
-    name, data = line.split(" ", 2)
-    name = name[1..-1]  # chop off sigil
-    @main.data = data
+  def _check_name(name)
     @main._error! "Name '#{name}' is not permitted" if @main._disallowed?(name)
     name = "_def" if name == "def"
     name = "_include" if name == "include"
@@ -234,13 +151,22 @@ class Livetext
     name
   end
 
+  def _get_name(line, sigil=".")
+    name, data = line.split(" ", 2)
+    name = name[1..-1]  # chop off sigil
+    @main.data = data
+    name = _check_name(name)
+  end
+
   def handle_sname(line, sigil=".")
     name = _get_name(line, sigil)
-    unless @main.respond_to?(name)
+    result = nil
+    if @main.respond_to?(name)
+      result = @main.send(name)
+    else
       @main._error! "Name '#{name}' is unknown"
       return
     end
-    result = @main.send(name)
     result
   rescue => err
     @main._error!(err)

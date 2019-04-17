@@ -145,7 +145,7 @@ def ruby
 
   _process_code(code)
   html = _colorize(code, :ruby)
-  @output.puts "\n#{html}\n "
+  _out "\n#{html}\n "
 end
 
 def elixir
@@ -159,7 +159,7 @@ def elixir
 
   _process_code(code)
   html = _colorize(code, :elixir)
-  @output.puts "\n#{html}\n "
+  _out "\n#{html}\n "
 end
 
 def fragment
@@ -176,12 +176,12 @@ def fragment
   text ||= "ERROR IN HIGHLIGHTER"
   _debug "text = \n#{text.inspect}\n-----"
 # PygmentFix.pyg_finalize(text, lexer)
-  @output.puts text + "\n<br>"
+  _out text + "\n<br>"
 end
 
 def code       # FIXME ?
   text = ""   
-  _body {|line| @output.puts "    " + line }
+  _body {|line| _out "    " + line }
 end
 
 def mono

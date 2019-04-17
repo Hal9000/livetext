@@ -105,9 +105,7 @@ module Livetext::UserAPI
 
   def _passthru(line, context = nil)
     return if @_nopass
-#   p [@_nopara, line]
     _out "<p>" if line == "\n" and ! @_nopara
-#   _out "<p>" if line == "" and ! @_nopara
     _formatting(line, context)
     _out line
   end
