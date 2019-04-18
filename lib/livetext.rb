@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.73"
+  VERSION = "0.8.74"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
@@ -89,7 +89,7 @@ class Livetext
     text = text.split("\n") if text.is_a? String
     enum = text.each
     @backtrace = false
-    front = text.match(/.*?\n/).to_a.first.chomp
+    front = text[0].chomp
     @main.source(enum, "(text): '#{front}...'", 0)
     loop do 
       line = @main.nextline
