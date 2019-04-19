@@ -7,7 +7,9 @@ real comment.
 
 .not_a_method
 
-And this stuff won't be munged: `alpha _beta *gamma
+And this stuff won't be munged: 
+  `alpha _beta *gamma
+
 Or these: 
   `(alpha male) 
   _(beta max) 

@@ -568,7 +568,9 @@ Here are some tests from the suite. The file name reflects the general purpose o
  
  .not\_a\_method
  
- And this stuff won't be munged: `alpha \_beta *gamma
+ And this stuff won't be munged:
+   `alpha \_beta *gamma
+ 
  Or these:
    `(alpha male)
    \_(beta max)
@@ -586,7 +588,9 @@ Here are some tests from the suite. The file name reflects the general purpose o
  
  .not\_a\_method
  
- And this stuff won't be munged: `alpha \_beta *gamma
+ And this stuff won't be munged:
+   `alpha \_beta *gamma
+ 
  Or these:
    `(alpha male)
    \_(beta max)
