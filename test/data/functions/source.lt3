@@ -10,8 +10,8 @@ I am calling $$myfunc here...
 Let's see 
 what happens.
 
-Functions can take a parameter in brackets (which it can parse
-itself as needed):
+Functions can take a parameter in brackets 
+(which it can parse itself as needed):
 
 .func mean
   list = self.class.param

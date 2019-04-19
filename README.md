@@ -977,8 +977,8 @@ a single string parameter between brackets.
  Let's see
  what happens.
  
- Functions can take a parameter in brackets (which it can parse
- itself as needed):
+ Functions can take a parameter in brackets
+ (which it can parse itself as needed):
  
  .func mean
    list = self.class.param
@@ -1005,8 +1005,8 @@ a single string parameter between brackets.
  what happens.
  <p>
  
- Functions can take a parameter in brackets (which it can parse
- itself as needed):
+ Functions can take a parameter in brackets
+ (which it can parse itself as needed):
  <p>
  
  The result is 4.0 as I see it.

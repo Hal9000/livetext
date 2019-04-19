@@ -8,8 +8,8 @@ Let's see
 what happens.
 <p>
 
-Functions can take a parameter in brackets (which it can parse
-itself as needed):
+Functions can take a parameter in brackets 
+(which it can parse itself as needed):
 <p>
 
 The result is 4.0 as I see it.
