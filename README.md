@@ -144,8 +144,11 @@ Most of this is summarized in this example (taken from one of the testcases):
     </tr>
     <tr>
       <td width=50% bgcolor=#fee0fe valign=top>
-        <pre> Here are examples of *boldface and \_italics and `code
- as well as *[more complex] examples of \_[italicized text]
+        <pre> Here are examples of *boldface
+ and \_italics
+ and `code
+ as well as *[more complex] examples
+ of \_[italicized text]
  and `[code font].
  
  Here are some random punctuation marks:
@@ -155,8 +158,11 @@ Most of this is summarized in this example (taken from one of the testcases):
 </pre>
       </td>
       <td width=50% bgcolor=#eeeeee valign=top>
-        <pre> Here are examples of <b>boldface</b> and <i>italics</i> and <font size=+1><tt>code</tt></font>
- as well as <b>more complex</b> examples of <i>italicized text</i>
+        <pre> Here are examples of <b>boldface</b>
+ and <i>italics</i>
+ and <font size=+1><tt>code</tt></font>
+ as well as <b>more complex</b> examples
+ of <i>italicized text</i>
  and <font size=+1><tt>code font</tt></font>.
  <p>
  
