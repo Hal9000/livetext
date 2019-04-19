@@ -1,7 +1,5 @@
-<style>
-  pre {font-size: 14; bold }
-  tt  {font-size: 14; bold }
-</style>
+<p>
+
 # Livetext: A smart processor for text
 <b>This README is currently mangled. Fixes coming soon!</b>
 <p>
@@ -151,7 +149,7 @@ Most of this is summarized in this example (taken from one of the testcases):
  and `[code font].
  
  Here are some random punctuation marks:
- # . @ * \_ ` : ; % ^ & $
+ ; # . * \_ ` : @ % ^ & $
  
  No need to escape these:  * \_ `
 </pre>
@@ -163,7 +161,7 @@ Most of this is summarized in this example (taken from one of the testcases):
  <p>
  
  Here are some random punctuation marks:
- # . @ * \_ ` : ; % ^ & $
+ ; # . * \_ ` : @ % ^ & $
  <p>
  
  No need to escape these:  * \_ `
@@ -533,11 +531,11 @@ Here are some tests from the suite. The file name reflects the general purpose o
  .not\_a\_method
  
  And this stuff won't be munged: `alpha \_beta *gamma
- Or this: `(alpha male) \_(beta max) *(gamma rays)
+ Or these:
+   `(alpha male)
+   \_(beta max)
+   *(gamma rays)
  \_\_EOF\_\_
- 
- 
- I hope that worked.
 </pre>
       </td>
       <td width=50% bgcolor=#eeeeee valign=top>
@@ -551,10 +549,10 @@ Here are some tests from the suite. The file name reflects the general purpose o
  .not\_a\_method
  
  And this stuff won't be munged: `alpha \_beta *gamma
- Or this: `(alpha male) \_(beta max) *(gamma rays)
- <p>
- 
- I hope that worked.
+ Or these:
+   `(alpha male)
+   \_(beta max)
+   *(gamma rays)
 </pre>
       </td>
     </tr>
@@ -634,19 +632,19 @@ What are some other helper methods? Here's a list.
 
 <dl>
 <dt><font</dt>
-<dd>size=+1><tt><i>args</tt></font></i></dd>
+<dd>size=+1><tt>_args</tt></font></dd>
 <dt><font</dt>
-<dd>size=+1><tt><i>data</tt></font></i></dd>
+<dd>size=+1><tt>_data</tt></font></dd>
 <dt><font</dt>
-<dd>size=+1><tt><i>body</tt></font></i></dd>
+<dd>size=+1><tt>_body</tt></font></dd>
 <dt><font</dt>
-<dd>size=+1><tt><i>puts</tt></font></i></dd>
+<dd>size=+1><tt>_puts</tt></font></dd>
 <dt><font</dt>
-<dd>size=+1><tt><i>print</tt></font></i></dd>
+<dd>size=+1><tt>_print</tt></font></dd>
 <dt><font</dt>
-<dd>size=+1><tt><i>formatting</tt></font></i></dd>
+<dd>size=+1><tt>_formatting</tt></font></dd>
 <dt><font</dt>
-<dd>size=+1><tt><i>passthru</tt></font></i></dd>
+<dd>size=+1><tt>_passthru</tt></font></dd>
 </dl>
 Note that the last three methods are typically <i>not</i> called in your own code. They could be,
 but it remains to be seen whether something that advanced is useful.
@@ -683,7 +681,7 @@ in the test suite.
  .end
  
  
- I hope that worked.
+ That's all.
 </pre>
       </td>
       <td width=50% bgcolor=#eeeeee valign=top>
@@ -709,7 +707,7 @@ in the test suite.
      zymurgy
  <p>
  
- I hope that worked.
+ That's all.
 </pre>
       </td>
     </tr>
@@ -755,7 +753,7 @@ have the user specify a number of columns (from 1 to 5, defaulting to 1).
  .end
  
  
- I hope that worked a second time.
+ And that is all.
 </pre>
       </td>
       <td width=50% bgcolor=#eeeeee valign=top>
@@ -770,7 +768,7 @@ have the user specify a number of columns (from 1 to 5, defaulting to 1).
  zootrope       zymurgy
  <p>
  
- I hope that worked a second time.
+ And that is all.
 </pre>
       </td>
     </tr>
