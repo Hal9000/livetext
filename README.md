@@ -180,44 +180,62 @@ names are essentially the same as the names of the dot-commands, with occasional
 <font size=+1><tt>_def</tt></font> method instead.) Here is the current list:
 <p>
 
-<dl>
-<dt> <font size=+1><tt>comment</tt></font>   </dt>
-<dd> Start a comment block</dd>
-<dt> <font size=+1><tt>errout</tt></font>    </dt>
-<dd> Write an error message to STDERR</dd>
-<dt> <font size=+1><tt>def</tt></font>       </dt>
-<dd> Define a new method inline</dd>
-<dt> <font size=+1><tt>set</tt></font>       </dt>
-<dd> Assign values to variables for later interpolation</dd>
-<dt> <font size=+1><tt>include</tt></font>   </dt>
-<dd> Include an outside text file (to be interpreted as Livetext)</dd>
-<dt> <font size=+1><tt>mixin</tt></font>     </dt>
-<dd> Mix this file of Ruby methods into the standard namespace</dd>
-<dt> <font size=+1><tt>copy</tt></font>      </dt>
-<dd> Copy this input file verbatim (no interpretation)</dd>
-<dt> <font size=+1><tt>r</tt></font>         </dt>
-<dd> Pass a single line through without processing</dd>
-<dt> <font size=+1><tt>raw</tt></font>       </dt>
-<dd> Pass this special text block (terminated with <font size=+1><tt><i>EOF__</tt></font></i>) directly into output without processing </dd>
-<dt> <font size=+1><tt>func</tt></font>       </dt>
-<dd> Define a function to be invoked inline</dd>
-<dt> <font size=+1><tt>say</tt></font>        </dt>
-<dd> Print a message to the screen</dd>
-<dt> <font size=+1><tt>banner</tt></font>     </dt>
-<dd> Print a "noticeable" message to the screen</dd>
-<dt> <font size=+1><tt>quit</tt></font>       </dt>
-<dd> End processing and exit</dd>
-<dt> <font size=+1><tt>nopass</tt></font>     </dt>
-<dd> Don't pass lines through (just honor commands)</dd>
-<dt> <font size=+1><tt>include</tt></font>    </dt>
-<dd> Read and process another file (typically a <font size=+1><tt>.lt3</tt></font> file)</dd>
-<dt> <font size=+1><tt>debug</tt></font>      </dt>
-<dd> Turn on debugging</dd>
-<dt> <font size=+1><tt>nopara</tt></font>     </dt>
-<dd> Turn off the "blank line implies new paragraph" switch</dd>
-<dt> <font size=+1><tt>newpage</tt></font>    </dt>
-<dd> Start a new output page</dd>
-</dl>
+<br><center><table border=1 width=90% cellpadding=5>
+<tr>
+  <td valign=top> <font size=+1><tt>comment</tt></font>   %% Start a comment block</td>
+</tr>
+<tr>
+  <td valign=top> <font size=+1><tt>errout</tt></font>    %% Write an error message to STDERR</td>
+</tr>
+<tr>
+  <td valign=top> <font size=+1><tt>def</tt></font>       %% Define a new method inline</td>
+</tr>
+<tr>
+  <td valign=top> <font size=+1><tt>set</tt></font>       %% Assign values to variables for later interpolation</td>
+</tr>
+<tr>
+  <td valign=top> <font size=+1><tt>include</tt></font>   %% Include an outside text file (to be interpreted as Livetext)</td>
+</tr>
+<tr>
+  <td valign=top> <font size=+1><tt>mixin</tt></font>     %% Mix this file of Ruby methods into the standard namespace</td>
+</tr>
+<tr>
+  <td valign=top> <font size=+1><tt>copy</tt></font>      %% Copy this input file verbatim (no interpretation)</td>
+</tr>
+<tr>
+  <td valign=top> <font size=+1><tt>r</tt></font>         %% Pass a single line through without processing</td>
+</tr>
+<tr>
+  <td valign=top> <font size=+1><tt>raw</tt></font>       %% Pass this special text block (terminated with <font size=+1><tt>__EOF__</tt></font>) directly into output without processing </td>
+</tr>
+<tr>
+  <td valign=top> <font size=+1><tt>func</tt></font>       %% Define a function to be invoked inline</td>
+</tr>
+<tr>
+  <td valign=top> <font size=+1><tt>say</tt></font>        %% Print a message to the screen</td>
+</tr>
+<tr>
+  <td valign=top> <font size=+1><tt>banner</tt></font>     %% Print a "noticeable" message to the screen</td>
+</tr>
+<tr>
+  <td valign=top> <font size=+1><tt>quit</tt></font>       %% End processing and exit</td>
+</tr>
+<tr>
+  <td valign=top> <font size=+1><tt>nopass</tt></font>     %% Don't pass lines through (just honor commands)</td>
+</tr>
+<tr>
+  <td valign=top> <font size=+1><tt>include</tt></font>    %% Read and process another file (typically a <font size=+1><tt>.lt3</tt></font> file)</td>
+</tr>
+<tr>
+  <td valign=top> <font size=+1><tt>debug</tt></font>      %% Turn on debugging</td>
+</tr>
+<tr>
+  <td valign=top> <font size=+1><tt>nopara</tt></font>     %% Turn off the "blank line implies new paragraph" switch</td>
+</tr>
+<tr>
+  <td valign=top> <font size=+1><tt>newpage</tt></font>    %% Start a new output page</td>
+</tr>
+</table></center>
 ### Examples from the tests
 Here are some tests from the suite. The file name reflects the general purpose of the test.
 <p>

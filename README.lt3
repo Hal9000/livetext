@@ -130,7 +130,7 @@ names are essentially the same as the names of the dot-commands, with occasional
 (For example, it is impractical to use the name `def as a method name, so the module has a
 `_def method instead.) Here is the current list:
 
-.dlist %%
+.xtable %%
  `comment   %% Start a comment block
  `errout    %% Write an error message to STDERR
  `def       %% Define a new method inline
