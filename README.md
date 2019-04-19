@@ -182,58 +182,76 @@ names are essentially the same as the names of the dot-commands, with occasional
 
 <br><center><table border=1 width=90% cellpadding=5>
 <tr>
-  <td valign=top> <font size=+1><tt>comment</tt></font>   %% Start a comment block</td>
+  <td valign=top> <font size=+1><tt>comment</tt></font>   </td>
+  <td valign=top> Start a comment block</td>
 </tr>
 <tr>
-  <td valign=top> <font size=+1><tt>errout</tt></font>    %% Write an error message to STDERR</td>
+  <td valign=top> <font size=+1><tt>errout</tt></font>    </td>
+  <td valign=top> Write an error message to STDERR</td>
 </tr>
 <tr>
-  <td valign=top> <font size=+1><tt>def</tt></font>       %% Define a new method inline</td>
+  <td valign=top> <font size=+1><tt>def</tt></font>       </td>
+  <td valign=top> Define a new method inline</td>
 </tr>
 <tr>
-  <td valign=top> <font size=+1><tt>set</tt></font>       %% Assign values to variables for later interpolation</td>
+  <td valign=top> <font size=+1><tt>set</tt></font>       </td>
+  <td valign=top> Assign values to variables for later interpolation</td>
 </tr>
 <tr>
-  <td valign=top> <font size=+1><tt>include</tt></font>   %% Include an outside text file (to be interpreted as Livetext)</td>
+  <td valign=top> <font size=+1><tt>include</tt></font>   </td>
+  <td valign=top> Include an outside text file (to be interpreted as Livetext)</td>
 </tr>
 <tr>
-  <td valign=top> <font size=+1><tt>mixin</tt></font>     %% Mix this file of Ruby methods into the standard namespace</td>
+  <td valign=top> <font size=+1><tt>mixin</tt></font>     </td>
+  <td valign=top> Mix this file of Ruby methods into the standard namespace</td>
 </tr>
 <tr>
-  <td valign=top> <font size=+1><tt>copy</tt></font>      %% Copy this input file verbatim (no interpretation)</td>
+  <td valign=top> <font size=+1><tt>copy</tt></font>      </td>
+  <td valign=top> Copy this input file verbatim (no interpretation)</td>
 </tr>
 <tr>
-  <td valign=top> <font size=+1><tt>r</tt></font>         %% Pass a single line through without processing</td>
+  <td valign=top> <font size=+1><tt>r</tt></font>         </td>
+  <td valign=top> Pass a single line through without processing</td>
 </tr>
 <tr>
-  <td valign=top> <font size=+1><tt>raw</tt></font>       %% Pass this special text block (terminated with <font size=+1><tt>__EOF__</tt></font>) directly into output without processing </td>
+  <td valign=top> <font size=+1><tt>raw</tt></font>       </td>
+  <td valign=top> Pass this special text block (terminated with <font size=+1><tt>__EOF__</tt></font>) directly into output without processing </td>
 </tr>
 <tr>
-  <td valign=top> <font size=+1><tt>func</tt></font>       %% Define a function to be invoked inline</td>
+  <td valign=top> <font size=+1><tt>func</tt></font>      </td>
+  <td valign=top> Define a function to be invoked inline</td>
 </tr>
 <tr>
-  <td valign=top> <font size=+1><tt>say</tt></font>        %% Print a message to the screen</td>
+  <td valign=top> <font size=+1><tt>say</tt></font>       </td>
+  <td valign=top> Print a message to the screen</td>
 </tr>
 <tr>
-  <td valign=top> <font size=+1><tt>banner</tt></font>     %% Print a "noticeable" message to the screen</td>
+  <td valign=top> <font size=+1><tt>banner</tt></font>    </td>
+  <td valign=top> Print a "noticeable" message to the screen</td>
 </tr>
 <tr>
-  <td valign=top> <font size=+1><tt>quit</tt></font>       %% End processing and exit</td>
+  <td valign=top> <font size=+1><tt>quit</tt></font>      </td>
+  <td valign=top> End processing and exit</td>
 </tr>
 <tr>
-  <td valign=top> <font size=+1><tt>nopass</tt></font>     %% Don't pass lines through (just honor commands)</td>
+  <td valign=top> <font size=+1><tt>nopass</tt></font>    </td>
+  <td valign=top> Don't pass lines through (just honor commands)</td>
 </tr>
 <tr>
-  <td valign=top> <font size=+1><tt>include</tt></font>    %% Read and process another file (typically a <font size=+1><tt>.lt3</tt></font> file)</td>
+  <td valign=top> <font size=+1><tt>include</tt></font>   </td>
+  <td valign=top> Read and process another file (typically a <font size=+1><tt>.lt3</tt></font> file)</td>
 </tr>
 <tr>
-  <td valign=top> <font size=+1><tt>debug</tt></font>      %% Turn on debugging</td>
+  <td valign=top> <font size=+1><tt>debug</tt></font>     </td>
+  <td valign=top> Turn on debugging</td>
 </tr>
 <tr>
-  <td valign=top> <font size=+1><tt>nopara</tt></font>     %% Turn off the "blank line implies new paragraph" switch</td>
+  <td valign=top> <font size=+1><tt>nopara</tt></font>    </td>
+  <td valign=top> Turn off the "blank line implies new paragraph" switch</td>
 </tr>
 <tr>
-  <td valign=top> <font size=+1><tt>newpage</tt></font>    %% Start a new output page</td>
+  <td valign=top> <font size=+1><tt>newpage</tt></font>   </td>
+  <td valign=top> Start a new output page</td>
 </tr>
 </table></center>
 ### Examples from the tests
