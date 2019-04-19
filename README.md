@@ -254,6 +254,8 @@ names are essentially the same as the names of the dot-commands, with occasional
   <td valign=top> Start a new output page</td>
 </tr>
 </table></center>
+<p>
+
 ### Examples from the tests
 Here are some tests from the suite. The file name reflects the general purpose of the test.
 <p>
