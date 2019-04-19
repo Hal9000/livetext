@@ -10,7 +10,15 @@ end
 
 def code
   _puts "<pre>"
-  _body {|line| _puts "   #{::CGI.escape_html(line)}" }   # indentation
+  first = true  # dumb hack! fixes blank space
+  _body do |line| 
+    if first
+      tag = "<pre>"
+      first = false
+    else
+    end
+    _puts "#{tag}   #{::CGI.escape_html(line)}"   # indentation
+  end
   _puts "</pre>"
 end
 

@@ -620,7 +620,7 @@ the text. Here's an example.
 <p>
 
 <pre>
-     .comment
+<pre>     .comment
      This example shows how to define
      a simple method &quot;chapter&quot; inline
      .end
@@ -669,7 +669,7 @@ Here is the HTML output of the previous example:
 <p>
 
 <pre>
-     &lt;h3&gt;Chapter 1&lt;/h3&gt;
+<pre>     &lt;h3&gt;Chapter 1&lt;/h3&gt;
      &lt;h2&gt;Why I Went to the Woods&lt;/h2&gt;
      &lt;hr&gt;
      It was the best of times, and you can call me Ishmael. The clocks
@@ -849,7 +849,7 @@ in here (and nothing else).
 <p>
 
 <pre>
-   # File: mylib.rb
+<pre>   # File: mylib.rb
    
    def alpha
      cols = &lt;i&gt;args.first&lt;/i&gt;
@@ -869,7 +869,7 @@ Now the <font size=+1><tt>.lt3</tt></font> file can be written this way:
 <p>
 
 <pre>
-    .mixin mylib
+<pre>    .mixin mylib
     Here is an alphabetized list:
    
     .alpha 3
