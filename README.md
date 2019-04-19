@@ -672,22 +672,36 @@ Here is the HTML output of the previous example:
 What are some other helper methods? Here's a list.
 <p>
 
-<dl>
-<dt><font</dt>
-<dd>size=+1><tt>_args</tt></font></dd>
-<dt><font</dt>
-<dd>size=+1><tt>_data</tt></font></dd>
-<dt><font</dt>
-<dd>size=+1><tt>_body</tt></font></dd>
-<dt><font</dt>
-<dd>size=+1><tt>_puts</tt></font></dd>
-<dt><font</dt>
-<dd>size=+1><tt>_print</tt></font></dd>
-<dt><font</dt>
-<dd>size=+1><tt>_formatting</tt></font></dd>
-<dt><font</dt>
-<dd>size=+1><tt>_passthru</tt></font></dd>
-</dl>
+<br><center><table border=1 width=90% cellpadding=5>
+<tr>
+  <td valign=top><font size=+1><tt>\_args</tt></font>       </td>
+  <td valign=top> Returns an array of arguments for the method (or an enumerator for that array)</td>
+</tr>
+<tr>
+  <td valign=top><font size=+1><tt>\_data</tt></font>       </td>
+  <td valign=top> A single "unsplit" string of all arguments in raw form</td>
+</tr>
+<tr>
+  <td valign=top><font size=+1><tt>\_body</tt></font>       </td>
+  <td valign=top> Returns a string (or enumerator) giving access to the text block (preceding <font size=+1><tt></tt></font>.end)</td>
+</tr>
+<tr>
+  <td valign=top><font size=+1><tt>\_puts</tt></font>       </td>
+  <td valign=top> Write a line to output (STDOUT or wherever)</td>
+</tr>
+<tr>
+  <td valign=top><font size=+1><tt>\_print</tt></font>      </td>
+  <td valign=top> Write a line to output (STDOUT or wherever) without a newline</td>
+</tr>
+<tr>
+  <td valign=top><font size=+1><tt>\_formatting</tt></font> </td>
+  <td valign=top> A function transforming boldface, italics, and monospace (Livetext conventions)</td>
+</tr>
+<tr>
+  <td valign=top><font size=+1><tt>\_passthru</tt></font>   </td>
+  <td valign=top> Feed a line directly into output after transforming and substituting</td>
+</tr>
+</table></center>
 Note that the last three methods are typically <i>not</i> called in your own code. They could be,
 but it remains to be seen whether something that advanced is useful.
 <p>
