@@ -50,7 +50,7 @@ simply a period followed by a name and optional parameters (at the beginning of 
 <p>
 
 The period will be configurable later if you want to use another character. The names are (for now)
-actual Ruby method names, so names such as <tt>to_s</tt> and <tt>inspect</tt> are currently not allowed.  
+actual Ruby method names, so names such as <font size=+1><tt>to_s</tt></font> and <font size=+1><tt>inspect</tt></font> are currently not allowed.  
 <p>
 
 At present, I am mostly emitting "dumb HTML" or Markdown as output. In theory, you can write
@@ -64,19 +64,19 @@ It's possible to embed comments in the text. Later it will be possible  to pass
 them through to the output in commented form.  
 <p>
 
-The command <tt>.end</tt> is special, marking the end of a body of text. Some commands may operate on
+The command <font size=+1><tt>.end</tt></font> is special, marking the end of a body of text. Some commands may operate on
 a block of lines rather than just a few parameters. (A text block is like a here-document.)
-There is no method name corresponding to the <tt>.end</tt> command.
+There is no method name corresponding to the <font size=+1><tt>.end</tt></font> command.
 <p>
 
-The file extension I've chosen is <tt>.lt3</tt> (though this may change). <b>Note:</b> The source for this 
-README is a <tt>.lt3</tt> file which uses its own little <i>ad hoc</i> library (called <tt>tutorial</tt>.rb). Refer to
+The file extension I've chosen is <font size=+1><tt>.lt3</tt></font> (though this may change). <b>Note:</b> The source for this 
+README is a <font size=+1><tt>.lt3</tt></font> file which uses its own little <i>ad hoc</i> library (called <font size=+1><tt>tutorial</tt></font>.rb). Refer to
 the repo to see these.
 <p>
 
 ### Syntax, comments, and more
 At first, my idea was to provide predefined commands and allow user-defined commands (to be 
-distinguished by a leading <tt>.</tt> or <tt>..</tt> marker). So the single and double dots were both legal. 
+distinguished by a leading <font size=+1><tt>.</tt></font> or <font size=+1><tt>..</tt></font> marker). So the single and double dots were both legal. 
 <p>
 
 However, my concept at present is that the double dots (currently unused) may be used for 
@@ -92,7 +92,7 @@ When a leading period is followed by a space, that line is a comment. When it is
 follwed by a name, that name is typically understood to be a method name. Any 
 remaining text on the line is treated as a parameter list to be accessed by that 
 method.  Some methods accept a text block (multiple lines of text terminated by 
-a <tt>.end</tt> tag).
+a <font size=+1><tt>.end</tt></font> tag).
 <p>
 
 ### Boldface and italics
@@ -151,15 +151,15 @@ Most of this is summarized in this example (taken from one of the testcases):
  and `[code font].
  
  Here are some random punctuation marks:
- \# . @ * \_ ` : ; % ^ & $
+ # . @ * \_ ` : ; % ^ & $
  
  No need to escape these:  * \_ `
 </pre>
       </td>
       <td width=50% bgcolor=#eeeeee valign=top>
-        <pre> Here are examples of <b>boldface</b> and <i>italics</i> and <tt>code</tt>
+        <pre> Here are examples of <b>boldface</b> and <i>italics</i> and <font size=+1><tt>code</tt></font>
  as well as <b>more complex</b> examples of <i>italicized text</i>
- and <tt>code font</tt>.
+ and <font size=+1><tt>code font</tt></font>.
  <p>
  
  Here are some random punctuation marks:
@@ -176,68 +176,50 @@ Most of this is summarized in this example (taken from one of the testcases):
 <p>
 
 ### Standard methods
-The module <tt>Livetext::Standard</tt> contains the set of standard or predefined methods. Their 
+The module <font size=+1><tt>Livetext::Standard</tt></font> contains the set of standard or predefined methods. Their 
 names are essentially the same as the names of the dot-commands, with occasional exceptions.
-(For example, it is impractical to use the name <tt>def</tt> as a method name, so the module has a
-<tt>_def</tt> method instead.) Here is the current list:
+(For example, it is impractical to use the name <font size=+1><tt>def</tt></font> as a method name, so the module has a
+<font size=+1><tt>_def</tt></font> method instead.) Here is the current list:
 <p>
 
-<table>
-<tr>
-<td width=3%><td width=10%> <tt>comment</tt>   </td><td> Start a comment block</td>
-</tr>
-<tr>
-<td width=3%><td width=10%> <tt>errout</tt>    </td><td> Write an error message to STDERR</td>
-</tr>
-<tr>
-<td width=3%><td width=10%> <tt>def</tt>       </td><td> Define a new method inline</td>
-</tr>
-<tr>
-<td width=3%><td width=10%> <tt>set</tt>       </td><td> Assign values to variables for later interpolation</td>
-</tr>
-<tr>
-<td width=3%><td width=10%> <tt>include</tt>   </td><td> Include an outside text file (to be interpreted as Livetext)</td>
-</tr>
-<tr>
-<td width=3%><td width=10%> <tt>mixin</tt>     </td><td> Mix this file of Ruby methods into the standard namespace</td>
-</tr>
-<tr>
-<td width=3%><td width=10%> <tt>copy</tt>      </td><td> Copy this input file verbatim (no interpretation)</td>
-</tr>
-<tr>
-<td width=3%><td width=10%> <tt>r</tt>         </td><td> Pass a single line through without processing</td>
-</tr>
-<tr>
-<td width=3%><td width=10%> <tt>raw</tt>       </td><td> Pass this special text block (terminated with <tt><i>EOF__</tt></i>) directly into output without processing </td>
-</tr>
-<tr>
-<td width=3%><td width=10%> <tt>func</tt>       </td><td> Define a function to be invoked inline</td>
-</tr>
-<tr>
-<td width=3%><td width=10%> <tt>say</tt>        </td><td> Print a message to the screen</td>
-</tr>
-<tr>
-<td width=3%><td width=10%> <tt>banner</tt>     </td><td> Print a "noticeable" message to the screen</td>
-</tr>
-<tr>
-<td width=3%><td width=10%> <tt>quit</tt>       </td><td> End processing and exit</td>
-</tr>
-<tr>
-<td width=3%><td width=10%> <tt>nopass</tt>     </td><td> Don't pass lines through (just honor commands)</td>
-</tr>
-<tr>
-<td width=3%><td width=10%> <tt>include</tt>    </td><td> Read and process another file (typically a <tt>.lt3</tt> file)</td>
-</tr>
-<tr>
-<td width=3%><td width=10%> <tt>debug</tt>      </td><td> Turn on debugging</td>
-</tr>
-<tr>
-<td width=3%><td width=10%> <tt>nopara</tt>     </td><td> Turn off the "blank line implies new paragraph" switch</td>
-</tr>
-<tr>
-<td width=3%><td width=10%> <tt>newpage</tt>    </td><td> Start a new output page</td>
-</tr>
-</table>
+<dl>
+<dt> <font size=+1><tt>comment</tt></font>   </dt>
+<dd> Start a comment block</dd>
+<dt> <font size=+1><tt>errout</tt></font>    </dt>
+<dd> Write an error message to STDERR</dd>
+<dt> <font size=+1><tt>def</tt></font>       </dt>
+<dd> Define a new method inline</dd>
+<dt> <font size=+1><tt>set</tt></font>       </dt>
+<dd> Assign values to variables for later interpolation</dd>
+<dt> <font size=+1><tt>include</tt></font>   </dt>
+<dd> Include an outside text file (to be interpreted as Livetext)</dd>
+<dt> <font size=+1><tt>mixin</tt></font>     </dt>
+<dd> Mix this file of Ruby methods into the standard namespace</dd>
+<dt> <font size=+1><tt>copy</tt></font>      </dt>
+<dd> Copy this input file verbatim (no interpretation)</dd>
+<dt> <font size=+1><tt>r</tt></font>         </dt>
+<dd> Pass a single line through without processing</dd>
+<dt> <font size=+1><tt>raw</tt></font>       </dt>
+<dd> Pass this special text block (terminated with <font size=+1><tt><i>EOF__</tt></font></i>) directly into output without processing </dd>
+<dt> <font size=+1><tt>func</tt></font>       </dt>
+<dd> Define a function to be invoked inline</dd>
+<dt> <font size=+1><tt>say</tt></font>        </dt>
+<dd> Print a message to the screen</dd>
+<dt> <font size=+1><tt>banner</tt></font>     </dt>
+<dd> Print a "noticeable" message to the screen</dd>
+<dt> <font size=+1><tt>quit</tt></font>       </dt>
+<dd> End processing and exit</dd>
+<dt> <font size=+1><tt>nopass</tt></font>     </dt>
+<dd> Don't pass lines through (just honor commands)</dd>
+<dt> <font size=+1><tt>include</tt></font>    </dt>
+<dd> Read and process another file (typically a <font size=+1><tt>.lt3</tt></font> file)</dd>
+<dt> <font size=+1><tt>debug</tt></font>      </dt>
+<dd> Turn on debugging</dd>
+<dt> <font size=+1><tt>nopara</tt></font>     </dt>
+<dd> Turn off the "blank line implies new paragraph" switch</dd>
+<dt> <font size=+1><tt>newpage</tt></font>    </dt>
+<dd> Start a new output page</dd>
+</dl>
 ### Examples from the tests
 Here are some tests from the suite. The file name reflects the general purpose of the test.
 <p>
@@ -582,7 +564,7 @@ Here are some tests from the suite. The file name reflects the general purpose o
 <p>
 
 ### Writing custom methods
-Suppose you wanted to write a method called <tt>chapter</tt> that would simply
+Suppose you wanted to write a method called <font size=+1><tt>chapter</tt></font> that would simply
 output a chapter number and title with certain heading tags and a
 horizontal rule following. There is more than one way to do this.
 <p>
@@ -616,24 +598,24 @@ the text. Here's an example.
      were striking thirteen.
 </pre>
 What can we see from this example? First of all, notice that the part
-between <tt>.def</tt> and <tt>.end</tt> (the body of the method) really is just Ruby
+between <font size=+1><tt>.def</tt></font> and <font size=+1><tt>.end</tt></font> (the body of the method) really is just Ruby
 code. The method takes no parameters because parameter passing is 
-handled inside the Livetext engine and the instance variable <tt>@_args</tt> is
+handled inside the Livetext engine and the instance variable <font size=+1><tt>@_args</tt></font> is
 initialized to the contents of this array. We usually refer to the
-<tt>@_args</tt> array only through the method <tt>_args</tt> which returns it.
+<font size=+1><tt>@_args</tt></font> array only through the method <font size=+1><tt>_args</tt></font> which returns it.
 <p>
 
-The <tt>_args</tt> method is also an iterator. If a block is attached, that block
+The <font size=+1><tt>_args</tt></font> method is also an iterator. If a block is attached, that block
 will be called for every argument.
 <p>
 
 We then create a string using these parameters and call it using the
-<tt>_puts</tt> method. This really does do a <tt>puts</tt> call, but it applies it to
+<font size=+1><tt>_puts</tt></font> method. This really does do a <font size=+1><tt>puts</tt></font> call, but it applies it to
 wherever the output is currently being sent (defaulting to STDOUT).
 <p>
 
 All the "helper" methods start with an underscore so as to avoid name
-collisions. These are all stored in the <tt>Livetext::UserAPI</tt> module
+collisions. These are all stored in the <font size=+1><tt>Livetext::UserAPI</tt></font> module
 (which also has some methods you will never use).
 <p>
 
@@ -650,36 +632,29 @@ Here is the HTML output of the previous example:
 What are some other helper methods? Here's a list.
 <p>
 
-<table>
-<tr>
-<td width=3%><td width=10%><tt><i>args</tt></i></td><td>%%</td>
-</tr>
-<tr>
-<td width=3%><td width=10%><tt><i>data</tt></i></td><td>%%</td>
-</tr>
-<tr>
-<td width=3%><td width=10%><tt><i>body</tt></i></td><td>%%</td>
-</tr>
-<tr>
-<td width=3%><td width=10%><tt><i>puts</tt></i></td><td>%%</td>
-</tr>
-<tr>
-<td width=3%><td width=10%><tt><i>print</tt></i></td><td>%%</td>
-</tr>
-<tr>
-<td width=3%><td width=10%><tt><i>formatting</tt></i></td><td>%%</td>
-</tr>
-<tr>
-<td width=3%><td width=10%><tt><i>passthru</tt></i></td><td>%%</td>
-</tr>
-</table>
+<dl>
+<dt><font</dt>
+<dd>size=+1><tt><i>args</tt></font></i></dd>
+<dt><font</dt>
+<dd>size=+1><tt><i>data</tt></font></i></dd>
+<dt><font</dt>
+<dd>size=+1><tt><i>body</tt></font></i></dd>
+<dt><font</dt>
+<dd>size=+1><tt><i>puts</tt></font></i></dd>
+<dt><font</dt>
+<dd>size=+1><tt><i>print</tt></font></i></dd>
+<dt><font</dt>
+<dd>size=+1><tt><i>formatting</tt></font></i></dd>
+<dt><font</dt>
+<dd>size=+1><tt><i>passthru</tt></font></i></dd>
+</dl>
 Note that the last three methods are typically <i>not</i> called in your own code. They could be,
 but it remains to be seen whether something that advanced is useful.
 <p>
 
 ### More examples
 Suppose you wanted to take a list of words, more than one per line, and alphabetize them.
-Let's write a method called <tt>alpha</tt> for that. This exercise and the next one are implemented 
+Let's write a method called <font size=+1><tt>alpha</tt></font> for that. This exercise and the next one are implemented 
 in the test suite.
 <p>
 
@@ -808,7 +783,7 @@ What if we wanted to store the code outside the text file? There is more than on
 do this.
 <p>
 
-Let's assume we have a file called <tt>mylib.rb</tt> in the same directory as the file we're processing.
+Let's assume we have a file called <font size=+1><tt>mylib.rb</tt></font> in the same directory as the file we're processing.
 (Issues such as paths and security have not been addressed yet.) We'll stick the actual Ruby code
 in here (and nothing else).
 <p>
@@ -830,7 +805,7 @@ in here (and nothing else).
      end
    end
 </pre>
-Now the <tt>.lt3</tt> file can be written this way:
+Now the <font size=+1><tt>.lt3</tt></font> file can be written this way:
 <p>
 
 <pre>
@@ -850,12 +825,12 @@ The output, of course, is the same.
 <p>
 
 There is an important feature that has not yet been implemented (the
-<tt>require</tt> method). Like Ruby's <tt>require</tt>, it will grab Ruby code and 
-load it; however, unlike <tt>mixin</tt>, it will load it into a customized
+<font size=+1><tt>require</tt></font> method). Like Ruby's <font size=+1><tt>require</tt></font>, it will grab Ruby code and 
+load it; however, unlike <font size=+1><tt>mixin</tt></font>, it will load it into a customized
 object and associate a new sigil with it. So for example, the command
-<tt>.foobar</tt> would refer to a method in the <tt>Livetext::Standard</tt> class 
-(whether predefined or user-defined). If we did a <tt>require</tt> on a file
-and associated the sigil <tt>#</tt> with it, then <tt>#foobar</tt> would be a method
+<font size=+1><tt>.foobar</tt></font> would refer to a method in the <font size=+1><tt>Livetext::Standard</tt></font> class 
+(whether predefined or user-defined). If we did a <font size=+1><tt>require</tt></font> on a file
+and associated the sigil <font size=+1><tt>#</tt></font> with it, then <font size=+1><tt>#foobar</tt></font> would be a method
 on that new custom object. I plan to implement this later.
 <p>
 
@@ -869,32 +844,32 @@ This list is not prioritized yet.
 4. <strike>Think about command line executable</strike>
 5. <strike>Write as pure library in addition to executable</strike>
 6. <strike>Package as gem</strike>
-7. Document: <tt>require</tt> <tt>include</tt> <tt>copy</tt> <tt>mixin</tt> <tt>errout</tt> and others
+7. Document: <font size=+1><tt>require</tt></font> <font size=+1><tt>include</tt></font> <font size=+1><tt>copy</tt></font> <font size=+1><tt>mixin</tt></font> <font size=+1><tt>errout</tt></font> and others
 8. Need <strike>much</strike> better error checking and corresponding tests
 9. Worry about nesting of elements (probably mostly disallow)
 10. Think about UTF-8
 11. Document API fully
-12. Add <tt><i>raw_args</tt></i> and let <tt><i>args</tt></i> honor quotes
-13. Support quotes in <tt>.set</tt> values
-14. Support "namespaced" variables  (<tt>.set code.font="whatever"</tt>)
-15. <strike>Support functions (<tt>$$func</tt>) </strike>
+12. Add <font size=+1><tt><i>raw_args</tt></font></i> and let <font size=+1><tt><i>args</tt></font></i> honor quotes
+13. Support quotes in <font size=+1><tt>.set</tt></font> values
+14. Support "namespaced" variables  (<font size=+1><tt>.set code.font="whatever"</tt></font>)
+15. <strike>Support functions (<font size=+1><tt>$$func</tt></font>) </strike>
 16. Support function namespacing
-17. Create predefined variables (e.g., <tt>$<i>source_file</tt>,</i> <tt>$[<i>line])</tt></i>
-18. Create predefined functions (e.g., <tt>$$<i>date</tt>)</i>
+17. Create predefined variables (e.g., <font size=+1><tt>$<i>source_file</tt></font>,</i> <font size=+1><tt>$[<i>line])</tt></font></i>
+18. Create predefined functions (e.g., <font size=+1><tt>$$<i>date</tt></font>)</i>
 19. More support for markdown
 20. Allow turning on/off: formatting, variable interpolation, function interpolation?
-21. <tt>.require</tt> with file and sigil parameters
+21. <font size=+1><tt>.require</tt></font> with file and sigil parameters
 22. Investigate "common intermediate format" - output renderers all read it
 23. Comments passed through (e.g. as HTML comments)
-24. <tt>.run</tt> to execute arbitrary Ruby code inline?
-25. Concept of <tt>.proc</tt> (guaranteed to return no value, produce no output)?
+24. <font size=+1><tt>.run</tt></font> to execute arbitrary Ruby code inline?
+25. Concept of <font size=+1><tt>.proc</tt></font> (guaranteed to return no value, produce no output)?
 26. Exceptions??
-27. Ruby <tt>$SAFE</tt> levels?
+27. Ruby <font size=+1><tt>$SAFE</tt></font> levels?
 28. Warn when overriding existing names?
 29. Think about passing data in (erb replacement)
-30. <strike>]Allow</strike> custom ending tag on <tt>raw</tt> method
-31. <strike>Ignore first blank line after <tt>.end</strike>? (and after raw-tag?)</tt>
-32. Allow/encourage custom <tt>passthru</tt> method?
+30. <strike>]Allow</strike> custom ending tag on <font size=+1><tt>raw</tt></font> method
+31. <strike>Ignore first blank line after <font size=+1><tt>.end</strike>? (and after raw-tag?)</tt></font>
+32. Allow/encourage custom <font size=+1><tt>passthru</tt></font> method?
 33. Must have sane support for CSS
 34. Support for Pygments and/or other code processors
 35. Support for gists? arbitrary links? other remote resouces?
@@ -903,12 +878,12 @@ This list is not prioritized yet.
 38. Imagining a lib that can run/test code fragments as part of document generation
 39. Create vim (emacs?) syntax files
 40. Someday: Support other languages (Elixir, Python, ...)
-41. <tt>.pry</tt> method?
-42. <tt>.irb</tt> method?
+41. <font size=+1><tt>.pry</tt></font> method?
+42. <font size=+1><tt>.irb</tt></font> method?
 43. Other debugging features
 44. Feature to "break" to EOF?
-45. <tt>.meth?</tt> method ending in <tt>?</tt> takes a block that may be processed or thrown away (<tt>.else</tt> perhaps?)
-46. <tt>.dump</tt> to dump all variables and their values
-47. <tt>.if</tt> and <tt>.else</tt>?
+45. <font size=+1><tt>.meth?</tt></font> method ending in <font size=+1><tt>?</tt></font> takes a block that may be processed or thrown away (<font size=+1><tt>.else</tt></font> perhaps?)
+46. <font size=+1><tt>.dump</tt></font> to dump all variables and their values
+47. <font size=+1><tt>.if</tt></font> and <font size=+1><tt>.else</tt></font>?
 48. Make any/all delimiters configurable
 49. HTML helper? (in their own library?)
