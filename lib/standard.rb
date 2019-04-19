@@ -310,7 +310,7 @@ module Livetext::Standard
   def xtable   # Borrowed from bookish - FIXME
     title = @_data
     delim = " :: "
-    _out "<br><center><table border=1 width=90% cellpadding=5>"
+    _out "<br><center><table width=90% cellpadding=5>"
     lines = _body(true)
     maxw = nil
     lines.each do |line|

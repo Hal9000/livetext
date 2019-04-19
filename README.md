@@ -180,7 +180,7 @@ names are essentially the same as the names of the dot-commands, with occasional
 <font size=+1><tt>_def</tt></font> method instead.) Here is the current list:
 <p>
 
-<br><center><table border=1 width=90% cellpadding=5>
+<br><center><table width=90% cellpadding=5>
 <tr>
   <td valign=top> <font size=+1><tt>comment</tt></font>   </td>
   <td valign=top> Start a comment block</td>
@@ -672,7 +672,7 @@ Here is the HTML output of the previous example:
 What are some other helper methods? Here's a list.
 <p>
 
-<br><center><table border=1 width=90% cellpadding=5>
+<br><center><table width=90% cellpadding=5>
 <tr>
   <td valign=top><font size=+1><tt>\_args</tt></font>       </td>
   <td valign=top> Returns an array of arguments for the method (or an enumerator for that array)</td>
