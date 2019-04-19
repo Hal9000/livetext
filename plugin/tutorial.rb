@@ -9,7 +9,7 @@ def section
 end
 
 def code
-  _puts "<pre>"
+# _puts "<pre>"
   first = true  # dumb hack! fixes blank space
   _body do |line| 
     if first

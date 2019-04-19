@@ -619,7 +619,6 @@ The simplest way is just to define a method inline with the rest of
 the text. Here's an example.
 <p>
 
-<pre>
 <pre>     .comment
      This example shows how to define
      a simple method &quot;chapter&quot; inline
@@ -668,7 +667,6 @@ collisions. These are all stored in the <font size=+1><tt>Livetext::UserAPI</tt>
 Here is the HTML output of the previous example:
 <p>
 
-<pre>
 <pre>     &lt;h3&gt;Chapter 1&lt;/h3&gt;
      &lt;h2&gt;Why I Went to the Woods&lt;/h2&gt;
      &lt;hr&gt;
@@ -848,7 +846,6 @@ Let's assume we have a file called <font size=+1><tt>mylib.rb</tt></font> in the
 in here (and nothing else).
 <p>
 
-<pre>
 <pre>   # File: mylib.rb
    
    def alpha
@@ -868,7 +865,6 @@ in here (and nothing else).
 Now the <font size=+1><tt>.lt3</tt></font> file can be written this way:
 <p>
 
-<pre>
 <pre>    .mixin mylib
     Here is an alphabetized list:
    
