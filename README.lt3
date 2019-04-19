@@ -1,7 +1,7 @@
 .mixin tutorial
 .mixin markdown
 
-.copy basic.css
+. copy basic.css
 
 .title Livetext: A smart processor for text
 
@@ -231,13 +231,13 @@ Here is the HTML output of the previous example:
 What are some other helper methods? Here's a list.
 
 .dlist
-`_args       %% Returns an array of arguments for the method (or an enumerator for that array)
-`_data       %% A single "unsplit" string of all arguments in raw form
-`_body       %% Returns a string (or enumerator) giving access to the text block (preceding ``.end)
-`_puts       %% Write a line to output (STDOUT or wherever)
-`_print      %% Write a line to output (STDOUT or wherever) without a newline
-`_formatting %% A function transforming boldface, italics, and monospace (Livetext conventions)
-`_passthru   %% Feed a line directly into output after transforming and substituting
+`\_args       %% Returns an array of arguments for the method (or an enumerator for that array)
+`\_data       %% A single "unsplit" string of all arguments in raw form
+`\_body       %% Returns a string (or enumerator) giving access to the text block (preceding ``.end)
+`\_puts       %% Write a line to output (STDOUT or wherever)
+`\_print      %% Write a line to output (STDOUT or wherever) without a newline
+`\_formatting %% A function transforming boldface, italics, and monospace (Livetext conventions)
+`\_passthru   %% Feed a line directly into output after transforming and substituting
 .end
 
 Note that the last three methods are typically _not called in your own code. They could be,
