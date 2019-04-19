@@ -295,10 +295,26 @@ Now the `.lt3 file can be written this way:
  cytology fusillade ectomorph
  .end
 
- I hope that worked a second time.
+ And that is all.
 .end
 
 The output, of course, is the same.
+
+You can define variables in Livetext, defined with `.set and 
+referenced with a ``$. Later there will be a few predefined 
+variables. Variables are just string values.
+
+.testcase simple_vars
+
+If a variable needs to contain spaces, you can double-quote it.
+
+.testcase more_complex_vars
+
+Livetext permits user-defined functions (as well as defining a few
+predefined ones). Call a function with `$$ and (if applicable) pass
+a single string parameter between brackets.
+
+.testcase functions
 
 There is an important feature that has not yet been implemented (the
 `require method). Like Ruby's ``require, it will grab Ruby code and 

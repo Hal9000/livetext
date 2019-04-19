@@ -1,6 +1,6 @@
 Just
 some text.
-.set name=GulliverFoyle,nation=Terra
+.set name=GulliverFoyle, nation=Terra
 Hi, there.
 $name is my name, and $nation is my nation.
 I'm $name, from $nation.

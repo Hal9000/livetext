@@ -403,7 +403,7 @@ Here are some tests from the suite. The file name reflects the general purpose o
       <td width=50% bgcolor=#fee0fe valign=top>
         <pre> Just
  some text.
- .set name=GulliverFoyle,nation=Terra
+ .set name=GulliverFoyle, nation=Terra
  Hi, there.
  $name is my name, and $nation is my nation.
  I'm $name, from $nation.
@@ -873,9 +873,154 @@ Now the <font size=+1><tt>.lt3</tt></font> file can be written this way:
     cytology fusillade ectomorph
     .end
    
-    I hope that worked a second time.
+    And that is all.
 </pre>
 The output, of course, is the same.
+<p>
+
+You can define variables in Livetext, defined with <font size=+1><tt>.set</tt></font> and 
+referenced with a <font size=+1><tt>$</tt></font>. Later there will be a few predefined 
+variables. Variables are just string values.
+<p>
+
+
+<font size=+1><b>Test: </font><font size=+2><tt>simple_vars</tt></font></b></h3><br>
+    <font size=+1>
+    <table width=80% cellpadding=4>
+    <tr>
+      <td width=50%><b>Input</b></td>
+      <td width=50%><b>Output</b></td>
+    </tr>
+    <tr>
+      <td width=50% bgcolor=#fee0fe valign=top>
+        <pre> Just
+ some text.
+ .set name=GulliverFoyle, nation=Terra
+ Hi, there.
+ $name is my name, and $nation is my nation.
+ I'm $name, from $nation.
+ That's all.
+</pre>
+      </td>
+      <td width=50% bgcolor=#eeeeee valign=top>
+        <pre> Just
+ some text.
+ Hi, there.
+ GulliverFoyle is my name, and Terra is my nation.
+ I'm GulliverFoyle, from Terra.
+ That's all.
+</pre>
+      </td>
+    </tr>
+    </table>
+    </font>
+<br>
+<p>
+
+If a variable needs to contain spaces, you can double-quote it.
+<p>
+
+
+<font size=+1><b>Test: </font><font size=+2><tt>more_complex_vars</tt></font></b></h3><br>
+    <font size=+1>
+    <table width=80% cellpadding=4>
+    <tr>
+      <td width=50%><b>Input</b></td>
+      <td width=50%><b>Output</b></td>
+    </tr>
+    <tr>
+      <td width=50% bgcolor=#fee0fe valign=top>
+        <pre> Just some more text.
+ .set bday="May 31", date="5/31"
+ My birthday is $bday, so they tell me.
+ That's $date if you're American.
+ That's all.
+</pre>
+      </td>
+      <td width=50% bgcolor=#eeeeee valign=top>
+        <pre> Just some more text.
+ My birthday is May 31, so they tell me.
+ That's 5/31 if you're American.
+ That's all.
+</pre>
+      </td>
+    </tr>
+    </table>
+    </font>
+<br>
+<p>
+
+Livetext permits user-defined functions (as well as defining a few
+predefined ones). Call a function with <font size=+1><tt>$$</tt></font> and (if applicable) pass
+a single string parameter between brackets.
+<p>
+
+
+<font size=+1><b>Test: </font><font size=+2><tt>functions</tt></font></b></h3><br>
+    <font size=+1>
+    <table width=80% cellpadding=4>
+    <tr>
+      <td width=50%><b>Input</b></td>
+      <td width=50%><b>Output</b></td>
+    </tr>
+    <tr>
+      <td width=50% bgcolor=#fee0fe valign=top>
+        <pre> Testing out
+ some functions
+ here...
+ 
+ .func myfunc
+ "Eureka!"
+ .end
+ 
+ I am calling $$myfunc here...
+ Let's see
+ what happens.
+ 
+ Functions can take a parameter in brackets (which it can parse
+ itself as needed):
+ 
+ .func mean
+   list = self.class.param
+   list = list.split(",").map(&:to\_f)
+   sum = list.inject(0, :+)
+   avg = sum / list.size.to\_f
+   avg.to\_s
+ .end
+ 
+ The result is $$mean[1,2,3,4,5,6,7] as I see it.
+ 
+ Some functions like date and time are predefined.
+ 
+</pre>
+      </td>
+      <td width=50% bgcolor=#eeeeee valign=top>
+        <pre> Testing out
+ some functions
+ here...
+ <p>
+ 
+ I am calling Eureka! here...
+ Let's see
+ what happens.
+ <p>
+ 
+ Functions can take a parameter in brackets (which it can parse
+ itself as needed):
+ <p>
+ 
+ The result is 4.0 as I see it.
+ <p>
+ 
+ Some functions like date and time are predefined.
+ <p>
+ 
+</pre>
+      </td>
+    </tr>
+    </table>
+    </font>
+<br>
 <p>
 
 There is an important feature that has not yet been implemented (the
