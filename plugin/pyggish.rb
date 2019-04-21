@@ -185,9 +185,9 @@ def code       # FIXME ?
 end
 
 def mono
-  _puts "<pre>"
-  _body(true) {|line| _puts "    " + line }
-  _puts "</pre>"
+  _out "<pre>"
+  _body(true) {|line| _out "    " + line }
+  _out "</pre>"
 end
 
 

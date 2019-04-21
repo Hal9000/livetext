@@ -9,7 +9,7 @@ def section
 end
 
 def code
-# _puts "<pre>"
+# _out "<pre>"
   first = true  # dumb hack! fixes blank space
   _body do |line| 
     if first
@@ -17,9 +17,9 @@ def code
       first = false
     else
     end
-    _puts "#{tag}   #{::CGI.escape_html(line)}"   # indentation
+    _out "#{tag}   #{::CGI.escape_html(line)}"   # indentation
   end
-  _puts "</pre>"
+  _out "</pre>"
 end
 
 def rx(str)
@@ -80,9 +80,9 @@ end
 
 def testcase
   name = _args.first
-  _puts "\n<font size=+1><b>Test: </font><font size=+2><tt>#{name}</tt></font></b></h3><br>"
+  _out "\n<font size=+1><b>Test: </font><font size=+2><tt>#{name}</tt></font></b></h3><br>"
   src, exp = "test/data/#{name}/source.lt3", "test/data/#{name}/expected-output.txt"
   @_args = [src, exp]   # Better way to do this??
   put_table(src, exp)
-  _puts "<br>"
+  _out "<br>"
 end

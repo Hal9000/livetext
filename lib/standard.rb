@@ -146,6 +146,7 @@ module Livetext::Standard
     str += "end\n"
     eval str
   rescue => err
+    puts @body
     _error!(err)
   end
 

@@ -77,7 +77,8 @@ module Livetext::UserAPI
       lines
     end
   rescue => err
-    # FIXME
+    puts @body
+    # FIXME ?
     _error!("Expecting .end, found end of file")
   end
 
@@ -110,12 +111,17 @@ module Livetext::UserAPI
     _out line
   end
 
-  def _out(str)
-    if @no_puts
-      @parent.body << str
-    else
-      _puts str
-    end
+  def _out(str = "")
+#   if @no_puts
+      @parent.body << str 
+      @parent.body << "\n" unless str.end_with?("\n")
+#   else
+#     _puts str
+#   end
+  end
+
+  def _out!(str = "")
+    @parent.body << str  # no newline
   end
 
   def _puts(*args)

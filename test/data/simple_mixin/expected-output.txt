@@ -1,5 +1,2 @@
 Here I am
 testing a simple mixin
-Now call it:
-Hello, world.
-That's all.

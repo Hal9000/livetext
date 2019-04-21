@@ -11,28 +11,28 @@ def credit
   # really just a place marker in source
 end
 
-def h1; _puts "<h1>#{@_data}</h1>"; end
-def h3; _puts "<h3>#{@_data}</h3>"; end
+def h1; _out "<h1>#{@_data}</h1>"; end
+def h3; _out "<h3>#{@_data}</h3>"; end
 
 def list
-  _puts "<ul>"
-  _body {|line| _puts "<li>#{line}</li>" }
-  _puts "</ul>"
+  _out "<ul>"
+  _body {|line| _out "<li>#{line}</li>" }
+  _out "</ul>"
 end
 
 def list!
-  _puts "<ul>"
-  lines = _body.each   # {|line| _puts "<li>#{line}</li>" }
+  _out "<ul>"
+  lines = _body.each   # {|line| _out "<li>#{line}</li>" }
   loop do 
     line = lines.next
     line = _formatting(line)
     if line[0] == " "
-      _puts line
+      _out line
     else
-      _puts "<li>#{line}</li>"
+      _out "<li>#{line}</li>"
     end
   end
-  _puts "</ul>"
+  _out "</ul>"
 end
 
 def alpha_columns
@@ -42,12 +42,12 @@ def alpha_columns
     words << line.chomp
   end
   words.sort!
-  _puts "<table cellpadding=10>"
+  _out "<table cellpadding=10>"
   words.each_slice(n) do |w|
     items = w.map {|x| "<tt>#{x}</tt>" }
-    _puts "<tr><td width=5% valign=top></td><td>" + items.join("</td><td>") + "</td></tr>"
+    _out "<tr><td width=5% valign=top></td><td>" + items.join("</td><td>") + "</td></tr>"
   end
-  _puts "</table>"
+  _out "</table>"
 end
 
 def comment
@@ -70,7 +70,7 @@ end
 
 def image
   name = @_args[0]
-  _puts "<img src='#{name}'></img>"
+  _out "<img src='#{name}'></img>"
 end
 
 def figure
@@ -78,8 +78,8 @@ def figure
   num = @_args[1]
   title = @_args[2..-1].join(" ")
   title = _formatting(title)
-  _puts "<img src='#{name}'></img>"
-  _puts "<center><b>Figure #{num}</b> #{title}</center>"
+  _out "<img src='#{name}'></img>"
+  _out "<center><b>Figure #{num}</b> #{title}</center>"
 end
 
 def chapter
@@ -89,8 +89,8 @@ def chapter
   title = @_data.split(" ",2)[1]
   @toc << "<br><b>#@chapter</b> #{title}<br>"
   _next_output(_slug(title))
-  _puts "<title>#{@chapter}. #{title}</title>"
-  _puts <<-HTML
+  _out "<title>#{@chapter}. #{title}</title>"
+  _out <<-HTML
     <h2>Chapter #{@chapter}</h1>
     <h1>#{title}</h1>
 
@@ -104,8 +104,8 @@ def chapterN
   _errout("Chapter #@chapter: #{title}")
   @toc << "<br><b>#@chapter</b> #{title}<br>"
   _next_output(_slug(title))
-  _puts "<title>#{@chapter}. #{title}</title>"
-  _puts <<-HTML
+  _out "<title>#{@chapter}. #{title}</title>"
+  _out <<-HTML
     <h2>Chapter #{@chapter}</h1>
     <h1>#{title}</h1>
 
@@ -119,7 +119,7 @@ def sec
 # _errout("section #@section")
   @toc << "#{_nbsp(3)}<b>#@section</b> #@_data<br>"
 # _next_output(_slug(@_data))
-  _puts "<h3>#@section #{@_data}</h3>\n"
+  _out "<h3>#@section #{@_data}</h3>\n"
 end
 
 def subsec
@@ -128,7 +128,7 @@ def subsec
   @toc << "#{_nbsp(6)}<b>#@subsec</b> #@_data<br>"
 # _errout("section #@subsec")
 # _next_output(_slug(@_data))
-  _puts "<h3>#@subsec #{@_data}</h3>\n"
+  _out "<h3>#@subsec #{@_data}</h3>\n"
 end
 
 def table2
@@ -136,21 +136,21 @@ def table2
   wide = "90"
   extra = _args[2]
   delim = " :: "
-  _puts "<br><center><table border=1 width=#{wide}% cellpadding=5>"
+  _out "<br><center><table border=1 width=#{wide}% cellpadding=5>"
   lines = _body(true)
   lines.map! {|line| _formatting(line) }
 
   lines.each do |line|
     cells = line.split(delim)
     percent = (100/cells.size.to_f).round
-    _puts "<tr>"
+    _out "<tr>"
     cells.each do |cell| 
-      _puts "  <td width=#{percent}% valign=top " + 
+      _out "  <td width=#{percent}% valign=top " + 
             "#{extra}>#{cell}</td>"
     end
-    _puts "</tr>"
+    _out "</tr>"
   end
-  _puts "</table></center><br><br>"
+  _out "</table></center><br><br>"
 
   _optional_blank_line
 end
@@ -158,7 +158,7 @@ end
 def simple_table
   title = @_data
   delim = " :: "
-  _puts "<table cellpadding=2>"
+  _out "<table cellpadding=2>"
   lines = _body(true)
   maxw = nil
   lines.each do |line|
@@ -174,14 +174,14 @@ def simple_table
 
   lines.each do |line|
     cells = line.split(delim)
-    _puts "<tr>"
+    _out "<tr>"
     cells.each.with_index do |cell, i| 
-      _puts "  <td width=#{maxw}% valign=top>" + 
+      _out "  <td width=#{maxw}% valign=top>" + 
             "#{cell}</td>"
     end
-    _puts "</tr>"
+    _out "</tr>"
   end
-  _puts "</table>"
+  _out "</table>"
 end
 
 def table
@@ -189,7 +189,7 @@ def table
   @table_num += 1
   title = @_data
   delim = " :: "
-  _puts "<br><center><table border=1 width=90% cellpadding=5>"
+  _out "<br><center><table border=1 width=90% cellpadding=5>"
   lines = _body(true)
   maxw = nil
   lines.each do |line|
@@ -205,23 +205,24 @@ def table
 
   lines.each do |line|
     cells = line.split(delim)
-    _puts "<tr>"
+    _out "<tr>"
     cells.each.with_index do |cell, i| 
-      _puts "  <td width=#{maxw}% valign=top>" + 
+      _out "  <td width=#{maxw}% valign=top>" + 
             "#{cell}</td>"
     end
-    _puts "</tr>"
+    _out "</tr>"
   end
-  _puts "</table>"
+  _out "</table>"
   @toc << "#{_nbsp(8)}<b>Table #@chapter.#@table_num</b> #{title}<br>"
 # _next_output(_slug("table_#{title}"))
-  _puts "<b>Table #@chapter.#@table_num &nbsp;&nbsp; #{title}</b></center><br>"
+  _out "<b>Table #@chapter.#@table_num &nbsp;&nbsp; #{title}</b></center><br>"
 end
 
 def toc!
   _debug "Closing TOC"
   @toc.close
 rescue => err
+   puts @body
   _errout "Exception: #{err.inspect}"
 end
 
@@ -242,7 +243,7 @@ def missing
   @toc << "#{_nbsp(8)}<font color=red>TBD: #@_data</font><br>"
   _print "<br><font color=red><i>[Material missing"
   _print ": #@_data" unless @_data.empty?
-  _puts "]</i></font><br>\n "
+  _out "]</i></font><br>\n "
 end
 
 def TBC
@@ -251,15 +252,15 @@ def TBC
 end
 
 def note
-  _puts "<br><font color=red><i>Note: "
-  _puts @_data 
-  _puts "</i></font><br>\n "
+  _out "<br><font color=red><i>Note: "
+  _out @_data 
+  _out "</i></font><br>\n "
 end
 
 def quote
-  _puts "<blockquote>"
-  _puts _body
-  _puts "</blockquote>"
+  _out "<blockquote>"
+  _out _body
+  _out "</blockquote>"
 end
 
 def init_bookish
