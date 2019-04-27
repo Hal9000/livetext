@@ -1,12 +1,12 @@
+Here is an alphabetized list:
+<p>
+
 aardvark       anamorphic     anarchist      
 bellicose      cytology       ectomorph      
 fishmonger     fusillade      glyph          
 gryphon        halcyon        manicotti      
 mataeotechny   pareidolia     quark          
 zootrope       zymurgy        
-Here is an alphabetized list:
-<p>
-
 <p>
 
 And that is all.

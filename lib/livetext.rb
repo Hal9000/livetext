@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.77"
+  VERSION = "0.8.78"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
@@ -99,9 +99,9 @@ class Livetext
     val = @main.finalize if @main.respond_to? :finalize
     val
   rescue => err
-    puts @body
     puts "process_text: err = #{err}"
     puts err.backtrace.join("\n")
+    puts @body
   end
 
 ## FIXME process_file[!] should call process[_text]
@@ -117,6 +117,7 @@ class Livetext
     loop do 
       line = @main.nextline
       break if line.nil?
+# STDERR.puts "LINE: #{line.inspect}"
       process_line(line, context)
     end
     val = @main.finalize if @main.respond_to? :finalize
@@ -170,8 +171,8 @@ class Livetext
     end
     result
   rescue => err
-    puts @body
     @main._error!(err)
+    puts @body
   end
 
 end

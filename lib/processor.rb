@@ -34,7 +34,7 @@ class Livetext
       where = @sources.last || @save_location
       puts @parent.body
       STDERR.puts "Error: #{err} (at #{where[1]} line #{where[2]})"
-      STDERR.puts err.backtrace if trace && err.respond_to?(:backtrace)
+#     STDERR.puts err.backtrace if err.respond_to?(:backtrace) # && trace
       exit if abort
     end
 

@@ -31,26 +31,40 @@ class TestingLivetext < MiniTest::Test
     break if f.eof?
   end
 
-  TestLines.each.with_index do |item, i|
-    msg, src, exp, blank = *item
-    define_method("test_formatting_#{i}") do
-      x = FormatLine.new
-      actual = x.parse(src)
-      if exp[0] == "/" # regex!
-        exp = Regexp.compile(exp[1..-2])   # skip slashes
-        assert_match(exp, actual, msg)
-      else
-        assert_equal(exp, actual, msg)
+  if File.size("subset.txt") #  == 0
+    puts "Defining via TestLines"
+    TestLines.each.with_index do |item, i|
+      msg, src, exp, blank = *item
+      define_method("test_formatting_#{i}") do
+        actual = FormatLine.parse!(src)
+        if exp[0] == "/" # regex!
+          exp = Regexp.compile(exp[1..-2])   # skip slashes
+          assert_match(exp, actual, msg)
+        else
+          assert_equal(exp, actual, msg)
+        end
       end
     end
   end
 
   TestDirs = Dir.entries(".").reject {|f| ! File.directory?(f) } - %w[. ..]
+  selected = File.readlines("subset.txt").map(&:chomp)
+  Subset   = selected.empty? ? TestDirs : selected
 
-  TestDirs.each do |tdir|
+# puts "Subset = #{Subset.inspect}"
+
+  Subset.each do |tdir|
     define_method("test_#{tdir}") do
       external_files(tdir)
     end
+  end
+
+  def green(str)
+    "[32m" + str + "[0m"
+  end
+
+  def red(str)
+    "[31m" + str + "[0m"
   end
 
   def external_files(base)
@@ -63,12 +77,15 @@ class TestingLivetext < MiniTest::Test
 
       out_ok = output == expected
       err_ok = errors == errexp
-      bad_out = "--- Expected: \n#{expected}\n--- Output:  \n#{output}\n"
-      bad_err = "--- Error Expected: \n#{errexp}\n--- Error Output:  \n#{errors}\n"
+      nout = output.split("\n").size
+      nexp = expected.split("\n").size
+      bad_out = "--- Expected (#{nexp} lines): \n#{green(expected)}\n--- Output (#{nout} lines):  \n#{red(output)}\n"
+      bad_err = "--- Error Expected: \n#{green(errexp)}\n--- Error Output:  \n#{red(errors)}\n"
 
       assert(out_ok, bad_out)
       assert(err_ok, bad_err)
-      system("rm -f #{out} #{err}")  # only on success
+      # only on success
+      system("rm -f #{out} #{err}") if out_ok && err_ok
     end
   end
 

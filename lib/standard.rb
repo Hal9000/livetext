@@ -146,8 +146,8 @@ module Livetext::Standard
     str += "end\n"
     eval str
   rescue => err
-    puts @body
     _error!(err)
+#   puts @body
   end
 
   def set
@@ -164,8 +164,11 @@ module Livetext::Standard
 
   def heredoc
     var = @_args[0]
+# STDERR.puts "var = #{var.inspect}"
     str = _body_text
+# STDERR.puts "str = #{str.inspect}"
     Livetext::Vars[var] = str
+# STDERR.puts "vars = #{Livetext::Vars.inspect}"
     _optional_blank_line
   end
 
@@ -217,7 +220,7 @@ module Livetext::Standard
 
   def raw
     # No processing at all (terminate with __EOF__)
-    _out _raw_body  
+    _raw_body {|x| _out x }  # no formatting
   end
 
   def debug

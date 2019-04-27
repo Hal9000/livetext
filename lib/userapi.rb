@@ -49,14 +49,17 @@ module Livetext::UserAPI
     loop do
       @line = nextline
       break if @line.chomp.strip == tag
+# STDERR.puts "_raw_body adds: #{@line.inspect}"
       lines << @line
     end
     _optional_blank_line
     if block_given?
-      lines.each {|line| yield @line }
+      lines.each {|line| yield line }
     else
       lines
     end
+# STDERR.puts "_raw_body returns: #{lines.inspect}"
+    lines
   end
 
   def _body(raw=false, sigil=".")
@@ -77,9 +80,9 @@ module Livetext::UserAPI
       lines
     end
   rescue => err
-    puts @body
     # FIXME ?
     _error!("Expecting .end, found end of file")
+#   puts @body
   end
 
   def _body_text(raw=false, sigil=".")
@@ -99,20 +102,20 @@ module Livetext::UserAPI
   end
 
   def _formatting(line, context = nil)
-    @parser ||= ::FormatLine.new
-    l2 = @parser.parse(line, context)
+    l2 = FormatLine.parse!(line, context)
     line.replace(l2)
   end
 
   def _passthru(line, context = nil)
     return if @_nopass
     _out "<p>" if line == "\n" and ! @_nopara
-    _formatting(line, context)
+    line = _formatting(line, context)
     _out line
   end
 
   def _out(str = "")
 #   if @no_puts
+# STDERR.puts "_out: #{str.inspect}"
       @parent.body << str 
       @parent.body << "\n" unless str.end_with?("\n")
 #   else

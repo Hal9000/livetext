@@ -7,8 +7,8 @@
    text.gsub!(/\n/, " ")
    words = text.split.sort
    words.each_slice(cols) do |row| 
-     row.each {|w| _print '%-15s' % w }
-     _puts 
+     row.each {|w| _out! '%-15s' % w }
+     _out
    end
 .end
 Here is an alphabetized list:

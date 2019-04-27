@@ -1,3 +1,3 @@
 def hello_world
-  puts "Hello, world."
+  _out "Hello, world."
 end

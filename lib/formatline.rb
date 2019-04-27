@@ -1,297 +1,322 @@
 class FormatLine
-
-  EOL    = :eol
-  Alpha  = /[a-z]/
-  Alpha2 = /[a-z0-9_]/
-  Other  = Object
-
   SimpleFormats     = {}
   SimpleFormats[:b] = %w[<b> </b>]
   SimpleFormats[:i] = %w[<i> </i>]
   SimpleFormats[:t] = ["<font size=+1><tt>", "</tt></font>"]
   SimpleFormats[:s] = %w[<strike> </strike>]
+ 
+  Null   = ""
+  Space  = " "
+  Alpha  = /[A-Za-z]/
+  AlNum  = /[A-Za-z0-9_]/
+  LF     = "\n"
+  LBrack = "["
 
-  def initialize
-    @buffer, @vname, @fname, @param, @substr = "", "", "", "", ""
+  Blank   = [" ", nil, "\n"]
+  Punc    = [")", ",", ".", " ", "\n"]
+  NoAlpha = /[^A-Za-z0-9_]/
+  Param   = ["]", "\n", nil]
+  Escape  = "\\"   # not an ESC char
+
+  def terminate?(terminators, ch)
+    if terminators.is_a? Regexp
+      terminators === ch
+    else
+      terminators.include?(ch)
+    end
   end
 
-  def peek
-    @enum.peek
-  rescue StopIteration
-    EOL
+  attr_reader :out
+
+  def initialize(line, context)
+    context ||= binding
+    @context = context
+    @line = line
+    @i = -1
+    @token = Null.dup
+    @tokenlist = []
+  end
+
+  def self.parse!(line, context = nil)
+    x = self.new(line.chomp, context)
+    x.tokenize(line)
+    x.evaluate    # (context)
+  end
+
+  def tokenize(line)
+    grab
+    loop do 
+      case curr
+        when Escape; go; add curr; grab
+        when "$"
+          _dollar
+        when "*", "_", "`", "~"
+          marker curr
+          add curr
+        when LF, nil
+          break
+        else
+          add curr
+      end
+      grab
+    end
+    add_token(:str)
+    @tokenlist
+  end
+
+  def embed(sym, str)
+    pre, post = SimpleFormats[sym]
+    pre + str + post
+  end
+
+  def evaluate(tokens = @tokenlist)
+    @out = ""
+    return "" if tokens.empty?
+    gen = tokens.each
+    token = gen.next
+    loop do 
+      break if token.nil? 
+      sym, val = *token
+      case sym
+        when :str
+          @out << val unless val == "\n"   # BUG
+        when :var
+          @out << varsub(val)
+        when :func 
+          param = nil
+          arg = gen.peek
+          if [:colon, :brackets].include? arg[0] 
+            arg = gen.next  # for real
+            param = arg[1]
+          end
+          @out << funcall(val, param)
+        when :b, :i, :t, :s
+          @out << embed(sym, val)
+      else
+        add_token :str
+      end
+      token = gen.next
+    end
+    @out
+  end
+
+  def curr
+    @line[@i]
+  end
+
+  def prev
+    @line[@i-1]
+  end
+
+  def next!
+    @line[@i+1]
   end
 
   def grab
-    @enum.next
-  rescue StopIteration
-    EOL
+    @line[@i+=1]
   end
 
-  def skip
-    @enum.next
-    @enum.peek
-  rescue StopIteration
-    EOL
-  end
-
-  def keep(initial = "")
-    @buffer << initial
-    @buffer << @enum.next
-  rescue StopIteration
-    EOL
-  end
-
-  def emit(str = "")
-    @buffer << str
-  end
-
-  def funcall(name, param)
-    if self.respond_to?("func_" + name.to_s)
-      self.send("func_" + name.to_s, param)
-    else
-      fobj = ::Livetext::Functions.new
-      ::Livetext::Functions.param = param        # is this 
-      ::Livetext::Functions.context = @context   #   screwed up???
-      fobj.send(name)
-    end
-  end
-
-  def vsub
-    @buffer << Livetext::Vars[@vname]
-    @vname = ""
-  end
-
-  def fcall
-    @buffer << funcall(@fname, @param)
-    @fname, @param = "", ""
-  end
-
-# FIXME Much of this should be done via CSS
-# FIXME In particular, strike is deprecated.
-
-  def bold
-    d0, d1 = SimpleFormats[:b]
-    @buffer << "#{d0}#@substr#{d1}"
-    @substr = ""
-  end
-
-  def ttype
-    d0, d1 = SimpleFormats[:t]
-    @buffer << "#{d0}#@substr#{d1}"
-    @substr = ""
-  end
-
-  def italics
-    d0, d1 = SimpleFormats[:i]
-    @buffer << "#{d0}#@substr#{d1}"
-    @substr = ""
-  end
-
-  def strike
-    d0, d1 = SimpleFormats[:s]
-    @buffer << "#{d0}#@substr#{d1}"
-    @substr = ""
-  end
-
-  def parse(line, context = nil)
-    context ||= binding
-    @context = context
-    @enum = line.chomp.each_char
-    @buffer = ""
-    @substr = ""
-    @fname  = ""
-    @vname  = ""
-    @param  = ""
-
-    # FIXME - refactor, generalize, clarify
-    
-    loop do   # starting state
-      char = peek
-      case char
-        when "\\"
-          char = skip
-          case char
-            when "$", "*", "_", "`", "~"
-              emit(char)
-              skip
-            when " "
-              emit("\\ ")
-              skip
-            when EOL
-              emit("\\")
-              break
-            when Other
-              emit("\\")   # logic??
-          end
-        when EOL
-          break
-        when "$"        # var or func or $
-          case skip
-            when EOL
-              emit("$")
-              break
-            when Alpha
-              loop { ch = peek; break if ch == EOL; @vname << grab; break unless Alpha2 === peek } 
-              vsub
-            when "$" 
-              case skip
-                when EOL
-                  emit("$$")
-                  break
-                when Alpha
-                  loop { ch = peek; break if ch == EOL; @fname << grab; break unless Alpha2 === peek }
-                  case peek
-                    when " "   # no param - just call
-                      @param = nil
-                      fcall    # no param? Hmm
-                    when "["   # long param
-                      skip
-                      loop do 
-                        if peek == "\\"
-                          skip
-                          @param << grab
-                        end
-                        break if ["]", EOL].include?(peek)
-                        @param << grab
-                      end
-                      skip
-                      fcall
-                    when ":"   # param (single token or to-eol)
-                      case skip
-                        when ":"   # param to eol
-                          skip
-                          loop { break if peek == EOL; @param << grab }
-                        when Other # grab until space or eol
-                          loop { @param << grab; break if [" ", EOL].include?(peek) }
-                          fcall
-                      end
-                    when Other # no param - just call
-                      fcall
-                  end
-                when Other
-                  emit "$$"
-              end
-            when Other
-              emit "$"
-          end
-        when "*"
-          case skip
-            when EOL
-              emit "*"
-            when " "
-              emit "*"
-            when "["
-              skip
-              loop do
-                if peek == "\\"
-                  skip
-                  @substr << grab
-                  next
-                end
-                break if ["]", EOL].include?(peek)
-                @substr << grab
-              end
-              skip
-              bold
-            when Other
-              loop { @substr << grab; break if [" ", EOL].include?(peek) }
-              bold
-          end
-        when "_"
-          case skip
-            when EOL
-              emit "_"
-            when " "
-              emit "_"
-            when "["
-              skip
-              loop do
-                if peek == "\\"
-                  skip
-                  @substr << grab
-                  next
-                end
-                break if ["]", EOL].include?(peek)
-                @substr << grab
-              end
-              skip
-              italics
-            when "_"   # doubled...
-              skip
-              loop do
-                if peek == "\\"
-                  skip
-                  @substr << grab
-                  next
-                end
-                break if [".", ",", ")", EOL].include?(peek)
-                @substr << grab
-              end
-              italics
-            when Other
-              loop { @substr << grab; break if [" ", EOL].include?(peek) }
-              italics
-          end
-        when "`"
-          case skip
-            when EOL
-              emit "`"
-            when " "
-              emit "`"
-            when "["
-              skip
-              loop do
-                if peek == "\\"
-                  skip
-                  @substr << grab
-                  next
-                end
-                break if ["]", EOL].include?(peek)
-                @substr << grab
-              end
-              skip
-              ttype
-            when "`"   # doubled...
-              skip
-              loop { break if [".", ",", ")", EOL].include?(peek); @substr << grab }   # ";" ?? FIXME
-              ttype
-            when Other
-              loop { @substr << grab; break if [" ", EOL].include?(peek) }
-              ttype
-          end
-        when "~"
-          case skip
-            when EOL
-              emit "~"
-            when " "
-              emit "~"
-            when "["
-              skip
-              loop do
-                if peek == "\\"
-                  skip
-                  @substr << grab
-                  next
-                end
-                break if ["]", EOL].include?(peek)
-                @substr << grab
-              end
-              skip
-              strike
-            when "~"   # doubled...
-              skip
-              loop { break if [".", ",", ")", EOL].include?(peek); @substr << grab }   # ";" ?? FIXME
-              strike
-            when Other
-              loop { @substr << grab; break if [" ", EOL].include?(peek) }
-              strike
-          end
-        when Other
-          keep
+  def grab_colon_param
+    grab  # grab :
+    param = ""
+    loop do 
+      case next!
+        when Escape
+          grab
+          param << next!
+          grab
+        when Space, LF, nil; break
+      else
+        param << next!
+        grab
       end
     end
 
-    @buffer
+    param = nil if param.empty?
+    param
+  end
+
+  def grab_func_param
+    grab # [
+    param = ""
+    loop do 
+      case next!
+        when Escape
+          grab
+          param << next!
+          grab
+        when "]", LF, nil; break
+      else
+        param << next!
+        grab
+      end
+    end
+
+    add curr
+    grab
+    param = nil if param.empty?
+    param
+  end
+
+  def add(str)
+    @token << str unless str.nil?
+  end
+
+  Syms = { "*" => :b, "_" => :i, "`" => :t, "~" => :s }
+
+  def add_token(kind, token = @token)
+    @tokenlist << [kind, token] unless token.empty?
+    @token = Null.dup
+  end
+
+  def grab_alpha
+    str = Null.dup
+    grab
+    loop do
+      break if curr.nil?
+      str << curr
+      break if terminate?(NoAlpha, next!)
+      grab
+    end
+    str
+  end
+
+  def _dollar
+    grab
+    case curr
+      when LF;  add "$";  add_token :str
+      when " "; add "$ "; add_token :str
+      when nil; add "$";  add_token :str
+      when "$"; _double_dollar
+      when "."; _dollar_dot
+      when /[A-Za-z]/
+       add_token :str
+        var = curr + grab_alpha
+        add_token(:var, var)
+    else 
+      add "$" + curr
+      add_token(:string)
+    end
+  end
+
+  def _double_dollar
+    case next!
+      when Space; add_token :string, "$$ "; grab; return
+      when LF, nil; add "$$"; add_token :str
+      when Alpha
+        add_token(:str, @token)
+        func = grab_alpha
+        add_token(:func, func)
+        case next!
+          when ":"; param = grab_colon_param; add_token(:colon, param)
+          when "["; param = grab_func_param; add_token(:brackets, param)
+          else  # do nothing
+        end
+      else
+        grab; add_token :str, "$$" + curr; return
+    end
+  end
+
+  def dollar_dot
+    add_token :ddot, @line[@i..-1]
+  end
+
+  def marker(char)
+    add_token :str
+    sym = Syms[char]
+    if embedded?
+      add char    # ??? add_token "*", :string
+      return 
+    end
+    grab
+    case curr
+      when Space
+        add char + " "
+        add_token :str
+        grab
+      when LF, nil
+        add char
+        add_token :str
+      when char;   double_marker(char)
+      when LBrack; long_marker(char)
+    else
+      add curr
+      str = collect!(sym, Blank)
+      add_token sym, str
+      add curr  # next char onto next token... 
+    end
+  end
+
+  def double_marker(char)
+    sym = Syms[char]
+    grab
+    kind = sym   # "string_#{char}".to_sym
+    case next!   # first char after **
+      when Space, LF, nil
+        pre, post = SimpleFormats[sym]
+        add_token kind
+      else
+        str = collect!(sym, Punc)
+        grab unless next!.nil?
+        add_token kind, str
+    end
+  end
+
+  def long_marker(char)
+    sym = Syms[char]
+    # grab  # skip left bracket
+    kind = sym  # "param_#{sym}".to_sym
+    arg = collect!(sym, Param, true)
+    add_token kind, arg
+  end
+
+  def collect!(sym, terminators, param=false)
+    str = Null.dup   # next is not " ","*","["
+    grab
+    loop do
+      if curr == Escape
+        str << grab # ch = escaped char
+        grab
+        next
+      end
+      break if terminate?(terminators, curr)
+      str << curr    # not a terminator
+      grab
+    end
+    grab if param && curr == "]" # skip right bracket
+    add str
+  end
+
+############
+
+  ### From FormatLine:
+
+  def funcall(name, param)
+    result = 
+      if self.respond_to?("func_" + name.to_s)
+        self.send("func_" + name.to_s, param)
+      else
+        fobj = ::Livetext::Functions.new
+        ::Livetext::Functions.param = param        # is this 
+        ::Livetext::Functions.context = @context   #   screwed up???
+        fobj.send(name)
+      end
+    result
+  end
+
+  def varsub(name)
+    result = Livetext::Vars[name]
+    result
+  end
+
+  #####
+
+  def showme(tag)
+    char = @line[@cc]
+    puts "--- #{tag}: ch=#{@ch.inspect} next=#{@next.inspect} (cc=#@cc:#{char.inspect})   out=#{@out.inspect}"
+  end
+
+  def embedded?
+    ! (['"', "'", " ", nil].include? prev)
   end
 end
-
