@@ -28,7 +28,7 @@ class FormatLine
 
   attr_reader :out
 
-  def initialize(line, context)
+  def initialize(line, context=nil)
     context ||= binding
     @context = context
     @line = line
@@ -38,8 +38,9 @@ class FormatLine
   end
 
   def self.parse!(line, context = nil)
+    return nil if line.nil?
     x = self.new(line.chomp, context)
-    x.tokenize(line)
+t = x.tokenize(line)
     x.evaluate    # (context)
   end
 
@@ -49,7 +50,7 @@ class FormatLine
       case curr
         when Escape; go; add curr; grab
         when "$"
-          _dollar
+          dollar
         when "*", "_", "`", "~"
           marker curr
           add curr
@@ -78,6 +79,8 @@ class FormatLine
       break if token.nil? 
       sym, val = *token
       case sym
+        when :ddot
+          return [@out, val]
         when :str
           @out << val unless val == "\n"   # BUG
         when :var
@@ -97,7 +100,7 @@ class FormatLine
       end
       token = gen.next
     end
-    @out
+    [@out, nil]
   end
 
   def curr
@@ -181,14 +184,14 @@ class FormatLine
     str
   end
 
-  def _dollar
+  def dollar
     grab
     case curr
       when LF;  add "$";  add_token :str
       when " "; add "$ "; add_token :str
       when nil; add "$";  add_token :str
-      when "$"; _double_dollar
-      when "."; _dollar_dot
+      when "$"; double_dollar
+      when "."; dollar_dot
       when /[A-Za-z]/
        add_token :str
         var = curr + grab_alpha
@@ -199,7 +202,7 @@ class FormatLine
     end
   end
 
-  def _double_dollar
+  def double_dollar
     case next!
       when Space; add_token :string, "$$ "; grab; return
       when LF, nil; add "$$"; add_token :str

@@ -43,7 +43,7 @@ def command
     text, exam = text[0..(n-1)], text[(n+1)..-1]
   end
 
-  text.map! {|line| _formatting(line).chomp }
+  text.map! {|line| _format(line).chomp }
   str << _block("<font size=+1><b><tt>#@method</tt></b></font>", "#b0e0ff", true) << "<br>"
   str << "<font size=+1>" + text.join("\n") + "</font>"
   if n

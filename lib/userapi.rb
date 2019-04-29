@@ -24,7 +24,8 @@ module Livetext::UserAPI
     @line = nextline if peek_nextline =~ /^ *$/
   end
 
-  def _comment?(str, sigil=".")
+  def _comment?(str)
+    sigil = Livetext::Sigil
     c1 = sigil + Livetext::Space
     c2 = sigil + sigil + Livetext::Space
     str.index(c1) == 0 || str.index(c2) == 0
@@ -35,21 +36,20 @@ module Livetext::UserAPI
     return false
   end
 
-  def _end?(str, sigil=".")
+  def _end?(str)
     return false if str.nil?
-    cmd = sigil + "end"
+    cmd = Livetext::Sigil + "end"
     return false if str.index(cmd) != 0 
     return false unless _trailing?(str[5])
     return true
   end
 
-  def _raw_body(tag = "__EOF__", sigil = ".")
+  def _raw_body(tag = "__EOF__")
     lines = []
     @save_location = @sources.last
     loop do
       @line = nextline
       break if @line.chomp.strip == tag
-# STDERR.puts "_raw_body adds: #{@line.inspect}"
       lines << @line
     end
     _optional_blank_line
@@ -58,39 +58,39 @@ module Livetext::UserAPI
     else
       lines
     end
-# STDERR.puts "_raw_body returns: #{lines.inspect}"
     lines
   end
 
-  def _body(raw=false, sigil=".")
+  def _body(raw=false)
     lines = []
     @save_location = @sources.last
     loop do
       @line = nextline
       raise if @line.nil?
-      break if _end?(@line, sigil)
-      next if _comment?(@line, sigil)   # FIXME?
-      @line = _formatting(@line) unless raw
-      lines << @line
+      break if _end?(@line)
+      next if _comment?(@line)
+      # FIXME Will cause problem with $. ?
+      @line = _format(@line) unless raw
+      lines << @line 
     end
     _optional_blank_line
     if block_given?
-      lines.each {|line| yield line }
+      lines.each {|line| yield line }   # FIXME what about $. ?
     else
       lines
     end
   rescue => err
-    # FIXME ?
+p err.inspect
+puts err.backtrace
     _error!("Expecting .end, found end of file")
-#   puts @body
   end
 
-  def _body_text(raw=false, sigil=".")
-    _body(sigil).join("")
+  def _body_text(raw=false)
+    _body(Livetext::Sigil).join("")
   end
 
-  def _raw_body!(sigil=".")
-    _raw_body(sigil).join("\n")
+  def _raw_body!
+    _raw_body(Livetext::Sigil).join("\n")
   end
 
   def _handle_escapes(str, set)
@@ -101,26 +101,39 @@ module Livetext::UserAPI
     str
   end
 
-  def _formatting(line, context = nil)
+  def _format(line, context = nil)
+    return ["", nil] if line == "\n"
     l2 = FormatLine.parse!(line, context)
-    line.replace(l2)
+    line1, line2 = *l2
+    line.replace(line1) unless line.nil?
+    line
+  end
+
+  def _format!(line, context = nil)
+    return ["", nil] if line == "\n"
+    l2 = FormatLine.parse!(line, context)
+    # maybe move fix back toward parse! ?
+    line1, line2 = *l2
+    line2 = line2.dup
+    line.replace(line1) unless line.nil?
+    line2 = @parent.handle_dotcmd(line2) unless line2.nil?
+    [line, line2]
   end
 
   def _passthru(line, context = nil)
     return if @_nopass
     _out "<p>" if line == "\n" and ! @_nopara
-    line = _formatting(line, context)
+    line, line2 = *_format!(line, context)
+p line
+p line2
     _out line
+    _out line2
   end
 
   def _out(str = "")
-#   if @no_puts
-# STDERR.puts "_out: #{str.inspect}"
-      @parent.body << str 
-      @parent.body << "\n" unless str.end_with?("\n")
-#   else
-#     _puts str
-#   end
+    return if str.nil?
+    @parent.body << str 
+    @parent.body << "\n" unless str.end_with?("\n")
   end
 
   def _out!(str = "")

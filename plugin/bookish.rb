@@ -25,7 +25,7 @@ def list!
   lines = _body.each   # {|line| _out "<li>#{line}</li>" }
   loop do 
     line = lines.next
-    line = _formatting(line)
+    line = _format(line)
     if line[0] == " "
       _out line
     else
@@ -77,7 +77,7 @@ def figure
   name = @_args[0]
   num = @_args[1]
   title = @_args[2..-1].join(" ")
-  title = _formatting(title)
+  title = _format(title)
   _out "<img src='#{name}'></img>"
   _out "<center><b>Figure #{num}</b> #{title}</center>"
 end
@@ -138,7 +138,7 @@ def table2
   delim = " :: "
   _out "<br><center><table border=1 width=#{wide}% cellpadding=5>"
   lines = _body(true)
-  lines.map! {|line| _formatting(line) }
+  lines.map! {|line| _format(line) }
 
   lines.each do |line|
     cells = line.split(delim)
@@ -162,7 +162,7 @@ def simple_table
   lines = _body(true)
   maxw = nil
   lines.each do |line|
-    _formatting(line)
+    _format(line)
     cells = line.split(delim)
     wide = cells.map {|x| x.length }
     maxw = [0] * cells.size
@@ -193,7 +193,7 @@ def table
   lines = _body(true)
   maxw = nil
   lines.each do |line|
-    _formatting(line)
+    _format(line)
     cells = line.split(delim)
     wide = cells.map {|x| x.length }
     maxw = [0] * cells.size

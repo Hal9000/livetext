@@ -59,13 +59,13 @@ module Livetext::Standard
   end
 
   def say
-    str = _formatting(@_data)
+    str = _format(@_data)
     TTY.puts str
     _optional_blank_line
   end
 
   def banner
-    str = _formatting(@_data)
+    str = _format(@_data)
     n = str.length - 1
     _errout "-"*n
     _errout str
@@ -157,7 +157,8 @@ module Livetext::Standard
       var, val = a.split("=")
       val = val[1..-2] if val[0] == ?" and val[-1] == ?"
       val = val[1..-2] if val[0] == ?' and val[-1] == ?'
-      Livetext::Vars[var] = val
+      Livetext::Vars[var.to_sym] = val
+      Livetext::Vars[var] = val         # FIXME
     end
     _optional_blank_line
   end
@@ -199,6 +200,7 @@ module Livetext::Standard
     meths = grab_file(file)
     modname = name.gsub("/","_").capitalize
     string = "module ::#{modname}\n#{meths}\nend"
+# puts string   # .inspect
     eval(string)
     newmod = Object.const_get("::" + modname)
     self.extend(newmod)
@@ -284,7 +286,7 @@ module Livetext::Standard
     delim = _args.first
     _out "<dl>"
     _body do |line|
-      line = _formatting(line)
+      line = _format(line)
       term, defn = line.split(delim)
       _out "<dt>#{term}</dt>"
       _out "<dd>#{defn}</dd>"
@@ -296,7 +298,7 @@ module Livetext::Standard
     delim = _args.first
     _out "<table>"
     _body do |line|
-      line = _formatting(line)
+      line = _format(line)
       term, defn = line.split(delim)
       _out "<tr>"
       _out "<td width=3%><td width=10%>#{term}</td><td>#{defn}</td>"
@@ -318,7 +320,7 @@ module Livetext::Standard
     lines = _body(true)
     maxw = nil
     lines.each do |line|
-      _formatting(line)  # May split into multiple lines!
+      line = _format(line)
       line.gsub!(/\n+/, "<br>")
       cells = line.split(delim)
       wide = cells.map {|x| x.length }

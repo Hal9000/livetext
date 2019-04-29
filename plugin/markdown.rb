@@ -33,7 +33,7 @@ def olist   # Doesn't handle paragraphs yet
   n = 0
   _body do |line|
     n += 1
-    _out "#{n}. #{_formatting(line)}"
+    _out "#{n}. #{_format(line)}"
   end
 end
 

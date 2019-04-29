@@ -1,7 +1,7 @@
 require 'fileutils'
 
 def epub!
-  out = _formatting(@_args[0])
+  out = _format(@_args[0])
   src = @_args[1]
   @cover = @_args[2]
   if ::File.directory?(src)

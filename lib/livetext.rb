@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.78"
+  VERSION = "0.8.79"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
@@ -32,6 +32,7 @@ class Livetext
   end
 
   Space = " "
+  Sigil = "." # Can't change yet
 
   def initialize(output = ::STDOUT)
     @source = nil
@@ -45,17 +46,17 @@ class Livetext
   def process_line(line, context=nil)
     context ||= binding
     @context = context
-    sigil = "." # Can't change yet
     nomarkup = true
     # FIXME inefficient
-    scomment  = rx(sigil, Livetext::Space)  # apply these in order
-    sname     = rx(sigil)
+    scomment  = rx(Sigil, Livetext::Space)  # apply these in order
+    sname     = rx(Sigil)
     if line =~ scomment
       handle_scomment(line)
     elsif line =~ sname 
-      handle_sname(line)
+      handle_dotcmd(line)
     else
       @main._passthru(line, context)
+      # Can output extra line(s) in $. scenario
     end
   end
 
@@ -142,7 +143,7 @@ class Livetext
     Regexp.compile("^" + Regexp.escape(str) + "#{space}")
   end
 
-  def handle_scomment(line, sigil=".")
+  def handle_scomment(line)
   end
 
   def _check_name(name)
@@ -153,15 +154,15 @@ class Livetext
     name
   end
 
-  def _get_name(line, sigil=".")
+  def _get_name(line)
     name, data = line.split(" ", 2)
     name = name[1..-1]  # chop off sigil
     @main.data = data
     name = _check_name(name)
   end
 
-  def handle_sname(line, sigil=".")
-    name = _get_name(line, sigil)
+  def handle_dotcmd(line)
+    name = _get_name(line)
     result = nil
     if @main.respond_to?(name)
       result = @main.send(name)
