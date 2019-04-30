@@ -37,8 +37,11 @@ module Livetext::UserAPI
   end
 
   def _end?(str)
+    indent = ""
+    indent = " " * (@parent.indentation.last - 1)
+    indent << "$" unless indent.empty?
     return false if str.nil?
-    cmd = Livetext::Sigil + "end"
+    cmd = indent + Livetext::Sigil + "end"
     return false if str.index(cmd) != 0 
     return false unless _trailing?(str[5])
     return true
@@ -80,8 +83,8 @@ module Livetext::UserAPI
       lines
     end
   rescue => err
-p err.inspect
-puts err.backtrace
+  p err.inspect
+  puts err.backtrace
     _error!("Expecting .end, found end of file")
   end
 
@@ -102,32 +105,17 @@ puts err.backtrace
   end
 
   def _format(line, context = nil)
-    return ["", nil] if line == "\n"
-    l2 = FormatLine.parse!(line, context)
-    line1, line2 = *l2
-    line.replace(line1) unless line.nil?
+    return "" if line == "\n"
+    line2 = FormatLine.parse!(line, context)
+    line.replace(line2) unless line.nil?
     line
-  end
-
-  def _format!(line, context = nil)
-    return ["", nil] if line == "\n"
-    l2 = FormatLine.parse!(line, context)
-    # maybe move fix back toward parse! ?
-    line1, line2 = *l2
-    line2 = line2.dup
-    line.replace(line1) unless line.nil?
-    line2 = @parent.handle_dotcmd(line2) unless line2.nil?
-    [line, line2]
   end
 
   def _passthru(line, context = nil)
     return if @_nopass
     _out "<p>" if line == "\n" and ! @_nopara
-    line, line2 = *_format!(line, context)
-p line
-p line2
+    line = _format(line, context)
     _out line
-    _out line2
   end
 
   def _out(str = "")

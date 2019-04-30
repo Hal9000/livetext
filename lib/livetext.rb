@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.79"
+  VERSION = "0.8.80"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
@@ -22,7 +22,7 @@ class Livetext
 
   attr_reader :main, :context
   attr_accessor :no_puts
-  attr_accessor :body
+  attr_accessor :body, :indentation
 
   # FIXME - phase out stupid 'parameters' method
 
@@ -41,6 +41,7 @@ class Livetext
     @no_puts = output.nil?
     @body = ""
     @main = Processor.new(self, output)
+    @indentation = [0]
   end
 
   def process_line(line, context=nil)
@@ -48,15 +49,22 @@ class Livetext
     @context = context
     nomarkup = true
     # FIXME inefficient
-    scomment  = rx(Sigil, Livetext::Space)  # apply these in order
-    sname     = rx(Sigil)
-    if line =~ scomment
-      handle_scomment(line)
-    elsif line =~ sname 
-      handle_dotcmd(line)
+    comment  = rx(Sigil, Livetext::Space)  # apply these in order
+    dotcmd   = rx(Sigil)
+    ddotcmd  = /^ *\$\.[A-Za-z]/
+    case line
+      when comment
+        handle_scomment(line)
+      when dotcmd
+        handle_dotcmd(line)
+      when ddotcmd
+        indent = line.index("$") + 1
+        @indentation.push(indent)
+        line.sub!(/^ *\$/, "")
+        handle_dotcmd(line)
+        indentation.pop
     else
       @main._passthru(line, context)
-      # Can output extra line(s) in $. scenario
     end
   end
 
@@ -161,7 +169,8 @@ class Livetext
     name = _check_name(name)
   end
 
-  def handle_dotcmd(line)
+  def handle_dotcmd(line, indent = 0)
+    indent = @indentation.last # top of stack
     name = _get_name(line)
     result = nil
     if @main.respond_to?(name)

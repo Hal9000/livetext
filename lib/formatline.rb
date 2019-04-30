@@ -40,7 +40,7 @@ class FormatLine
   def self.parse!(line, context = nil)
     return nil if line.nil?
     x = self.new(line.chomp, context)
-t = x.tokenize(line)
+    t = x.tokenize(line)
     x.evaluate    # (context)
   end
 
@@ -79,8 +79,6 @@ t = x.tokenize(line)
       break if token.nil? 
       sym, val = *token
       case sym
-        when :ddot
-          return [@out, val]
         when :str
           @out << val unless val == "\n"   # BUG
         when :var
@@ -100,7 +98,7 @@ t = x.tokenize(line)
       end
       token = gen.next
     end
-    [@out, nil]
+    @out
   end
 
   def curr
@@ -191,7 +189,7 @@ t = x.tokenize(line)
       when " "; add "$ "; add_token :str
       when nil; add "$";  add_token :str
       when "$"; double_dollar
-      when "."; dollar_dot
+#     when "."; dollar_dot
       when /[A-Za-z]/
        add_token :str
         var = curr + grab_alpha
@@ -220,9 +218,9 @@ t = x.tokenize(line)
     end
   end
 
-  def dollar_dot
-    add_token :ddot, @line[@i..-1]
-  end
+# def dollar_dot
+#   add_token :ddot, @line[@i..-1]
+# end
 
   def marker(char)
     add_token :str

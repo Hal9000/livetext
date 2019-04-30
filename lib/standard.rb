@@ -165,11 +165,22 @@ module Livetext::Standard
 
   def heredoc
     var = @_args[0]
-# STDERR.puts "var = #{var.inspect}"
     str = _body_text
-# STDERR.puts "str = #{str.inspect}"
-    Livetext::Vars[var] = str
-# STDERR.puts "vars = #{Livetext::Vars.inspect}"
+    indent = @parent.indentation.last
+    indented = " " * indent
+    #  s2 = ""
+    #  str.each_line do |line|
+    #    if line.start_with?(indented)
+    #      line.replace(line[indent..-1])
+    #    else
+    #      STDERR.puts "Error? heredoc not indented?"
+    #      return
+    #    end
+    #    s2 << line
+    #  end
+    s2 = str
+    Livetext::Vars[var.to_sym] = s2
+    Livetext::Vars[var] = s2           # FIXME
     _optional_blank_line
   end
 
@@ -200,7 +211,6 @@ module Livetext::Standard
     meths = grab_file(file)
     modname = name.gsub("/","_").capitalize
     string = "module ::#{modname}\n#{meths}\nend"
-# puts string   # .inspect
     eval(string)
     newmod = Object.const_get("::" + modname)
     self.extend(newmod)

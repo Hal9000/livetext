@@ -1,5 +1,6 @@
 Mostly done
 -----------
+rewrite line formatter
 define variables
 define methods
 .raw
@@ -14,9 +15,10 @@ args vs bare args (quotes)
 
 To Be Done
 ----------
+.heredoc! variant?
+handle indentation better
 Tests: .r .raw .include! etc.
 _prompt
-switch line formatter??
 vim syntax coloring
 allow switching sigils, etc.
 double sigils?
