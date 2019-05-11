@@ -18,6 +18,8 @@ class FormatLine
   Param   = ["]", "\n", nil]
   Escape  = "\\"   # not an ESC char
 
+  Syms = { "*" => :b, "_" => :i, "`" => :t, "~" => :s }
+
   def terminate?(terminators, ch)
     if terminators.is_a? Regexp
       terminators === ch
@@ -192,8 +194,6 @@ class FormatLine
     @token << str unless str.nil?
   end
 
-  Syms = { "*" => :b, "_" => :i, "`" => :t, "~" => :s }
-
   def add_token(kind, token = @token)
     @tokenlist << [kind, token] unless token.empty?
     @token = Null.dup
@@ -255,7 +255,7 @@ class FormatLine
     add_token :str
     sym = Syms[char]
     if embedded?
-      add char    # ??? add_token "*", :string
+#     add char    # ??? add_token "*", :string
       return 
     end
     grab

@@ -1,4 +1,7 @@
    .set with a text body?
+   change from .lt3 to .live
+   optional extension on .include, etc.?
+   .include? which ignores missing files?
    Fix the backtrace testing problem
    Better parameter handling for custom dot commands
    Better parameter handling for custom functions
