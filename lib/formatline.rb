@@ -27,6 +27,7 @@ class FormatLine
   end
 
   attr_reader :out
+  attr_reader :tokenlist
 
   def initialize(line, context=nil)
     context ||= binding
@@ -54,7 +55,10 @@ class FormatLine
         when "*", "_", "`", "~"
           marker curr
           add curr
-        when LF, nil
+#         grab
+        when LF
+          break if @i >= line.size - 1
+        when nil
           break
         else
           add curr
@@ -63,6 +67,29 @@ class FormatLine
     end
     add_token(:str)
     @tokenlist
+  end
+
+  def self.var_func_parse(str, context = nil)
+    return nil if str.nil?
+    x = self.new(str.chomp, context)
+#   t = x.tokenize(line)
+    x.grab
+    loop do 
+      case x.curr
+        when Escape; x.go; x.add x.curr; x.grab
+        when "$"
+          x.dollar
+        when LF, nil
+          break
+        else
+          x.add x.curr
+      end
+      x.grab
+    end
+    x.add_token(:str)
+    # built tokenlist
+#  x.tokenlist.each {|pair| puts "  #{pair.inspect}" }
+    x.evaluate    # (context)
   end
 
   def embed(sym, str)
@@ -89,9 +116,11 @@ class FormatLine
           if [:colon, :brackets].include? arg[0] 
             arg = gen.next  # for real
             param = arg[1]
+            param = FormatLine.var_func_parse(param)
           end
           @out << funcall(val, param)
         when :b, :i, :t, :s
+          val = FormatLine.var_func_parse(val)
           @out << embed(sym, val)
       else
         add_token :str

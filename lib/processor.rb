@@ -48,9 +48,11 @@ class Livetext
     end
 
     def peek_nextline
-      @sources.last[0].peek
+      line = @sources.last[0].peek
     rescue StopIteration
       @sources.pop
+      nil
+    rescue 
       nil
     end
 

@@ -1,4 +1,61 @@
-   Add .link, $$link
-   Bug: underscore in code (inline) causes italics
+   .set with a text body?
+   Fix the backtrace testing problem
+   Better parameter handling for custom dot commands
+   Better parameter handling for custom functions
+   Make mixins actual modules?
+   Change predefined function names?? e.g. $$date becomes $$_date 
+   Debugging command to dump variables
+   Variable (or function) to denote file being processed
+   Clean up code structure
+   Add `_raw_args and let `_args honor quotes
    way to set defaults for images, etc.
+x  Add versioning information 
+x  Think about command line executable
+   Write as pure library in addition to executable
+x  Package as gem
+   More support for markdown
+   Document: `require `include `copy `mixin `errout and others
+   Need better error checking and corresponding tests
+   Worry about nesting of elements (probably mostly disallow)
+   Think about UTF-8
+   Document API fully
+x  Support quotes in `.set values
+   Support "namespaced" variables  (`[.set code.font="whatever"])
+x  Support functions (``$$func) 
+   Support function namespacing
+   Create predefined variables (e.g., `[$_source_file], `$[_line])
+   Create predefined functions (e.g., `[$$_date])
+   Add RDoc
+   Allow turning on/off: formatting, variable interpolation, function interpolation?
+   `.require with file and sigil parameters
+   Investigate "common intermediate format" - output renderers all read it
+   Comments passed through (e.g. as HTML comments)
+   `.run to execute arbitrary Ruby code inline?
+   Concept of `.proc (guaranteed to return no value, produce no output)?
+   Exceptions??
+   Ruby `$SAFE levels?
+   Warn when overriding existing names?
+   Think about passing data in (erb replacement)
+   Allow custom ending tag on `raw method
+x  Ignore first blank line after `[.end]? (and after raw-tag?)
+   Allow/encourage custom `passthru method?
+   Must have sane support for CSS
+   Support for Pygments and/or other code processors
+   Support for gists? arbitrary links? other remote resouces?
+   Small libraries for special purposes (books? special Softcover support? blogs? PDF? RMagick?)
+   Experiment with idea of special libraries having pluggable output formats (via Ruby mixin?)
+   Imagining a lib that can run/test code fragments as part of document generation
+   Create vim (emacs?) syntax files
+   Someday: Support other languages (Elixir, Python, ...)
+   `.pry method?
+   `.irb method?
+   Other debugging features
+   Feature to "break" to EOF?
+   `.meth? method ending in `? takes a block that may be processed or thrown away (`.else perhaps?)
+   `.dump to dump all variables and their values
+   `.if and `[.else]?
+   Make any/all delimiters configurable
+   HTML helper? (in their own library?)
+   Add .link, $$link
+x  Bug: underscore in code (inline) causes italics
 x  way to install plugins

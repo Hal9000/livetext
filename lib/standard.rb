@@ -67,9 +67,9 @@ module Livetext::Standard
   def banner
     str = _format(@_data)
     n = str.length - 1
-    _errout "-"*n
-    _errout str
-    _errout "-"*n
+    puts "-"*n
+    puts str
+    puts "-"*n
   end
 
   def quit
@@ -143,7 +143,7 @@ module Livetext::Standard
     str = "def #{name}\n"
     raise "Illegal name '#{name}'" if _disallowed?(name)
     str += _body_text(true)
-    str += "end\n"
+    str += "\nend\n"
     eval str
   rescue => err
     _error!(err)
@@ -153,10 +153,14 @@ module Livetext::Standard
   def set
     assigns = @_data.chomp.split(/, */)
     # Do a better way?
+    # FIXME *Must* allow for vars/functions
     assigns.each do |a| 
       var, val = a.split("=")
-      val = val[1..-2] if val[0] == ?" and val[-1] == ?"
-      val = val[1..-2] if val[0] == ?' and val[-1] == ?'
+      var.strip!
+      val.strip!
+      val = val[1..-2] if val[0] == ?" && val[-1] == ?"
+      val = val[1..-2] if val[0] == ?' && val[-1] == ?'
+      val = FormatLine.var_func_parse(val)
       Livetext::Vars[var.to_sym] = val
       Livetext::Vars[var] = val         # FIXME
     end
@@ -166,6 +170,10 @@ module Livetext::Standard
   def heredoc
     var = @_args[0]
     str = _body_text
+    s2 = ""
+    str.each_line do |s|
+      s2 << s.chomp + "<br>"
+    end
     indent = @parent.indentation.last
     indented = " " * indent
     #  s2 = ""
@@ -178,9 +186,8 @@ module Livetext::Standard
     #    end
     #    s2 << line
     #  end
-    s2 = str
     Livetext::Vars[var.to_sym] = s2
-    Livetext::Vars[var] = s2           # FIXME
+    Livetext::Vars[var] = s2.chomp      # FIXME?
     _optional_blank_line
   end
 
@@ -211,6 +218,9 @@ module Livetext::Standard
     meths = grab_file(file)
     modname = name.gsub("/","_").capitalize
     string = "module ::#{modname}\n#{meths}\nend"
+# puts "==========="
+# string.each_line.with_index {|line, i| puts "#{'%3d' % (i+1)} : #{line}" }
+# puts "==========="
     eval(string)
     newmod = Object.const_get("::" + modname)
     self.extend(newmod)

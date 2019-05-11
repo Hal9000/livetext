@@ -21,7 +21,9 @@ module Livetext::UserAPI
   end
 
   def _optional_blank_line
-    @line = nextline if peek_nextline =~ /^ *$/
+    peek = peek_nextline
+    return if peek.nil?
+    @line = nextline if peek =~ /^ *$/
   end
 
   def _comment?(str)
@@ -38,8 +40,10 @@ module Livetext::UserAPI
 
   def _end?(str)
     indent = ""
-    indent = " " * (@parent.indentation.last - 1)
-    indent << "$" unless indent.empty?
+#   n = @parent.indentation.last - 1
+#   n = 0 if n < 0  # Gahhh FIXM
+#   indent = " " * n
+#   indent << "$" unless indent.empty?
     return false if str.nil?
     cmd = indent + Livetext::Sigil + "end"
     return false if str.index(cmd) != 0 
@@ -67,15 +71,22 @@ module Livetext::UserAPI
   def _body(raw=false)
     lines = []
     @save_location = @sources.last
+    end_found = false
     loop do
       @line = nextline
-      raise if @line.nil?
-      break if _end?(@line)
+# puts "--- loop: @line = #{@line.inspect}"
+      break if @line.nil?
+      @line.chomp!
+      if _end?(@line)
+        end_found = true
+        break 
+      end
       next if _comment?(@line)
       # FIXME Will cause problem with $. ?
       @line = _format(@line) unless raw
       lines << @line 
     end
+    raise unless end_found
     _optional_blank_line
     if block_given?
       lines.each {|line| yield line }   # FIXME what about $. ?
@@ -83,13 +94,13 @@ module Livetext::UserAPI
       lines
     end
   rescue => err
-  p err.inspect
-  puts err.backtrace
+#   p err.inspect
+#   puts err.backtrace
     _error!("Expecting .end, found end of file")
   end
 
   def _body_text(raw=false)
-    _body(Livetext::Sigil).join("")
+    _body(Livetext::Sigil).join("\n")
   end
 
   def _raw_body!
