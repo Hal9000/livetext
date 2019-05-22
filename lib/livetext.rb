@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.82"
+  VERSION = "0.8.84"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
@@ -20,7 +20,7 @@ TTY = ::File.open("/dev/tty", "w")
 class Livetext
   Vars = {}
 
-  attr_reader :main, :context
+  attr_reader :main
   attr_accessor :no_puts
   attr_accessor :body, :indentation
 
@@ -44,9 +44,22 @@ class Livetext
     @indentation = [0]
   end
 
-  def process_line(line, context=nil)
-    context ||= binding
-    @context = context
+  def _setvar(var, val)
+    str, sym = var.to_s, var.to_sym
+    Livetext::Vars[str] = val
+    Livetext::Vars[sym] = val
+  end
+
+  def _setfile(file)
+    _setvar(:File, file)
+    _setvar(:FileDir, File.expand_path(file))
+  end
+
+  def _setfile!(file)
+    _setvar(:File, file)
+  end
+
+  def process_line(line)
     nomarkup = true
     # FIXME inefficient
     comment  = rx(Sigil, Livetext::Space)  # apply these in order
@@ -64,11 +77,12 @@ class Livetext
         handle_dotcmd(line)
         indentation.pop
     else
-      @main._passthru(line, context)
+      @main._passthru(line)
     end
   end
 
   def process(text)
+    _setfile!("(string)")
     enum = text.each_line
     front = text.match(/.*?\n/).to_a.first.chomp
     @main.source(enum, "STDIN: '#{front}...'", 0)
@@ -80,6 +94,7 @@ class Livetext
   end
 
   def transform(text)
+    _setfile!("(string)")
     @output = ::Livetext.output
     enum = text.each_line
     front = text.match(/.*?\n/).to_a.first.chomp
@@ -95,6 +110,7 @@ class Livetext
 ## FIXME don't need process *and* process_text
 
   def process_text(text)
+    _setfile!("(string)")
     text = text.split("\n") if text.is_a? String
     enum = text.each
     @backtrace = false
@@ -103,7 +119,7 @@ class Livetext
     loop do 
       line = @main.nextline
       break if line.nil?
-      process_line(line, context)
+      process_line(line)
     end
     val = @main.finalize if @main.respond_to? :finalize
     val
@@ -115,9 +131,8 @@ class Livetext
 
 ## FIXME process_file[!] should call process[_text]
 
-  def process_file(fname, context=nil)
-    context ||= binding
-    @context = context
+  def process_file(fname)
+    _setfile(fname)
     raise "No such file '#{fname}' to process" unless File.exist?(fname)
     text = File.readlines(fname)
     enum = text.each
@@ -126,14 +141,14 @@ class Livetext
     loop do 
       line = @main.nextline
       break if line.nil?
-# STDERR.puts "LINE: #{line.inspect}"
-      process_line(line, context)
+      process_line(line)
     end
     val = @main.finalize if @main.respond_to? :finalize
     val
   end
 
   def process_file!(fname, backtrace=false)
+    _setfile(fname)
     raise "No such file '#{fname}' to process" unless File.exist?(fname)
     @main.output = StringIO.new
     enum = File.readlines(fname).each

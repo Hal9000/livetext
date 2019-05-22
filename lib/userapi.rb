@@ -74,7 +74,6 @@ module Livetext::UserAPI
     end_found = false
     loop do
       @line = nextline
-# puts "--- loop: @line = #{@line.inspect}"
       break if @line.nil?
       @line.chomp!
       if _end?(@line)
@@ -115,17 +114,17 @@ module Livetext::UserAPI
     str
   end
 
-  def _format(line, context = nil)
+  def _format(line)
     return "" if line == "\n"
-    line2 = FormatLine.parse!(line, context)
+    line2 = FormatLine.parse!(line)
     line.replace(line2) unless line.nil?
     line
   end
 
-  def _passthru(line, context = nil)
+  def _passthru(line)
     return if @_nopass
     _out "<p>" if line == "\n" and ! @_nopara
-    line = _format(line, context)
+    line = _format(line)
     _out line
   end
 

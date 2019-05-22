@@ -1,10 +1,15 @@
    .set with a text body?
+x  Let .mixin search upward in tree?
    change from .lt3 to .live
    optional extension on .include, etc.?
    .include? which ignores missing files?
+   too many variations - transform, process, etc.
+   automated output file
+   automated checking of output file age
    Fix the backtrace testing problem
    Better parameter handling for custom dot commands
-   Better parameter handling for custom functions
+x  Better parameter handling for custom functions
+   System variables are capitalized?
    Make mixins actual modules?
    Change predefined function names?? e.g. $$date becomes $$_date 
    Debugging command to dump variables

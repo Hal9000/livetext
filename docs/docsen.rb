@@ -3,7 +3,6 @@ require 'date'
 def context
   @table ||= {}
   @context = _args.first
-# _puts _block("<h1><b><tt>#@context</tt></b></h1>")
   _puts _header("lightblue", 
                 "<h1><b><tt>#@context</tt></b></h1>",
                 "<b>#{Livetext::VERSION.to_s}", 

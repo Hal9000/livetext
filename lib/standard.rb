@@ -42,10 +42,10 @@ module Livetext::Standard
     funcname = @_args[0]
     _error! "Illegal name '#{funcname}'" if _disallowed?(funcname)
     func_def = <<-EOS
-      def #{funcname}(*args)
+      def #{funcname}(param)
         #{_body_text(true)}
       end
-    EOS
+EOS
     Livetext::Functions.class_eval func_def
   end
 
@@ -161,8 +161,7 @@ module Livetext::Standard
       val = val[1..-2] if val[0] == ?" && val[-1] == ?"
       val = val[1..-2] if val[0] == ?' && val[-1] == ?'
       val = FormatLine.var_func_parse(val)
-      Livetext::Vars[var.to_sym] = val
-      Livetext::Vars[var] = val         # FIXME
+      @parent._setvar(var, val)
     end
     _optional_blank_line
   end
@@ -186,8 +185,26 @@ module Livetext::Standard
     #    end
     #    s2 << line
     #  end
-    Livetext::Vars[var.to_sym] = s2
-    Livetext::Vars[var] = s2.chomp      # FIXME?
+    @parent._setvar(var, s2.chomp)
+    _optional_blank_line
+  end
+
+  def _seek(file)
+	  if File.exist?(file)
+		  return file
+		else
+		  _seek("../#{file}")
+		end
+  rescue
+	  return nil
+  end
+	
+  def seek
+    # like include, but search upward as needed
+    file = @_args.first
+		file = _seek(file)
+    _error!(file, "No such include file '#{file}'") unless file
+    @parent.process_file(file)
     _optional_blank_line
   end
 
@@ -195,6 +212,17 @@ module Livetext::Standard
     file = @_args.first
     _check_existence(file, "No such include file '#{file}'")
     @parent.process_file(file)
+    _optional_blank_line
+  end
+
+  def inherit
+    file = @_args.first
+    upper = "../#{file}"
+    good = (File.exist?(upper) || File.exist?(file))
+    _error!("File #{file} not found (local or parent)") unless good
+
+    @parent.process_file(upper) if File.exist?(upper)
+    @parent.process_file(file)  if File.exist?(file)
     _optional_blank_line
   end
 
@@ -212,7 +240,14 @@ module Livetext::Standard
     file = "#{Plugins}/" + name.downcase + ".rb"
     return if @_mixins.include?(name)
     file = "./#{name}.rb" unless File.exist?(file)
-    _check_existence(file, "No such mixin '#{name}'")
+    if File.exist?(file)
+      # Just keep going...
+    else
+      if File.expand_path(".") != "/"
+        Dir.chdir("..") { mixin }
+        return
+      end
+    end
 
     @_mixins << name
     meths = grab_file(file)

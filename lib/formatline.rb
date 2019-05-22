@@ -31,27 +31,25 @@ class FormatLine
   attr_reader :out
   attr_reader :tokenlist
 
-  def initialize(line, context=nil)
-    context ||= binding
-    @context = context
+  def initialize(line)
     @line = line
     @i = -1
     @token = Null.dup
     @tokenlist = []
   end
 
-  def self.parse!(line, context = nil)
+  def self.parse!(line)
     return nil if line.nil?
-    x = self.new(line.chomp, context)
+    x = self.new(line.chomp)
     t = x.tokenize(line)
-    x.evaluate    # (context)
+    x.evaluate
   end
 
   def tokenize(line)
     grab
     loop do 
       case curr
-        when Escape; go; add curr; grab
+        when Escape; grab; add curr; grab
         when "$"
           dollar
         when "*", "_", "`", "~"
@@ -71,14 +69,13 @@ class FormatLine
     @tokenlist
   end
 
-  def self.var_func_parse(str, context = nil)
+  def self.var_func_parse(str)
     return nil if str.nil?
-    x = self.new(str.chomp, context)
-#   t = x.tokenize(line)
+    x = self.new(str.chomp)
     x.grab
     loop do 
       case x.curr
-        when Escape; x.go; x.add x.curr; x.grab
+        when Escape; x.grab; x.add x.curr; x.grab
         when "$"
           x.dollar
         when LF, nil
@@ -89,9 +86,7 @@ class FormatLine
       x.grab
     end
     x.add_token(:str)
-    # built tokenlist
-#  x.tokenlist.each {|pair| puts "  #{pair.inspect}" }
-    x.evaluate    # (context)
+    x.evaluate
   end
 
   def embed(sym, str)
@@ -327,9 +322,7 @@ class FormatLine
         self.send("func_" + name.to_s, param)
       else
         fobj = ::Livetext::Functions.new
-        ::Livetext::Functions.param = param        # is this 
-        ::Livetext::Functions.context = @context   #   screwed up???
-        fobj.send(name)
+        fobj.send(name, param)
       end
     result
   end

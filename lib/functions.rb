@@ -4,40 +4,35 @@ class Livetext::Functions    # Functions will go here... user-def AND pre-def??
   Formats = ::Livetext::Standard::SimpleFormats
 
   @param = nil
-  @context = nil
 
   class << self
-    attr_accessor :param, :context
+    attr_accessor :param   # kill this?
   end
 
-  def date
+  def date(param=nil)
     Time.now.strftime("%F")
   end
 
-  def time
+  def time(param=nil)
     Time.now.strftime("%T")
   end
 
-  def link
-    param = self.class.param
+  def link(param=nil)
     text, url = param.split("|", 2)  # reverse these?
     "<a href='#{url}'>#{text}</a>"
   end
 
-  def br
-    n = self.class.param 
-    n = "1" if n.empty?
+  def br(n="1")
     n = n.to_i
     "<br>"*n
   end
 
-  def yt
+  def yt(param)
     param = self.class.param
     "https://www.youtube.com/watch?v=#{param}"
   end
 
-  def simple_format(*args)
-    param = self.class.param
+  def simple_format(param=nil, *args)
     param ||= "NO PARAMETER"
     pairs = Formats.values_at(*args)
     str = param.dup
@@ -47,20 +42,20 @@ class Livetext::Functions    # Functions will go here... user-def AND pre-def??
     str
   end
 
-  def b;    simple_format(:b); end
-  def i;    simple_format(:i); end
-  def t;    simple_format(:t); end
-  def s;    simple_format(:s); end
-  def bi;   simple_format(:b, :i); end
-  def bt;   simple_format(:b, :t); end
-  def bs;   simple_format(:b, :s); end
-  def it;   simple_format(:i, :t); end
-  def is;   simple_format(:i, :s); end
-  def ts;   simple_format(:t, :s); end
-  def bit;  simple_format(:b, :i, :t); end
-  def bis;  simple_format(:b, :i, :s); end
-  def bts;  simple_format(:b, :t, :s); end
-  def its;  simple_format(:i, :t, :s); end
-  def bits; simple_format(:b, :i, :t, :s); end
+  def b(param=nil);    simple_format(param, :b); end
+  def i(param=nil);    simple_format(param, :i); end
+  def t(param=nil);    simple_format(param, :t); end
+  def s(param=nil);    simple_format(param, :s); end
+  def bi(param=nil);   simple_format(param, :b, :i); end
+  def bt(param=nil);   simple_format(param, :b, :t); end
+  def bs(param=nil);   simple_format(param, :b, :s); end
+  def it(param=nil);   simple_format(param, :i, :t); end
+  def is(param=nil);   simple_format(param, :i, :s); end
+  def ts(param=nil);   simple_format(param, :t, :s); end
+  def bit(param=nil);  simple_format(param, :b, :i, :t); end
+  def bis(param=nil);  simple_format(param, :b, :i, :s); end
+  def bts(param=nil);  simple_format(param, :b, :t, :s); end
+  def its(param=nil);  simple_format(param, :i, :t, :s); end
+  def bits(param=nil); simple_format(param, :b, :i, :t, :s); end
 
 end

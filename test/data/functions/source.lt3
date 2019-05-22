@@ -14,8 +14,7 @@ Functions can take a parameter in brackets
 (which it can parse itself as needed):
 
 .func mean
-  list = self.class.param
-  list = list.split(",").map(&:to_f)
+  list = param.split(",").map(&:to_f)
   sum = list.inject(0, :+)
   avg = sum / list.size.to_f
   avg.to_s

@@ -79,7 +79,7 @@ loop do
       lib = ARGV.shift
       system("cp #{lib} #{Livetext::Path}/../plugin/")
     when Object
-      x.process_file(arg, @backtrace)
+      x.process_file(arg)  # , @backtrace)
   end
 end
 
