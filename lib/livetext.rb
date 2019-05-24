@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.84"
+  VERSION = "0.8.85"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
@@ -133,8 +133,11 @@ class Livetext
 
   def process_file(fname)
     _setfile(fname)
-    raise "No such file '#{fname}' to process" unless File.exist?(fname)
-    text = File.readlines(fname)
+    up = Dir.pwd
+    Dir.chdir(File.dirname(fname))
+    base = File.basename(fname)
+    raise "No such file '#{fname}' to process" unless File.exist?(base)
+    text = File.readlines(base)
     enum = text.each
     @backtrace = false
     @main.source(enum, fname, 0)
@@ -144,6 +147,7 @@ class Livetext
       process_line(line)
     end
     val = @main.finalize if @main.respond_to? :finalize
+    Dir.chdir(up)
     val
   end
 

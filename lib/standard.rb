@@ -193,8 +193,9 @@ EOS
 	  if File.exist?(file)
 		  return file
 		else
-		  _seek("../#{file}")
+		  Dir.chdir("..") { _seek(file) unless Dir.pwd == "/" }
 		end
+	  return nil
   rescue
 	  return nil
   end
@@ -210,6 +211,7 @@ EOS
 
   def _include
     file = @_args.first
+
     _check_existence(file, "No such include file '#{file}'")
     @parent.process_file(file)
     _optional_blank_line
@@ -226,14 +228,14 @@ EOS
     _optional_blank_line
   end
 
-  def include!    # FIXME huh?
-    file = @_args.first
-    return unless File.exist?(file)
-
-    lines = @parent.process_file(file)
-    File.delete(file)
-    _optional_blank_line
-  end
+#   def include!    # FIXME huh?
+#     file = @_args.first
+#     return unless File.exist?(file)
+# 
+#     lines = @parent.process_file(file)
+# #?    File.delete(file)
+#     _optional_blank_line
+#   end
 
   def mixin
     name = @_args.first   # Expect a module name

@@ -328,7 +328,7 @@ class FormatLine
   end
 
   def varsub(name)
-    result = Livetext::Vars[name]
+    result = Livetext::Vars[name] || "[#{name} is undefined]"
     result
   end
 
