@@ -193,9 +193,10 @@ EOS
 	  if File.exist?(file)
 		  return file
 		else
-		  Dir.chdir("..") { _seek(file) unless Dir.pwd == "/" }
+      value = nil
+		  value = _seek("../#{file}") unless Dir.pwd == "/"
 		end
-	  return nil
+	  return value
   rescue
 	  return nil
   end
@@ -254,7 +255,7 @@ EOS
     @_mixins << name
     meths = grab_file(file)
     modname = name.gsub("/","_").capitalize
-    string = "module ::#{modname}\n#{meths}\nend"
+    string = "module ::#{modname}; #{meths}\nend"
 # puts "==========="
 # string.each_line.with_index {|line, i| puts "#{'%3d' % (i+1)} : #{line}" }
 # puts "==========="
