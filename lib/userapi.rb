@@ -4,6 +4,12 @@ require 'formatline'
 
 module Livetext::UserAPI
 
+  def setvar(var, val)
+    str, sym = var.to_s, var.to_sym
+    Livetext::Vars[str] = val
+    Livetext::Vars[sym] = val
+  end
+
   def _check_existence(file, msg)
     _error! msg unless File.exist?(file)
   end

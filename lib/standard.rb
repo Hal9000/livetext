@@ -249,6 +249,8 @@ EOS
       if File.expand_path(".") != "/"
         Dir.chdir("..") { mixin }
         return
+      else
+        raise "No such mixin '#{name}"
       end
     end
 
