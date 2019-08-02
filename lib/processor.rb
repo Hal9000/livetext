@@ -36,7 +36,7 @@ class Livetext
 #     puts "-- body = "
       puts @parent.body
       STDERR.puts "Error: #{err} (at #{where[1]} line #{where[2]})"
-      STDERR.puts err.backtrace if err.respond_to?(:backtrace) && trace
+      STDERR.puts err.backtrace if err.respond_to?(:backtrace) # && trace
       exit if abort
     end
 

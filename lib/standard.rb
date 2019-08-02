@@ -73,8 +73,10 @@ EOS
   end
 
   def quit
+    puts @body
+    @body = ""
     @output.close
-    exit
+#   exit!
   end
 
   def outdir
@@ -212,9 +214,11 @@ EOS
 
   def _include
     file = @_args.first
+STDERR.puts "In #{Dir.pwd} - about to process #{file}"
 
     _check_existence(file, "No such include file '#{file}'")
     @parent.process_file(file)
+STDERR.puts "...finished"
     _optional_blank_line
   end
 
@@ -250,7 +254,9 @@ EOS
         Dir.chdir("..") { mixin }
         return
       else
-        raise "No such mixin '#{name}"
+        STDERR.puts "No such mixin '#{name}"
+        puts @body
+        exit!
       end
     end
 

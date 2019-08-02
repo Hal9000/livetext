@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.87"
+  VERSION = "0.8.88"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
@@ -127,20 +127,21 @@ class Livetext
     puts "process_text: err = #{err}"
 #   puts err.backtrace.join("\n")
 puts @body
+@body = ""
     return @body
   end
 
 ## FIXME process_file[!] should call process[_text]
 
-  def process_file(fname)
+  def process_file(fname, btrace=false)
     _setfile(fname)
 #   up = Dir.pwd
 #   Dir.chdir(File.dirname(fname))
-    base = File.basename(fname)
-    raise "No such file '#{fname}' to process" unless File.exist?(base)
-    text = File.readlines(base)
+#   base = File.basename(fname)
+#   raise "No such file '#{fname}' to process" unless File.exist?(base)
+    text = File.readlines(fname)
     enum = text.each
-    @backtrace = false
+    @backtrace = btrace
     @main.source(enum, fname, 0)
     loop do 
       line = @main.nextline
@@ -153,6 +154,7 @@ return @body
     val
   rescue
     puts @body
+    @body = ""
   end
 
   def process_file!(fname, backtrace=false)
@@ -206,6 +208,7 @@ return @body
   rescue => err
     @main._error!(err)
 puts @body
+@body = ""
     return @body
   end
 

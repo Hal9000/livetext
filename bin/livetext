@@ -8,12 +8,6 @@ def handle_lt3(src)
   abort "Unknown file extension" unless src =~ /.lt3$/
 end
 
-# Main
-
-x = Livetext.new
-
-@backtrace = false
-
 def usage
   puts <<-EOF
   Usage: 
@@ -52,6 +46,12 @@ def usage
   exit
 end
 
+# Main
+
+x = Livetext.new
+
+@backtrace = false
+
 usage if ARGV.empty?
 
 loop do
@@ -79,7 +79,7 @@ loop do
       lib = ARGV.shift
       system("cp #{lib} #{Livetext::Path}/../plugin/")
     when Object
-      x.process_file(arg)  # , @backtrace)
+      x.process_file(arg, true)  # , @backtrace)
   end
 end
 

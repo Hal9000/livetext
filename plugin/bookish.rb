@@ -223,6 +223,7 @@ def toc!
   @toc.close
 rescue => err
    puts @body
+   @body = ""
   _errout "Exception: #{err.inspect}"
 end
 
