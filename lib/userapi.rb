@@ -136,7 +136,7 @@ module Livetext::UserAPI
 
   def _out(str = "")
     return if str.nil?
-STDERR.puts "STR = #{str.inspect}"
+# STDERR.puts "STR = #{str.inspect}"
     @parent.body << str 
     @parent.body << "\n" unless str.end_with?("\n")
   end

@@ -329,7 +329,7 @@ on that new custom object. I plan to implement this later.
 
 This list is not prioritized yet.
 
-.nlist
+.list
 ~[Add versioning information 
 ~[Clean up code structure
 Add RDoc
@@ -344,7 +344,7 @@ Document API fully
 Add `_raw_args and let `_args honor quotes
 Support quotes in `.set values
 Support "namespaced" variables  (`[.set code.font="whatever"])
-~[Support functions (``$$func) 
+~[Support functions (``\$\$func)]
 Support function namespacing
 Create predefined variables (e.g., `[$_source_file], `$[_line])
 Create predefined functions (e.g., `[$$_date])
@@ -380,4 +380,5 @@ Feature to "break" to EOF?
 Make any/all delimiters configurable
 HTML helper? (in their own library?)
 .end
+
 

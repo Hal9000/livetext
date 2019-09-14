@@ -171,6 +171,14 @@ EOS
     _optional_blank_line
   end
 
+  def variables
+    _body.each do |line|
+      var, val = line.split(" ", 2)
+      val = FormatLine.var_func_parse(val)
+      @parent._setvar(var, val)
+    end
+  end
+
   def heredoc
     var = @_args[0]
     str = _body_text
@@ -223,6 +231,11 @@ STDERR.puts "In #{Dir.pwd}\n     - about to process #{file}\n"
     @parent.process_file(file)
 STDERR.puts "    ...finished"
     _optional_blank_line
+  end
+
+  def _include_file(file)
+    @_args = [file]
+    _include
   end
 
   def inherit

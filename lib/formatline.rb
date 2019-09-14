@@ -49,7 +49,8 @@ class FormatLine
     grab
     loop do 
       case curr
-        when Escape; grab; add curr; grab
+        when Escape; grab; add curr; grab; add curr
+puts "Found #{curr.inspect}"
         when "$"
           dollar
         when "*", "_", "`", "~"

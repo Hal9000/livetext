@@ -1,7 +1,7 @@
-   .variables (for config) or .set with a text body?
-   escape bug  \.this
-   better way to do _include
-   dotted variables
+ x .variables (for config) or .set with a text body?
+ x escape bug  \.this
+ x better way to do _include
+   dotted variables (underscore for now)
    open/close
    optional extension on .include, etc.?  permit omission of .lt3
    permit # comments on end of line?

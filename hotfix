@@ -3,7 +3,7 @@
 lib = ARGV.first || `livetext -p`.chomp
 puts lib.inspect
 
-Dir.chdir(lib)
+# Dir.chdir(lib)
 
 system("cp lib/* #{lib}/")
 system("cp plugin/* #{lib}/../plugin/")
