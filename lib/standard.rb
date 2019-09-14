@@ -79,49 +79,52 @@ EOS
 #   exit!
   end
 
-  def outdir
-    @_outdir = @_args.first
-    _optional_blank_line
-  end
-
-  def outdir!  # FIXME ?
-    @_outdir = @_args.first
-    raise "No output directory specified" if @_outdir.nil?
-    raise "No output directory specified" if @_outdir.empty?
-    system("rm -f #@_outdir/*.html")
-    _optional_blank_line
-  end
-
-  def _output(name)
-    @_outdir ||= "."  # FIXME
-    @output.close unless @output == STDOUT
-    @output = File.open(@_outdir + "/" + name, "w")
-    @output.puts "<meta charset='UTF-8'>\n\n"
-  end
-
-  def _append(name)
-    @_outdir ||= "."  # FIXME
-    @output.close unless @output == STDOUT
-    @output = File.open(@_outdir + "/" + name, "a")
-    @output.puts "<meta charset='UTF-8'>\n\n"
-  end
-
-  def output
-    name = @_args.first
-    _debug "Redirecting output to: #{name}"
-    _output(name)
-  end
-
-  def append
-    file = @_args[0]
-    _append(file)
-  end
-
-  def next_output
-    tag, num = @_args
-    _next_output(tag, num)
-    _optional_blank_line
-  end
+#   def outdir
+#     @_outdir = @_args.first
+#     _optional_blank_line
+#   end
+# 
+#   def outdir!  # FIXME ?
+#     @_outdir = @_args.first
+#     raise "No output directory specified" if @_outdir.nil?
+#     raise "No output directory specified" if @_outdir.empty?
+#     system("rm -f #@_outdir/*.html")
+#     _optional_blank_line
+#   end
+# 
+#   def _output(name)
+#     @_outdir ||= "."  # FIXME
+#     @output.puts @body
+#     @body = ""
+#     @output.close unless @output == STDOUT
+#     @output = File.open(@_outdir + "/" + name, "w")
+#     @output.puts "<meta charset='UTF-8'>\n\n"
+#   end
+# 
+#   def _append(name)
+#     @_outdir ||= "."  # FIXME
+#     @output.close unless @output == STDOUT
+#     @output = File.open(@_outdir + "/" + name, "a")
+#     @output.puts "<meta charset='UTF-8'>\n\n"
+#   end
+# 
+#   def output
+#     name = @_args.first
+#     _debug "Redirecting output to: #{name}"
+#     _output(name)
+#   end
+# 
+#   def append
+#     file = @_args[0]
+#     _append(file)
+#   end
+# 
+#   def next_output
+#     tag, num = @_args
+#     _next_output(tag, num)
+#     _optional_blank_line
+#   end
+# 
 
   def cleanup
     @_args.each do |item| 
@@ -133,12 +136,12 @@ EOS
     end
   end
 
-  def _next_output(tag = "sec", num = nil)
-    @_file_num = num ? num : @_file_num + 1
-    @_file_num = @_file_num.to_i
-    name = "#{'%03d' % @_file_num}-#{tag}.html"
-    _output(name)
-  end
+#   def _next_output(tag = "sec", num = nil)
+#     @_file_num = num ? num : @_file_num + 1
+#     @_file_num = @_file_num.to_i
+#     name = "#{'%03d' % @_file_num}-#{tag}.html"
+#     _output(name)
+#   end
 
   def _def
     name = @_args[0]
@@ -214,11 +217,11 @@ EOS
 
   def _include
     file = @_args.first
-STDERR.puts "In #{Dir.pwd} - about to process #{file}"
+STDERR.puts "In #{Dir.pwd}\n     - about to process #{file}\n"
 
     _check_existence(file, "No such include file '#{file}'")
     @parent.process_file(file)
-STDERR.puts "...finished"
+STDERR.puts "    ...finished"
     _optional_blank_line
   end
 

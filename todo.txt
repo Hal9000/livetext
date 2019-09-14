@@ -1,8 +1,18 @@
+   .variables (for config) or .set with a text body?
+   escape bug  \.this
+   better way to do _include
+   dotted variables
+   open/close
+   optional extension on .include, etc.?  permit omission of .lt3
+   permit # comments on end of line?
+   $$incr ?
+   livetext -m
+   mixin as module
+   .include dir/    # refs dir/main.lt3 ?
+
    commas with variable values
-   .set with a text body?
 x  Let .mixin search upward in tree?
    change from .lt3 to .live
-   optional extension on .include, etc.?
    .include? which ignores missing files?
    too many variations - transform, process, etc.
    automated output file
@@ -11,7 +21,6 @@ x  Let .mixin search upward in tree?
    Better parameter handling for custom dot commands
 x  Better parameter handling for custom functions
    System variables are capitalized?
-   Make mixins actual modules?
    Change predefined function names?? e.g. $$date becomes $$_date 
    Debugging command to dump variables
    Variable (or function) to denote file being processed

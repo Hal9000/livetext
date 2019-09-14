@@ -260,7 +260,7 @@ end
 
 def quote
   _out "<blockquote>"
-  _out _body
+  _body {|line| _out line }
   _out "</blockquote>"
 end
 
