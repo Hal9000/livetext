@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.89"
+  VERSION = "0.8.90"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
@@ -135,10 +135,6 @@ puts @body
 
   def process_file(fname, btrace=false)
     _setfile(fname)
-#   up = Dir.pwd
-#   Dir.chdir(File.dirname(fname))
-#   base = File.basename(fname)
-#   raise "No such file '#{fname}' to process" unless File.exist?(base)
     text = File.readlines(fname)
     enum = text.each
     @backtrace = btrace
@@ -149,7 +145,6 @@ puts @body
       process_line(line)
     end
     val = @main.finalize if @main.respond_to? :finalize
-#   Dir.chdir(up)
 return @body
     val
   rescue

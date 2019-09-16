@@ -173,6 +173,7 @@ EOS
 
   def variables
     _body.each do |line|
+      next if line.strip.empty?
       var, val = line.split(" ", 2)
       val = FormatLine.var_func_parse(val)
       @parent._setvar(var, val)
@@ -223,13 +224,17 @@ EOS
     _optional_blank_line
   end
 
+  def in_out  # FIXME dumb name!
+    file, dest = *@_args
+    _check_existence(file, "No such include file '#{file}'")
+    @parent.process_file(file, dest)
+    _optional_blank_line
+  end
+
   def _include
     file = @_args.first
-STDERR.puts "In #{Dir.pwd}\n     - about to process #{file}\n"
-
     _check_existence(file, "No such include file '#{file}'")
     @parent.process_file(file)
-STDERR.puts "    ...finished"
     _optional_blank_line
   end
 

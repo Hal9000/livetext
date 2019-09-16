@@ -62,6 +62,7 @@ module Livetext::UserAPI
     @save_location = @sources.last
     loop do
       @line = nextline
+      break if @line.nil?
       break if @line.chomp.strip == tag
       lines << @line
     end
@@ -134,11 +135,14 @@ module Livetext::UserAPI
     _out line
   end
 
-  def _out(str = "")
+  def _out(str = "", file = nil)
     return if str.nil?
-# STDERR.puts "STR = #{str.inspect}"
-    @parent.body << str 
-    @parent.body << "\n" unless str.end_with?("\n")
+    if file.nil?   # FIXME  do this elsewhere?
+      @parent.body << str 
+      @parent.body << "\n" unless str.end_with?("\n")
+    else
+      file.puts str
+    end
   end
 
   def _out!(str = "")
