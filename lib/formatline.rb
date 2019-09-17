@@ -15,6 +15,7 @@ class FormatLine
   Blank   = [" ", nil, "\n"]
   Punc    = [")", ",", ".", " ", "\n"]
   NoAlpha = /[^A-Za-z0-9_]/
+  NoAlphaDot = /[^.A-Za-z0-9_]/
   Param   = ["]", "\n", nil]
   Escape  = "\\"   # not an ESC char
 
@@ -207,6 +208,18 @@ class FormatLine
     str
   end
 
+  def grab_alpha_dot
+    str = Null.dup
+    grab
+    loop do
+      break if curr.nil?
+      str << curr
+      break if terminate?(NoAlphaDot, next!)
+      grab
+    end
+    str
+  end
+
   def dollar
     grab
     case curr
@@ -217,7 +230,7 @@ class FormatLine
 #     when "."; dollar_dot
       when /[A-Za-z]/
        add_token :str
-        var = curr + grab_alpha
+        var = curr + grab_alpha_dot
         add_token(:var, var)
     else 
       add "$" + curr

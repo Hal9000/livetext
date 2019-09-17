@@ -161,6 +161,7 @@ EOS
     # FIXME *Must* allow for vars/functions
     assigns.each do |a| 
       var, val = a.split("=")
+STDERR.puts "-- var=val  #{[var, val].inspect}"
       var.strip!
       val.strip!
       val = val[1..-2] if val[0] == ?" && val[-1] == ?"
