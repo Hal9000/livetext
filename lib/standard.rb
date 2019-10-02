@@ -156,6 +156,7 @@ EOS
   end
 
   def set
+    # FIXME bug -- .set var="RIP, Hope Gallery"
     assigns = @_data.chomp.split(/, */)
     # Do a better way?
     # FIXME *Must* allow for vars/functions
@@ -205,11 +206,21 @@ STDERR.puts "-- var=val  #{[var, val].inspect}"
   end
 
   def _seek(file)
-	  if File.exist?(file)
-		  return file
-		else
-      value = nil
-		  value = _seek("../#{file}") unless Dir.pwd == "/"
+    require 'pathname'   # ;)
+    value = nil
+    if File.exist?(file)
+      return file
+    else
+      count = 1
+      loop do
+        front = "../" * count
+        count += 1
+        here = Pathname.new(front).expand_path.dirname
+        break if here == "/"
+        path = front + file
+        value = path if File.exist?(path)
+        break if value
+      end
 		end
 	  return value
   rescue
@@ -220,6 +231,7 @@ STDERR.puts "-- var=val  #{[var, val].inspect}"
     # like include, but search upward as needed
     file = @_args.first
 		file = _seek(file)
+STDERR.puts "---- _seek found: #{file.inspect}"
     _error!(file, "No such include file '#{file}'") unless file
     @parent.process_file(file)
     _optional_blank_line
@@ -263,6 +275,11 @@ STDERR.puts "-- var=val  #{[var, val].inspect}"
 # #?    File.delete(file)
 #     _optional_blank_line
 #   end
+
+  def _mixin(name)
+    @_args = [name]
+    mixin
+  end
 
   def mixin
     name = @_args.first   # Expect a module name

@@ -70,6 +70,11 @@ loop do
       puts Livetext::Path
     when "-b", "--backtrace"
       @backtrace = true
+    when "-m", "--mixin"
+      mod = ARGV.shift
+STDERR.puts "Got mod: #{mod}"
+      x.mixin(ARGV.shift)
+      next
     when "-s", "--stdin"
       src = STDIN.read
       x.process(src)
@@ -78,6 +83,8 @@ loop do
     when "-i", "--install"
       lib = ARGV.shift
       system("cp #{lib} #{Livetext::Path}/../plugin/")
+#   when /-.*/
+#     raise "Unknown argument '#{arg}'"
     when Object
       x.process_file(arg, true)  # , @backtrace)
   end

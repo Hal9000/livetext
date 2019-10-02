@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.92"
+  VERSION = "0.8.93"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
@@ -42,6 +42,10 @@ class Livetext
     @body = ""
     @main = Processor.new(self, output)
     @indentation = [0]
+  end
+
+  def mixin(mod)
+    @main._mixin(mod)
   end
 
   def _setvar(var, val)

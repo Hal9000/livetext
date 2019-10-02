@@ -25,6 +25,7 @@ class Livetext
       @output = ::Livetext.output = (output || File.open("/dev/null", "w"))
       @sources = []
       @indentation = @parent.indentation
+      @_mixins = []
     end
 
     def output=(io)
