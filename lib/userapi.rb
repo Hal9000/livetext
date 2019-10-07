@@ -59,7 +59,7 @@ module Livetext::UserAPI
 
   def _raw_body(tag = "__EOF__")
     lines = []
-    @save_location = @sources.last
+#   @save_location = @sources.last
     loop do
       @line = nextline
       break if @line.nil?
@@ -77,7 +77,7 @@ module Livetext::UserAPI
 
   def _body(raw=false)
     lines = []
-    @save_location = @sources.last
+#   @save_location = @sources.last
     end_found = false
     loop do
       @line = nextline

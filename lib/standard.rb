@@ -162,7 +162,7 @@ EOS
     # FIXME *Must* allow for vars/functions
     assigns.each do |a| 
       var, val = a.split("=")
-STDERR.puts "-- var=val  #{[var, val].inspect}"
+# STDERR.puts "-- var=val  #{[var, val].inspect}"
       var.strip!
       val.strip!
       val = val[1..-2] if val[0] == ?" && val[-1] == ?"
@@ -171,6 +171,83 @@ STDERR.puts "-- var=val  #{[var, val].inspect}"
       @parent._setvar(var, val)
     end
     _optional_blank_line
+  end
+
+  def _assign_get_var(c, e)
+    name = c
+    loop do 
+      c = e.peek
+      case c
+        when /[a-zA-Z_\.0-9]/
+          name << e.next
+          next
+        when / =/ 
+          return name
+      else
+        raise "Error: did not expect #{c.inspect} in variable name"
+      end
+    end
+    raise "Error: loop ended parsing variable name"
+  end
+
+  def _assign_skip_equal(e)
+    loop { break if e.peek != " "; e.next }
+    if e.peek == "="
+      e.next  # skip spaces too
+      loop { break if e.peek != " "; e.next }
+    else
+      raise "Error: expect equal sign"
+    end
+  end
+
+  def _quoted_value(quote, e)
+    value = ""
+    loop do 
+      c = e.next
+      break if c == quote
+      value << c
+    end
+    value
+  end
+
+  def _unquoted_value(e)
+    value = ""
+    loop do 
+      c = e.next
+      break if c == " " || c == ","
+      value << c
+    end
+    value
+  end
+
+  def _assign_get_value
+    c = e.peek
+    value = ""
+    case c
+      when ?", ?'
+        value = _quoted_value(c, e)
+    else
+      value = _unquoted_value(e)
+    end
+    c = e.peek
+    value
+  end
+
+  def set_NEW
+    line = _data.dup  # dup needed?
+    e = line.each_char  # enum
+    loop do 
+      c = e.next
+      case c
+        when /a-z/i
+          _assign_get_var(c, e)
+          _assign_skip_equal
+        when " "
+          next
+      else
+        raise "set: Huh? line = #{line}"
+      end
+    end
   end
 
   def variables
@@ -231,7 +308,7 @@ STDERR.puts "-- var=val  #{[var, val].inspect}"
     # like include, but search upward as needed
     file = @_args.first
 		file = _seek(file)
-STDERR.puts "---- _seek found: #{file.inspect}"
+# STDERR.puts "---- _seek found: #{file.inspect}"
     _error!(file, "No such include file '#{file}'") unless file
     @parent.process_file(file)
     _optional_blank_line
@@ -303,9 +380,7 @@ STDERR.puts "---- _seek found: #{file.inspect}"
     meths = grab_file(file)
     modname = name.gsub("/","_").capitalize
     string = "module ::#{modname}; #{meths}\nend"
-# puts "==========="
-# string.each_line.with_index {|line, i| puts "#{'%3d' % (i+1)} : #{line}" }
-# puts "==========="
+
     eval(string)
     newmod = Object.const_get("::" + modname)
     self.extend(newmod)

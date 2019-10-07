@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.93"
+  VERSION = "0.8.94"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
@@ -195,11 +195,14 @@ return @body
 
   def handle_dotcmd(line, indent = 0)
     indent = @indentation.last # top of stack
-    name = _get_name(line)
+    name = _get_name(line).to_sym
     result = nil
     if @main.respond_to?(name)
       result = @main.send(name)
     else
+      TTY.puts "version = #{Livetext::VERSION}"
+      TTY.puts "#{(@main.methods - Object.methods).sort.inspect}"
+      TTY.puts name.inspect
       @main._error! "Name '#{name}' is unknown"
       return
     end
