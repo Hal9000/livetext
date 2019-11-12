@@ -88,8 +88,11 @@ module Livetext::UserAPI
         break 
       end
       next if _comment?(@line)
+flag = (@line.include?("og:title"))
       # FIXME Will cause problem with $. ?
+# STDERR.puts "lt3: _body @line = #{@line.inspect}" if flag
       @line = _format(@line) unless raw
+# STDERR.puts "           @line = #{@line.inspect}" if flag
       lines << @line 
     end
     raise unless end_found
@@ -100,9 +103,10 @@ module Livetext::UserAPI
       lines
     end
   rescue => err
-#   p err.inspect
-#   puts err.backtrace
-    _error!("Expecting .end, found end of file")
+    str = "Fake error? 'Expecting .end, found end of file'\n" 
+    str << err.inspect + "\n"
+    str << err.backtrace.map {|x| "  " + x }.join("\n")
+    _error!(str)
   end
 
   def _body_text(raw=false)

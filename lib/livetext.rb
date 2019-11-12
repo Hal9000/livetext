@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.94"
+  VERSION = "0.8.95"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
@@ -130,8 +130,8 @@ class Livetext
   rescue => err
     puts "process_text: err = #{err}"
 #   puts err.backtrace.join("\n")
-puts @body
-@body = ""
+  puts @body
+  @body = ""
     return @body
   end
 
@@ -149,10 +149,10 @@ puts @body
       process_line(line)
     end
     val = @main.finalize if @main.respond_to? :finalize
-return @body
-    val
-  rescue
-    puts @body
+    @body
+  rescue => err
+    STDERR.puts "ERROR #{err} in process_file"
+    err.backtrace.each {|x| STDERR.puts "   " + x }
     @body = ""
   end
 
@@ -200,17 +200,14 @@ return @body
     if @main.respond_to?(name)
       result = @main.send(name)
     else
-      TTY.puts "version = #{Livetext::VERSION}"
-      TTY.puts "#{(@main.methods - Object.methods).sort.inspect}"
-      TTY.puts name.inspect
-      @main._error! "Name '#{name}' is unknown"
+      @main._error! "Name '#{name}' is unknown; version = #{Livetext::VERSION}"
       return
     end
     result
   rescue => err
     @main._error!(err)
-puts @body
-@body = ""
+  puts @body
+  @body = ""
     return @body
   end
 

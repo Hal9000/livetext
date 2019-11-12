@@ -17,6 +17,16 @@ class Livetext::Functions    # Functions will go here... user-def AND pre-def??
     Time.now.strftime("%T")
   end
 
+  def pwd(param=nil)
+    ::Dir.pwd
+  end
+
+  def rand(param=nil)
+# STDERR.puts "param = #{param.inspect}"
+    n1, n2 = param.split.map(&:to_i)
+    ::Kernel.rand(n1..n2).to_s
+  end
+
   def link(param=nil)
     text, url = param.split("|", 2)  # reverse these?
     "<a href='#{url}'>#{text}</a>"

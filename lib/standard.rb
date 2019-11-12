@@ -34,7 +34,7 @@ module Livetext::Standard
 
   def shell
     cmd = @_data
-    _errout("Running: #{cmd}")
+#   _errout("Running: #{cmd}")
     system(cmd)
   end
 
@@ -79,52 +79,6 @@ EOS
 #   exit!
   end
 
-#   def outdir
-#     @_outdir = @_args.first
-#     _optional_blank_line
-#   end
-# 
-#   def outdir!  # FIXME ?
-#     @_outdir = @_args.first
-#     raise "No output directory specified" if @_outdir.nil?
-#     raise "No output directory specified" if @_outdir.empty?
-#     system("rm -f #@_outdir/*.html")
-#     _optional_blank_line
-#   end
-# 
-#   def _output(name)
-#     @_outdir ||= "."  # FIXME
-#     @output.puts @body
-#     @body = ""
-#     @output.close unless @output == STDOUT
-#     @output = File.open(@_outdir + "/" + name, "w")
-#     @output.puts "<meta charset='UTF-8'>\n\n"
-#   end
-# 
-#   def _append(name)
-#     @_outdir ||= "."  # FIXME
-#     @output.close unless @output == STDOUT
-#     @output = File.open(@_outdir + "/" + name, "a")
-#     @output.puts "<meta charset='UTF-8'>\n\n"
-#   end
-# 
-#   def output
-#     name = @_args.first
-#     _debug "Redirecting output to: #{name}"
-#     _output(name)
-#   end
-# 
-#   def append
-#     file = @_args[0]
-#     _append(file)
-#   end
-# 
-#   def next_output
-#     tag, num = @_args
-#     _next_output(tag, num)
-#     _optional_blank_line
-#   end
-# 
 
   def cleanup
     @_args.each do |item| 
@@ -135,13 +89,6 @@ EOS
       end
     end
   end
-
-#   def _next_output(tag = "sec", num = nil)
-#     @_file_num = num ? num : @_file_num + 1
-#     @_file_num = @_file_num.to_i
-#     name = "#{'%03d' % @_file_num}-#{tag}.html"
-#     _output(name)
-#   end
 
   def _def
     name = @_args[0]
@@ -259,12 +206,17 @@ EOS
     end
   end
 
+  def reval
+    eval _data
+  end
+
   def heredoc
     var = @_args[0]
     str = _body_text
     s2 = ""
     str.each_line do |s|
-      s2 << s.chomp + "<br>"
+      str = FormatLine.var_func_parse(s.chomp)
+      s2 << str # + "<br>"
     end
     indent = @parent.indentation.last
     indented = " " * indent
@@ -278,6 +230,7 @@ EOS
     #    end
     #    s2 << line
     #  end
+# STDERR.puts "HERE: #{var} = #{s2.chomp.inspect}"
     @parent._setvar(var, s2.chomp)
     _optional_blank_line
   end
@@ -292,7 +245,7 @@ EOS
       loop do
         front = "../" * count
         count += 1
-        here = Pathname.new(front).expand_path.dirname
+        here = Pathname.new(front).expand_path.dirname.to_s
         break if here == "/"
         path = front + file
         value = path if File.exist?(path)
@@ -366,7 +319,7 @@ EOS
     if File.exist?(file)
       # Just keep going...
     else
-      if File.expand_path(".") != "/"
+      if File.expand_path(".").dirname != "/"
         Dir.chdir("..") { mixin }
         return
       else

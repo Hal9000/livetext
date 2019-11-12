@@ -108,6 +108,7 @@ class FormatLine
         when :str
           @out << val unless val == "\n"   # BUG
         when :var
+# STDERR.puts "=== lt: sym = #{sym} val = #{val}  sub = #{varsub(val).inspect} #{Livetext::Vars[sym].inspect}"
           @out << varsub(val)
         when :func 
           param = nil

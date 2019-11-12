@@ -6,12 +6,12 @@ SimpleFormats[:i] = %w[_ _]
 SimpleFormats[:t] = %w[` `]
 SimpleFormats[:s] = %w[<strike> </strike>]
 
-def h1; _out "# #{@_data}"; _optional_blank_line end       # atx style for now
-def h2; _out "## #{@_data}"; _optional_blank_line end
-def h3; _out "### #{@_data}"; _optional_blank_line end
-def h4; _out "#### #{@_data}"; _optional_blank_line end
-def h5; _out "##### #{@_data}"; _optional_blank_line end
-def h6; _out "###### #{@_data}"; _optional_blank_line end
+def h1; _out "# #{FormatLine.var_func_parse(@_data)}"; _optional_blank_line end       # atx style for now
+def h2; _out "## #{FormatLine.var_func_parse(@_data)}"; _optional_blank_line end
+def h3; _out "### #{FormatLine.var_func_parse(@_data)}"; _optional_blank_line end
+def h4; _out "#### #{FormatLine.var_func_parse(@_data)}"; _optional_blank_line end
+def h5; _out "##### #{FormatLine.var_func_parse(@_data)}"; _optional_blank_line end
+def h6; _out "###### #{FormatLine.var_func_parse(@_data)}"; _optional_blank_line end
 
 def title
   h1
