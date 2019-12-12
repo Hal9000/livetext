@@ -118,8 +118,11 @@ def sec
   @section = "#@chapter.#@sec"
 # _errout("section #@section")
   @toc << "#{_nbsp(3)}<b>#@section</b> #@_data<br>"
-# _next_output(_slug(@_data))
+  _next_output(_slug(@_data))
   _out "<h3>#@section #{@_data}</h3>\n"
+rescue => err
+  STDERR.puts "#{err}\n#{err.backtrace}"
+  exit
 end
 
 def subsec
@@ -127,7 +130,7 @@ def subsec
   @subsec = "#@chapter.#@sec.#@sec2"
   @toc << "#{_nbsp(6)}<b>#@subsec</b> #@_data<br>"
 # _errout("section #@subsec")
-# _next_output(_slug(@_data))
+  _next_output(_slug(@_data))
   _out "<h3>#@subsec #{@_data}</h3>\n"
 end
 
@@ -222,8 +225,8 @@ def toc!
   _debug "Closing TOC"
   @toc.close
 rescue => err
-   puts @body
-   @body = ""
+   puts @parent.body
+   @parent.body = ""
   _errout "Exception: #{err.inspect}"
 end
 
@@ -242,9 +245,8 @@ end
 
 def missing
   @toc << "#{_nbsp(8)}<font color=red>TBD: #@_data</font><br>"
-  _print "<br><font color=red><i>[Material missing"
-  _print ": #@_data" unless @_data.empty?
-  _out "]</i></font><br>\n "
+  stuff = @_data.empty? ? "" : ": #@_data"
+  _print "<br><font color=red><i>[Material missing#{stuff}]</i></font><br>\n "
 end
 
 def TBC
@@ -262,6 +264,9 @@ def quote
   _out "<blockquote>"
   _body {|line| _out line }
   _out "</blockquote>"
+rescue => err
+  STDERR.puts "#{err}\n#{err.backtrace}"
+  exit
 end
 
 def init_bookish

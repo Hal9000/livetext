@@ -325,6 +325,9 @@ class FormatLine
     end
     grab if param && curr == "]" # skip right bracket
     add str
+  rescue => err
+    STDERR.puts "ERR = #{err}\n#{err.backtrace}"
+    STDERR.puts "=== str = #{str.inspect}"
   end
 
 ############

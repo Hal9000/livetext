@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.95"
+  VERSION = "0.8.96"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
@@ -95,6 +95,11 @@ class Livetext
       break if line.nil?
       process_line(line)
     end
+  end
+
+  def xform_file(file)
+    self.process_file(file)
+    self.body
   end
 
   def transform(text)

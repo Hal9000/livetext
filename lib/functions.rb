@@ -29,7 +29,7 @@ class Livetext::Functions    # Functions will go here... user-def AND pre-def??
 
   def link(param=nil)
     text, url = param.split("|", 2)  # reverse these?
-    "<a href='#{url}'>#{text}</a>"
+    "<a style='text-decoration: none' href='#{url}'>#{text}</a>"
   end
 
   def br(n="1")

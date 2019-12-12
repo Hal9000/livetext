@@ -198,10 +198,12 @@ EOS
   end
 
   def variables
+    prefix = _args[0]
     _body.each do |line|
       next if line.strip.empty?
       var, val = line.split(" ", 2)
       val = FormatLine.var_func_parse(val)
+      var = prefix + "." + var if prefix
       @parent._setvar(var, val)
     end
   end
@@ -443,7 +445,7 @@ EOS
   def link
     url = _args.first
     text = _args[2..-1].join(" ")
-    _out "<a href='#{url}'>#{text}</a>"
+    _out "<a style='text-decoration: none' href='#{url}'>#{text}</a>"
   end
 
   def xtable   # Borrowed from bookish - FIXME

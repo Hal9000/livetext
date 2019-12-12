@@ -45,16 +45,10 @@ module Livetext::UserAPI
   end
 
   def _end?(str)
-    indent = ""
-#   n = @parent.indentation.last - 1
-#   n = 0 if n < 0  # Gahhh FIXM
-#   indent = " " * n
-#   indent << "$" unless indent.empty?
-    return false if str.nil?
-    cmd = indent + Livetext::Sigil + "end"
-    return false if str.index(cmd) != 0 
-    return false unless _trailing?(str[5])
-    return true
+    str = str.dup
+    str.gsub!(/^ */, "")
+    return true if str == ".end" || str == "$.end"
+    return false
   end
 
   def _raw_body(tag = "__EOF__")
@@ -83,19 +77,17 @@ module Livetext::UserAPI
       @line = nextline
       break if @line.nil?
       @line.chomp!
+# STDERR.puts "LINE = #{@line.inspect}"
       if _end?(@line)
         end_found = true
         break 
       end
       next if _comment?(@line)
-flag = (@line.include?("og:title"))
       # FIXME Will cause problem with $. ?
-# STDERR.puts "lt3: _body @line = #{@line.inspect}" if flag
       @line = _format(@line) unless raw
-# STDERR.puts "           @line = #{@line.inspect}" if flag
       lines << @line 
     end
-    raise unless end_found
+    raise "this stupid error again" unless end_found
     _optional_blank_line
     if block_given?
       lines.each {|line| yield line }   # FIXME what about $. ?
@@ -106,7 +98,9 @@ flag = (@line.include?("og:title"))
     str = "Fake error? 'Expecting .end, found end of file'\n" 
     str << err.inspect + "\n"
     str << err.backtrace.map {|x| "  " + x }.join("\n")
-    _error!(str)
+STDERR.puts str
+exit
+#   _error!(str)
   end
 
   def _body_text(raw=false)
