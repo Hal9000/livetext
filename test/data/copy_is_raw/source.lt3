@@ -1,4 +1,4 @@
 A copy command 
 does not interpret its input:
-.copy rawtext.inc
+.copy rawtext.inc     # another useless comment
 That's all.

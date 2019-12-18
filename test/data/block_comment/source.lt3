@@ -4,9 +4,9 @@ a comment
 .end
 abc 123
 xyz
-.comment
+.comment     # and this is an extra-useless comment
 And so is this.
-.end
+.end         # comment of dubious nature
 
 one
 more

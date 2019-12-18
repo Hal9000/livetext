@@ -307,7 +307,7 @@ EOS
     if File.exist?(file)
       # Just keep going...
     else
-      if File.expand_path(".").dirname != "/"
+      if File.dirname(File.expand_path(".")) != "/"
         Dir.chdir("..") { mixin }
         return
       else

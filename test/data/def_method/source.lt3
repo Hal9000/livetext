@@ -1,11 +1,11 @@
 .backtrace
 abc
 123
-.def foobar
+.def foobar     # yet another experimental comment
 ::STDERR.puts "This is the"
 ::STDERR.puts "foobar method"
 .end
 xyz
-.foobar
+.foobar     # and still another
 xyzzy
 123
