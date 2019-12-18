@@ -22,7 +22,6 @@ class Livetext::Functions    # Functions will go here... user-def AND pre-def??
   end
 
   def rand(param=nil)
-# STDERR.puts "param = #{param.inspect}"
     n1, n2 = param.split.map(&:to_i)
     ::Kernel.rand(n1..n2).to_s
   end

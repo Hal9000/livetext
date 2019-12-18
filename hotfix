@@ -1,9 +1,7 @@
 #!/usr/bin/env ruby
 
-lib = ARGV.first || `livetext -p`.chomp
+lib = ARGV.first || `livetext -p`.chomp.chomp
 puts lib.inspect
-
-# Dir.chdir(lib)
 
 system("cp lib/* #{lib}/")
 system("cp plugin/* #{lib}/../plugin/")

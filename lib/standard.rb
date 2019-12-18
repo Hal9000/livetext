@@ -99,7 +99,6 @@ EOS
     eval str
   rescue => err
     _error!(err)
-#   puts @body
   end
 
   def set
@@ -109,7 +108,6 @@ EOS
     # FIXME *Must* allow for vars/functions
     assigns.each do |a| 
       var, val = a.split("=")
-# STDERR.puts "-- var=val  #{[var, val].inspect}"
       var.strip!
       val.strip!
       val = val[1..-2] if val[0] == ?" && val[-1] == ?"
@@ -222,17 +220,6 @@ EOS
     end
     indent = @parent.indentation.last
     indented = " " * indent
-    #  s2 = ""
-    #  str.each_line do |line|
-    #    if line.start_with?(indented)
-    #      line.replace(line[indent..-1])
-    #    else
-    #      STDERR.puts "Error? heredoc not indented?"
-    #      return
-    #    end
-    #    s2 << line
-    #  end
-# STDERR.puts "HERE: #{var} = #{s2.chomp.inspect}"
     @parent._setvar(var, s2.chomp)
     _optional_blank_line
   end
@@ -263,7 +250,6 @@ EOS
     # like include, but search upward as needed
     file = @_args.first
 		file = _seek(file)
-# STDERR.puts "---- _seek found: #{file.inspect}"
     _error!(file, "No such include file '#{file}'") unless file
     @parent.process_file(file)
     _optional_blank_line

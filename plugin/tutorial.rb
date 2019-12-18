@@ -9,14 +9,9 @@ def section
 end
 
 def code
-# _out "<pre>"
   first = true  # dumb hack! fixes blank space
   _body do |line| 
-    if first
-      tag = "<pre>"
-      first = false
-    else
-    end
+    tag, first = "<pre>", false if first
     _out "#{tag}   #{::CGI.escape_html(line)}"   # indentation
   end
   _out "</pre>"
@@ -34,7 +29,7 @@ def inout
   t1 = t1.map {|x| " " + x.sub(/ +$/,"").gsub(/_/, "\\_") }.join
   t2 = t2.map {|x| " " + x.sub(/ +$/,"").gsub(/_/, "\\_") }.join
 
-  puts <<-HTML
+  _out <<-HTML
     <table width=80% cellpadding=4>
     <tr>
       <td width=50%><b>Input</b></td>
@@ -58,7 +53,7 @@ def put_table(src, exp)
   t1 = t1.map {|x| " " + x.sub(/ +$/,"").gsub(/_/, "\\_") }.join
   t2 = t2.map {|x| " " + x.sub(/ +$/,"").gsub(/_/, "\\_") }.join
 
-  puts <<-HTML
+  _out <<-HTML
     <font size=+1>
     <table width=80% cellpadding=4>
     <tr>

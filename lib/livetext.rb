@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.96"
+  VERSION = "0.8.97"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
@@ -34,6 +34,14 @@ class Livetext
   Space = " "
   Sigil = "." # Can't change yet
 
+  def self.rx(str, space=nil)
+    Regexp.compile("^" + Regexp.escape(str) + "#{space}")
+  end
+
+  Comment  = rx(Sigil, Livetext::Space)
+  Dotcmd   = rx(Sigil)
+  Ddotcmd  = /^ *\$\.[A-Za-z]/
+
   def initialize(output = ::STDOUT)
     @source = nil
     @_mixins = []
@@ -63,18 +71,14 @@ class Livetext
     _setvar(:File, file)
   end
 
-  def process_line(line)
+  def process_line(line)  # FIXME inefficient?
     nomarkup = true
-    # FIXME inefficient
-    comment  = rx(Sigil, Livetext::Space)  # apply these in order
-    dotcmd   = rx(Sigil)
-    ddotcmd  = /^ *\$\.[A-Za-z]/
-    case line
-      when comment
+    case line  # must apply these in order
+      when Comment
         handle_scomment(line)
-      when dotcmd
+      when Dotcmd
         handle_dotcmd(line)
-      when ddotcmd
+      when Ddotcmd
         indent = line.index("$") + 1
         @indentation.push(indent)
         line.sub!(/^ *\$/, "")
@@ -97,7 +101,23 @@ class Livetext
     end
   end
 
-  def xform_file(file)
+  # EXPERIMENTAL and incomplete
+  def xform(*args, file: nil, text: nil, vars: nil)
+    case
+      when file && text.nil?
+        xform_file(file)
+      when file.nil? && text
+      when file.nil? && text.nil?
+        raise "Must specify file or text"
+      when file && text
+        raise "Cannot specify file and text"
+    end
+    self.process_file(file)
+    self.body
+  end
+
+  def xform_file(file, vars: nil)
+    Livetext::Vars.replace(vars) unless vars.nil?
     self.process_file(file)
     self.body
   end
@@ -106,7 +126,7 @@ class Livetext
     _setfile!("(string)")
     @output = ::Livetext.output
     enum = text.each_line
-    front = text.match(/.*?\n/).to_a.first.chomp
+    front = text.match(/.*?\n/).to_a.first.chomp  rescue "..."
     @main.source(enum, "STDIN: '#{front}...'", 0)
     loop do 
       line = @main.nextline
@@ -135,8 +155,8 @@ class Livetext
   rescue => err
     puts "process_text: err = #{err}"
 #   puts err.backtrace.join("\n")
-  puts @body
-  @body = ""
+    puts @body
+    @body = ""
     return @body
   end
 
@@ -176,18 +196,13 @@ class Livetext
     @main.finalize if @main.respond_to? :finalize
   end
 
-  def rx(str, space=nil)
-    Regexp.compile("^" + Regexp.escape(str) + "#{space}")
-  end
-
   def handle_scomment(line)
   end
 
   def _check_name(name)
     @main._error! "Name '#{name}' is not permitted" if @main._disallowed?(name)
-    name = "_def" if name == "def"
-    name = "_include" if name == "include"
     @main._error! "Mismatched 'end'" if name == "end"
+    name = "_" + name if %w[def include].include?(name)
     name
   end
 
@@ -211,8 +226,8 @@ class Livetext
     result
   rescue => err
     @main._error!(err)
-  puts @body
-  @body = ""
+    puts @body
+    @body = ""
     return @body
   end
 

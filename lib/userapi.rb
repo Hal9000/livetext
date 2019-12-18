@@ -45,9 +45,7 @@ module Livetext::UserAPI
   end
 
   def _end?(str)
-    str = str.dup
-    str.gsub!(/^ */, "")
-    return true if str == ".end" || str == "$.end"
+    return true if str == ".end" || str =~ / *\$\.end/
     return false
   end
 
@@ -70,24 +68,19 @@ module Livetext::UserAPI
   end
 
   def _body(raw=false)
-    lines = []
-#   @save_location = @sources.last
+    lines = []      #   @save_location = @sources.last
     end_found = false
     loop do
       @line = nextline
       break if @line.nil?
       @line.chomp!
-# STDERR.puts "LINE = #{@line.inspect}"
-      if _end?(@line)
-        end_found = true
-        break 
-      end
-      next if _comment?(@line)
-      # FIXME Will cause problem with $. ?
+      end_found = _end?(@line)
+      break if end_found 
+      next if _comment?(@line)  # FIXME Will cause problem with $. ?
       @line = _format(@line) unless raw
       lines << @line 
     end
-    raise "this stupid error again" unless end_found
+
     _optional_blank_line
     if block_given?
       lines.each {|line| yield line }   # FIXME what about $. ?
