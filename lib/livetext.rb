@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.98"
+  VERSION = "0.8.99"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
@@ -29,6 +29,29 @@ class Livetext
   class << self
     attr_accessor :parameters  # from outside world (process_text)
     attr_accessor :output      # both bad solutions?
+  end
+
+  def self.customize(mix: [], call: [], vars: {})
+    obj = self.new
+    mix  = Array(mix)
+    call = Array(call)
+    mix.each {|lib| obj.mixin(lib) }
+    call.each {|cmd| obj.main.send(cmd[1..-1]) }  # ignores leading dot, no param
+    vars.each_pair {|var, val| obj._setvar(var, val.to_s) }
+    obj
+  end
+
+  def customize(mix: [], call: [], vars: {})
+    mix  = Array(mix)
+    call = Array(call)
+    mix.each {|lib| mixin(lib) }
+    call.each {|cmd| @main.send(cmd[1..-1]) }  # ignores leading dot, no param
+    vars.each_pair {|var, val| _setvar(var, val.to_s) }
+    self
+  end
+
+  def vars
+    Livetext::Vars.dup
   end
 
   Space = " "
@@ -127,7 +150,7 @@ end
   end
 
   # EXPERIMENTAL and incomplete
-  def xform(*args, file: nil, text: nil, vars: nil)
+  def xform(*args, file: nil, text: nil, vars: {})
     case
       when file && text.nil?
         xform_file(file)
@@ -142,7 +165,7 @@ end
     self.body
   end
 
-  def xform_file(file, vars: nil)
+  def xform_file(file, vars: {})
     Livetext::Vars.replace(vars) unless vars.nil?
     self.process_file(file)
     self.body
