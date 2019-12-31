@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.8.99"
+  VERSION = "0.9.01"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
@@ -109,7 +109,8 @@ end
 
   def _setfile(file)
     _setvar(:File, file)
-    _setvar(:FileDir, File.expand_path(file))
+    dir = File.dirname(File.expand_path(file))
+    _setvar(:FileDir, dir)
   end
 
   def _setfile!(file)

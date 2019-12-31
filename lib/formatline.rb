@@ -106,7 +106,6 @@ class FormatLine
         when :str
           @out << val unless val == "\n"   # BUG
         when :var
-# STDERR.puts "=== lt: sym = #{sym} val = #{val}  sub = #{varsub(val).inspect} #{Livetext::Vars[sym].inspect}"
           @out << varsub(val)
         when :func 
           param = nil
@@ -133,6 +132,7 @@ class FormatLine
   end
 
   def prev
+    return nil if @i <= 0
     @line[@i-1]
   end
 
@@ -142,6 +142,10 @@ class FormatLine
 
   def grab
     @line[@i+=1]
+  end
+
+  def ungrab
+    @line[@i-=1]
   end
 
   def grab_colon_param
@@ -248,7 +252,6 @@ class FormatLine
         case next!
           when ":"; param = grab_colon_param; add_token(:colon, param)
           when "["; param = grab_func_param; add_token(:brackets, param)
-          else  # do nothing
         end
       else
         grab; add_token :str, "$$" + curr; return
@@ -266,6 +269,7 @@ class FormatLine
 #     add char    # ??? add_token "*", :string
       return 
     end
+
     grab
     case curr
       when Space
@@ -278,25 +282,24 @@ class FormatLine
       when char;   double_marker(char)
       when LBrack; long_marker(char)
     else
-      add curr
-      str = collect!(sym, Blank)
+      str = curr + collect!(sym, Blank)
+      add str
       add_token sym, str
-      add curr  # next char onto next token... 
+      grab
     end
   end
 
   def double_marker(char)
     sym = Syms[char]
-    grab
-    kind = sym   # "string_#{char}".to_sym
+    kind = sym
     case next!   # first char after **
       when Space, LF, nil
         pre, post = SimpleFormats[sym]
         add_token kind
       else
         str = collect!(sym, Punc)
-        grab unless next!.nil?
         add_token kind, str
+        grab 
     end
   end
 
@@ -308,21 +311,60 @@ class FormatLine
     add_token kind, arg
   end
 
-  def collect!(sym, terminators, param=false)
+  def collect_bracketed(sym, terminators)
     str = Null.dup   # next is not " ","*","["
-    grab
+    grab   # ZZZ
     loop do
       if curr == Escape
         str << grab # ch = escaped char
         grab
         next
       end
-      break if terminate?(terminators, curr)
+      if terminate?(terminators, curr)
+        break 
+      end
+                  # STDERR.puts "#{curr.inspect} is not a terminator"
       str << curr    # not a terminator
       grab
+                  # STDERR.puts "After grab, curr is #{curr.inspect}"
     end
-    grab if param && curr == "]" # skip right bracket
+
+    if curr == "]" # skip right bracket
+      grab 
+    end
     add str
+    str
+  rescue => err
+    STDERR.puts "ERR = #{err}\n#{err.backtrace}"
+    STDERR.puts "=== str = #{str.inspect}"
+  end
+
+  def escaped
+    ch = grab
+    grab
+    ch
+  end
+
+  def collect!(sym, terminators, bracketed=nil)
+    return collect_bracketed(sym, terminators) if bracketed
+
+    str = Null.dup   # next is not " ","*","["
+    grab   # ZZZ
+    loop do
+      case
+        when curr == Escape
+          str << escaped
+          next
+        when terminate?(terminators, curr)
+          break 
+      else
+        str << curr    # not a terminator
+      end
+      grab
+    end
+    ungrab
+    add str
+    str
   rescue => err
     STDERR.puts "ERR = #{err}\n#{err.backtrace}"
     STDERR.puts "=== str = #{str.inspect}"

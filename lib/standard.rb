@@ -197,7 +197,15 @@ EOS
 
   def variables
     prefix = _args[0]
-    _body.each do |line|
+    file = _args[1]
+    prefix = nil if prefix == "-"  # FIXME dumb hack
+    if file
+      here = ::Livetext::Vars[:FileDir] + "/"
+      lines = File.readlines(here + file)
+    else
+      lines = _body
+    end
+    lines.each do |line|
       next if line.strip.empty?
       var, val = line.split(" ", 2)
       val = FormatLine.var_func_parse(val)

@@ -98,3 +98,23 @@ Escape brackets inside ~
 There are brackets ~[\[\]] here
 There are brackets <strike>[]</strike> here
 
+Line starts with underscore
+_This for example
+<i>This</i> for example
+
+Line starts with double underscore
+__This, for example
+<i>This,</i> for example
+
+Line has embedded underscores
+This has some_embedded_underscores
+This has some_embedded_underscores
+
+Line has escaped underscores
+This has some\_escaped\_underscores
+This has some_escaped_underscores
+
+Doubled underscore, midline
+This is __doubled, it seems
+This is <i>doubled,</i> it seems
+
