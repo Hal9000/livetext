@@ -195,6 +195,7 @@ class FormatLine
   end
 
   def add_token(kind, token = @token)
+    return if token.nil?
     @tokenlist << [kind, token] unless token.empty?
     @token = Null.dup
   end
@@ -352,6 +353,8 @@ class FormatLine
     grab   # ZZZ
     loop do
       case
+        when curr.nil?
+          return str
         when curr == Escape
           str << escaped
           next

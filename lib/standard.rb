@@ -205,6 +205,7 @@ EOS
     else
       lines = _body
     end
+    lines.map! {|x| x.sub(/# .*/, "").strip }  # strip comments
     lines.each do |line|
       next if line.strip.empty?
       var, val = line.split(" ", 2)

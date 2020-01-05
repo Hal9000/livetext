@@ -6,6 +6,7 @@ def epub!
   @cover = @_args[2]
   if ::File.directory?(src)
     files = ::Dir["#{src}/*"].grep /\.html$/
+    files = files.sort  # why is this necessary now?
     cmd = "cat #{files.join(' ')} >TEMP.html"
     system(cmd)
   else
@@ -17,7 +18,8 @@ def epub!
   cmd << "--cover #@cover " if @cover
   system(cmd)
 
-  str = `links -dump TEMP.html | wc -w`
+  system("links -dump TEMP.html >/tmp/links.out")
+  str = `wc -w /tmp/links.out`
   nw = str.split[0]
   puts "Approx words: #{nw}"
   ::FileUtils.rm("TEMP.html")
