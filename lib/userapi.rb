@@ -68,15 +68,14 @@ module Livetext::UserAPI
   end
 
   def _body(raw=false)
-    lines = []      #   @save_location = @sources.last
+    lines = []
     end_found = false
     loop do
       @line = nextline
       break if @line.nil?
       @line.chomp!
-      end_found = _end?(@line)
-      break if end_found 
-      next if _comment?(@line)  # FIXME Will cause problem with $. ?
+      break if _end?(@line)
+      next if _comment?(@line)
       @line = _format(@line) unless raw
       lines << @line 
     end
@@ -91,13 +90,11 @@ module Livetext::UserAPI
     str = "Fake error? 'Expecting .end, found end of file'\n" 
     str << err.inspect + "\n"
     str << err.backtrace.map {|x| "  " + x }.join("\n")
-STDERR.puts str
-exit
-#   _error!(str)
+    _error!(str)
   end
 
   def _body_text(raw=false)
-    _body(Livetext::Sigil).join("\n")
+    _body.join("\n")
   end
 
   def _raw_body!
