@@ -3,7 +3,7 @@
    cols = "1" if cols == ""
    cols = cols.to_i
    raise "Columns must be 1-5" unless cols.between?(1,5)
-   text = _body_text
+   text = _body.join("\n")
    text.gsub!(/\n/, " ")
    words = text.split.sort
    words.each_slice(cols) do |row| 

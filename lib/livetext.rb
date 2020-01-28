@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.9.02"
+  VERSION = "0.9.03"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
@@ -271,7 +271,7 @@ line = line.sub(/# .*$/, "")
     if @main.respond_to?(name)
       result = @main.send(name)
     else
-      @main._error! "Name '#{name}' is unknown; version = #{Livetext::VERSION}"
+      @main._error! "Name '#{name}' is unknown"
       return
     end
     result

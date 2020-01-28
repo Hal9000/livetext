@@ -19,6 +19,7 @@ module Livetext::UserAPI
   end
 
   def _args
+    @_args = @_data.chomp.split
     if block_given?
       @_args.each {|arg| yield arg }
     else
@@ -80,6 +81,8 @@ module Livetext::UserAPI
       lines << @line 
     end
 
+    raise "Expected .end, found end of file" unless _end?(@line)
+
     _optional_blank_line
     if block_given?
       lines.each {|line| yield line }   # FIXME what about $. ?
@@ -87,14 +90,13 @@ module Livetext::UserAPI
       lines
     end
   rescue => err
-    str = "Fake error? 'Expecting .end, found end of file'\n" 
     str << err.inspect + "\n"
     str << err.backtrace.map {|x| "  " + x }.join("\n")
     _error!(str)
   end
 
   def _body_text(raw=false)
-    _body.join("\n")
+    _raw_body.join("\n")
   end
 
   def _raw_body!

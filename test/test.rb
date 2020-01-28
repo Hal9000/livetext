@@ -71,12 +71,44 @@ class TestingLivetext < MiniTest::Test
     Dir.chdir(base) do
       src, out, exp = "source.lt3", "/tmp/#{base}--actual-output.txt", "expected-output.txt"
       err, erx = "/tmp/#{base}--actual-error.txt", "expected-error.txt"
+     
+      # New features - match out/err by regex
+      expout_regex = "expected-out-line1match.txt"
+      experr_regex = "expected-err-line1match.txt"
+
       cmd = "livetext #{src} >#{out} 2>#{err}"
       system(cmd)
-      output, expected, errors, errexp = File.read(out), File.read(exp), File.read(err), File.read(erx)
 
-      out_ok = output == expected
-      err_ok = errors == errexp
+      output   = File.read(out)
+      errors   = File.read(err)
+      rx_out = rx_err = nil
+
+      if File.exist?(expout_regex)
+        rx_out = /#{Regexp.escape(File.read(expout_regex).chomp)}/
+        expected = "(match test)"
+      else
+        expected = File.read(exp)
+      end
+
+      if File.exist?(experr_regex)
+        rx_err = /#{Regexp.escape(File.read(experr_regex).chomp)}/
+        errexp = "(match test)"
+      else
+        errexp = File.read(erx)
+      end
+
+      if rx_out
+        out_ok = output =~ rx_out
+      else
+        out_ok = output == expected
+      end
+
+      if rx_err
+        err_ok = errors =~ rx_err
+      else
+        err_ok = errors == errexp
+      end
+
       nout = output.split("\n").size
       nexp = expected.split("\n").size
       bad_out = "--- Expected (#{nexp} lines): \n#{green(expected)}\n--- Output (#{nout} lines):  \n#{red(output)}\n"

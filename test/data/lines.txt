@@ -104,7 +104,7 @@ _This for example
 
 Line starts with double underscore
 __This, for example
-<i>This,</i> for example
+<i>This</i>, for example
 
 Line has embedded underscores
 This has some_embedded_underscores
@@ -116,5 +116,5 @@ This has some_escaped_underscores
 
 Doubled underscore, midline
 This is __doubled, it seems
-This is <i>doubled,</i> it seems
+This is <i>doubled</i>, it seems
 

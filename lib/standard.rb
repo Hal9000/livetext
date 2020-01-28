@@ -9,7 +9,7 @@ module Livetext::Standard
   attr_reader :_data
 
   def data=(val)
-    @_data = val
+    @_data = val.chomp
     @_args = val.split rescue []
     @_mixins = []
   end
@@ -33,7 +33,7 @@ module Livetext::Standard
   end
 
   def shell
-    cmd = @_data
+    cmd = @_data.chomp
 #   _errout("Running: #{cmd}")
     system(cmd)
   end
@@ -50,22 +50,22 @@ EOS
   end
 
   def shell!
-    cmd = @_data
+    cmd = @_data.chomp
     system(cmd)
   end
 
   def errout
-    TTY.puts @_data
+    TTY.puts @_data.chomp
   end
 
   def say
-    str = _format(@_data)
+    str = _format(@_data.chomp)
     TTY.puts str
     _optional_blank_line
   end
 
   def banner
-    str = _format(@_data)
+    str = _format(@_data.chomp)
     n = str.length - 1
     puts "-"*n
     puts str
@@ -94,7 +94,7 @@ EOS
     name = @_args[0]
     str = "def #{name}\n"
     raise "Illegal name '#{name}'" if _disallowed?(name)
-    str += _body_text(true)
+    str += _body(true).join("\n")
     str += "\nend\n"
     eval str
   rescue => err
@@ -179,7 +179,7 @@ EOS
   end
 
   def set_NEW
-    line = _data.dup  # dup needed?
+    line = _data.chomp
     e = line.each_char  # enum
     loop do 
       c = e.next
@@ -216,12 +216,12 @@ EOS
   end
 
   def reval
-    eval _data
+    eval _data.chomp
   end
 
   def heredoc
     var = @_args[0]
-    str = _body_text
+    str = _body.join("\n")
     s2 = ""
     str.each_line do |s|
       str = FormatLine.var_func_parse(s.chomp)
@@ -347,7 +347,7 @@ EOS
   end
 
   def r
-    _out @_data  # No processing at all
+    _out @_data.chomp  # No processing at all
   end
 
   def raw
@@ -393,7 +393,7 @@ EOS
 
   def heading
     _print "<center><font size=+1><b>"
-    _print @_data
+    _print @_data.chomp
     _print "</b></font></center>"
   end
 
@@ -444,7 +444,7 @@ EOS
   end
 
   def xtable   # Borrowed from bookish - FIXME
-    title = @_data
+    title = @_data.chomp
     delim = " :: "
     _out "<br><center><table width=90% cellpadding=5>"
     lines = _body(true)

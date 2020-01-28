@@ -1,4 +1,4 @@
-Here are examples of <b>boldface</b>  
+Here are examples of <b>boldface</b> 
 and <i>italics</i>
 and <font size=+1><tt>code</tt></font>
 as well as <b>more complex</b> examples 

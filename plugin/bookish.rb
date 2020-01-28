@@ -88,7 +88,8 @@ def chapter
   @sec = @sec2 = 0
   title = @_data.split(" ",2)[1]
   @toc << "<br><b>#@chapter</b> #{title}<br>"
-  _next_output(_slug(title))
+  @_data = _slug(title)
+  next_output
   _out "<title>#{@chapter}. #{title}</title>"
   _out <<-HTML
     <h2>Chapter #{@chapter}</h1>
@@ -103,7 +104,8 @@ def chapterN
   title = @_data    # .split(" ",2)[1]
   _errout("Chapter #@chapter: #{title}")
   @toc << "<br><b>#@chapter</b> #{title}<br>"
-  _next_output(_slug(title))
+  @_data = _slug(title)
+  next_output
   _out "<title>#{@chapter}. #{title}</title>"
   _out <<-HTML
     <h2>Chapter #{@chapter}</h1>
@@ -118,7 +120,8 @@ def sec
   @section = "#@chapter.#@sec"
 # _errout("section #@section")
   @toc << "#{_nbsp(3)}<b>#@section</b> #@_data<br>"
-  _next_output(_slug(@_data))
+  @_data = _slug(@_data)
+  next_output
   _out "<h3>#@section #{@_data}</h3>\n"
 rescue => err
   STDERR.puts "#{err}\n#{err.backtrace}"
@@ -130,7 +133,8 @@ def subsec
   @subsec = "#@chapter.#@sec.#@sec2"
   @toc << "#{_nbsp(6)}<b>#@subsec</b> #@_data<br>"
 # _errout("section #@subsec")
-  _next_output(_slug(@_data))
+  @_data = _slug(@_data)
+  next_output
   _out "<h3>#@subsec #{@_data}</h3>\n"
 end
 
@@ -246,12 +250,12 @@ end
 def missing
   @toc << "#{_nbsp(8)}<font color=red>TBD: #@_data</font><br>"
   stuff = @_data.empty? ? "" : ": #@_data"
-  _print "<br><font color=red><i>[Material missing#{stuff}]</i></font><br>\n "
+  _out "<br><font color=red><i>[Material missing#{stuff}]</i></font><br>\n "
 end
 
 def TBC
   @toc << "#{_nbsp(8)}<font color=red>To be continued...</font><br>"
-  _print "<br><font color=red><i>To be continued...</i></font><br>"
+  _out "<br><font color=red><i>To be continued...</i></font><br>"
 end
 
 def note
