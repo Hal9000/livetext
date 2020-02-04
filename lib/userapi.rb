@@ -27,6 +27,10 @@ module Livetext::UserAPI
     end
   end
 
+  def _vars
+    @_vars.dup
+  end
+
   def _optional_blank_line
     peek = peek_nextline
     return if peek.nil?

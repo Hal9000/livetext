@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.9.03"
+  VERSION = "0.9.04"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
@@ -31,6 +31,10 @@ class Livetext
     attr_accessor :output      # both bad solutions?
   end
 
+  def vars
+    Livetext::Vars.dup
+  end
+
   def self.customize(mix: [], call: [], vars: {})
     obj = self.new
     mix  = Array(mix)
@@ -48,10 +52,6 @@ class Livetext
     call.each {|cmd| @main.send(cmd[1..-1]) }  # ignores leading dot, no param
     vars.each_pair {|var, val| _setvar(var, val.to_s) }
     self
-  end
-
-  def vars
-    Livetext::Vars.dup
   end
 
   Space = " "
@@ -73,29 +73,30 @@ class Livetext
     @body = ""
     @main = Processor.new(self, output)
     @indentation = [0]
+    @_vars = Livetext::Vars
   end
 
-def _parse_colon_args(args, hash)  # really belongs in livetext
-  h2 = hash.dup
-  e = args.each
-  loop do
-    arg = e.next.chop.to_sym
-    raise "_parse_args: #{arg} is unknown" unless hash.keys.include?(arg)
-    h2[arg] = e.next
+  def _parse_colon_args(args, hash)  # really belongs in livetext
+    h2 = hash.dup
+    e = args.each
+    loop do
+      arg = e.next.chop.to_sym
+      raise "_parse_args: #{arg} is unknown" unless hash.keys.include?(arg)
+      h2[arg] = e.next
+    end
+    h2 = h2.reject {|k,v| v.nil? }
+    h2.each_pair {|k, v| raise "#{k} has no value" if v.empty? }
+    h2
   end
-  h2 = h2.reject {|k,v| v.nil? }
-  h2.each_pair {|k, v| raise "#{k} has no value" if v.empty? }
-  h2
-end
 
-def _get_arg(name, args)  # really belongs in livetext
-  raise "(#{name}) Expected an array" unless args.is_a? Array
-  raise "(#{name}) Expected an arg" if args.empty?
-  raise "(#{name}) Too many args: #{args.inspect}" if args.size > 1
-  val = args[0]
-  raise "Expected an argument '#{name}'" if val.nil?
-  val
-end
+  def _get_arg(name, args)  # really belongs in livetext
+    raise "(#{name}) Expected an array" unless args.is_a? Array
+    raise "(#{name}) Expected an arg" if args.empty?
+    raise "(#{name}) Too many args: #{args.inspect}" if args.size > 1
+    val = args[0]
+    raise "Expected an argument '#{name}'" if val.nil?
+    val
+  end
 
   def mixin(mod)
     @main._mixin(mod)
@@ -105,6 +106,8 @@ end
     str, sym = var.to_s, var.to_sym
     Livetext::Vars[str] = val
     Livetext::Vars[sym] = val
+    @_vars[str] = val
+    @_vars[sym] = val
   end
 
   def _setfile(file)
@@ -166,49 +169,12 @@ end
     self.body
   end
 
-  def xform_file(file, vars: {})
+  def xform_file(file)  # , vars: {})
     Livetext::Vars.replace(vars) unless vars.nil?
+    @_vars.replace(vars) unless vars.nil?
     self.process_file(file)
     self.body
   end
-
-#  def transform(text)
-#    _setfile!("(string)")
-#    @output = ::Livetext.output
-#    enum = text.each_line
-#    front = text.match(/.*?\n/).to_a.first.chomp  rescue "..."
-#    @main.source(enum, "STDIN: '#{front}...'", 0)
-#    loop do 
-#      line = @main.nextline
-#      break if line.nil?
-#      process_line(line)  # transform_line ???
-#    end
-#    @body
-#  end
-
-## FIXME don't need process *and* process_text
-
-#  def process_text(text)
-#    _setfile!("(string)")
-#    text = text.split("\n") if text.is_a? String
-#    enum = text.each
-#    @backtrace = false
-#    front = text[0].chomp
-#    @main.source(enum, "(text): '#{front}...'", 0)
-#    loop do 
-#      line = @main.nextline
-#      break if line.nil?
-#      process_line(line)
-#    end
-#    val = @main.finalize if @main.respond_to? :finalize
-#    val
-#  rescue => err
-#    puts "process_text: err = #{err}"
-##   puts err.backtrace.join("\n")
-#    puts @body
-#    @body = ""
-#    return @body
-#  end
 
 ## FIXME process_file[!] should call process[_text]
 
@@ -231,21 +197,6 @@ end
     @body = ""
   end
 
-#  def process_file!(fname, backtrace=false)
-#    _setfile(fname)
-#    raise "No such file '#{fname}' to process" unless File.exist?(fname)
-#    @main.output = StringIO.new
-#    enum = File.readlines(fname).each
-#    @backtrace = backtrace
-#    @main.source(enum, fname, 0)
-#    loop do 
-#      line = @main.nextline
-#      break if line.nil?
-#      process_line(line)
-#    end
-#    @main.finalize if @main.respond_to? :finalize
-#  end
-
   def handle_scomment(line)
   end
 
@@ -265,7 +216,7 @@ end
 
   def handle_dotcmd(line, indent = 0)
     indent = @indentation.last # top of stack
-line = line.sub(/# .*$/, "")
+    line = line.sub(/# .*$/, "")
     name = _get_name(line).to_sym
     result = nil
     if @main.respond_to?(name)

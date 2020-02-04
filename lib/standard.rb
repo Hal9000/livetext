@@ -472,6 +472,11 @@ EOS
     _out "</table></center>"
   end
 
+  def image
+    name = @_args[0]
+    _out "<img src='#{name}'></img>"
+  end
+
   def br
     n = _args.first || "1"
     out = ""
