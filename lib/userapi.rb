@@ -19,7 +19,7 @@ module Livetext::UserAPI
   end
 
   def _args
-    @_args = @_data.chomp.split
+    @_args = _format(@_data).chomp.split
     if block_given?
       @_args.each {|arg| yield arg }
     else

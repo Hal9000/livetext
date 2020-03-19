@@ -12,6 +12,7 @@ def credit
 end
 
 def h1; _out "<h1>#{@_data}</h1>"; end
+def h2; _out "<h2>#{@_data}</h2>"; end
 def h3; _out "<h3>#{@_data}</h3>"; end
 
 def list
@@ -118,11 +119,11 @@ def sec
   @sec += 1
   @sec2 = 0
   @section = "#@chapter.#@sec"
-# _errout("section #@section")
-  @toc << "#{_nbsp(3)}<b>#@section</b> #@_data<br>"
+  title = @_data.dup
+  @toc << "#{_nbsp(3)}<b>#@section</b> #{title}<br>"
   @_data = _slug(@_data)
   next_output
-  _out "<h3>#@section #{@_data}</h3>\n"
+  _out "<h3>#@section #{title}</h3>\n"
 rescue => err
   STDERR.puts "#{err}\n#{err.backtrace}"
   exit
@@ -131,11 +132,33 @@ end
 def subsec
   @sec2 += 1
   @subsec = "#@chapter.#@sec.#@sec2"
-  @toc << "#{_nbsp(6)}<b>#@subsec</b> #@_data<br>"
-# _errout("section #@subsec")
+  title = @_data.dup
+  @toc << "#{_nbsp(6)}<b>#@subsec</b> #{title}<br>"
   @_data = _slug(@_data)
   next_output
-  _out "<h3>#@subsec #{@_data}</h3>\n"
+  _out "<h3>#@subsec #{title}</h3>\n"
+end
+
+def definition_table
+  title = @_data
+  wide = "95"
+  delim = " :: "
+  _out "<br><center><table width=#{wide}% cellpadding=5>"
+  lines = _body(true)
+  lines.map! {|line| _format(line) }
+
+  lines.each do |line|
+    cells = line.split(delim)
+    _out "<tr>"
+    cells.each.with_index do |cell, i| 
+      width = (i == 0) ? "width=15%" : ""
+      _out "  <td #{width} valign=top>#{cell}</td>"
+    end
+    _out "</tr>"
+  end
+  _out "</table></center><br><br>"
+
+  _optional_blank_line
 end
 
 def table2
@@ -204,7 +227,7 @@ def table
     cells = line.split(delim)
     wide = cells.map {|x| x.length }
     maxw = [0] * cells.size
-    maxw = maxw.map.with_index {|x, i| [x, wide[i]].max }
+    maxw = maxw.map.with_index {|x, i| [x, wide[i]+2].max }
   end
 
   sum = maxw.inject(0, :+)
