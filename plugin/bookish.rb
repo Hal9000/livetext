@@ -15,27 +15,6 @@ def h1; _out "<h1>#{@_data}</h1>"; end
 def h2; _out "<h2>#{@_data}</h2>"; end
 def h3; _out "<h3>#{@_data}</h3>"; end
 
-def list
-  _out "<ul>"
-  _body {|line| _out "<li>#{line}</li>" }
-  _out "</ul>"
-end
-
-def list!
-  _out "<ul>"
-  lines = _body.each   # {|line| _out "<li>#{line}</li>" }
-  loop do 
-    line = lines.next
-    line = _format(line)
-    if line[0] == " "
-      _out line
-    else
-      _out "<li>#{line}</li>"
-    end
-  end
-  _out "</ul>"
-end
-
 def alpha_columns
   n = @_args.first.to_i   # FIXME: what if missing?
   words = []

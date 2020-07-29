@@ -56,6 +56,27 @@ EOS
   def h5; _out "<h5>#{@_data}</h5>"; end
   def h6; _out "<h6>#{@_data}</h6>"; end
 
+  def list
+    _out "<ul>"
+    _body {|line| _out "<li>#{line}</li>" }
+    _out "</ul>"
+  end
+
+  def list!
+    _out "<ul>"
+    lines = _body.each   # {|line| _out "<li>#{line}</li>" }
+    loop do 
+      line = lines.next
+      line = _format(line)
+      if line[0] == " "
+        _out line
+      else
+        _out "<li>#{line}</li>"
+      end
+    end
+    _out "</ul>"
+  end
+
   def shell!
     cmd = @_data.chomp
     system(cmd)
