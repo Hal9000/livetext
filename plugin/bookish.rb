@@ -43,7 +43,7 @@ def alpha_columns
     words << line.chomp
   end
   words.sort!
-  _out "<table cellpadding=10>"
+  _out "<table cellpadding=2>"
   words.each_slice(n) do |w|
     items = w.map {|x| "<tt>#{x}</tt>" }
     _out "<tr><td width=5% valign=top></td><td>" + items.join("</td><td>") + "</td></tr>"
@@ -93,7 +93,7 @@ def chapter
   next_output
   _out "<title>#{@chapter}. #{title}</title>"
   _out <<-HTML
-    <h2>Chapter #{@chapter}</h1>
+    <h2>Chapter #{@chapter}</h2>
     <h1>#{title}</h1>
 
   HTML
@@ -109,7 +109,7 @@ def chapterN
   next_output
   _out "<title>#{@chapter}. #{title}</title>"
   _out <<-HTML
-    <h2>Chapter #{@chapter}</h1>
+    <h2>Chapter #{@chapter}</h2>
     <h1>#{title}</h1>
 
   HTML
@@ -166,7 +166,7 @@ def table2
   wide = "90"
   extra = _args[2]
   delim = " :: "
-  _out "<br><center><table border=1 width=#{wide}% cellpadding=5>"
+  _out "<br><center><table width=#{wide}% cellpadding=5>"
   lines = _body(true)
   lines.map! {|line| _format(line) }
 
@@ -219,7 +219,7 @@ def table
   @table_num += 1
   title = @_data
   delim = " :: "
-  _out "<br><center><table border=1 width=90% cellpadding=5>"
+  _out "<br><center><table width=90% cellpadding=5>"
   lines = _body(true)
   maxw = nil
   lines.each do |line|

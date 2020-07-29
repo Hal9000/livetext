@@ -22,5 +22,5 @@ def epub!
   str = `wc -w /tmp/links.out`
   nw = str.split[0]
   puts "Approx words: #{nw}"
-  ::FileUtils.rm("TEMP.html")
+  # ::FileUtils.rm("TEMP.html")
 end
