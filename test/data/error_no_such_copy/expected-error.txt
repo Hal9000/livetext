@@ -1,1 +1,0 @@
-Error: No such file 'nosuchfile.txt' to copy (at source.lt3 line 5)

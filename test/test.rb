@@ -18,7 +18,7 @@ class TestingLivetext < MiniTest::Test
 
   TestLines = []
 
-  Dir.chdir `livetext --path`.chomp if ARGV.first == "cmdline"
+  Dir.chdir `livetext --path`.chomp.chomp if ARGV.first == "cmdline"
 
   Dir.chdir(Data)
 
@@ -31,7 +31,7 @@ class TestingLivetext < MiniTest::Test
     break if f.eof?
   end
 
-  if File.size("subset.txt") #  == 0
+  if File.size("subset.txt")  == 0
     puts "Defining via TestLines"
     TestLines.each.with_index do |item, i|
       msg, src, exp, blank = *item
@@ -51,8 +51,6 @@ class TestingLivetext < MiniTest::Test
   selected = File.readlines("subset.txt").map(&:chomp)
   Subset   = selected.empty? ? TestDirs : selected
 
-# puts "Subset = #{Subset.inspect}"
-
   Subset.each do |tdir|
     define_method("test_#{tdir}") do
       external_files(tdir)
@@ -60,11 +58,11 @@ class TestingLivetext < MiniTest::Test
   end
 
   def green(str)
-    "[32m" + str + "[0m"
+    "[32m" + str.to_s + "[0m"
   end
 
   def red(str)
-    "[31m" + str + "[0m"
+    "[31m" + str.to_s + "[0m"
   end
 
   def external_files(base)
@@ -85,14 +83,14 @@ class TestingLivetext < MiniTest::Test
 
       if File.exist?(expout_regex)
         rx_out = /#{Regexp.escape(File.read(expout_regex).chomp)}/
-        expected = "(match test)"
+        expected = rx_out # "(match test)"
       else
         expected = File.read(exp)
       end
 
       if File.exist?(experr_regex)
         rx_err = /#{Regexp.escape(File.read(experr_regex).chomp)}/
-        errexp = "(match test)"
+        errexp = rx_err  # "(match test)"
       else
         errexp = File.read(erx)
       end

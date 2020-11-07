@@ -43,9 +43,11 @@ module Livetext::Standard
     _error! "Illegal name '#{funcname}'" if _disallowed?(funcname)
     func_def = <<-EOS
       def #{funcname}(param)
-        #{_body_text(true)}
+        #{_body.to_a.join("\n")}
       end
 EOS
+    _optional_blank_line
+    
     Livetext::Functions.class_eval func_def
   end
 
@@ -247,13 +249,21 @@ EOS
     eval _data.chomp
   end
 
+  def heredoc!   # adds <br>...
+    _heredoc(true)
+  end
+
   def heredoc
+    _heredoc
+  end
+
+  def _heredoc(bang=false)
     var = @_args[0]
     str = _body.join("\n")
     s2 = ""
     str.each_line do |s|
       str = FormatLine.var_func_parse(s.chomp)
-      s2 << str # + "<br>"
+      s2 << str + "<br>"
     end
     indent = @parent.indentation.last
     indented = " " * indent
@@ -348,7 +358,7 @@ EOS
         Dir.chdir("..") { mixin }
         return
       else
-        STDERR.puts "No such mixin '#{name}"
+        STDERR.puts "No such mixin '#{name}'"
         puts @body
         exit!
       end

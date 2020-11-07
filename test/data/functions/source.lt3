@@ -3,7 +3,7 @@ some functions
 here...
 
 .func myfunc
-"Eureka!"
+  "Eureka!"
 .end
 
 I am calling $$myfunc here...
