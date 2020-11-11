@@ -225,6 +225,26 @@ EOS
     end
   end
 
+  def variables!  # cwd, not FileDir - weird, fix later
+    prefix = _args[0]
+    file = _args[1]
+    prefix = nil if prefix == "-"  # FIXME dumb hack
+    if file
+      here = ""  # different for ! version
+      lines = File.readlines(here + file)
+    else
+      lines = _body
+    end
+    lines.map! {|x| x.sub(/# .*/, "").strip }  # strip comments
+    lines.each do |line|
+      next if line.strip.empty?
+      var, val = line.split(" ", 2)
+      val = FormatLine.var_func_parse(val)
+      var = prefix + "." + var if prefix
+      @parent._setvar(var, val)
+    end
+  end
+
   def variables
     prefix = _args[0]
     file = _args[1]
@@ -288,8 +308,10 @@ EOS
         break if value
       end
 		end
+    STDERR.puts "Cannot find #{file.inspect} from #{Dir.pwd}" unless value
 	  return value
   rescue
+    STDERR.puts "Can't find #{file.inspect} from #{Dir.pwd}"
 	  return nil
   end
 	
@@ -297,21 +319,25 @@ EOS
     # like include, but search upward as needed
     file = @_args.first
 		file = _seek(file)
-    _error!(file, "No such include file '#{file}'") unless file
+    _error!("No such include file #{file.inspect}") unless file
     @parent.process_file(file)
     _optional_blank_line
+  rescue => err
+    STDERR.puts ".seek error - #{err}"
+    STDERR.puts err.inspect
+	  return nil
   end
 
   def in_out  # FIXME dumb name!
     file, dest = *@_args
-    _check_existence(file, "No such include file '#{file}'")
+    _check_existence(file, "No such include file #{file.inspect}")
     @parent.process_file(file, dest)
     _optional_blank_line
   end
 
   def _include
     file = @_args.first
-    _check_existence(file, "No such include file '#{file}'")
+    _check_existence(file, "No such include file #{file.inspect}")
     @parent.process_file(file)
     _optional_blank_line
   end

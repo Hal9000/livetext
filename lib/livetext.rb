@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.9.07"
+  VERSION = "0.9.08"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
@@ -126,6 +126,7 @@ class Livetext
       when Comment
         handle_scomment(line)
       when Dotcmd
+        STDERR.puts "line = #{line.inspect}"
         handle_dotcmd(line)
       when Ddotcmd
         indent = line.index("$") + 1
@@ -184,6 +185,7 @@ class Livetext
     enum = text.each
     @backtrace = btrace
     @main.source(enum, fname, 0)
+    line = nil
     loop do 
       line = @main.nextline
       break if line.nil?
@@ -192,6 +194,7 @@ class Livetext
     val = @main.finalize if @main.respond_to? :finalize
     @body
   rescue => err
+    STDERR.puts "[process_file] fname = #{fname.inspect}\n    line = #{line.inspect}"
     STDERR.puts "ERROR #{err} in process_file"
     err.backtrace.each {|x| STDERR.puts "   " + x }
     @body = ""
@@ -227,8 +230,10 @@ class Livetext
     end
     result
   rescue => err
+    STDERR.puts "Error was: #{err.inspect} (calling @main._error!)"
+    STDERR.puts err.backtrace
     @main._error!(err)
-    puts @body
+    # puts @body
     @body = ""
     return @body
   end
