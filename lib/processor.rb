@@ -34,7 +34,9 @@ class Livetext
 
     def _error!(err, abort=true, trace=false)
       where = @sources.last || @save_location
-      puts @parent.body
+      # puts @parent.body
+      puts "[lib/processor] Error: #{err}"
+      puts err.backtrace.join("\n") if err.respond_to?(:backtrace)
       STDERR.puts "[lib/processor] Error: #{err}"  #  (at #{where[1]} line #{where[2]})"
       raise "lib/processor error!"
       STDERR.puts err.backtrace if err.respond_to?(:backtrace) # && trace

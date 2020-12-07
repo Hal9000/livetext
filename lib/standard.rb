@@ -336,7 +336,8 @@ EOS
   end
 
   def _include
-    file = @_args.first
+STDERR.puts "_include: vars View/ViewDir #{::Livetext::Vars[:View]} #{::Livetext::Vars[:ViewDir]} "
+    file = _format(@_args.first)  # allows for variables
     _check_existence(file, "No such include file #{file.inspect}")
     @parent.process_file(file)
     _optional_blank_line
