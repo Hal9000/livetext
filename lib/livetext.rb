@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.9.09"
+  VERSION = "0.9.10"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
@@ -126,7 +126,7 @@ class Livetext
       when Comment
         handle_scomment(line)
       when Dotcmd
-        STDERR.puts "line = #{line.inspect}"
+#       STDERR.puts "line = #{line.inspect}"
         handle_dotcmd(line)
       when Ddotcmd
         indent = line.index("$") + 1
@@ -170,7 +170,7 @@ class Livetext
     self.body
   end
 
-  def xform_file(file)  # , vars: {})
+  def xform_file(file, vars: nil)
     Livetext::Vars.replace(vars) unless vars.nil?
     @_vars.replace(vars) unless vars.nil?
     self.process_file(file)

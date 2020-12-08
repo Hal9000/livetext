@@ -336,7 +336,6 @@ EOS
   end
 
   def _include
-STDERR.puts "_include: vars View/ViewDir #{::Livetext::Vars[:View]} #{::Livetext::Vars[:ViewDir]} "
     file = _format(@_args.first)  # allows for variables
     _check_existence(file, "No such include file #{file.inspect}")
     @parent.process_file(file)
@@ -385,9 +384,10 @@ STDERR.puts "_include: vars View/ViewDir #{::Livetext::Vars[:View]} #{::Livetext
         Dir.chdir("..") { mixin }
         return
       else
-        STDERR.puts "No such mixin '#{name}'"
-        puts @body
-        exit!
+        raise "No such mixin '#{name}'"
+        # STDERR.puts "No such mixin '#{name}'"
+        # puts @body
+        # exit!
       end
     end
 

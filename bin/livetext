@@ -72,7 +72,6 @@ loop do
       @backtrace = true
     when "-m", "--mixin"
       mod = ARGV.shift
-STDERR.puts "Got mod: #{mod}"
       x.mixin(ARGV.shift)
       next
     when "-s", "--stdin"
