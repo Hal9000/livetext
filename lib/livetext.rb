@@ -232,8 +232,8 @@ class Livetext
   rescue => err
     STDERR.puts "Error was: #{err.inspect} (calling @main._error!)"
     STDERR.puts err.backtrace
-    @main._error!(err)
-    # puts @body
+    # @main._error!(err)
+    puts @body
     @body = ""
     return @body
   end

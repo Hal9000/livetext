@@ -93,10 +93,10 @@ module Livetext::UserAPI
     else
       lines
     end
-  rescue => err
-    str = err.inspect + "\n"
-    str << err.backtrace.map {|x| "  " + x }.join("\n")
-    _error!(str)
+# rescue => err
+#   str = err.inspect + "\n"
+#   str << err.backtrace.map {|x| "  " + x }.join("\n")
+#   _error!(str)
   end
 
   def _body_text(raw=false)

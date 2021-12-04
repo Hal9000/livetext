@@ -1,3 +1,4 @@
+.debug
 Make sure a
 nonexistent file with .copy
 gives an error.
