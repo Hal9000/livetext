@@ -8,20 +8,30 @@ require 'formatline'
 input = ARGV.first || "test/data/lines.txt"
 data = File.readlines(input)
 
-data.each_slice(4) do |lines|
+pass = fail = 0
+data.each_slice(4).with_index do |lines, i|
   title, input, expected, blank = *lines
+  lnum = i*4 + 1
   input.chomp!
   expected.chomp!
   expected = eval(expected) if expected[0] == "/"
   
-  puts "-----------------------------"
-  print "Test:      #{title}"
 
   actual = FormatLine.parse!(input)
-  next if expected === actual
+  if expected === actual
+    pass += 1
+#   puts "PASS:      #{title}"
+    next
+  end
 
-  puts "Input:     #{input}"
+  fail += 1
+  puts "----------------------------- (line #{lnum})"
+  puts "Test:  #{title}"
+  puts "Input: #{input}"
   puts "  #{red('FAIL Expected: ')} #{expected.inspect}"
   puts "  #{red('     Actual  : ')} #{actual.inspect}"
   puts 
 end
+
+puts
+puts "#{pass} passes   #{fail} fails"

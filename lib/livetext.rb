@@ -1,5 +1,5 @@
 class Livetext
-  VERSION = "0.9.10"
+  VERSION = "0.9.11"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
@@ -74,6 +74,10 @@ class Livetext
     @main = Processor.new(self, output)
     @indentation = [0]
     @_vars = Livetext::Vars
+   
+    # Other predefined variables (see also _setfile)
+    _setvar(:User, `whoami`.chomp)
+    _setvar(:Version, Livetext::VERSION)
   end
 
   def _parse_colon_args(args, hash)  # really belongs in livetext
@@ -230,7 +234,7 @@ class Livetext
     end
     result
   rescue => err
-    STDERR.puts "Error was: #{err.inspect} (calling @main._error!)"
+    STDERR.puts "Error: #{err.inspect}"
     STDERR.puts err.backtrace
     # @main._error!(err)
     puts @body

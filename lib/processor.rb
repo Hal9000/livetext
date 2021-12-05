@@ -39,7 +39,7 @@ class Livetext
       # puts err.backtrace.join("\n") if err.respond_to?(:backtrace)
       STDERR.puts "[lib/processor] Error: #{err}"  #  (at #{where[1]} line #{where[2]})"
       STDERR.puts err.backtrace if err.respond_to?(:backtrace) # && trace
-      raise "lib/processor error!"
+      # raise "lib/processor error!" # FIXME
       exit if abort
     end
 

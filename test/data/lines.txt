@@ -118,3 +118,7 @@ Doubled underscore, midline
 This is __doubled, it seems
 This is <i>doubled</i>, it seems
 
+Underscore inside parens
+This is (_italicized and parenthesized)
+This is (<i>italicized</i> and parenthesized)
+
