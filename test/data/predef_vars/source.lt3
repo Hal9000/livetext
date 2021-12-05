@@ -1,0 +1,6 @@
+Here we go...
+File = $File
+FileDir = $FileDir
+User = $User
+Version = $Version
+NoSuchVar = $NoSuchVar
