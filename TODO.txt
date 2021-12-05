@@ -1,0 +1,95 @@
+   SOONISH?
+   --------
+   Clean up code structure
+   Decide when to raise error, keep going, etc.
+   Bug: dot-space inside block seen as comment (make configurable??)
+   Better error checking and corresponding tests
+   Support "namespaced" variables  (`[.set code.font="whatever"])
+   permit # comments on end of line? (configurable?)
+   commas in variable values
+   Feature to "break" to EOF?
+   `.meth? method ending in `? takes a block that may be processed or thrown away (`.else perhaps?)
+   `.dump to dump all variables and their values
+   Other debugging features
+   HTML helper? (in its own library?)
+   Add .link, $$link
+   `.if and `[.else]?
+   change from .lt3 to .live
+   mixin as module
+   automated checking of output file age
+   too many variations - transform, process, etc.
+   Better parameter handling for custom dot commands
+   Change predefined function names?? e.g. $$date becomes $$_date 
+   Debugging command to dump variables
+   Add `_raw_args and let `_args honor quotes
+   way to set defaults for images, etc.
+   Write as pure library in addition to executable
+   More support for markdown
+   Allow turning on/off: formatting, variable interpolation, function interpolation?
+   Support function namespacing?
+
+
+   LATERISH?
+   ---------
+   Improve vim syntax files
+   Must have sane support for CSS
+   Support for Pygments and/or other code processors
+   `.pry method?
+   `.irb method?
+   Exceptions??
+   Ruby `$SAFE levels?
+   Warn when overriding existing names?
+   Comments passed through (e.g. as HTML comments)
+   `.run to execute arbitrary Ruby code inline?
+   Concept of `.proc (guaranteed to return no value, produce no output)?
+   Investigate "common intermediate format" - output renderers all read it
+   Document API fully
+   Add RDoc
+   Create emacs syntax files (Sublime Text? others?)
+   .include dir/    # refs dir/main.lt3 ??
+   livetext -m
+   $$incr ?
+   optional extension on .include, etc.?  permit omission of .lt3
+   open/close
+   .include? which ignores missing files?
+   automated output file
+   Fix the backtrace testing problem
+
+
+   MORE LATERISH?
+   --------------
+   Document: `require `include `copy `mixin `errout and others
+   Worry about nesting of elements (probably mostly disallow)
+   Think about UTF-8
+   `.require with file and sigil parameters
+   Think about passing data in (erb replacement)
+   Allow custom ending tag on `raw method
+   Allow/encourage custom `passthru method?
+   Support for gists? arbitrary links? other remote resouces?
+   Small libraries for special purposes (books? special Softcover support? blogs? PDF? RMagick?)
+   Experiment with idea of special libraries having pluggable output formats (via Ruby mixin?)
+   Imagining a lib that can run/test code fragments as part of document generation
+   Someday: Support other languages (Elixir, Python, ...)
+   Make any/all delimiters configurable
+
+
+   DONE
+   ----
+
+x  Create predefined variables (e.g., `[$_source_file], `$[_line])
+x  Create predefined functions (e.g., `[$$_date])
+x  System variables are capitalized?
+x  Variable (or function) to denote file being processed
+x  .variables (for config) or .set with a text body?
+x  escape bug  \.this
+x  better way to do _include
+x  Let .mixin search upward in tree?
+x  Better parameter handling for custom functions
+x  Add versioning information 
+x  Think about command line executable
+x  Package as gem
+x  Support quotes in `.set values
+x  Support functions (``$$func) 
+x  Ignore first blank line after `[.end]? (and after raw-tag?)
+x  Bug: underscore in code (inline) causes italics
+x  way to install plugins
