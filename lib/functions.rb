@@ -1,6 +1,9 @@
 require 'standard'  # FIXME
 
-class Livetext::Functions    # Functions will go here... user-def AND pre-def??
+# Class Functions is where '$$func' functions are stored dynamically... 
+# user-def AND pre-def??
+
+class Livetext::Functions
   Formats = ::Livetext::Standard::SimpleFormats
 
   @param = nil

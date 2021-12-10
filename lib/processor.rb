@@ -1,4 +1,8 @@
+# Class Livetext is the actual top-level class.
+
 class Livetext
+
+  # Class Processor does the actual work of processing input.
 
   class Processor
     include Livetext::Standard

@@ -1,3 +1,8 @@
+
+require 'pathname'   # For _seek - remove later??
+
+# Module Standard comprises most of the standard or "common" methods.
+
 module Livetext::Standard
 
   SimpleFormats =     # Move this?
@@ -23,69 +28,75 @@ module Livetext::Standard
   end
 
   def backtrace
-    arg = @_args.first
-    @backtrace = true
-    @backtrace = false if arg == "off"
+    @backtrace = _onoff(@_args.first)
+    _optional_blank_line
   end
 
   def comment
     _body
+    _optional_blank_line
   end
 
   def shell
     cmd = @_data.chomp
-#   _errout("Running: #{cmd}")
     system(cmd)
+    _optional_blank_line
   end
 
   def func
     funcname = @_args[0]
     _error! "Illegal name '#{funcname}'" if _disallowed?(funcname)
-    func_def = <<-EOS
+    func_def = <<~EOS
       def #{funcname}(param)
         #{_body.to_a.join("\n")}
       end
-EOS
+    EOS
     _optional_blank_line
     
     Livetext::Functions.class_eval func_def
   end
 
-  def h1; _out "<h1>#{@_data}</h1>"; end
-  def h2; _out "<h2>#{@_data}</h2>"; end
-  def h3; _out "<h3>#{@_data}</h3>"; end
-  def h4; _out "<h4>#{@_data}</h4>"; end
-  def h5; _out "<h5>#{@_data}</h5>"; end
-  def h6; _out "<h6>#{@_data}</h6>"; end
+  def h1; _out _wrapped(@_data, :h1); end
+  def h2; _out _wrapped(@_data, :h2); end
+  def h3; _out _wrapped(@_data, :h3); end
+  def h4; _out _wrapped(@_data, :h4); end
+  def h5; _out _wrapped(@_data, :h5); end
+  def h6; _out _wrapped(@_data, :h6); end
 
   def list
-    _out "<ul>"
-    _body {|line| _out "<li>#{line}</li>" }
-    _out "</ul>"
+    _wrap :ul do
+      _body {|line| _out _wrapped(line, :li) }
+    end
+    _optional_blank_line
   end
 
   def list!
-    _out "<ul>"
-    lines = _body.each   # {|line| _out "<li>#{line}</li>" }
-    loop do 
-      line = lines.next
-      line = _format(line)
-      if line[0] == " "
-        _out line
-      else
-        _out "<li>#{line}</li>"
+    _wrap(:ul) do
+      lines = _body.each   # enumerator
+      loop do 
+        line = lines.next
+        line = _format(line)
+        str = line[0] == " " ? line : _wrapped(line, :li)
+        _out str
       end
     end
-    _out "</ul>"
+    _optional_blank_line
   end
 
   def shell!
     cmd = @_data.chomp
     system(cmd)
+    _optional_blank_line
   end
 
   def errout
+    STDERR.puts @_data.chomp
+    _optional_blank_line
+  end
+
+  def ttyout
     TTY.puts @_data.chomp
+    _optional_blank_line
   end
 
   def say
@@ -96,27 +107,21 @@ EOS
 
   def banner
     str = _format(@_data.chomp)
-    n = str.length - 1
-    puts "-"*n
-    puts str
-    puts "-"*n
+    num = str.length - 1
+    decor = "-"*num + "\n"
+    puts decor + str + "\n" + decor
   end
 
   def quit
     puts @body
     @body = ""
     @output.close
-#   exit!
   end
-
 
   def cleanup
     @_args.each do |item| 
-      if ::File.directory?(item)
-        system("rm -f #{item}/*")
-      else
-        ::FileUtils.rm(item)
-      end
+      cmd = ::File.directory?(item) ? "rm -f #{item}/*" : "rm #{item}"
+      system(cmd)
     end
   end
 
@@ -124,8 +129,8 @@ EOS
     name = @_args[0]
     str = "def #{name}\n"
     raise "Illegal name '#{name}'" if _disallowed?(name)
-    str += _body(true).join("\n")
-    str += "\nend\n"
+    str << _body(true).join("\n")
+    str << "\nend\n"
     eval str
   rescue => err
     _error!(err)
@@ -136,25 +141,29 @@ EOS
     assigns = @_data.chomp.split(/, */)
     # Do a better way?
     # FIXME *Must* allow for vars/functions
-    assigns.each do |a| 
-      var, val = a.split("=")
-      var.strip!
-      val.strip!
-      val = val[1..-2] if val[0] == ?" && val[-1] == ?"
-      val = val[1..-2] if val[0] == ?' && val[-1] == ?'
+    assigns.each do |arr| 
+      var, val = arr.split("=").map(&:strip!)
+      _strip_quotes(val)
       val = FormatLine.var_func_parse(val)
       @parent._setvar(var, val)
     end
     _optional_blank_line
   end
 
-  def _assign_get_var(c, e)
-    name = c
+  def _strip_quotes(str)
+    start, stop = str[0], str[1]
+    return str unless %['"].include?(start)
+    raise "Mismatched quotes?" if start != stop
+    str[1..-2]
+  end
+
+  def _assign_get_var(char, enum)
+    name = char
     loop do 
-      c = e.peek
-      case c
+      char = enum.peek
+      case char
         when /[a-zA-Z_\.0-9]/
-          name << e.next
+          name << enum.next
           next
         when / =/ 
           return name
@@ -165,57 +174,57 @@ EOS
     raise "Error: loop ended parsing variable name"
   end
 
-  def _assign_skip_equal(e)
-    loop { break if e.peek != " "; e.next }
-    if e.peek == "="
-      e.next  # skip spaces too
-      loop { break if e.peek != " "; e.next }
+  def _assign_skip_equal(enum)
+    loop { break if enum.peek != " "; e.next }
+    if enum.peek == "="
+      enum.next  # skip =... spaces too
+      loop { break if enum.peek != " "; enum.next }
     else
       raise "Error: expect equal sign"
     end
   end
 
-  def _quoted_value(quote, e)
+  def _quoted_value(quote, enum)
     value = ""
     loop do 
-      c = e.next
-      break if c == quote
-      value << c
+      char = enum.next
+      break if char == quote
+      value << char
     end
     value
   end
 
-  def _unquoted_value(e)
+  def _unquoted_value(enum)
     value = ""
     loop do 
-      c = e.next
-      break if c == " " || c == ","
-      value << c
+      char = enum.next
+      break if char == " " || char == ","
+      value << char
     end
     value
   end
 
-  def _assign_get_value
-    c = e.peek
+  def _assign_get_value(char, enum)
+    char = enum.peek
     value = ""
-    case c
+    case char
       when ?", ?'
-        value = _quoted_value(c, e)
+        value = _quoted_value(char, enum)
     else
-      value = _unquoted_value(e)
+      value = _unquoted_value(enum)
     end
-    c = e.peek
+    char = enum.peek
     value
   end
 
-  def set_NEW
+  def set_NEW     # never called??
     line = _data.chomp
-    e = line.each_char  # enum
+    enum = line.each_char
     loop do 
-      c = e.next
-      case c
+      char = enum.next
+      case char
         when /a-z/i
-          _assign_get_var(c, e)
+          _assign_get_var(char, enum)
           _assign_skip_equal
         when " "
           next
@@ -235,14 +244,7 @@ EOS
     else
       lines = _body
     end
-    lines.map! {|x| x.sub(/# .*/, "").strip }  # strip comments
-    lines.each do |line|
-      next if line.strip.empty?
-      var, val = line.split(" ", 2)
-      val = FormatLine.var_func_parse(val)
-      var = prefix + "." + var if prefix
-      @parent._setvar(var, val)
-    end
+    _parse_vars(lines)
   end
 
   def variables
@@ -255,7 +257,11 @@ EOS
     else
       lines = _body
     end
-    lines.map! {|x| x.sub(/# .*/, "").strip }  # strip comments
+    _parse_vars(lines)
+  end
+
+  def _parse_vars(lines)
+    lines.map! {|line| line.sub(/# .*/, "").strip }  # strip comments
     lines.each do |line|
       next if line.strip.empty?
       var, val = line.split(" ", 2)
@@ -269,45 +275,34 @@ EOS
     eval _data.chomp
   end
 
-  def heredoc!   # adds <br>...
-    _heredoc(true)
-  end
-
   def heredoc
-    _heredoc
-  end
-
-  def _heredoc(bang=false)
     var = @_args[0]
-    str = _body.join("\n")
-    s2 = ""
-    str.each_line do |s|
-      str = FormatLine.var_func_parse(s.chomp)
-      s2 << str + "<br>"
+    text = _body.join("\n")
+    rhs = ""
+    text.each_line do |line|
+      str = FormatLine.var_func_parse(line.chomp)
+      rhs << str + "<br>"
     end
     indent = @parent.indentation.last
     indented = " " * indent
-    @parent._setvar(var, s2.chomp)
+    @parent._setvar(var, rhs.chomp)
     _optional_blank_line
   end
 
   def _seek(file)
-    require 'pathname'   # ;)
     value = nil
-    if File.exist?(file)
-      return file
-    else
-      count = 1
-      loop do
-        front = "../" * count
-        count += 1
-        here = Pathname.new(front).expand_path.dirname.to_s
-        break if here == "/"
-        path = front + file
-        value = path if File.exist?(path)
-        break if value
-      end
-		end
+    return file if File.exist?(file)
+
+    count = 1
+    loop do
+      front = "../" * count
+      count += 1
+      here = Pathname.new(front).expand_path.dirname.to_s
+      break if here == "/"
+      path = front + file
+      value = path if File.exist?(path)
+      break if value
+    end
     STDERR.puts "Cannot find #{file.inspect} from #{Dir.pwd}" unless value
 	  return value
   rescue
@@ -315,17 +310,16 @@ EOS
 	  return nil
   end
 	
-  def seek
-    # like include, but search upward as needed
+  def seek    # like include, but search upward as needed
     file = @_args.first
 		file = _seek(file)
     _error!("No such include file #{file.inspect}") unless file
     @parent.process_file(file)
     _optional_blank_line
-  rescue => err
-    STDERR.puts ".seek error - #{err}"
-    STDERR.puts err.inspect
-	  return nil
+# rescue => err
+#   STDERR.puts ".seek error - #{err}"
+#   STDERR.puts err.inspect
+#  return nil
   end
 
   def in_out  # FIXME dumb name!
@@ -335,7 +329,7 @@ EOS
     _optional_blank_line
   end
 
-  def _include
+  def _include   # dot command
     file = _format(@_args.first)  # allows for variables
     _check_existence(file, "No such include file #{file.inspect}")
     @parent.process_file(file)
@@ -350,58 +344,56 @@ EOS
   def inherit
     file = @_args.first
     upper = "../#{file}"
-    good = (File.exist?(upper) || File.exist?(file))
+    got_upper, got_file = File.exist?(upper), File.exist?(file)
+    good = got_upper || got_file
     _error!("File #{file} not found (local or parent)") unless good
 
-    @parent.process_file(upper) if File.exist?(upper)
-    @parent.process_file(file)  if File.exist?(file)
+    @parent.process_file(upper) if got_upper
+    @parent.process_file(file)  if got_file
     _optional_blank_line
   end
 
-#   def include!    # FIXME huh?
-#     file = @_args.first
-#     return unless File.exist?(file)
-# 
-#     lines = @parent.process_file(file)
-# #?    File.delete(file)
-#     _optional_blank_line
-#   end
-
-  def _mixin(name)
+  def _mixin(name)   # helper
     @_args = [name]
     mixin
   end
 
   def mixin
     name = @_args.first   # Expect a module name
-    file = "#{Plugins}/" + name.downcase + ".rb"
     return if @_mixins.include?(name)
-    file = "./#{name}.rb" unless File.exist?(file)
-    if File.exist?(file)
-      # Just keep going...
-    else
-      if File.dirname(File.expand_path(".")) != "/"
-        Dir.chdir("..") { mixin }
-        return
-      else
-        raise "No such mixin '#{name}'"
-        # STDERR.puts "No such mixin '#{name}'"
-        # puts @body
-        # exit!
-      end
-    end
-
     @_mixins << name
-    meths = grab_file(file)
-    modname = name.gsub("/","_").capitalize
-    string = "module ::#{modname}; #{meths}\nend"
+    file = _find_mixin(name)
+    _use_mixin(name, file)
+    _optional_blank_line
+  end
 
+  def _cwd_root?
+    File.dirname(File.expand_path(".")) == "/"
+  end
+
+  def _find_mixin(name)
+    file = "#{Plugins}/" + name.downcase + ".rb"
+    return file if File.exist?(file)
+
+    file = "./#{name}.rb"
+    return file if File.exist?(file)
+
+    if _cwd_root?
+      raise "No such mixin '#{name}'"
+    else
+      Dir.chdir("..") { _find_mixin(name) }
+    end
+  end
+
+  def _use_mixin(name, file)
+    modname = name.gsub("/","_").capitalize
+    meths = grab_file(file)
+    string = "module ::#{modname}; #{meths}\nend"
     eval(string)
     newmod = Object.const_get("::" + modname)
     self.extend(newmod)
     init = "init_#{name}"
     self.send(init) if self.respond_to? init
-    _optional_blank_line
   end
 
   def copy
@@ -417,24 +409,16 @@ EOS
 
   def raw
     # No processing at all (terminate with __EOF__)
-    _raw_body {|x| _out x }  # no formatting
+    _raw_body {|line| _out line }  # no formatting
   end
 
   def debug
-    arg = @_args.first
-    self._debug = true
-    self._debug = false if arg == "off"
+    self._debug = _onoff(@_args.first)
   end
 
   def passthru
-    # FIXME - add check for args size (helpers); _onoff helper??
-    onoff = _args.first
-    case onoff
-      when nil;   @_nopass = false
-      when "on";  @_nopass = false
-      when "off"; @_nopass = true
-      else _error!("Unknown arg '#{onoff}'")
-    end
+    # FIXME - add check for args size? (helpers)
+    @_nopass = ! _onoff(_args.first)
   end
 
   def nopass
@@ -442,13 +426,19 @@ EOS
   end
 
   def para
-    # FIXME - add check for args size (helpers); _onoff helper??
-    onoff = _args.first
-    case onoff
-      when nil;   @_nopara = false
-      when "on";  @_nopara = false
-      when "off"; @_nopara = true
-      else _error!("Unknown arg '#{onoff}'")
+    # FIXME - add check for args size? (helpers)
+    @_nopara = ! _onoff(_args.first)
+  end
+
+  def _onoff(arg)   # helper
+    arg ||= "on"
+    case arg
+      when "on"
+        return true
+      when "off"
+        return false
+    else 
+      _error!("Unknown arg '#{arg}' - not 'on' or 'off'")
     end
   end
 
@@ -471,35 +461,22 @@ EOS
   end
 
   def mono
-    _out "<pre>"
-    _body(true) {|line| _out line }
-    _out "</pre>"
+    _wrap ":pre" do
+      _body(true) {|line| _out line }
+    end
     _optional_blank_line
   end
 
   def dlist
     delim = _args.first
-    _out "<dl>"
-    _body do |line|
-      line = _format(line)
-      term, defn = line.split(delim)
-      _out "<dt>#{term}</dt>"
-      _out "<dd>#{defn}</dd>"
+    _wrap(:dl) do 
+      _body do |line|
+        line = _format(line)
+        term, defn = line.split(delim)
+        _out _wrapped(term, :dt)
+        _out _wrapped(defn, :dd)
+      end
     end
-    _out "</dl>"
-  end
-
-  def old_dlist
-    delim = _args.first
-    _out "<table>"
-    _body do |line|
-      line = _format(line)
-      term, defn = line.split(delim)
-      _out "<tr>"
-      _out "<td width=3%><td width=10%>#{term}</td><td>#{defn}</td>"
-      _out "</tr>"
-    end
-    _out "</table>"
   end
 
   def link
@@ -518,7 +495,7 @@ EOS
       line = _format(line)
       line.gsub!(/\n+/, "<br>")
       cells = line.split(delim)
-      wide = cells.map {|x| x.length }
+      wide = cells.map {|cell| cell.length }
       maxw = [0] * cells.size
       maxw = maxw.map.with_index {|x, i| [x, wide[i]].max }
     end
@@ -528,11 +505,9 @@ EOS
   
     lines.each do |line|
       cells = line.split(delim)
-      _out "<tr>"
-      cells.each.with_index do |cell, i| 
-        _out "  <td valign=top>#{cell}</td>"
+      _wrap :tr do
+        cells.each {|cell| _out "  <td valign=top>#{cell}</td>" }
       end
-      _out "</tr>"
     end
     _out "</table></center>"
   end
@@ -543,10 +518,37 @@ EOS
   end
 
   def br
-    n = _args.first || "1"
+    num = _args.first || "1"
     out = ""
-    n.to_i.times { out << "<br>" }
+    num.to_i.times { out << "<br>" }
     _out out
+  end
+
+  def _wrapped(str, *tags)   # helper
+    open, close = _open_close_tags(tags)
+    open + str + close
+  end
+
+  def _wrapped!(str, tag, name, value)    # helper
+    open, close = _open_close_tags([tag])
+    open.sub!(">", " #{name}='#{value}'>")
+    open + str + close
+  end
+
+  def _wrap(tags)     # helper
+    open, close = _open_close_tags(tags)
+    _out open
+    yield
+    _out close
+  end
+
+  def _open_close_tags(tags)
+    open, close = "", ""
+    tags.each do |tag| 
+      open << "<#{tag}>"
+      close.prepend("</#{tag}>")
+    end
+    [open, close]
   end
 
 end 

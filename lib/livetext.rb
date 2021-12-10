@@ -1,3 +1,6 @@
+
+# Class Livetext skeleton (top level).
+
 class Livetext
   VERSION = "0.9.11"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
@@ -16,6 +19,8 @@ require 'processor'
 Plugins = File.expand_path(File.join(File.dirname(__FILE__), "../plugin"))
 
 TTY = ::File.open("/dev/tty", "w")
+
+# Class Livetext reopened (top level).
 
 class Livetext
   Vars = {}
@@ -130,7 +135,6 @@ class Livetext
       when Comment
         handle_scomment(line)
       when Dotcmd
-#       STDERR.puts "line = #{line.inspect}"
         handle_dotcmd(line)
       when Ddotcmd
         indent = line.index("$") + 1
@@ -201,7 +205,7 @@ class Livetext
     STDERR.puts "[process_file] fname = #{fname.inspect}\n    line = #{line.inspect}"
     STDERR.puts "ERROR #{err} in process_file"
     err.backtrace.each {|x| STDERR.puts "   " + x }
-    @body = ""
+    # @body = ""
   end
 
   def handle_scomment(line)

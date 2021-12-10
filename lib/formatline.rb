@@ -1,3 +1,6 @@
+# Class FormatLine handles the parsing of comments, dot commands, and 
+# simple formatting characters.
+
 class FormatLine
   SimpleFormats     = {}
   SimpleFormats[:b] = %w[<b> </b>]
@@ -394,11 +397,6 @@ class FormatLine
   end
 
   #####
-
-  def showme(tag)
-    char = @line[@cc]
-    puts "--- #{tag}: ch=#{@ch.inspect} next=#{@next.inspect} (cc=#@cc:#{char.inspect})   out=#{@out.inspect}"
-  end
 
   def embedded?
     ! (['"', "'", " ", nil].include? prev)

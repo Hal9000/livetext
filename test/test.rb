@@ -9,33 +9,40 @@ $LOAD_PATH << "./lib"
 
 require 'livetext'
 
+
+# Just a testing class. Chill.
+
 class TestingLivetext < MiniTest::Test
 
   TTY = File.open("/dev/tty","w")
 
-  dir  = ARGV.first == "cmdline" ? "../" : ""
+  cmdline = ARGV.first == "cmdline"
+  if cmdline
+    dir = "../"
+    Dir.chdir `livetext --path`.chomp.chomp
+  else
+    dir = ""
+  end
+
   Data = "#{dir}test/data"
-
   TestLines = []
-
-  Dir.chdir `livetext --path`.chomp.chomp if ARGV.first == "cmdline"
-
   Dir.chdir(Data)
 
-  f = File.open("lines.txt")
+  items = []
+  short_tests = File.open("lines.txt")
   loop do 
-    item = []
-    4.times { item << f.gets.chomp }
-    raise "Oops? #{item.inspect}" unless item.last == ""
-    TestLines << item
-    break if f.eof?
+    4.times { items << short_tests.gets.chomp }
+    # Blank line terminates each "stanza"
+    raise "Oops? #{items.inspect}" unless items.last.empty?
+    TestLines << items
+    break if short_tests.eof?
   end
 
   if File.size("subset.txt")  == 0
     puts "Defining via TestLines"
-    TestLines.each.with_index do |item, i|
+    TestLines.each.with_index do |item, num|
       msg, src, exp, blank = *item
-      define_method("test_formatting_#{i}") do
+      define_method("test_formatting_#{num}") do
         actual = FormatLine.parse!(src)
         if exp[0] == "/" # regex!
           exp = Regexp.compile(exp[1..-2])   # skip slashes
@@ -47,7 +54,7 @@ class TestingLivetext < MiniTest::Test
     end
   end
 
-  TestDirs = Dir.entries(".").reject {|f| ! File.directory?(f) } - %w[. ..]
+  TestDirs = Dir.entries(".").reject {|fname| ! File.directory?(fname) } - %w[. ..]
   selected = File.readlines("subset.txt").map(&:chomp)
   Subset   = selected.empty? ? TestDirs : selected
 
@@ -123,8 +130,7 @@ end
 
 
 =begin
-
-You can add any ordinary test method above. But so far, all these tests simply 
+You can add any ordinary test method above. But so far, most of these tests simply 
 call external_files.
 
 The external_files method works this way: 
@@ -135,6 +141,6 @@ The external_files method works this way:
   - We run livetext on the source and compare actual vs expected (stdout, stderr)
   - The "real" output gets checked first
   - Of course, both must compare correctly for the test to pass
-
+  - See also: line1match*
 =end
 

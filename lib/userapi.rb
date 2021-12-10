@@ -2,6 +2,7 @@
 
 require 'formatline'
 
+# UserAPI deals mostly with user-level methods.
 module Livetext::UserAPI
 
   def setvar(var, val)

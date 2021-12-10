@@ -3,7 +3,3 @@ a nonexistent include
 will give an error.
 <p>
 
-<p>
-
-Nothing to
-see here.
