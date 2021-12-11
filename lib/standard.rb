@@ -52,7 +52,7 @@ module Livetext::Standard
       end
     EOS
     _optional_blank_line
-    
+
     Livetext::Functions.class_eval func_def
   end
 
@@ -73,7 +73,7 @@ module Livetext::Standard
   def list!
     _wrap(:ul) do
       lines = _body.each   # enumerator
-      loop do 
+      loop do
         line = lines.next
         line = _format(line)
         str = line[0] == " " ? line : _wrapped(line, :li)
@@ -119,7 +119,7 @@ module Livetext::Standard
   end
 
   def cleanup
-    @_args.each do |item| 
+    @_args.each do |item|
       cmd = ::File.directory?(item) ? "rm -f #{item}/*" : "rm #{item}"
       system(cmd)
     end
@@ -141,7 +141,7 @@ module Livetext::Standard
     assigns = @_data.chomp.split(/, */)
     # Do a better way?
     # FIXME *Must* allow for vars/functions
-    assigns.each do |arr| 
+    assigns.each do |arr|
       var, val = arr.split("=").map(&:strip!)
       val = _strip_quotes(val)
       val = FormatLine.var_func_parse(val)
@@ -151,7 +151,8 @@ module Livetext::Standard
   end
 
   def _strip_quotes(str)
-raise "STR IS NIL" if str.nil?
+    raise "STR IS NIL" if str.nil?
+    raise "STR IS EMPTY" if str.empty?
     start, stop = str[0], str[-1]
     return str unless %['"].include?(start)
     raise "Mismatched quotes?" if start != stop
@@ -160,13 +161,13 @@ raise "STR IS NIL" if str.nil?
 
   def _assign_get_var(char, enum)
     name = char
-    loop do 
+    loop do
       char = enum.peek
       case char
         when /[a-zA-Z_\.0-9]/
           name << enum.next
           next
-        when / =/ 
+        when / =/
           return name
       else
         raise "Error: did not expect #{c.inspect} in variable name"
@@ -187,7 +188,7 @@ raise "STR IS NIL" if str.nil?
 
   def _quoted_value(quote, enum)
     value = ""
-    loop do 
+    loop do
       char = enum.next
       break if char == quote
       value << char
@@ -197,7 +198,7 @@ raise "STR IS NIL" if str.nil?
 
   def _unquoted_value(enum)
     value = ""
-    loop do 
+    loop do
       char = enum.next
       break if char == " " || char == ","
       value << char
@@ -221,7 +222,7 @@ raise "STR IS NIL" if str.nil?
   def set_NEW     # never called??
     line = _data.chomp
     enum = line.each_char
-    loop do 
+    loop do
       char = enum.next
       case char
         when /a-z/i
@@ -310,7 +311,7 @@ raise "STR IS NIL" if str.nil?
     STDERR.puts "Can't find #{file.inspect} from #{Dir.pwd}"
 	  return nil
   end
-	
+
   def seek    # like include, but search upward as needed
     file = @_args.first
 		file = _seek(file)
@@ -438,7 +439,7 @@ raise "STR IS NIL" if str.nil?
         return true
       when "off"
         return false
-    else 
+    else
       _error!("Unknown arg '#{arg}' - not 'on' or 'off'")
     end
   end
@@ -470,7 +471,7 @@ raise "STR IS NIL" if str.nil?
 
   def dlist
     delim = _args.first
-    _wrap(:dl) do 
+    _wrap(:dl) do
       _body do |line|
         line = _format(line)
         term, defn = line.split(delim)
@@ -500,10 +501,10 @@ raise "STR IS NIL" if str.nil?
       maxw = [0] * cells.size
       maxw = maxw.map.with_index {|x, i| [x, wide[i]].max }
     end
-  
+
     sum = maxw.inject(0, :+)
     maxw.map! {|x| (x/sum*100).floor }
-  
+
     lines.each do |line|
       cells = line.split(delim)
       _wrap :tr do
@@ -545,11 +546,11 @@ raise "STR IS NIL" if str.nil?
 
   def _open_close_tags(tags)
     open, close = "", ""
-    tags.each do |tag| 
+    tags.each do |tag|
       open << "<#{tag}>"
       close.prepend("</#{tag}>")
     end
     [open, close]
   end
 
-end 
+end
