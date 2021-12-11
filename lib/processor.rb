@@ -5,6 +5,9 @@ class Livetext
   # Class Processor does the actual work of processing input.
 
   class Processor
+
+    GenericError = Class.new(StandardError)
+
     include Livetext::Standard
     include Livetext::UserAPI
 
@@ -36,7 +39,7 @@ class Livetext
       @output = io
     end
 
-    def _error!(err, abort=true, trace=false)
+    def _error!(err, raise_error=false, trace=false)   # FIXME much bullshit happens here
       where = @sources.last || @save_location
       # puts @parent.body
       # puts "[lib/processor] Error: #{err}"
@@ -44,7 +47,7 @@ class Livetext
       STDERR.puts "[lib/processor] Error: #{err}"  #  (at #{where[1]} line #{where[2]})"
       STDERR.puts err.backtrace if err.respond_to?(:backtrace) # && trace
       # raise "lib/processor error!" # FIXME
-      exit if abort
+      raise GenericError.new("[lib/processor] Error: #{err}") if raise_error
     end
 
     def _disallowed?(name)
@@ -60,7 +63,7 @@ class Livetext
     rescue StopIteration
       @sources.pop
       nil
-    rescue 
+    rescue => err
       nil
     end
 

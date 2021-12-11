@@ -143,7 +143,7 @@ module Livetext::Standard
     # FIXME *Must* allow for vars/functions
     assigns.each do |arr| 
       var, val = arr.split("=").map(&:strip!)
-      _strip_quotes(val)
+      val = _strip_quotes(val)
       val = FormatLine.var_func_parse(val)
       @parent._setvar(var, val)
     end
@@ -151,7 +151,8 @@ module Livetext::Standard
   end
 
   def _strip_quotes(str)
-    start, stop = str[0], str[1]
+raise "STR IS NIL" if str.nil?
+    start, stop = str[0], str[-1]
     return str unless %['"].include?(start)
     raise "Mismatched quotes?" if start != stop
     str[1..-2]

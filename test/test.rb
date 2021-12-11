@@ -119,8 +119,8 @@ class TestingLivetext < MiniTest::Test
       bad_out = "--- Expected (#{nexp} lines): \n#{green(expected)}\n--- Output (#{nout} lines):  \n#{red(output)}\n"
       bad_err = "--- Error Expected: \n#{green(errexp)}\n--- Error Output:  \n#{red(errors)}\n"
 
-      assert(out_ok, bad_out)
       assert(err_ok, bad_err)
+      assert(out_ok, bad_out)
       # only on success
       system("rm -f #{out} #{err}") if out_ok && err_ok
     end

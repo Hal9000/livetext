@@ -189,7 +189,7 @@ class Livetext
 
   def process_file(fname, btrace=false)
     _setfile(fname)
-    text = File.readlines(fname)
+    text = File.readlines(fname)   # FIXME currently causes failure
     enum = text.each
     @backtrace = btrace
     @main.source(enum, fname, 0)
@@ -201,11 +201,11 @@ class Livetext
     end
     val = @main.finalize if @main.respond_to? :finalize
     @body
-  rescue => err
-    STDERR.puts "[process_file] fname = #{fname.inspect}\n    line = #{line.inspect}"
-    STDERR.puts "ERROR #{err} in process_file"
-    err.backtrace.each {|x| STDERR.puts "   " + x }
-    # @body = ""
+ rescue => err
+   STDERR.puts "[process_file] fname = #{fname.inspect}\n    line = #{line.inspect}"
+   STDERR.puts "ERROR #{err} in process_file"
+   err.backtrace.each {|x| STDERR.puts "   " + x }
+   # @body = ""
   end
 
   def handle_scomment(line)
