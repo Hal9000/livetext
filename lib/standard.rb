@@ -1,6 +1,10 @@
 
 require 'pathname'   # For _seek - remove later??
 
+$LOAD_PATH << "./lib"
+
+require_relative 'intraline'
+
 def make_exception(sym, str, target_class = Object)
   return if target_class.constants.include?(sym)
   target_class.const_set(sym, StandardError.dup)
@@ -201,12 +205,12 @@ module Livetext::Standard
 
   def _assign_skip_equal(enum)
     found = false
-    _skip_spaces(enum)
+    enum.skip_spaces
     raise NoEqualSign unless enum.peek == "="
     found = true
 
     enum.next  # skip =... spaces too
-    _skip_spaces(enum)
+    enum.skip_spaces
     peek = enum.peek rescue nil
     return peek  # just for testing
   rescue StopIteration
@@ -214,12 +218,12 @@ module Livetext::Standard
     return nil
   end
 
-  def _skip_spaces(enum)
-    loop do
-      break if enum.peek != " "
-      enum.next
-    end
-  end
+#  def _skip_spaces(enum)
+#    loop do
+#      break if enum.peek != " "
+#      enum.next
+#    end
+#  end
 
   make_exception(:BadQuotedString, "Bad quoted string: %1")
 
@@ -260,7 +264,8 @@ module Livetext::Standard
 
   def set # _NEW     # never called??
     line = _data.chomp
-    enum = line.each_char
+#   enum = line.each_char
+    enum = IntraLineParser.new(line)
     var = value = nil
     loop do
       char = enum.next
