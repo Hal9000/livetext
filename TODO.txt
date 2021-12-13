@@ -1,13 +1,27 @@
    SOONISH?
    --------
-   Clean up code structure
-   Decide when to raise error, keep going, etc.
+   Unit tests: standard, ...
+   More custom exceptions
+   Create intra-line parser!
+   Create high-level parser?
+   All dot-commands into their own module??
+   Create module for helpers?
+   reify args/data passing?
+   Special parser for .set var=... and so on?
+   separate classes for: seek, mixin, include, ...?
+   Better parameter handling for custom dot commands (see: reify args/data)
    Bug: dot-space inside block seen as comment (make configurable??)
    Better error checking and corresponding tests
+   Allow turning on/off: formatting, variable interpolation, function interpolation?
+   Better parameter handling for custom functions
    Support "namespaced" variables  (`[.set code.font="whatever"])
    permit # comments on end of line? (configurable?)
    commas in variable values
    Feature to "break" to EOF?
+
+
+   LATERISH?
+   ---------
    `.meth? method ending in `? takes a block that may be processed or thrown away (`.else perhaps?)
    `.dump to dump all variables and their values
    Other debugging features
@@ -15,22 +29,16 @@
    Add .link, $$link
    `.if and `[.else]?
    change from .lt3 to .live
-   mixin as module
+   mixin as module?
    automated checking of output file age
    too many variations - transform, process, etc.
-   Better parameter handling for custom dot commands
    Change predefined function names?? e.g. $$date becomes $$_date 
    Debugging command to dump variables
    Add `_raw_args and let `_args honor quotes
    way to set defaults for images, etc.
    Write as pure library in addition to executable
    More support for markdown
-   Allow turning on/off: formatting, variable interpolation, function interpolation?
    Support function namespacing?
-
-
-   LATERISH?
-   ---------
    Improve vim syntax files
    Must have sane support for CSS
    Support for Pygments and/or other code processors
@@ -84,7 +92,6 @@ x  .variables (for config) or .set with a text body?
 x  escape bug  \.this
 x  better way to do _include
 x  Let .mixin search upward in tree?
-x  Better parameter handling for custom functions
 x  Add versioning information 
 x  Think about command line executable
 x  Package as gem

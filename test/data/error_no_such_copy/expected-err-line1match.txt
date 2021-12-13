@@ -1,1 +1,1 @@
-Error: No such file 'nosuchfile.txt' to copy
+Error: file nosuchfile.txt not found 

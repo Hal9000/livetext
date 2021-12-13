@@ -1,6 +1,24 @@
 
 require 'pathname'   # For _seek - remove later??
 
+def make_exception(sym, str, target_class = Object)
+  return if target_class.constants.include?(sym)
+  target_class.const_set(sym, StandardError.dup)
+  define_method(sym) do |*args|
+    msg = str.dup
+    args.each.with_index {|arg, i| msg.sub!("%#{i+1}", arg) }
+    target_class.class_eval(sym.to_s).new(msg)
+  end
+end
+
+make_exception(:MismatchedQuotes, "Error: mismatched quotes")
+make_exception(:NilValue,         "Error: nil value")
+make_exception(:NullString,       "Error: null string")
+make_exception(:ExpectedOnOff,    "Error: expected 'on' or 'off'")
+make_exception(:DisallowedName,   "Error: name %1 is invalid")
+make_exception(:FileNotFound,     "Error: file %1 not found")
+
+
 # Module Standard comprises most of the standard or "common" methods.
 
 module Livetext::Standard
@@ -45,7 +63,7 @@ module Livetext::Standard
 
   def func
     funcname = @_args[0]
-    _error! "Illegal name '#{funcname}'" if _disallowed?(funcname)
+    _check_disallowed(funcname)
     func_def = <<~EOS
       def #{funcname}(param)
         #{_body.to_a.join("\n")}
@@ -136,7 +154,7 @@ module Livetext::Standard
     _error!(err)
   end
 
-  def set
+  def set_OLD
     # FIXME bug -- .set var="RIP, Hope Gallery"
     assigns = @_data.chomp.split(/, */)
     # Do a better way?
@@ -150,14 +168,19 @@ module Livetext::Standard
     _optional_blank_line
   end
 
+  # Tested in test/unit/standard_test.rb
+
   def _strip_quotes(str)
-    raise "STR IS NIL" if str.nil?
-    raise "STR IS EMPTY" if str.empty?
+    raise NilValue if str.nil?
+    raise NullString if str.empty?
     start, stop = str[0], str[-1]
     return str unless %['"].include?(start)
-    raise "Mismatched quotes?" if start != stop
+    raise MismatchedQuotes if start != stop
     str[1..-2]
   end
+
+  make_exception(:BadVariableName, "Found char %1 in variable %2")
+  make_exception(:NoEqualSign,     "No equal sign after variable")
 
   def _assign_get_var(char, enum)
     name = char
@@ -167,33 +190,49 @@ module Livetext::Standard
         when /[a-zA-Z_\.0-9]/
           name << enum.next
           next
-        when / =/
+        when /[ =]/
           return name
       else
-        raise "Error: did not expect #{c.inspect} in variable name"
+        raise BadVariableName, char, name
       end
     end
-    raise "Error: loop ended parsing variable name"
+    raise NoEqualSign
   end
 
   def _assign_skip_equal(enum)
-    loop { break if enum.peek != " "; e.next }
-    if enum.peek == "="
-      enum.next  # skip =... spaces too
-      loop { break if enum.peek != " "; enum.next }
-    else
-      raise "Error: expect equal sign"
+    found = false
+    _skip_spaces(enum)
+    raise NoEqualSign unless enum.peek == "="
+    found = true
+
+    enum.next  # skip =... spaces too
+    _skip_spaces(enum)
+    peek = enum.peek rescue nil
+    return peek  # just for testing
+  rescue StopIteration
+    raise NoEqualSign unless found
+    return nil
+  end
+
+  def _skip_spaces(enum)
+    loop do
+      break if enum.peek != " "
+      enum.next
     end
   end
 
+  make_exception(:BadQuotedString, "Bad quoted string: %1")
+
   def _quoted_value(quote, enum)
     value = ""
+    char = nil
     loop do
       char = enum.next
       break if char == quote
       value << char
     end
-    value
+    return value if char == quote
+    raise BadQuotedString, quote + value
   end
 
   def _unquoted_value(enum)
@@ -219,19 +258,23 @@ module Livetext::Standard
     value
   end
 
-  def set_NEW     # never called??
+  def set # _NEW     # never called??
     line = _data.chomp
     enum = line.each_char
+    var = value = nil
     loop do
       char = enum.next
       case char
         when /a-z/i
-          _assign_get_var(char, enum)
+          var = _assign_get_var(char, enum)
           _assign_skip_equal
+          value = _assign_get_value(char, enum)
+          value = FormatLine.var_func_parse(value)
+          @parent._setvar(var, value)
         when " "
           next
       else
-        raise "set: Huh? line = #{line}"
+        raise "set: Huh? line = #{line.inspect}"
       end
     end
   end
@@ -315,25 +358,21 @@ module Livetext::Standard
   def seek    # like include, but search upward as needed
     file = @_args.first
 		file = _seek(file)
-    _error!("No such include file #{file.inspect}") unless file
+    _check_file_exists(file)
     @parent.process_file(file)
     _optional_blank_line
-# rescue => err
-#   STDERR.puts ".seek error - #{err}"
-#   STDERR.puts err.inspect
-#  return nil
   end
 
   def in_out  # FIXME dumb name!
     file, dest = *@_args
-    _check_existence(file, "No such include file #{file.inspect}")
+    _check_file_exists(file)
     @parent.process_file(file, dest)
     _optional_blank_line
   end
 
   def _include   # dot command
     file = _format(@_args.first)  # allows for variables
-    _check_existence(file, "No such include file #{file.inspect}")
+    _check_file_exists(file)
     @parent.process_file(file)
     _optional_blank_line
   end
@@ -400,7 +439,7 @@ module Livetext::Standard
 
   def copy
     file = @_args.first
-    _check_existence(file, "No such file '#{file}' to copy")
+    _check_file_exists(file)
     _out grab_file(file)
     _optional_blank_line
   end
@@ -434,13 +473,14 @@ module Livetext::Standard
 
   def _onoff(arg)   # helper
     arg ||= "on"
-    case arg
+    raise ExpectedOnOff unless String === arg
+    case arg.downcase
       when "on"
         return true
       when "off"
         return false
     else
-      _error!("Unknown arg '#{arg}' - not 'on' or 'off'")
+      raise ExpectedOnOff
     end
   end
 
@@ -527,30 +567,40 @@ module Livetext::Standard
   end
 
   def _wrapped(str, *tags)   # helper
-    open, close = _open_close_tags(tags)
+    open, close = _open_close_tags(*tags)
     open + str + close
   end
 
-  def _wrapped!(str, tag, name, value)    # helper
-    open, close = _open_close_tags([tag])
-    open.sub!(">", " #{name}='#{value}'>")
+  def _wrapped!(str, tag, **extras)    # helper
+    open, close = _open_close_tags(tag)
+    extras.each_pair do |name, value|
+      open.sub!(">", " #{name}='#{value}'>")
+    end
     open + str + close
   end
 
-  def _wrap(tags)     # helper
-    open, close = _open_close_tags(tags)
+  def _wrap(*tags)     # helper
+    open, close = _open_close_tags(*tags)
     _out open
     yield
     _out close
   end
 
-  def _open_close_tags(tags)
+  def _open_close_tags(*tags)
     open, close = "", ""
     tags.each do |tag|
       open << "<#{tag}>"
       close.prepend("</#{tag}>")
     end
     [open, close]
+  end
+
+  def _check_disallowed(name)
+    raise DisallowedName if _disallowed?(name)
+  end
+
+  def _check_file_exists(file)
+    raise FileNotFound(file) unless File.exist?(file)
   end
 
 end

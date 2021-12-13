@@ -120,9 +120,14 @@ class Livetext
   end
 
   def _setfile(file)
-    _setvar(:File, file)
-    dir = File.dirname(File.expand_path(file))
-    _setvar(:FileDir, dir)
+    if file
+      _setvar(:File, file)
+      dir = File.dirname(File.expand_path(file))
+      _setvar(:FileDir, dir)
+    else
+      _setvar(:File,    "[no file]")
+      _setvar(:FileDir, "[no dir]")
+    end
   end
 
   def _setfile!(file)

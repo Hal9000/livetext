@@ -11,18 +11,17 @@ class Livetext
     include Livetext::Standard
     include Livetext::UserAPI
 
-    Disallowed = [:nil?, :===, :=~, :!~, :eql?, :hash, :<=>, 
-                  :class, :singleton_class, :clone, :dup, :taint, :tainted?, 
-                  :untaint, :untrust, :untrusted?, :trust, :freeze, :frozen?, 
-                  :to_s, :inspect, :methods, :singleton_methods, :protected_methods, 
-                  :private_methods, :public_methods, :instance_variables, 
-                  :instance_variable_get, :instance_variable_set, 
-                  :instance_variable_defined?, :remove_instance_variable, 
-                  :instance_of?, :kind_of?, :is_a?, :tap, :send, :public_send, 
-                  :respond_to?, :extend, :display, :method, :public_method, 
-                  :singleton_method, :define_singleton_method, :object_id, :to_enum, 
-                  :enum_for, :pretty_inspect, :==, :equal?, :!, :!=, :instance_eval, 
-                  :instance_exec, :__send__, :__id__, :__binding__]
+    Disallowed = %i[ !  !=  !~  <=>  ==  ===   =~         __binding__   __id__    __send__   class
+                     clone      define_singleton_method   display       dup      enum_for    eql?       
+                     equal?     extend      freeze        frozen?       hash     inspect     instance_eval          
+                     instance_exec          instance_of?  instance_variable_defined?         
+                     instance_variable_get  instance_variable_set       instance_variables   is_a?          
+                     kind_of?               method        methods       nil?                 object_id          
+                     pretty_inspect         private_methods             protected_methods    public_method          
+                     public_methods         public_send                 remove_instance_variable          
+                     respond_to?            send          singleton_class                    singleton_method          
+                     singleton_methods      taint         tainted?      tap                  to_enum          
+                     to_s                   trust         untaint       untrust              untrusted?]
 
     def initialize(parent, output = nil)
       @parent = parent
@@ -44,10 +43,10 @@ class Livetext
       # puts @parent.body
       # puts "[lib/processor] Error: #{err}"
       # puts err.backtrace.join("\n") if err.respond_to?(:backtrace)
-      STDERR.puts "[lib/processor] Error: #{err}"  #  (at #{where[1]} line #{where[2]})"
+      STDERR.puts "Error: #{err}"  #  (at #{where[1]} line #{where[2]})"
       STDERR.puts err.backtrace if err.respond_to?(:backtrace) # && trace
       # raise "lib/processor error!" # FIXME
-      raise GenericError.new("[lib/processor] Error: #{err}") if raise_error
+      raise GenericError.new("Error: #{err}") if raise_error
     end
 
     def _disallowed?(name)
