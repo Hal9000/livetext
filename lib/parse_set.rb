@@ -3,6 +3,18 @@ $LOAD_PATH << "."
 require 'livetext'
 require 'stringparser'
 
+# FIXME - DRY this later
+
+def make_exception(sym, str, target_class = Object)
+  return if target_class.constants.include?(sym)
+  target_class.const_set(sym, StandardError.dup)
+  define_method(sym) do |*args|
+    msg = str.dup
+    args.each.with_index {|arg, i| msg.sub!("%#{i+1}", arg) }
+    target_class.class_eval(sym.to_s).new(msg)
+  end
+end
+
 class Livetext::ParseSet < StringParser
 
   attr_reader :line, :eos, :i, :len
@@ -36,7 +48,6 @@ class Livetext::ParseSet < StringParser
     pairs
   end
   
-
   def assignment   # one single var=value
     pair = nil
     var = value = nil

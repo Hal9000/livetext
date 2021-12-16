@@ -1,4 +1,4 @@
-class IntraLineParser
+class StringParser
 
   attr_reader :line, :eos, :i, :len
 

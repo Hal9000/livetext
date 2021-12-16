@@ -1,23 +1,19 @@
-def minitest?
-  require 'minitest/autorun'
-end
-
-abort "minitest gem is not installed" unless minitest?
+require 'minitest/autorun'
 
 $LOAD_PATH << "./lib"
 
-require './intraline'
+require 'stringparser'
 
-class TestIntralineParser < MiniTest::Test
+class TestStringParser < MiniTest::Test
 
   def setup
     # Lengths: zero, one, arbitrary
     @str0 = ""
     @str1 = "x"
     @strN = "This is a test"
-    @zero = IntraLineParser.new(@str0)
-    @one  = IntraLineParser.new(@str1)
-    @many = IntraLineParser.new(@strN)
+    @zero = StringParser.new(@str0)
+    @one  = StringParser.new(@str1)
+    @many = StringParser.new(@strN)
   end
 
   def teardown
@@ -114,20 +110,20 @@ class TestIntralineParser < MiniTest::Test
   end
 
   def test_skip_spaces
-    none = IntraLineParser.new("abc")
+    none = StringParser.new("abc")
     char, index = none.peek, none.i
     none.skip_spaces
     refute none.peek == " "
     assert_equal none.peek, char
     assert_equal none.i, index
 
-    one = IntraLineParser.new(" def")
+    one = StringParser.new(" def")
     one.skip_spaces
     refute one.peek == " "
     assert_equal one.peek, "d"
     assert_equal one.i, 1
 
-    some = IntraLineParser.new("   xyz")
+    some = StringParser.new("   xyz")
     some.skip_spaces
     refute some.peek == " "
     assert_equal some.peek, "x"

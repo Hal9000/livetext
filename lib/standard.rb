@@ -3,7 +3,8 @@ require 'pathname'   # For _seek - remove later??
 
 $LOAD_PATH << "./lib"
 
-require_relative 'intraline'
+require_relative 'stringparser'
+require_relative 'parse_set'
 
 def make_exception(sym, str, target_class = Object)
   return if target_class.constants.include?(sym)
@@ -26,6 +27,8 @@ make_exception(:FileNotFound,     "Error: file %1 not found")
 # Module Standard comprises most of the standard or "common" methods.
 
 module Livetext::Standard
+
+  ParseSet = ::Livetext::ParseSet
 
   SimpleFormats =     # Move this?
    { b: %w[<b> </b>],
@@ -158,20 +161,6 @@ module Livetext::Standard
     _error!(err)
   end
 
-  def set_OLD
-    # FIXME bug -- .set var="RIP, Hope Gallery"
-    assigns = @_data.chomp.split(/, */)
-    # Do a better way?
-    # FIXME *Must* allow for vars/functions
-    assigns.each do |arr|
-      var, val = arr.split("=").map(&:strip!)
-      val = _strip_quotes(val)
-      val = FormatLine.var_func_parse(val)
-      @parent._setvar(var, val)
-    end
-    _optional_blank_line
-  end
-
   # Tested in test/unit/standard_test.rb
 
   def _strip_quotes(str)
@@ -183,6 +172,9 @@ module Livetext::Standard
     str[1..-2]
   end
 
+# Commented till confirmed
+
+=begin
   make_exception(:BadVariableName, "Found char %1 in variable %2")
   make_exception(:NoEqualSign,     "No equal sign after variable")
 
@@ -261,26 +253,14 @@ module Livetext::Standard
     char = enum.peek
     value
   end
+=end
 
-  def set # _NEW     # never called??
+  def set
     line = _data.chomp
-#   enum = line.each_char
-    enum = IntraLineParser.new(line)
-    var = value = nil
-    loop do
-      char = enum.next
-      case char
-        when /a-z/i
-          var = _assign_get_var(char, enum)
-          _assign_skip_equal
-          value = _assign_get_value(char, enum)
-          value = FormatLine.var_func_parse(value)
-          @parent._setvar(var, value)
-        when " "
-          next
-      else
-        raise "set: Huh? line = #{line.inspect}"
-      end
+    pairs = ParseSet.new(line).parse
+    pairs.each do |pair|
+      var, value = *pair
+      @parent._setvar(var, value)
     end
   end
 
