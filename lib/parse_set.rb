@@ -15,6 +15,10 @@ def make_exception(sym, str, target_class = Object)
   end
 end
 
+make_exception(:BadVariableName, "Error: invalid variable name")
+make_exception(:NoEqualSign,     "Error: no equal sign found")
+
+
 class Livetext::ParseSet < StringParser
 
   attr_reader :line, :eos, :i, :len
@@ -32,11 +36,13 @@ class Livetext::ParseSet < StringParser
     loop do
       skip_spaces
       char = self.peek
-      break if char.nil?  # end of string
+      break if eos?   # end of string
+      break if char.nil?  # yuck - should be caught by above line   FIXME
       raise "Expected alpha to start var name" unless char =~ /[a-z]/i
       pairs << assignment
       skip_spaces
       char = self.peek
+      break if eos?   # end of string
       case char
         when nil  # end of string
         when ","
@@ -64,6 +70,7 @@ class Livetext::ParseSet < StringParser
     name = ""
     loop do
       char = self.peek
+      break if char.nil?  # yuck - should be caught by above line   FIXME
       case char
         when /[a-zA-Z_\.0-9]/
           name << self.next
@@ -84,7 +91,7 @@ class Livetext::ParseSet < StringParser
     found = true
     self.next  # skip =... spaces too
     self.skip_spaces
-    peek = self.peek rescue nil
+    peek = self.peek
     return peek  # just for testing
   rescue StopIteration
     raise NoEqualSign unless found
@@ -104,6 +111,8 @@ class Livetext::ParseSet < StringParser
     char = nil
     loop do
       char = self.peek
+      break if self.eos?
+      break if char.nil?  # yuck - should be caught by above line   FIXME
       break if char == quote
       char = escaped if char == "\\"
       value << char
@@ -117,10 +126,13 @@ class Livetext::ParseSet < StringParser
   end
 
   def unquoted_value
+# puts "#{__method__}: #{@line.inspect}  i = #@i   peek = #{self.peek.inspect}"
     value = ""
     loop do
       char = self.peek
-      break if char.nil? || char == " " || char == ","
+      break if self.eos?
+      break if char.nil?  # yuck - should be caught by above line   FIXME
+      break if char == " " || char == ","
       value << char
       char = self.next
     end

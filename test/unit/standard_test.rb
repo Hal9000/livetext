@@ -13,22 +13,8 @@ class TestingLivetext < MiniTest::Test
   include Livetext::Standard
   include Livetext::UserAPI
 
-  def test_strip_quotes
-    assert_raises(NilValue)         { _strip_quotes(nil) }
-    assert_raises(NullString)       { _strip_quotes("") }
-    assert_raises(MismatchedQuotes) { _strip_quotes(%['test]) }
-#   assert_raises(MismatchedQuotes) { _strip_quotes(%[test']) }
-    assert_raises(MismatchedQuotes) { _strip_quotes(%["test]) }
-#   assert_raises(MismatchedQuotes) { _strip_quotes(%[test"]) }
-    assert_raises(MismatchedQuotes) { _strip_quotes(%["test']) }
-    assert_raises(MismatchedQuotes) { _strip_quotes(%['test"]) }
-
-    assert _strip_quotes(%[24601])  == "24601", "Failure 1"
-    assert _strip_quotes(%[3.14])   == "3.14",  "Failure 2"
-    assert _strip_quotes(%[test])   == "test",  "Failure 3"
-    assert _strip_quotes(%['test']) == "test",  "Failure 4"
-    assert _strip_quotes(%["test"]) == "test",  "Failure 5"
-  end
+  # Some of these methods being tested "really" belong elsewhere?
+  # Same is probably true of the methods that are testing them.
 
   def test_onoff
     refute _onoff('off'), "Expected _onoff('off') to be false"
@@ -65,90 +51,6 @@ class TestingLivetext < MiniTest::Test
     enum = str.each_char
     char = enum.next
     [char, enum]
-  end
-
-  def test_assign_get_var
-    char, enum = help_test_agv("foo=345")
-    assert_equal _assign_get_var(char, enum), "foo"
-    char, enum = help_test_agv("foo = 345")
-    assert_equal _assign_get_var(char, enum), "foo"
-    char, enum = help_test_agv("foo123 = 345")
-    assert_equal _assign_get_var(char, enum), "foo123"
-    char, enum = help_test_agv("foo_bar = 345")
-    assert_equal _assign_get_var(char, enum), "foo_bar"
-    char, enum = help_test_agv("Foobar = 345")
-    assert_equal _assign_get_var(char, enum), "Foobar"
-    char, enum = help_test_agv("_foobar = 345")
-    assert_equal _assign_get_var(char, enum), "_foobar"
-
-    # will not notice missing equal sign till later parsing
-    char, enum = help_test_agv("foo bar")
-    assert_equal _assign_get_var(char,enum), "foo"
-
-    # can detect missing equal sign if iteration ends
-    char, enum = help_test_agv("foo")
-    assert_raises(NoEqualSign) { _assign_get_var(char,enum) }
-    char, enum = help_test_agv("foo-bar = 345")
-    assert_raises(BadVariableName) { _assign_get_var(char,enum) }
-  end
-
-  def test_assign_skip_equal
-    enum = "=".each_char
-    assert_nil _assign_skip_equal(enum)
-    enum = "   = ".each_char
-    assert_nil _assign_skip_equal(enum)
-    enum = "   =".each_char
-    assert_nil _assign_skip_equal(enum)
-    enum = "   = 345".each_char
-    assert_equal _assign_skip_equal(enum), "3"
-    enum = "   = 'meh'".each_char
-    assert_equal _assign_skip_equal(enum), "'"
-
-    enum = "no equal here".each_char
-    assert_raises(NoEqualSign) { _assign_skip_equal(enum) }
-    enum = "".each_char
-    assert_raises(NoEqualSign) { _assign_skip_equal(enum) }
-  end
-
-  def test_quoted_value
-    quote, enum = "'", %[this'].each_char
-    assert_equal _quoted_value(quote, enum), "this"
-    quote, enum = '"', %[that"].each_char
-    assert_equal _quoted_value(quote, enum), "that"
-    quote, enum = '"', %["].each_char
-    assert_equal _quoted_value(quote, enum), ""
-    quote, enum = "'", %['].each_char
-    assert_equal _quoted_value(quote, enum), ""
-
-    quote, enum = "'", %[foo"].each_char
-    assert_raises(BadQuotedString) { _quoted_value(quote, enum) }
-    quote, enum = '"', %[bar'].each_char
-    assert_raises(BadQuotedString) { _quoted_value(quote, enum) }
-    quote, enum = "'", %[baz].each_char
-    assert_raises(BadQuotedString) { _quoted_value(quote, enum) }
-    quote, enum = '"', %[bam].each_char
-    assert_raises(BadQuotedString) { _quoted_value(quote, enum) }
-    # LATER: 
-    #  - allow (escaped?) comma in quoted string
-  end
-
-  def test_unquoted_value
-    # Note: an unquoted value is still a string!
-    enum = %[342 ].each_char
-    assert_equal _unquoted_value(enum), "342"
-    enum = %[343,].each_char
-    assert_equal _unquoted_value(enum), "343"
-    enum = %[344,678].each_char
-    assert_equal _unquoted_value(enum), "344"
-    enum = %[345.123].each_char
-    assert_equal _unquoted_value(enum), "345.123"
-    enum = %[whatever].each_char
-    assert_equal _unquoted_value(enum), "whatever"
-
-    # LATER: 
-    #  - disallow comma in unquoted string
-    #  - disallow quote trailing unquoted string
-    #  - allow/disallow escaping??
   end
 
   def xtest_wrap

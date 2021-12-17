@@ -5,6 +5,9 @@ $LOAD_PATH << "./lib"
 
 require_relative 'stringparser'
 require_relative 'parse_set'
+require_relative 'parse_misc'
+
+# abort Livetext.constants.sort.inspect
 
 def make_exception(sym, str, target_class = Object)
   return if target_class.constants.include?(sym)
@@ -16,9 +19,6 @@ def make_exception(sym, str, target_class = Object)
   end
 end
 
-make_exception(:MismatchedQuotes, "Error: mismatched quotes")
-make_exception(:NilValue,         "Error: nil value")
-make_exception(:NullString,       "Error: null string")
 make_exception(:ExpectedOnOff,    "Error: expected 'on' or 'off'")
 make_exception(:DisallowedName,   "Error: name %1 is invalid")
 make_exception(:FileNotFound,     "Error: file %1 not found")
@@ -27,8 +27,6 @@ make_exception(:FileNotFound,     "Error: file %1 not found")
 # Module Standard comprises most of the standard or "common" methods.
 
 module Livetext::Standard
-
-  ParseSet = ::Livetext::ParseSet
 
   SimpleFormats =     # Move this?
    { b: %w[<b> </b>],
@@ -161,107 +159,17 @@ module Livetext::Standard
     _error!(err)
   end
 
-  # Tested in test/unit/standard_test.rb
-
-  def _strip_quotes(str)
-    raise NilValue if str.nil?
-    raise NullString if str.empty?
-    start, stop = str[0], str[-1]
-    return str unless %['"].include?(start)
-    raise MismatchedQuotes if start != stop
-    str[1..-2]
-  end
-
-# Commented till confirmed
-
-=begin
-  make_exception(:BadVariableName, "Found char %1 in variable %2")
-  make_exception(:NoEqualSign,     "No equal sign after variable")
-
-  def _assign_get_var(char, enum)
-    name = char
-    loop do
-      char = enum.peek
-      case char
-        when /[a-zA-Z_\.0-9]/
-          name << enum.next
-          next
-        when /[ =]/
-          return name
-      else
-        raise BadVariableName, char, name
-      end
-    end
-    raise NoEqualSign
-  end
-
-  def _assign_skip_equal(enum)
-    found = false
-    enum.skip_spaces
-    raise NoEqualSign unless enum.peek == "="
-    found = true
-
-    enum.next  # skip =... spaces too
-    enum.skip_spaces
-    peek = enum.peek rescue nil
-    return peek  # just for testing
-  rescue StopIteration
-    raise NoEqualSign unless found
-    return nil
-  end
-
-#  def _skip_spaces(enum)
-#    loop do
-#      break if enum.peek != " "
-#      enum.next
-#    end
-#  end
-
-  make_exception(:BadQuotedString, "Bad quoted string: %1")
-
-  def _quoted_value(quote, enum)
-    value = ""
-    char = nil
-    loop do
-      char = enum.next
-      break if char == quote
-      value << char
-    end
-    return value if char == quote
-    raise BadQuotedString, quote + value
-  end
-
-  def _unquoted_value(enum)
-    value = ""
-    loop do
-      char = enum.next
-      break if char == " " || char == ","
-      value << char
-    end
-    value
-  end
-
-  def _assign_get_value(char, enum)
-    char = enum.peek
-    value = ""
-    case char
-      when ?", ?'
-        value = _quoted_value(char, enum)
-    else
-      value = _unquoted_value(enum)
-    end
-    char = enum.peek
-    value
-  end
-=end
-
-  def set
-    line = _data.chomp
-    pairs = ParseSet.new(line).parse
+  def _set_variables(pairs)
     pairs.each do |pair|
       var, value = *pair
       @parent._setvar(var, value)
     end
+  end
+
+  def set
+    line = _data.chomp
+    pairs = ParseSet.new(line).parse
+    _set_variables(pairs)
   end
 
   def variables!  # cwd, not FileDir - weird, fix later
@@ -274,7 +182,8 @@ module Livetext::Standard
     else
       lines = _body
     end
-    _parse_vars(lines)
+    pairs = ParseMisc.parse_vars(prefix, lines)
+    _set_variables(pairs)
   end
 
   def variables
@@ -287,22 +196,8 @@ module Livetext::Standard
     else
       lines = _body
     end
-    _parse_vars(lines)
-  end
-
-  def _parse_vars(lines)
-    lines.map! {|line| line.sub(/# .*/, "").strip }  # strip comments
-    lines.each do |line|
-      next if line.strip.empty?
-      var, val = line.split(" ", 2)
-      val = FormatLine.var_func_parse(val)
-      var = prefix + "." + var if prefix
-      @parent._setvar(var, val)
-    end
-  end
-
-  def reval
-    eval _data.chomp
+    pairs = ParseMisc.parse_vars(prefix, lines)
+    _set_variables(pairs)
   end
 
   def heredoc

@@ -3,7 +3,9 @@ class StringParser
   attr_reader :line, :eos, :i, :len
 
   def initialize(line)
-    raise "Expected String, not #{line.class}" unless String === line
+    raise NilValue if line.nil?
+    raise ExpectedString unless String === line
+#   raise NullString if line.empty?
     @line = line
     @len = @line.length
     @eos = @len == 0 ? true : false
@@ -23,6 +25,7 @@ class StringParser
   end
 
   def eos?
+    @eos = true if @i > @len    # duh?
     @eos
   end
 
