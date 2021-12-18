@@ -27,7 +27,7 @@ class TestStringParser < MiniTest::Test
     assert_equal @zero.line, ""
     assert @zero.eos, "EOS was initially false for #{@zero.inspect}"
     assert_equal @zero.i, 0
-    
+
     assert_equal @one.line, "x"
     refute @one.eos, "EOS was initially true for #{@one.inspect}"
     assert_equal @one.i, 0
@@ -40,7 +40,7 @@ class TestStringParser < MiniTest::Test
   def test_next
     assert_nil @zero.next
     assert_equal @zero.i, 0      # nothing happens
-    
+
     assert_equal @one.next, "x"
     assert_equal @one.i, 1
 
@@ -58,11 +58,13 @@ class TestStringParser < MiniTest::Test
   def test_next_eos
     @zero.next
     assert @zero.eos?
-    
-    @one.next
+
+    @one.eos?
     refute @one.eos?
     @one.next
     assert @one.eos?
+    @one.next # One beyond the actual end
+    assert @one.eos? # Still the end
 
     @many.next
     refute @many.eos?
@@ -86,17 +88,18 @@ class TestStringParser < MiniTest::Test
     assert @zero.last?
     assert @zero.eos?
 
-    assert @one.last?
+    refute @one.last?
     char1 = @one.peek
-    assert @one.last?
+    refute @one.last?
     char2 = @one.next
+    assert @one.last? # One beyond the last
     char3 = @one.peek
     assert char1
     assert char2 == char1
     assert char3 == @str1[1]
     assert @one.i == 1
     assert @one.last?
-    refute @one.eos?
+    assert @one.eos?
 
     char1 = @many.peek
     char2 = @many.next
@@ -128,5 +131,12 @@ class TestStringParser < MiniTest::Test
     refute some.peek == " "
     assert_equal some.peek, "x"
     assert_equal some.i, 3
+  end
+
+  def test_for_parse_set
+    str = StringParser.new('gamma = "oh, well"')
+    count = str.len    # doesn't make sense??
+    count.times { print str.next; }
+
   end
 end

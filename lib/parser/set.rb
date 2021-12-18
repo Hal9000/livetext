@@ -33,11 +33,11 @@ class Livetext::ParseSet < StringParser
 
   def parse
     pairs = []
+
     loop do
       skip_spaces
       char = self.peek
       break if eos?   # end of string
-      break if char.nil?  # yuck - should be caught by above line   FIXME
       raise "Expected alpha to start var name" unless char =~ /[a-z]/i
       pairs << assignment
       skip_spaces
@@ -53,7 +53,7 @@ class Livetext::ParseSet < StringParser
     end
     pairs
   end
-  
+
   def assignment   # one single var=value
     pair = nil
     var = value = nil
@@ -70,7 +70,7 @@ class Livetext::ParseSet < StringParser
     name = ""
     loop do
       char = self.peek
-      break if char.nil?  # yuck - should be caught by above line   FIXME
+      break if eos?   # end of string
       case char
         when /[a-zA-Z_\.0-9]/
           name << self.next
@@ -106,13 +106,12 @@ class Livetext::ParseSet < StringParser
   make_exception(:BadQuotedString, "Bad quoted string: %1")
 
   def quoted_value
-    quote = self.next   # opening quote... 
+    quote = self.next   # opening quote...
     value = ""
     char = nil
     loop do
       char = self.peek
       break if self.eos?
-      break if char.nil?  # yuck - should be caught by above line   FIXME
       break if char == quote
       char = escaped if char == "\\"
       value << char
@@ -120,7 +119,7 @@ class Livetext::ParseSet < StringParser
     end
     if char == quote
       char = self.next
-      return value 
+      return value
     end
     raise BadQuotedString, quote + value
   end
@@ -131,7 +130,6 @@ class Livetext::ParseSet < StringParser
     loop do
       char = self.peek
       break if self.eos?
-      break if char.nil?  # yuck - should be caught by above line   FIXME
       break if char == " " || char == ","
       value << char
       char = self.next
