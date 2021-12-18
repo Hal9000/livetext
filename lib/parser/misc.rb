@@ -1,7 +1,7 @@
 $LOAD_PATH << "."
 
 require 'livetext'
-require 'stringparser'
+require 'parser/string'
 
 # FIXME - DRY this later
 

@@ -8,7 +8,7 @@ end
 
 require 'fileutils'
 
-$: << Livetext::Path
+$LOAD_PATH << Livetext::Path << "."
 
 require 'functions'
 require 'userapi'

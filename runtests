@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+
+abort "Usage: runtests [all | unit | snapshot | parser | standard]" unless ARGV.first
+
+arg = ARGV.first
+
+# all
+#   unit
+#     standard
+#     parser
+#       string
+#       misc
+#       set
+#   snapshot
+
+case arg
+  when "all"
+    system("ruby test/all.rb")
+  when "unit"
+    system("ruby test/unit/all.rb")
+  when "parser"
+    system("ruby test/unit/parser/all.rb")
+  when "standard"
+    system("ruby test/unit/standard.rb")
+  when "snapshot"
+    system("ruby test/snapshot.rb")
+else
+  puts "Don't know #{arg}"
+end

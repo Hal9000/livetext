@@ -1,13 +1,8 @@
-
 require 'pathname'   # For _seek - remove later??
 
 $LOAD_PATH << "./lib"
 
-require_relative 'stringparser'
-require_relative 'parse_set'
-require_relative 'parse_misc'
-
-# abort Livetext.constants.sort.inspect
+require 'parser'   # nested requires
 
 def make_exception(sym, str, target_class = Object)
   return if target_class.constants.include?(sym)
@@ -168,7 +163,7 @@ module Livetext::Standard
 
   def set
     line = _data.chomp
-    pairs = ParseSet.new(line).parse
+    pairs = Livetext::ParseSet.new(line).parse
     _set_variables(pairs)
   end
 
@@ -182,7 +177,7 @@ module Livetext::Standard
     else
       lines = _body
     end
-    pairs = ParseMisc.parse_vars(prefix, lines)
+    pairs = Livetext::ParseMisc.parse_vars(prefix, lines)
     _set_variables(pairs)
   end
 
@@ -196,7 +191,7 @@ module Livetext::Standard
     else
       lines = _body
     end
-    pairs = ParseMisc.parse_vars(prefix, lines)
+    pairs = Livetext::ParseMisc.parse_vars(prefix, lines)
     _set_variables(pairs)
   end
 

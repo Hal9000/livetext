@@ -1,8 +1,9 @@
+
 require 'minitest/autorun'
 
 $LOAD_PATH << "./lib"
 
-require 'parse_misc'
+require 'parser/misc'
 
 ParseMisc = ::Livetext::ParseMisc
 

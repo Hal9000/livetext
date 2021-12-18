@@ -1,3 +1,5 @@
+$LOAD_PATH << "./lib"
+
 require 'standard'  # FIXME
 
 # Class Functions is where '$$func' functions are stored dynamically... 

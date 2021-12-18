@@ -1,11 +1,8 @@
-#!/usr/bin/env ruby
+export lib="/Users/Hal/.rvm/gems/ruby-2.7.0/gems/livetext-0.9.11/lib/"
+# puts lib.inspect
 
-lib = ARGV.first || `livetext -p`.chomp.chomp
-puts lib.inspect
-
-system("cp lib/* #{lib}/")
-system("cp plugin/* #{lib}/../plugin/")
-system("cp test/*rb #{lib}/../test/")
-system("cp test/unit/*rb #{lib}/../test/unit/")
-system("cp -r test/data/* #{lib}/../test/data/")
-system("cp bin/* #{lib}/../bin/")
+set +x 
+cp -r lib/* $lib/
+cp plugin/* $lib/../plugin/
+cp -r test/*rb $lib/../test/
+cp bin/* $lib/../bin/
