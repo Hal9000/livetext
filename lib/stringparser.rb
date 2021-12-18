@@ -21,11 +21,11 @@ class StringParser
   end
 
   def last?
-    @i >= @len - 1
+    @i > @len - 1
   end
 
   def eos?
-    @eos = true if @i > @len    # duh?
+    @eos = true if last? # duh?
     @eos
   end
 
@@ -35,7 +35,7 @@ class StringParser
   end
 
   def skip_spaces
-    loop do 
+    loop do
       break if peek != " "
       break if eos?
       self.next
@@ -47,9 +47,9 @@ end
 =begin
   skip
   next! skip! peek!(?)
-  expect_alpha 
+  expect_alpha
   expect_number
   skip_spaces
   expect_eos
 =end
-  
+
