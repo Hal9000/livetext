@@ -3,16 +3,7 @@ require 'pathname'   # For _seek - remove later??
 $LOAD_PATH << "./lib"
 
 require 'parser'   # nested requires
-
-def make_exception(sym, str, target_class = Object)
-  return if target_class.constants.include?(sym)
-  target_class.const_set(sym, StandardError.dup)
-  define_method(sym) do |*args|
-    msg = str.dup
-    args.each.with_index {|arg, i| msg.sub!("%#{i+1}", arg) }
-    target_class.class_eval(sym.to_s).new(msg)
-  end
-end
+require 'html'
 
 make_exception(:ExpectedOnOff,    "Error: expected 'on' or 'off'")
 make_exception(:DisallowedName,   "Error: name %1 is invalid")
@@ -22,6 +13,8 @@ make_exception(:FileNotFound,     "Error: file %1 not found")
 # Module Standard comprises most of the standard or "common" methods.
 
 module Livetext::Standard
+
+  include HTMLHelper
 
   SimpleFormats =     # Move this?
    { b: %w[<b> </b>],
@@ -74,27 +67,27 @@ module Livetext::Standard
     Livetext::Functions.class_eval func_def
   end
 
-  def h1; _out _wrapped(@_data, :h1); end
-  def h2; _out _wrapped(@_data, :h2); end
-  def h3; _out _wrapped(@_data, :h3); end
-  def h4; _out _wrapped(@_data, :h4); end
-  def h5; _out _wrapped(@_data, :h5); end
-  def h6; _out _wrapped(@_data, :h6); end
+  def h1; _out wrapped(@_data, :h1); end
+  def h2; _out wrapped(@_data, :h2); end
+  def h3; _out wrapped(@_data, :h3); end
+  def h4; _out wrapped(@_data, :h4); end
+  def h5; _out wrapped(@_data, :h5); end
+  def h6; _out wrapped(@_data, :h6); end
 
   def list
-    _wrap :ul do
-      _body {|line| _out _wrapped(line, :li) }
+    wrap :ul do
+      _body {|line| _out wrapped(line, :li) }
     end
     _optional_blank_line
   end
 
   def list!
-    _wrap(:ul) do
+    wrap(:ul) do
       lines = _body.each   # enumerator
       loop do
         line = lines.next
         line = _format(line)
-        str = line[0] == " " ? line : _wrapped(line, :li)
+        str = line[0] == " " ? line : wrapped(line, :li)
         _out str
       end
     end
@@ -378,7 +371,7 @@ module Livetext::Standard
   end
 
   def mono
-    _wrap ":pre" do
+    wrap ":pre" do
       _body(true) {|line| _out line }
     end
     _optional_blank_line
@@ -386,12 +379,12 @@ module Livetext::Standard
 
   def dlist
     delim = _args.first
-    _wrap(:dl) do
+    wrap(:dl) do
       _body do |line|
         line = _format(line)
         term, defn = line.split(delim)
-        _out _wrapped(term, :dt)
-        _out _wrapped(defn, :dd)
+        _out wrapped(term, :dt)
+        _out wrapped(defn, :dd)
       end
     end
   end
@@ -422,7 +415,7 @@ module Livetext::Standard
 
     lines.each do |line|
       cells = line.split(delim)
-      _wrap :tr do
+      wrap :tr do
         cells.each {|cell| _out "  <td valign=top>#{cell}</td>" }
       end
     end
@@ -439,35 +432,6 @@ module Livetext::Standard
     out = ""
     num.to_i.times { out << "<br>" }
     _out out
-  end
-
-  def _wrapped(str, *tags)   # helper
-    open, close = _open_close_tags(*tags)
-    open + str + close
-  end
-
-  def _wrapped!(str, tag, **extras)    # helper
-    open, close = _open_close_tags(tag)
-    extras.each_pair do |name, value|
-      open.sub!(">", " #{name}='#{value}'>")
-    end
-    open + str + close
-  end
-
-  def _wrap(*tags)     # helper
-    open, close = _open_close_tags(*tags)
-    _out open
-    yield
-    _out close
-  end
-
-  def _open_close_tags(*tags)
-    open, close = "", ""
-    tags.each do |tag|
-      open << "<#{tag}>"
-      close.prepend("</#{tag}>")
-    end
-    [open, close]
   end
 
   def _check_disallowed(name)

@@ -10,6 +10,7 @@ require 'fileutils'
 
 $LOAD_PATH << Livetext::Path << "."
 
+require 'errors'
 require 'functions'
 require 'userapi'
 require 'standard'
@@ -25,15 +26,23 @@ TTY = ::File.open("/dev/tty", "w")
 class Livetext
   Vars = {}
 
+  Space = " "
+  Sigil = "." # Can't change yet
+
+  def self.rx(str, space=nil)
+    Regexp.compile("^" + Regexp.escape(str) + "#{space}")
+  end
+
+  Comment  = rx(Sigil, Livetext::Space)
+  Dotcmd   = rx(Sigil)
+  Ddotcmd  = /^ *\$\.[A-Za-z]/
+
   attr_reader :main
   attr_accessor :no_puts
   attr_accessor :body, :indentation
 
-  # FIXME - phase out stupid 'parameters' method
-
   class << self
-    attr_accessor :parameters  # from outside world (process_text)
-    attr_accessor :output      # both bad solutions?
+    attr_accessor :output      # bad solution?
   end
 
   def vars
@@ -58,17 +67,6 @@ class Livetext
     vars.each_pair {|var, val| _setvar(var, val.to_s) }
     self
   end
-
-  Space = " "
-  Sigil = "." # Can't change yet
-
-  def self.rx(str, space=nil)
-    Regexp.compile("^" + Regexp.escape(str) + "#{space}")
-  end
-
-  Comment  = rx(Sigil, Livetext::Space)
-  Dotcmd   = rx(Sigil)
-  Ddotcmd  = /^ *\$\.[A-Za-z]/
 
   def initialize(output = ::STDOUT)
     @source = nil

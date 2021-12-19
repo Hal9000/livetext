@@ -60,7 +60,7 @@ class TestStringParser < MiniTest::Test
     assert @zero.eos?
     
     @one.next
-    refute @one.eos?
+    assert @one.eos?
     @one.next
     assert @one.eos?
 
@@ -86,9 +86,9 @@ class TestStringParser < MiniTest::Test
     assert @zero.last?
     assert @zero.eos?
 
-    assert @one.last?
+    refute @one.last?    # FIXME??
     char1 = @one.peek
-    assert @one.last?
+    refute @one.last?    # FIXME??
     char2 = @one.next
     char3 = @one.peek
     assert char1
@@ -96,7 +96,7 @@ class TestStringParser < MiniTest::Test
     assert char3 == @str1[1]
     assert @one.i == 1
     assert @one.last?
-    refute @one.eos?
+    assert @one.eos?     # FIXME??
 
     char1 = @many.peek
     char2 = @many.next

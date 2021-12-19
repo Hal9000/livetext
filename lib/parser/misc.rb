@@ -1,19 +1,7 @@
-$LOAD_PATH << "."
+$LOAD_PATH << "." << "./lib" << "./lib/parser"
 
 require 'livetext'
 require 'parser/string'
-
-# FIXME - DRY this later
-
-def make_exception(sym, str, target_class = Object)
-  return if target_class.constants.include?(sym)
-  target_class.const_set(sym, StandardError.dup)
-  define_method(sym) do |*args|
-    msg = str.dup
-    args.each.with_index {|arg, i| msg.sub!("%#{i+1}", arg) }
-    target_class.class_eval(sym.to_s).new(msg)
-  end
-end
 
 make_exception(:MismatchedQuotes, "Error: mismatched quotes")
 make_exception(:NilValue,         "Error: nil value")
