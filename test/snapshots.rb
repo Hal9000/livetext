@@ -126,15 +126,27 @@ class TestingLivetext < MiniTest::Test
         err_ok = errors == errexp
       end
 
-      nout = output.split("\n").size
-      nexp = expected.split("\n").size
-      bad_out = "--- Expected (#{nexp} lines): \n#{green(expected)}\n--- Output (#{nout} lines):  \n#{red(output)}\n"
-      bad_err = "--- Error Expected: \n#{green(errexp)}\n--- Error Output:  \n#{red(errors)}\n"
+      unless out_ok
+        system("mkdir -p /tmp/#{base}")
+        out_sdiff = "/tmp/#{base}/exp.out.sdiff"
+        File.open(out_sdiff, "w") {|file| file.puts "#{'%-60s'% 'EXPECTED output'}| #{'%-60s'% 'ACTUAL output'}}" }
+        system("/usr/bin/sdiff -t -w 121 #{exp} #{out} >>#{out_sdiff}")
+        bad_out = "\n  >>> Unexpected stdout! See #{out_sdiff}"
+      end
+
+      unless err_ok
+        system("mkdir -p /tmp/#{base}")
+        err_sdiff = "/tmp/#{base}/exp.err.sdiff"
+        File.open(err_sdiff, "w") {|file| file.puts "#{'%-60s'% 'EXPECTED error'}| #{'%-60s'% 'ACTUAL error'}}" }
+        system("/usr/bin/sdiff -t -w 121 #{erx} #{err} >>#{err_sdiff}")
+        bad_err = "\n  >>> Unexpected stderr! See #{err_sdiff}"
+      end
+
 
       assert(err_ok, bad_err)
       assert(out_ok, bad_out)
       # only on success
-      system("rm -f #{out} #{err}") if out_ok && err_ok
+      system("rm -f #{out} #{err} /tmp/#{base}") if out_ok && err_ok
     end
   end
 

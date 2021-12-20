@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-abort "Usage: runtests [all | unit | snapshot | parser | standard | html]" unless ARGV.first
+abort "Usage: runtests [all | unit | snapshots | parser | standard | html]" unless ARGV.first
 
 arg = ARGV.first
 
@@ -24,8 +24,8 @@ case arg
     system("ruby test/unit/standard.rb")
   when "html"
     system("ruby test/unit/html.rb")
-  when "snapshot"
-    system("ruby test/snapshot.rb")
+  when "snapshots"
+    system("ruby test/snapshots.rb")
 else
   puts "Don't know #{arg}"
 end
