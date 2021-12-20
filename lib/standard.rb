@@ -1,6 +1,6 @@
 require 'pathname'   # For _seek - remove later??
 
-$LOAD_PATH << "./lib"
+$LOAD_PATH << "." << "./lib"
 
 require 'parser'   # nested requires
 require 'html'
@@ -262,47 +262,14 @@ module Livetext::Standard
     _optional_blank_line
   end
 
-  def _mixin(name)   # helper
-    @_args = [name]
-    mixin
-  end
-
   def mixin
     name = @_args.first   # Expect a module name
     return if @_mixins.include?(name)
     @_mixins << name
-    file = _find_mixin(name)
-    _use_mixin(name, file)
+    parse = ParseMixin.new
+    file = parse.find_mixin(name)
+    parse.use_mixin(name, file)
     _optional_blank_line
-  end
-
-  def _cwd_root?
-    File.dirname(File.expand_path(".")) == "/"
-  end
-
-  def _find_mixin(name)
-    file = "#{Plugins}/" + name.downcase + ".rb"
-    return file if File.exist?(file)
-
-    file = "./#{name}.rb"
-    return file if File.exist?(file)
-
-    if _cwd_root?
-      raise "No such mixin '#{name}'"
-    else
-      Dir.chdir("..") { _find_mixin(name) }
-    end
-  end
-
-  def _use_mixin(name, file)
-    modname = name.gsub("/","_").capitalize
-    meths = grab_file(file)
-    string = "module ::#{modname}; #{meths}\nend"
-    eval(string)
-    newmod = Object.const_get("::" + modname)
-    self.extend(newmod)
-    init = "init_#{name}"
-    self.send(init) if self.respond_to? init
   end
 
   def copy
@@ -365,9 +332,6 @@ module Livetext::Standard
   def newpage
     _out '<p style="page-break-after:always;"></p>'
     _out "<p/>"
-  end
-
-  def invoke(str)
   end
 
   def mono

@@ -1,7 +1,7 @@
 
 require 'minitest/autorun'
 
-$LOAD_PATH << "./lib"
+$LOAD_PATH << "." << "./lib"
 
 require 'parse_set'
 

@@ -1,4 +1,3 @@
-
 # Class Livetext skeleton (top level).
 
 class Livetext
@@ -6,9 +5,9 @@ class Livetext
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
-require 'fileutils'
+$LOAD_PATH << "." << Livetext::Path
 
-$LOAD_PATH << Livetext::Path << "."
+require 'fileutils'
 
 require 'errors'
 require 'functions'

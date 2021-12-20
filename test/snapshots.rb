@@ -1,6 +1,6 @@
 require 'minitest/autorun'
 
-$LOAD_PATH << "./lib"
+$LOAD_PATH << "." << "./lib"
 
 require 'livetext'
 
@@ -146,7 +146,7 @@ class TestingLivetext < MiniTest::Test
       assert(err_ok, bad_err)
       assert(out_ok, bad_out)
       # only on success
-      system("rm -f #{out} #{err} /tmp/#{base}") if out_ok && err_ok
+      system("rm -rf #{out} #{err} /tmp/#{base}") if out_ok && err_ok
     end
   end
 
