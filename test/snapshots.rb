@@ -69,7 +69,7 @@ class TestingLivetext < MiniTest::Test
     def check_stdout
       if @literal_out
         actual, expected = File.read(ACTUAL_OUT), File.read(EXP_OUT)
-        same = assert actual == expected
+        same = actual == expected
         @errors = true if not same
         file = "out-sdiff.txt"
         sdiff(ACTUAL_OUT, EXP_OUT, file)
@@ -82,7 +82,7 @@ class TestingLivetext < MiniTest::Test
     def check_stderr
       if @literal_err
         actual, expected = File.read(ACTUAL_ERR), File.read(EXP_ERR)
-        same = assert actual == expected
+        same = actual == expected
         @errors = true if not same
         file = "err-sdiff.txt"
         sdiff(ACTUAL_ERR, EXP_ERR, file)
