@@ -33,7 +33,8 @@ class TestingLivetext < MiniTest::Test
     EXP_OUT,    EXP_ERR    = "expected-output.txt", "expected-error.txt"
     MATCH_OUT,  MATCH_ERR  =  "match-output.txt", "match-error.txt"
 
-    def initialize(base)
+    def initialize(base, assertion = nil)
+      @assertion = assertion
       @base = base
       @errors = false
       Dir.chdir(base) do
@@ -57,7 +58,8 @@ class TestingLivetext < MiniTest::Test
         info = "Expected line #{line_num} of #{actual.inspect} to match #{item.inspect} (was: #{lines[line_num].inspect})"
         good = item === lines[line_num]
         @errors = true unless good
-        assert item === lines[line_num], info   # string or regex
+#       assert item === lines[line_num], info   # string or regex
+        @assertion.call item === lines[line_num], info   # string or regex
       end
     end
 
@@ -73,7 +75,8 @@ class TestingLivetext < MiniTest::Test
         @errors = true if not same
         file = "out-sdiff.txt"
         sdiff(ACTUAL_OUT, EXP_OUT, file)
-        assert same, "Discrepancy in STDOUT - see #@base/#{file}"
+#       assert same, "Discrepancy in STDOUT - see #@base/#{file}"
+        @assertion.call same, "Discrepancy in STDOUT - see #@base/#{file}"
       else
         check_matches(ACTUAL_OUT, MATCH_OUT)
       end
@@ -86,7 +89,8 @@ class TestingLivetext < MiniTest::Test
         @errors = true if not same
         file = "err-sdiff.txt"
         sdiff(ACTUAL_ERR, EXP_ERR, file)
-        assert same, "Discrepancy in STDERR - see #@base/#{file}"
+#       assert same, "Discrepancy in STDERR - see #@base/#{file}"
+        @assertion.call same, "Discrepancy in STDERR - see #@base/#{file}"
       else
         check_matches(ACTUAL_ERR, MATCH_ERR)
       end
@@ -162,7 +166,8 @@ class TestingLivetext < MiniTest::Test
 
   Subset.each do |tdir|
     define_method("test_#{tdir}") do
-      this = Snapshot.new(tdir)
+      myproc = Proc.new {|bool, info| assert bool, info }
+      this = Snapshot.new(tdir, myproc)
       this.run
     end
   end
