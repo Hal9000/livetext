@@ -1,7 +1,8 @@
    SOONISH?
    --------
-   import command   
+   import command
      # same as mixin, BUT... has a Ruby module (require/include)
+     # => Add "imports" directory"
    Unit tests: standard, ...
    More custom exceptions
 x  Create intra-line parser!
@@ -34,7 +35,7 @@ x  Create intra-line parser!
    mixin as module?
    automated checking of output file age
    too many variations - transform, process, etc.
-   Change predefined function names?? e.g. $$date becomes $$_date 
+   Change predefined function names?? e.g. $$date becomes $$_date
    Debugging command to dump variables
    Add `_raw_args and let `_args honor quotes
    way to set defaults for images, etc.
@@ -94,11 +95,11 @@ x  .variables (for config) or .set with a text body?
 x  escape bug  \.this
 x  better way to do _include
 x  Let .mixin search upward in tree?
-x  Add versioning information 
+x  Add versioning information
 x  Think about command line executable
 x  Package as gem
 x  Support quotes in `.set values
-x  Support functions (``$$func) 
+x  Support functions (``$$func)
 x  Ignore first blank line after `[.end]? (and after raw-tag?)
 x  Bug: underscore in code (inline) causes italics
 x  way to install plugins
