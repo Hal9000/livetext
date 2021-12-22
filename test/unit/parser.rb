@@ -1,6 +1,6 @@
 
-$LOAD_PATH << "."   # /parser"
+# $LOAD_PATH << "."   # /parser"
 
-require 'test/unit/parser/string'
-require 'test/unit/parser/set'
-require 'test/unit/parser/general'
+require_relative 'parser/string'
+require_relative 'parser/set'
+require_relative 'parser/general'

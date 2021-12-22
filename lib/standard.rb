@@ -1,6 +1,6 @@
 require 'pathname'   # For _seek - remove later??
 
-$LOAD_PATH << "." << "./lib"
+# $LOAD_PATH << "." << "./lib"
 
 require 'parser'   # nested requires
 require 'html'

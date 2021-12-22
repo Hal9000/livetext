@@ -5,7 +5,7 @@ class Livetext
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
-$LOAD_PATH << "." << Livetext::Path
+# $LOAD_PATH << "." << Livetext::Path
 
 require 'fileutils'
 

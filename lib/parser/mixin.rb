@@ -1,4 +1,4 @@
-$LOAD_PATH << "."
+# $LOAD_PATH << "."
 
 require 'livetext'
 require 'parser/string'
@@ -6,16 +6,17 @@ require 'parser/string'
 make_exception(:BadVariableName, "Error: invalid variable name")
 make_exception(:NoEqualSign,     "Error: no equal sign found")
 
+# FIXME probably belongs elsewhere?
 
-class Livetext::ParseMixin < StringParser
+class Livetext::ParseMixin   # < StringParser
 
-  def self.parse(str)
-    self.new(str).parse
-  end
-
-  def initialize(line)
-    super
-  end
+#   def self.parse(str)
+#     self.new(str).parse
+#   end
+# 
+#   def initialize(line)
+#     super
+#   end
 
   def cwd_root?
     File.dirname(File.expand_path(".")) == "/"

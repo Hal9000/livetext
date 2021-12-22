@@ -1,8 +1,10 @@
    SOONISH?
    --------
+   import command   
+     # same as mixin, BUT... has a Ruby module (require/include)
    Unit tests: standard, ...
    More custom exceptions
-   Create intra-line parser!
+x  Create intra-line parser!
    Create high-level parser?
    All dot-commands into their own module??
    Create module for helpers?

@@ -1,4 +1,4 @@
-$LOAD_PATH << "." << "./lib" << "./lib/parser"
+# $LOAD_PATH << "." << "./lib" << "./lib/parser"
 
 require 'livetext'
 require 'parser/string'

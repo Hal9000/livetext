@@ -1,6 +1,6 @@
 require 'minitest/autorun'
 
-$LOAD_PATH << "." << "./lib" # << "./lib/parser"
+# $LOAD_PATH << "." << "./lib" # << "./lib/parser"
 
 require 'parser/string'
 
