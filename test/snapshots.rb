@@ -101,7 +101,7 @@ class TestingLivetext < MiniTest::Test
 
     def run
       Dir.chdir(@base) do
-        cmd = "bin/livetext #{SOURCE} >#{ACTUAL_OUT} 2>#{ACTUAL_ERR}"
+        cmd = "../../../bin/livetext #{SOURCE} >#{ACTUAL_OUT} 2>#{ACTUAL_ERR}"
         system(cmd)
         check_stdout
         check_stderr

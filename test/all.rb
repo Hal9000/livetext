@@ -1,6 +1,6 @@
 
-$LOAD_PATH << "." << "./lib" << "./test" << "./test/unit" << "./lib/parser"   # /parser"
+# $LOAD_PATH << "." << "./lib" << "./test" << "./test/unit" << "./lib/parser"   # /parser"
 
-require 'test/unit/all'
+require_relative 'unit/all'
 
-require 'test/snapshots'             # snapshots
+require_relative 'snapshots'             # snapshots

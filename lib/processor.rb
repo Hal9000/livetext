@@ -1,3 +1,5 @@
+require 'livetext'
+
 # Class Livetext is the actual top-level class.
 
 class Livetext

@@ -1,7 +1,7 @@
 # $LOAD_PATH << "."
 
 require 'livetext'
-require 'parser/string'
+require_relative 'string'
 
 make_exception(:BadVariableName, "Error: invalid variable name")
 make_exception(:NoEqualSign,     "Error: no equal sign found")

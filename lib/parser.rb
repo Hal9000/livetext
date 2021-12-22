@@ -1,6 +1,6 @@
 # $LOAD_PATH << "." << "./lib" << "./lib/parser"
 
-require 'parser/string'
-require 'parser/misc'
-require 'parser/set'
-require 'parser/mixin'
+require_relative 'parser/string'
+require_relative 'parser/general'
+require_relative 'parser/set'
+require_relative 'parser/mixin'
