@@ -4,6 +4,7 @@ $LOAD_PATH << "." << "./lib"
 
 require 'parser'   # nested requires
 require 'html'
+require 'helpers'
 
 make_exception(:ExpectedOnOff,    "Error: expected 'on' or 'off'")
 make_exception(:DisallowedName,   "Error: name %1 is invalid")
@@ -15,6 +16,7 @@ make_exception(:FileNotFound,     "Error: file %1 not found")
 module Livetext::Standard
 
   include HTMLHelper
+  include Helpers
 
   SimpleFormats =     # Move this?
    { b: %w[<b> </b>],
@@ -39,7 +41,7 @@ module Livetext::Standard
   end
 
   def backtrace
-    @backtrace = _onoff(@_args.first)
+    @backtrace = onoff(@_args.first)
     _optional_blank_line
   end
 
@@ -56,7 +58,7 @@ module Livetext::Standard
 
   def func
     funcname = @_args[0]
-    _check_disallowed(funcname)
+    check_disallowed(funcname)
     func_def = <<~EOS
       def #{funcname}(param)
         #{_body.to_a.join("\n")}
@@ -139,25 +141,19 @@ module Livetext::Standard
   def _def
     name = @_args[0]
     str = "def #{name}\n"
-    raise "Illegal name '#{name}'" if _disallowed?(name)
+    check_disallowed(name)
+    # Difficult to avoid eval here
     str << _body(true).join("\n")
     str << "\nend\n"
     eval str
-  rescue => err
-    _error!(err)
-  end
-
-  def _set_variables(pairs)
-    pairs.each do |pair|
-      var, value = *pair
-      @parent._setvar(var, value)
-    end
+# rescue => err
+#   _error!(err)
   end
 
   def set
     line = _data.chomp
     pairs = Livetext::ParseSet.new(line).parse
-    _set_variables(pairs)
+    set_variables(pairs)
   end
 
   def variables!  # cwd, not FileDir - weird, fix later
@@ -171,7 +167,7 @@ module Livetext::Standard
       lines = _body
     end
     pairs = Livetext::ParseMisc.parse_vars(prefix, lines)
-    _set_variables(pairs)
+    set_variables(pairs)
   end
 
   def variables
@@ -185,7 +181,7 @@ module Livetext::Standard
       lines = _body
     end
     pairs = Livetext::ParseMisc.parse_vars(prefix, lines)
-    _set_variables(pairs)
+    set_variables(pairs)
   end
 
   def heredoc
@@ -226,21 +222,21 @@ module Livetext::Standard
   def seek    # like include, but search upward as needed
     file = @_args.first
 		file = _seek(file)
-    _check_file_exists(file)
+    check_file_exists(file)
     @parent.process_file(file)
     _optional_blank_line
   end
 
   def in_out  # FIXME dumb name!
     file, dest = *@_args
-    _check_file_exists(file)
+    check_file_exists(file)
     @parent.process_file(file, dest)
     _optional_blank_line
   end
 
   def _include   # dot command
     file = _format(@_args.first)  # allows for variables
-    _check_file_exists(file)
+    check_file_exists(file)
     @parent.process_file(file)
     _optional_blank_line
   end
@@ -266,7 +262,7 @@ module Livetext::Standard
     name = @_args.first   # Expect a module name
     return if @_mixins.include?(name)
     @_mixins << name
-    parse = ParseMixin.new
+    parse = Livetext::ParseMixin.new(name)  # FIXME??
     file = parse.find_mixin(name)
     parse.use_mixin(name, file)
     _optional_blank_line
@@ -274,7 +270,7 @@ module Livetext::Standard
 
   def copy
     file = @_args.first
-    _check_file_exists(file)
+    check_file_exists(file)
     _out grab_file(file)
     _optional_blank_line
   end
@@ -289,12 +285,12 @@ module Livetext::Standard
   end
 
   def debug
-    self._debug = _onoff(@_args.first)
+    self._debug = onoff(@_args.first)
   end
 
   def passthru
     # FIXME - add check for args size? (helpers)
-    @_nopass = ! _onoff(_args.first)
+    @_nopass = ! onoff(_args.first)
   end
 
   def nopass
@@ -303,10 +299,10 @@ module Livetext::Standard
 
   def para
     # FIXME - add check for args size? (helpers)
-    @_nopara = ! _onoff(_args.first)
+    @_nopara = ! onoff(_args.first)
   end
 
-  def _onoff(arg)   # helper
+  def onoff(arg)   # helper
     arg ||= "on"
     raise ExpectedOnOff unless String === arg
     case arg.downcase
@@ -396,14 +392,6 @@ module Livetext::Standard
     out = ""
     num.to_i.times { out << "<br>" }
     _out out
-  end
-
-  def _check_disallowed(name)
-    raise DisallowedName if _disallowed?(name)
-  end
-
-  def _check_file_exists(file)
-    raise FileNotFound(file) unless File.exist?(file)
   end
 
 end

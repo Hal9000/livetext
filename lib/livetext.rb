@@ -23,6 +23,7 @@ TTY = ::File.open("/dev/tty", "w")
 # Class Livetext reopened (top level).
 
 class Livetext
+
   Vars = {}
 
   Space = " "
@@ -213,18 +214,13 @@ class Livetext
   def handle_scomment(line)
   end
 
-  def _check_name(name)
-    @main._error! "Name '#{name}' is not permitted" if @main._disallowed?(name)
-    @main._error! "Mismatched 'end'" if name == "end"
-    name = "_" + name if %w[def include].include?(name)
-    name
-  end
-
   def _get_name(line)
     name, data = line.split(" ", 2)
     name = name[1..-1]  # chop off sigil
+    name = "_" + name if %w[include def].include?(name)
     @main.data = data
-    name = _check_name(name)
+    @main.check_disallowed(name)
+    name
   end
 
   def handle_dotcmd(line, indent = 0)
@@ -241,7 +237,7 @@ class Livetext
     result
   rescue => err
     STDERR.puts "Error: #{err.inspect}"
-    STDERR.puts err.backtrace
+    # STDERR.puts err.backtrace
     # @main._error!(err)
     puts @body
     @body = ""

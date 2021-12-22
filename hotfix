@@ -4,5 +4,5 @@ export lib="/Users/Hal/.rvm/gems/ruby-2.7.0/gems/livetext-0.9.11/lib/"
 set +x 
 cp -r lib/* $lib/
 cp plugin/* $lib/../plugin/
-cp -r test/*rb $lib/../test/
+cp -r test/* $lib/../test/
 cp bin/* $lib/../bin/

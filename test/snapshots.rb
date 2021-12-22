@@ -84,6 +84,22 @@ class TestingLivetext < MiniTest::Test
     "[31m" + str.to_s + "[0m"
   end
 
+  def sdiff(which, f1, f2, out, rx)
+    return "\n >>> No match for std#{which}!" if rx
+    File.open(out, "w") {|file| file.puts "#{'%-60s'% 'EXPECTED'}| #{'%-60s'% 'ACTUAL'}" }
+    system("/usr/bin/sdiff -t -w 121 #{f1} #{f2} >>#{out}")
+    return "\n  >>> Unexpected std#{which}! See #{out}"
+  end
+
+  def NEW_external_files(base)
+      src, out, exp = "source.lt3", "/tmp/#{base}--actual-output.txt", "expected-output.txt"
+      err, erx = "/tmp/#{base}--actual-error.txt", "expected-error.txt"
+      out_match = "out-match.txt"
+      err_match = "err-match.txt"
+
+  end 
+
+
   def external_files(base)
     Dir.chdir(base) do
       src, out, exp = "source.lt3", "/tmp/#{base}--actual-output.txt", "expected-output.txt"
@@ -100,48 +116,16 @@ class TestingLivetext < MiniTest::Test
       errors   = File.read(err)
       rx_out = rx_err = nil
 
-      if File.exist?(expout_regex)
-        rx_out = /#{Regexp.escape(File.read(expout_regex).chomp)}/
-        expected = rx_out # "(match test)"
-      else
-        expected = File.read(exp)
-      end
+      expected = File.exist?(expout_regex) ?  rx_out = /#{Regexp.escape(File.read(expout_regex).chomp)}/ : File.read(exp)
+      errexp   = File.exist?(experr_regex) ?  rx_err = /#{Regexp.escape(File.read(experr_regex).chomp)}/ : File.read(erx)
 
-      if File.exist?(experr_regex)
-        rx_err = /#{Regexp.escape(File.read(experr_regex).chomp)}/
-        errexp = rx_err  # "(match test)"
-      else
-        errexp = File.read(erx)
-      end
+      out_ok = rx_out ? output =~ rx_out : output == expected
+      err_ok = rx_err ? errors =~ rx_err : errors == errexp
 
-      if rx_out
-        out_ok = output =~ rx_out
-      else
-        out_ok = output == expected
-      end
-
-      if rx_err
-        err_ok = errors =~ rx_err
-      else
-        err_ok = errors == errexp
-      end
-
-      unless out_ok
-        system("mkdir -p /tmp/#{base}")
-        out_sdiff = "/tmp/#{base}/exp.out.sdiff"
-        File.open(out_sdiff, "w") {|file| file.puts "#{'%-60s'% 'EXPECTED output'}| #{'%-60s'% 'ACTUAL output'}}" }
-        system("/usr/bin/sdiff -t -w 121 #{exp} #{out} >>#{out_sdiff}")
-        bad_out = "\n  >>> Unexpected stdout! See #{out_sdiff}"
-      end
-
-      unless err_ok
-        system("mkdir -p /tmp/#{base}")
-        err_sdiff = "/tmp/#{base}/exp.err.sdiff"
-        File.open(err_sdiff, "w") {|file| file.puts "#{'%-60s'% 'EXPECTED error'}| #{'%-60s'% 'ACTUAL error'}}" }
-        system("/usr/bin/sdiff -t -w 121 #{erx} #{err} >>#{err_sdiff}")
-        bad_err = "\n  >>> Unexpected stderr! See #{err_sdiff}"
-      end
-
+      system("mkdir -p /tmp/#{base}")
+      bad_out = bad_err = nil
+      bad_out = sdiff("out", exp, out, "/tmp/#{base}/exp.out.sdiff", rx_out) unless out_ok
+      bad_err = sdiff("err", erx, err, "/tmp/#{base}/exp.err.sdiff", rx_err) unless err_ok
 
       assert(err_ok, bad_err)
       assert(out_ok, bad_out)
