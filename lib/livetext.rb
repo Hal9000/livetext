@@ -1,7 +1,7 @@
 # Class Livetext skeleton (top level).
 
 class Livetext
-  VERSION = "0.9.12"
+  VERSION = "0.9.13"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
