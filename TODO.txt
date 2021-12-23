@@ -2,7 +2,10 @@
    --------
    import command
      # same as mixin, BUT... has a Ruby module (require/include)
+     # => Actually thinking a class rather than module may be eaiser for inclusion - Mykl
      # => Add "imports" directory"
+     # Add Mixin Tests (looks like no tests for any mixin?)
+     # Add Importable Tests
    Unit tests: standard, ...
    More custom exceptions
 x  Create intra-line parser!

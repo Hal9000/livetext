@@ -268,6 +268,15 @@ module Livetext::Standard
     _optional_blank_line
   end
 
+  def import
+    name = @_args.first   # Expect a module name
+    return if @_mixins.include?(name)
+    @_mixins << name
+    parse = Livetext::ParseMixin.new(name)
+    parse.use_mixin(name)
+    _optional_blank_line
+  end
+
   def copy
     file = @_args.first
     check_file_exists(file)
