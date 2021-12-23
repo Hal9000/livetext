@@ -1,9 +1,11 @@
 require 'minitest/autorun'
 
-require 'livetext'
+require_relative '../lib/livetext'
 
 =begin
 Snapshots...
+
+NOTE that the external_files method has been replaced by the Snapshot class.
 
 You can add any ordinary test method above. But so far, most of these tests simply 
 call external_files.
@@ -16,7 +18,7 @@ The external_files method works this way:
   - We run livetext on the source and compare actual vs expected (stdout, stderr)
   - The "real" output gets checked first
   - Of course, both must compare correctly for the test to pass
-  - See also: line1match*
+  - See also: match*
 =end
 
 
@@ -100,6 +102,7 @@ class TestingLivetext < MiniTest::Test
     end
 
     def run
+      @errors = false   # oops, need to reset
       Dir.chdir(@base) do
         cmd = "../../../bin/livetext #{SOURCE} >#{ACTUAL_OUT} 2>#{ACTUAL_ERR}"
         system(cmd)
@@ -153,14 +156,6 @@ class TestingLivetext < MiniTest::Test
   TestDirs = Dir.entries(".").reject {|fname| ! File.directory?(fname) } - %w[. ..]
   selected = File.readlines("subset.txt").map(&:chomp)
   Subset   = selected.empty? ? TestDirs : selected
-
-# Old code:
-
-# Subset.each do |tdir|
-#   define_method("test_#{tdir}") do
-#     external_files(tdir)
-#   end
-# end
 
   Subset.each do |tdir|
     define_method("test_#{tdir}") do

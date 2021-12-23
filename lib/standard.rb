@@ -1,7 +1,5 @@
 require 'pathname'   # For _seek - remove later??
 
-# $LOAD_PATH << "." << "./lib"
-
 require_relative 'parser'   # nested requires
 require_relative 'html'
 require_relative 'helpers'
@@ -26,7 +24,7 @@ module Livetext::Standard
 
   attr_reader :_data
 
-  def data=(val)
+  def data=(val)    # FIXME this is weird, let's not do it
     @_data = val.chomp
     @_args = val.split rescue []
     @_mixins = []

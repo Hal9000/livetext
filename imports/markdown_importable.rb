@@ -1,7 +1,7 @@
 # This file is intended to be used via a Livetext .mixin
 # or the equivalent.
 
-require 'livetext/importable'
+require_relative '../lib/livetext/importable'
 
 class MarkdownImportable < LiveText::Importable
 

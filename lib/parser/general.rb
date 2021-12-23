@@ -1,4 +1,3 @@
-# $LOAD_PATH << "." << "./lib" << "./lib/parser"
 
 require_relative '../livetext'
 require_relative 'string'

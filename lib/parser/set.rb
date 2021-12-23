@@ -1,4 +1,3 @@
-# $LOAD_PATH << "."
 
 require_relative '../livetext'
 require_relative 'string'

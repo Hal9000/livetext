@@ -1,4 +1,4 @@
-require 'livetext'
+require '../lib/livetext'
 require '../lib/formatline'
 
   def red(str)

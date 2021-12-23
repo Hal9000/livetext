@@ -1,6 +1,5 @@
-# $LOAD_PATH << "." << "./lib"
 
-require_relative 'standard'  # FIXME
+require_relative 'standard'  # FIXME?
 
 # Class Functions is where '$$func' functions are stored dynamically... 
 # user-def AND pre-def??

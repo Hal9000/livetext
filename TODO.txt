@@ -8,7 +8,6 @@
      # Add Importable Tests
    Unit tests: standard, ...
    More custom exceptions
-x  Create intra-line parser!
    Create high-level parser?
    All dot-commands into their own module??
    Create module for helpers?
@@ -90,6 +89,7 @@ x  Create intra-line parser!
    DONE
    ----
 
+x  Create intra-line parser!
 x  Create predefined variables (e.g., `[$_source_file], `$[_line])
 x  Create predefined functions (e.g., `[$$_date])
 x  System variables are capitalized?
