@@ -1,8 +1,7 @@
 require 'date'
 require 'find'
 
-$: << "."
-require "lib/livetext"
+require_relative "lib/livetext"
 
 Gem::Specification.new do |s|
   system("rm -f *.gem")

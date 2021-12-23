@@ -3,7 +3,7 @@ require 'minitest/autorun'
 
 # $LOAD_PATH << "." << "./lib"
 
-require 'parser/set'
+require '../../../lib/parser/set'
 
 ParseSet = Livetext::ParseSet
 

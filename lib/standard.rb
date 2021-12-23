@@ -2,9 +2,9 @@ require 'pathname'   # For _seek - remove later??
 
 # $LOAD_PATH << "." << "./lib"
 
-require 'parser'   # nested requires
-require 'html'
-require 'helpers'
+require_relative 'parser'   # nested requires
+require_relative 'html'
+require_relative 'helpers'
 
 make_exception(:ExpectedOnOff,    "Error: expected 'on' or 'off'")
 make_exception(:DisallowedName,   "Error: name %1 is invalid")

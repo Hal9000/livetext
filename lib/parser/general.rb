@@ -1,7 +1,7 @@
 # $LOAD_PATH << "." << "./lib" << "./lib/parser"
 
-require 'livetext'
-require 'parser/string'
+require_relative '../livetext'
+require_relative 'string'
 
 make_exception(:MismatchedQuotes, "Error: mismatched quotes")
 make_exception(:NilValue,         "Error: nil value")

@@ -1,5 +1,5 @@
 require 'livetext'
-require 'formatline'
+require '../lib/formatline'
 
   def red(str)
     "[31m" + str + "[0m"

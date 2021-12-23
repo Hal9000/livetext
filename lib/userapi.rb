@@ -1,6 +1,6 @@
 # User API
 
-require 'formatline'
+require_relative 'formatline'
 
 # UserAPI deals mostly with user-level methods.
 module Livetext::UserAPI

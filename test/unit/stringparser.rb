@@ -2,7 +2,7 @@ require 'minitest/autorun'
 
 # $LOAD_PATH << "." << "./lib"
 
-require 'stringparser'
+require_relative '../../../lib/stringparser'
 
 class TestStringParser < MiniTest::Test
 

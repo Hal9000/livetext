@@ -2,7 +2,7 @@ require 'minitest/autorun'
 
 # $LOAD_PATH << "." << "./lib"
 
-require 'livetext'
+require_relative '../../../lib/livetext'
 
 class TestingLivetext < MiniTest::Test
   include Livetext::Standard

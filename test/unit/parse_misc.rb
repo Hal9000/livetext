@@ -2,6 +2,8 @@ require 'minitest/autorun'
 
 # $LOAD_PATH << "." << "./lib"
 
+# FIXME delete??
+
 require 'parse_misc'
 
 ParseMisc = ::Livetext::ParseMisc

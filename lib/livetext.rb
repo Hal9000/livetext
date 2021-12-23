@@ -1,20 +1,20 @@
 # Class Livetext skeleton (top level).
 
 class Livetext
-  VERSION = "0.9.11"
+  VERSION = "0.9.12"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
-# $LOAD_PATH << "." << Livetext::Path
+# $LOAD_PATH << Livetext::Path
 
 require 'fileutils'
 
-require 'errors'
-require 'functions'
-require 'userapi'
-require 'standard'
-require 'formatline'
-require 'processor'
+require_relative 'errors'
+require_relative 'functions'
+require_relative 'userapi'
+require_relative 'standard'
+require_relative 'formatline'
+require_relative 'processor'
 
 Plugins = File.expand_path(File.join(File.dirname(__FILE__), "../plugin"))
 
