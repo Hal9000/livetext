@@ -8,7 +8,7 @@ make_exception(:NoEqualSign,     "Error: no equal sign found")
 # FIXME probably belongs elsewhere?
 
 class Livetext::ParseImport
-  def use_mixin(name)
+  def use_import(name)
     require name
     include name
     init = "init_#{name}"

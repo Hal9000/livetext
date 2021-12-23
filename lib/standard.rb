@@ -272,8 +272,8 @@ module Livetext::Standard
     name = @_args.first   # Expect a module name
     return if @_mixins.include?(name)
     @_mixins << name
-    parse = Livetext::ParseMixin.new(name)
-    parse.use_mixin(name)
+    parse = Livetext::ParseImport.new(name)
+    parse.use_import(name)
     _optional_blank_line
   end
 
