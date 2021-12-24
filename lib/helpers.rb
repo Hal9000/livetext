@@ -12,7 +12,7 @@ module Helpers
   def set_variables(pairs)
     pairs.each do |pair|
       var, value = *pair
-      @parent._setvar(var, value)
+      @parent.setvar(var, value)
     end
   end
 
@@ -57,6 +57,29 @@ module Helpers
     else
       raise ExpectedOnOff
     end
+  end
+
+  def setvar(var, val)
+    str, sym = var.to_s, var.to_sym
+    Livetext::Vars[str] = val
+    Livetext::Vars[sym] = val
+    @_vars[str] = val
+    @_vars[sym] = val
+  end
+
+  def setfile(file)
+    if file
+      setvar(:File, file)
+      dir = File.dirname(File.expand_path(file))
+      setvar(:FileDir, dir)
+    else
+      setvar(:File,    "[no file]")
+      setvar(:FileDir, "[no dir]")
+    end
+  end
+
+  def setfile!(file)  # FIXME why does this variant exist?
+    setvar(:File, file)
   end
 
 end

@@ -60,7 +60,7 @@ class Livetext
     call = Array(call)
     mix.each {|lib| obj.mixin(lib) }
     call.each {|cmd| obj.main.send(cmd[1..-1]) }  # ignores leading dot, no param
-    vars.each_pair {|var, val| obj._setvar(var, val.to_s) }
+    vars.each_pair {|var, val| obj.setvar(var, val.to_s) }
     obj
   end
 
@@ -69,7 +69,7 @@ class Livetext
     call = Array(call)
     mix.each {|lib| mixin(lib) }
     call.each {|cmd| @main.send(cmd[1..-1]) }  # ignores leading dot, no param
-    vars.each_pair {|var, val| _setvar(var, val.to_s) }
+    vars.each_pair {|var, val| setvar(var, val.to_s) }
     self
   end
 
@@ -83,58 +83,13 @@ class Livetext
     @indentation = [0]
     @_vars = Livetext::Vars
    
-    # Other predefined variables (see also _setfile)
-    _setvar(:User, `whoami`.chomp)
-    _setvar(:Version, Livetext::VERSION)
-  end
-
-  def _parse_colon_args(args, hash)  # really belongs in livetext
-    h2 = hash.dup
-    e = args.each
-    loop do
-      arg = e.next.chop.to_sym
-      raise "_parse_args: #{arg} is unknown" unless hash.keys.include?(arg)
-      h2[arg] = e.next
-    end
-    h2 = h2.reject {|k,v| v.nil? }
-    h2.each_pair {|k, v| raise "#{k} has no value" if v.empty? }
-    h2
-  end
-
-  def _get_arg(name, args)  # really belongs in livetext
-    raise "(#{name}) Expected an array" unless args.is_a? Array
-    raise "(#{name}) Expected an arg" if args.empty?
-    raise "(#{name}) Too many args: #{args.inspect}" if args.size > 1
-    val = args[0]
-    raise "Expected an argument '#{name}'" if val.nil?
-    val
+    # Other predefined variables (see also setfile)
+    setvar(:User, `whoami`.chomp)
+    setvar(:Version, Livetext::VERSION)
   end
 
   def mixin(mod)
     @main._mixin(mod)
-  end
-
-  def _setvar(var, val)
-    str, sym = var.to_s, var.to_sym
-    Livetext::Vars[str] = val
-    Livetext::Vars[sym] = val
-    @_vars[str] = val
-    @_vars[sym] = val
-  end
-
-  def _setfile(file)
-    if file
-      _setvar(:File, file)
-      dir = File.dirname(File.expand_path(file))
-      _setvar(:FileDir, dir)
-    else
-      _setvar(:File,    "[no file]")
-      _setvar(:FileDir, "[no dir]")
-    end
-  end
-
-  def _setfile!(file)
-    _setvar(:File, file)
   end
 
   def process_line(line)  # FIXME inefficient?
@@ -156,7 +111,7 @@ class Livetext
   end
 
   def transform(text)
-    _setfile!("(string)")
+    setfile!("(string)")
     enum = text.each_line
     front = text.match(/.*?\n/).to_a.first.chomp rescue ""
     @main.source(enum, "STDIN: '#{front}...'", 0)
@@ -196,7 +151,7 @@ class Livetext
 ## FIXME process_file[!] should call process[_text]
 
   def process_file(fname, btrace=false)
-    _setfile(fname)
+    setfile(fname)
     text = File.readlines(fname)
     enum = text.each
     @backtrace = btrace
@@ -219,7 +174,7 @@ class Livetext
   def handle_scomment(line)
   end
 
-  def _get_name(line)
+  def _get_name(line)    # FIXME - can't move into Helpers - why?
     name, data = line.split(" ", 2)
     name = name[1..-1]  # chop off sigil
     name = "dot_" + name if %w[include def].include?(name)
@@ -228,7 +183,7 @@ class Livetext
     name
   end
 
-  def handle_dotcmd(line, indent = 0)
+  def handle_dotcmd(line, indent = 0)    # FIXME - can't move into Helpers - why?
     indent = @indentation.last # top of stack
     line = line.sub(/# .*$/, "")
     name = _get_name(line).to_sym
