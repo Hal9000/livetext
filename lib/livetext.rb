@@ -1,7 +1,7 @@
 # Class Livetext skeleton (top level).
 
 class Livetext
-  VERSION = "0.9.13"
+  VERSION = "0.9.14"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
@@ -197,7 +197,7 @@ class Livetext
 
   def process_file(fname, btrace=false)
     _setfile(fname)
-    text = File.readlines(fname)   # FIXME currently causes failure
+    text = File.readlines(fname)
     enum = text.each
     @backtrace = btrace
     @main.source(enum, fname, 0)

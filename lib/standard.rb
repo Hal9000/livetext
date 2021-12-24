@@ -24,7 +24,7 @@ module Livetext::Standard
 
   attr_reader :_data
 
-  def data=(val)    # FIXME this is weird, let's not do it
+  def data=(val)    # FIXME this is weird, let's remove it soonish
     @_data = val.chomp
     @_args = val.split rescue []
     @_mixins = []
@@ -154,6 +154,8 @@ module Livetext::Standard
     set_variables(pairs)
   end
 
+  # FIXME really these should be one method...
+
   def variables!  # cwd, not FileDir - weird, fix later
     prefix = _args[0]
     file = _args[1]
@@ -222,13 +224,6 @@ module Livetext::Standard
 		file = _seek(file)
     check_file_exists(file)
     @parent.process_file(file)
-    _optional_blank_line
-  end
-
-  def in_out  # FIXME dumb name!
-    file, dest = *@_args
-    check_file_exists(file)
-    @parent.process_file(file, dest)
     _optional_blank_line
   end
 

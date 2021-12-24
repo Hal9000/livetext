@@ -1,5 +1,5 @@
 
-require_relative 'standard'  # FIXME?
+require_relative 'standard'  # FIXME  umm, why is this necessary??
 
 # Class Functions is where '$$func' functions are stored dynamically... 
 # user-def AND pre-def??

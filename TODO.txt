@@ -6,6 +6,8 @@
      # => Add "imports" directory"
      # Add Mixin Tests (looks like no tests for any mixin?)
      # Add Importable Tests
+   Annoying require_relative paths:  ../../.. blah blah
+   Miscellaneos "extraneous" requires? (but it breaks without them)
    Create high-level parser?
    All dot-commands into their own module??
    reify args/data passing?
@@ -16,6 +18,7 @@
    Support "namespaced" variables  (`[.set code.font="whatever"])
    permit # comments on end of line? (configurable?)
    Feature to "break" to EOF?
+   README.lt3 is broken
 
 
    LATERISH?
