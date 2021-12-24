@@ -8,13 +8,7 @@ make_exception(:NoEqualSign,     "Error: no equal sign found")
 
 class Livetext::ParseMixin   # < StringParser
 
-#   def self.parse(str)
-#     self.new(str).parse
-#   end
-# 
-#   def initialize(line)
-#     super
-#   end
+  include Helpers
 
   def cwd_root?
     File.dirname(File.expand_path(".")) == "/"

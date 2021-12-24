@@ -7,7 +7,7 @@ make_exception(:NilValue,         "Error: nil value")
 make_exception(:NullString,       "Error: null string")
 make_exception(:ExpectedString,   "Error: expected a string")
 
-class Livetext::ParseMisc < StringParser
+class Livetext::ParseGeneral < StringParser
 
   def initialize(str)
     super

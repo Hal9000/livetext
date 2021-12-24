@@ -4,5 +4,3 @@ without something
 beginning a block:
 <p>
 
-foo bar
-baz

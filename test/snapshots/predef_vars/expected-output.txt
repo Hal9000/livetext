@@ -1,6 +1,0 @@
-Here we go...
-File = source.lt3
-FileDir = /Users/Hal/Dropbox/topx/git/livetext/test/snapshots/predef_vars
-User = Hal
-Version = 0.9.11
-NoSuchVar = [NoSuchVar is undefined]

@@ -164,7 +164,7 @@ module Livetext::Standard
     else
       lines = _body
     end
-    pairs = Livetext::ParseMisc.parse_vars(prefix, lines)
+    pairs = Livetext::ParseGeneral.parse_vars(prefix, lines)
     set_variables(pairs)
   end
 
@@ -178,7 +178,7 @@ module Livetext::Standard
     else
       lines = _body
     end
-    pairs = Livetext::ParseMisc.parse_vars(prefix, lines)
+    pairs = Livetext::ParseGeneral.parse_vars(prefix, lines)
     set_variables(pairs)
   end
 
@@ -260,7 +260,7 @@ module Livetext::Standard
     name = @_args.first   # Expect a module name
     return if @_mixins.include?(name)
     @_mixins << name
-    parse = Livetext::ParseMixin.new(name)  # FIXME??
+    parse = Livetext::ParseMixin.new  # (name)  # FIXME??
     file = parse.find_mixin(name)
     parse.use_mixin(name, file)
     _optional_blank_line

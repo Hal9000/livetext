@@ -18,4 +18,8 @@ module Helpers
     end
   end
 
+  def grab_file(fname)
+    File.read(fname)
+  end
+
 end

@@ -8,17 +8,27 @@ Snapshots...
 NOTE that the external_files method has been replaced by the Snapshot class.
 
 You can add any ordinary test method above. But so far, most of these tests simply 
-call external_files.
+call Snapshot.new
 
-The external_files method works this way: 
+It works this way: 
   - If the test (caller) method is test_my_silly_feature, then we will
     look for a directory called snapshots/my_silly_feature
-  - In here, there must be a source.lt3, expected-output.txt, and expected-error.txt
-  - Technically, any of these can be empty
+  - In here, there must be a source.lt3
+  - ...and also either expected-output.txt OR match-output.txt (not both)
+  - ...and also either expected-error.txt OR match-error.txt (not both)
+  - Technically, any existing file can be empty
+  - The expected-* files are "literal" data
+      * compared byte-for-byte
+      * watch spaces and bad regexes, etc. #duh
+      * each of these files corresponds to a single assertion 
+  - A match-* file has two entries per line: 
+      * a ONE-BASED line number (in actual-* file)
+      * a String OR a Regexp (to match against that line)
+      * If there is nonsense here, it currently isn't caught
+      * each of these files MAY correspond to many assertions 
   - We run livetext on the source and compare actual vs expected (stdout, stderr)
-  - The "real" output gets checked first
+  - The error output gets checked first (expected or match), THEN standard output
   - Of course, both must compare correctly for the test to pass
-  - See also: match*
 =end
 
 
@@ -58,13 +68,12 @@ class TestingLivetext < MiniTest::Test
         info = "Expected line #{line_num} of #{actual.inspect} to match #{item.inspect} (was: #{lines[line_num].inspect})"
         good = item === lines[line_num]
         @errors = true unless good
-#       assert item === lines[line_num], info   # string or regex
         @assertion.call item === lines[line_num], info   # string or regex
       end
     end
 
     def sdiff(f1, f2, out)
-      File.open(out, "w") {|file| file.puts "#{'%-60s'% 'EXPECTED'}| #{'%-60s'% 'ACTUAL'}" }
+      File.open(out, "w") {|file| file.puts "#{'%-60s'% 'ACTUAL'}| #{'%-60s'% 'EXPECTED'}" }
       system("/usr/bin/sdiff -t -w 121 #{f1} #{f2} >>#{out}")
     end
 
@@ -75,8 +84,7 @@ class TestingLivetext < MiniTest::Test
         @errors = true if not same
         file = "out-sdiff.txt"
         sdiff(ACTUAL_OUT, EXP_OUT, file)
-#       assert same, "Discrepancy in STDOUT - see #@base/#{file}"
-        @assertion.call same, "Discrepancy in STDOUT - see #@base/#{file}"
+        @assertion.call same, "Discrepancy in STDOUT - see #{file} in test/snapshots/#@base"
       else
         check_matches(ACTUAL_OUT, MATCH_OUT)
       end
@@ -89,8 +97,7 @@ class TestingLivetext < MiniTest::Test
         @errors = true if not same
         file = "err-sdiff.txt"
         sdiff(ACTUAL_ERR, EXP_ERR, file)
-#       assert same, "Discrepancy in STDERR - see #@base/#{file}"
-        @assertion.call same, "Discrepancy in STDERR - see #@base/#{file}"
+        @assertion.call same, "Discrepancy in STDERR - see #{file} in test/snapshots/#@base"
       else
         check_matches(ACTUAL_ERR, MATCH_ERR)
       end
@@ -99,6 +106,9 @@ class TestingLivetext < MiniTest::Test
     def cleanup
       return if @errors
       system("rm -f #{ACTUAL_OUT} #{ACTUAL_ERR} *sdiff.txt")
+    end
+
+    def filter  # TODO move subset/omit logic here??
     end
 
     def run
@@ -137,7 +147,9 @@ class TestingLivetext < MiniTest::Test
     break if short_tests.eof?
   end
 
-  if File.size("subset.txt")  == 0
+# FIXME what to do with this piece? 
+
+# if File.size("subset.txt")  == 0
     puts "Defining via TestLines"
     TestLines.each.with_index do |item, num|
       msg, src, exp, blank = *item
@@ -151,11 +163,29 @@ class TestingLivetext < MiniTest::Test
         end
       end
     end
-  end
+# end
 
   TestDirs = Dir.entries(".").reject {|fname| ! File.directory?(fname) } - %w[. ..]
+
   selected = File.readlines("subset.txt").map(&:chomp)
-  Subset   = selected.empty? ? TestDirs : selected
+
+  omitfile = "OMIT.txt"
+  omitted  = File.readlines(omitfile).map(&:chomp)
+  omitted.reject! {|line| line.start_with?("#") }
+  omit_names = omitted.map {|line| line.split.first }
+  STDERR.puts
+  STDERR.puts "  >>> Warning: Omitting #{omitted.size} snapshot tests:\n " 
+  indented = " "*7
+  omitted.each do |line| 
+    STDERR.print indented 
+    name, info = line.split(" ", 2)
+    STDERR.printf "%-20s  %s\n", name, info
+  end
+  STDERR.puts
+
+  wanted   = selected.empty? ? TestDirs : selected
+
+  Subset = wanted - omit_names
 
   Subset.each do |tdir|
     define_method("test_#{tdir}") do
@@ -173,47 +203,6 @@ class TestingLivetext < MiniTest::Test
     "[31m" + str.to_s + "[0m"
   end
 
-  def sdiff(which, f1, f2, out, rx)
-    return "\n >>> No match for std#{which}!" if rx
-    File.open(out, "w") {|file| file.puts "#{'%-60s'% 'EXPECTED'}| #{'%-60s'% 'ACTUAL'}" }
-    system("/usr/bin/sdiff -t -w 121 #{f1} #{f2} >>#{out}")
-    return "\n  >>> Unexpected std#{which}! See #{out}"
   end
-
-  def external_files(base)
-    Dir.chdir(base) do
-      src, out, exp = "source.lt3", "/tmp/#{base}--actual-output.txt", "expected-output.txt"
-      err, erx = "/tmp/#{base}--actual-error.txt", "expected-error.txt"
-     
-      # New features - match out/err by regex
-      expout_regex = "expected-out-line1match.txt"
-      experr_regex = "expected-err-line1match.txt"
-
-      cmd = "livetext #{src} >#{out} 2>#{err}"
-      system(cmd)
-
-      output   = File.read(out)
-      errors   = File.read(err)
-      rx_out = rx_err = nil
-
-      expected = File.exist?(expout_regex) ?  rx_out = /#{Regexp.escape(File.read(expout_regex).chomp)}/ : File.read(exp)
-      errexp   = File.exist?(experr_regex) ?  rx_err = /#{Regexp.escape(File.read(experr_regex).chomp)}/ : File.read(erx)
-
-      out_ok = rx_out ? output =~ rx_out : output == expected
-      err_ok = rx_err ? errors =~ rx_err : errors == errexp
-
-      system("mkdir -p /tmp/#{base}")
-      bad_out = bad_err = nil
-      bad_out = sdiff("out", exp, out, "/tmp/#{base}/exp.out.sdiff", rx_out) unless out_ok
-      bad_err = sdiff("err", erx, err, "/tmp/#{base}/exp.err.sdiff", rx_err) unless err_ok
-
-      assert(err_ok, bad_err)
-      assert(out_ok, bad_out)
-      # only on success
-      system("rm -rf #{out} #{err} /tmp/#{base}") if out_ok && err_ok
-    end
-  end
-
-end
 
 

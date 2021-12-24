@@ -9,6 +9,7 @@ end
 
 require 'fileutils'
 
+require 'helpers'
 require_relative 'errors'
 require_relative 'functions'
 require_relative 'userapi'
@@ -20,9 +21,13 @@ Plugins = File.expand_path(File.join(File.dirname(__FILE__), "../plugin"))
 
 TTY = ::File.open("/dev/tty", "w")
 
+make_exception(:EndWithoutOpening, "Error: found .end with no opening command")
+
 # Class Livetext reopened (top level).
 
 class Livetext
+
+  include Helpers
 
   Vars = {}
 
@@ -228,20 +233,21 @@ class Livetext
     line = line.sub(/# .*$/, "")
     name = _get_name(line).to_sym
     result = nil
-    if @main.respond_to?(name)
-      result = @main.send(name)
+    case
+      when name == :end   # special case
+        puts @body
+        raise EndWithoutOpening()
+      when @main.respond_to?(name)
+        result = @main.send(name)
     else
       @main._error! "Name '#{name}' is unknown"
       return
     end
     result
   rescue => err
+    puts @body  # earlier correct output, not flushed yet
     STDERR.puts "Error: #{err.inspect}"
-    # STDERR.puts err.backtrace
-    # @main._error!(err)
-    puts @body
-    @body = ""
-    return @body
+    STDERR.puts err.backtrace
   end
 
 end

@@ -40,10 +40,7 @@ class Livetext
 
     def _error!(err, raise_error=false, trace=false)   # FIXME much bullshit happens here
       where = @sources.last || @save_location
-      # puts @parent.body
-      # puts "[lib/processor] Error: #{err}"
-      # puts err.backtrace.join("\n") if err.respond_to?(:backtrace)
-      STDERR.puts "Error: #{err}"  #  (at #{where[1]} line #{where[2]})"
+      STDERR.puts "Error: #{err} (at #{where[1]} line #{where[2]})"
       STDERR.puts err.backtrace if err.respond_to?(:backtrace) # && trace
       # raise "lib/processor error!" # FIXME
       raise GenericError.new("Error: #{err}") if raise_error
@@ -76,9 +73,6 @@ class Livetext
       nil
     end
 
-    def grab_file(fname)
-      File.read(fname)
-    end
 
   end
 
