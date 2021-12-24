@@ -2,8 +2,6 @@
 module Helpers
 
   def check_disallowed(name)
-    # raise "Illegal name '#{name}'" if _disallowed?(name)
-    # FIXME use custom exception
     raise DisallowedName, name if _disallowed?(name)
   end
 
@@ -20,6 +18,45 @@ module Helpers
 
   def grab_file(fname)
     File.read(fname)
+  end
+
+  def search_upward(file)
+    value = nil
+    return file if File.exist?(file)
+
+    count = 1
+    loop do
+      front = "../" * count
+      count += 1
+      here = Pathname.new(front).expand_path.dirname.to_s
+      break if here == "/"
+      path = front + file
+      value = path if File.exist?(path)
+      break if value
+    end
+    STDERR.puts "Cannot find #{file.inspect} from #{Dir.pwd}" unless value
+	  return value
+  rescue
+    STDERR.puts "Can't find #{file.inspect} from #{Dir.pwd}"
+	  return nil
+  end
+
+  def include_file(file)
+    @_args = [file]
+    dot_include
+  end
+
+  def onoff(arg)   # helper
+    arg ||= "on"
+    raise ExpectedOnOff unless String === arg
+    case arg.downcase
+      when "on"
+        return true
+      when "off"
+        return false
+    else
+      raise ExpectedOnOff
+    end
   end
 
 end

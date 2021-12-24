@@ -9,13 +9,13 @@ end
 
 require 'fileutils'
 
-require 'helpers'
 require_relative 'errors'
 require_relative 'functions'
 require_relative 'userapi'
 require_relative 'standard'
 require_relative 'formatline'
 require_relative 'processor'
+require_relative 'helpers'
 
 Plugins = File.expand_path(File.join(File.dirname(__FILE__), "../plugin"))
 
@@ -222,7 +222,7 @@ class Livetext
   def _get_name(line)
     name, data = line.split(" ", 2)
     name = name[1..-1]  # chop off sigil
-    name = "_" + name if %w[include def].include?(name)
+    name = "dot_" + name if %w[include def].include?(name)
     @main.data = data
     @main.check_disallowed(name)
     name

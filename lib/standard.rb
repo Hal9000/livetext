@@ -136,7 +136,7 @@ module Livetext::Standard
     end
   end
 
-  def _def
+  def dot_def
     name = @_args[0]
     str = "def #{name}\n"
     check_disallowed(name)
@@ -144,8 +144,6 @@ module Livetext::Standard
     str << _body(true).join("\n")
     str << "\nend\n"
     eval str
-# rescue => err
-#   _error!(err)
   end
 
   def set
@@ -198,45 +196,19 @@ module Livetext::Standard
     _optional_blank_line
   end
 
-  def _seek(file)
-    value = nil
-    return file if File.exist?(file)
-
-    count = 1
-    loop do
-      front = "../" * count
-      count += 1
-      here = Pathname.new(front).expand_path.dirname.to_s
-      break if here == "/"
-      path = front + file
-      value = path if File.exist?(path)
-      break if value
-    end
-    STDERR.puts "Cannot find #{file.inspect} from #{Dir.pwd}" unless value
-	  return value
-  rescue
-    STDERR.puts "Can't find #{file.inspect} from #{Dir.pwd}"
-	  return nil
-  end
-
   def seek    # like include, but search upward as needed
     file = @_args.first
-		file = _seek(file)
+		file = search_upward(file)
     check_file_exists(file)
     @parent.process_file(file)
     _optional_blank_line
   end
 
-  def _include   # dot command
+  def dot_include   # dot command
     file = _format(@_args.first)  # allows for variables
     check_file_exists(file)
     @parent.process_file(file)
     _optional_blank_line
-  end
-
-  def _include_file(file)
-    @_args = [file]
-    _include
   end
 
   def inherit
@@ -302,19 +274,6 @@ module Livetext::Standard
   def para
     # FIXME - add check for args size? (helpers)
     @_nopara = ! onoff(_args.first)
-  end
-
-  def onoff(arg)   # helper
-    arg ||= "on"
-    raise ExpectedOnOff unless String === arg
-    case arg.downcase
-      when "on"
-        return true
-      when "off"
-        return false
-    else
-      raise ExpectedOnOff
-    end
   end
 
   def nopara

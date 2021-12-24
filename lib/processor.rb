@@ -71,8 +71,5 @@ class Livetext
       @sources.pop
       nil
     end
-
-
   end
-
 end

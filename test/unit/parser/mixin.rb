@@ -3,7 +3,7 @@ require 'minitest/autorun'
 
 require_relative '../../../lib/parser/set'
 
-ParseSet = Livetext::ParseSet
+# ParseSet = Livetext::ParseSet
 
 class TestParseSet < MiniTest::Test
 

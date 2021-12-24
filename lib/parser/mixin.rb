@@ -1,4 +1,5 @@
 require_relative '../livetext'
+require_relative '../helpers'
 require_relative 'string'
 
 make_exception(:BadVariableName, "Error: invalid variable name")
@@ -7,8 +8,6 @@ make_exception(:NoEqualSign,     "Error: no equal sign found")
 # FIXME probably belongs elsewhere?
 
 class Livetext::ParseMixin   # < StringParser
-
-  include Helpers
 
   def cwd_root?
     File.dirname(File.expand_path(".")) == "/"
