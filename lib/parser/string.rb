@@ -5,19 +5,22 @@ class StringParser
   def initialize(line)
     raise NilValue if line.nil?
     raise ExpectedString unless String === line
-#   raise NullString if line.empty?
     @line = line
     @len = @line.length
     @eos = @len == 0 ? true : false
     @i = 0
   end
 
-  def next
+  def grab
     return nil if @eos
     char = @line[@i]
     @i += 1
     @eos = true if @i > @len
     char
+  end
+
+  def ungrab
+    @i -= 1    # FIXME what about eos...?
   end
 
   def last?
@@ -38,7 +41,7 @@ class StringParser
     loop do
       break if peek != " "
       break if eos?
-      self.next
+      grab
     end
   end
 

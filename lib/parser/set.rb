@@ -32,7 +32,7 @@ class Livetext::ParseSet < StringParser
       case char
         when nil  # end of string
         when ","
-          self.next  # skip comma
+          grab  # skip comma
       else
         raise "Expected comma or end of string (found #{char.inspect})"
       end
@@ -59,7 +59,7 @@ class Livetext::ParseSet < StringParser
       break if eos?   # end of string
       case char
         when /[a-zA-Z_\.0-9]/
-          name << self.next
+          name << grab
           next
         when /[ =]/
           return name
@@ -75,7 +75,7 @@ class Livetext::ParseSet < StringParser
     skip_spaces
     raise NoEqualSign unless self.peek == "="
     found = true
-    self.next  # skip =... spaces too
+    grab  # skip =... spaces too
     self.skip_spaces
     peek = self.peek
     return peek  # just for testing
@@ -85,14 +85,14 @@ class Livetext::ParseSet < StringParser
   end
 
   def escaped
-    self.next   # skip backslash
-    self.next   # return following char
+    grab   # skip backslash
+    grab   # return following char
   end
 
   make_exception(:BadQuotedString, "Bad quoted string: %1")
 
   def quoted_value
-    quote = self.next   # opening quote...
+    quote = grab   # opening quote...
     value = ""
     char = nil
     loop do
@@ -101,24 +101,23 @@ class Livetext::ParseSet < StringParser
       break if char == quote
       char = escaped if char == "\\"
       value << char
-      char = self.next
+      char = grab
     end
     if char == quote
-      char = self.next
+      char = grab
       return value
     end
     raise BadQuotedString, quote + value
   end
 
   def unquoted_value
-# puts "#{__method__}: #{@line.inspect}  i = #@i   peek = #{self.peek.inspect}"
     value = ""
     loop do
       char = self.peek
       break if self.eos?
       break if char == " " || char == ","
       value << char
-      char = self.next
+      char = grab
     end
     value
   end

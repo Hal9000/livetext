@@ -35,14 +35,14 @@ class TestStringParser < MiniTest::Test
     assert_equal @many.i, 0
   end
 
-  def test_next
-    assert_nil @zero.next
+  def test_grab
+    assert_nil @zero.grab
     assert_equal @zero.i, 0      # nothing happens
     
-    assert_equal @one.next, "x"
+    assert_equal @one.grab, "x"
     assert_equal @one.i, 1
 
-    assert_equal @many.next, "T"
+    assert_equal @many.grab, "T"
     refute @many.eos, "EOS was true for #{@many.inspect}"
     assert_equal @many.i, 1
   end
@@ -53,19 +53,19 @@ class TestStringParser < MiniTest::Test
     refute @many.eos?
   end
 
-  def test_next_eos
-    @zero.next
+  def test_grab_eos
+    @zero.grab
     assert @zero.eos?
     
-    @one.next
+    @one.grab
     assert @one.eos?
-    @one.next
+    @one.grab
     assert @one.eos?
 
-    @many.next
+    @many.grab
     refute @many.eos?
     count = @many.len    # doesn't make sense??
-    count.times { @many.next }
+    count.times { @many.grab }
     assert @many.eos?
   end
 
@@ -75,8 +75,8 @@ class TestStringParser < MiniTest::Test
     assert_equal @many.peek, @strN[0]
   end
 
-  def test_next_peek
-    char1 = @zero.next
+  def test_grab_peek
+    char1 = @zero.grab
     char2 = @zero.peek
     assert_nil char1
     assert_nil char2
@@ -87,7 +87,7 @@ class TestStringParser < MiniTest::Test
     refute @one.last?    # FIXME??
     char1 = @one.peek
     refute @one.last?    # FIXME??
-    char2 = @one.next
+    char2 = @one.grab
     char3 = @one.peek
     assert char1
     assert char2 == char1
@@ -97,7 +97,7 @@ class TestStringParser < MiniTest::Test
     assert @one.eos?     # FIXME??
 
     char1 = @many.peek
-    char2 = @many.next
+    char2 = @many.grab
     char3 = @many.peek
     assert char1
     assert char2 == char1
