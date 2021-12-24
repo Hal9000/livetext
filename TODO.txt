@@ -6,22 +6,15 @@
      # => Add "imports" directory"
      # Add Mixin Tests (looks like no tests for any mixin?)
      # Add Importable Tests
-   Unit tests: standard, ...
-   More custom exceptions
    Create high-level parser?
    All dot-commands into their own module??
-   Create module for helpers?
    reify args/data passing?
-   Special parser for .set var=... and so on?
-   separate classes for: seek, mixin, include, ...?
    Better parameter handling for custom dot commands (see: reify args/data)
    Bug: dot-space inside block seen as comment (make configurable??)
-   Better error checking and corresponding tests
    Allow turning on/off: formatting, variable interpolation, function interpolation?
    Better parameter handling for custom functions
    Support "namespaced" variables  (`[.set code.font="whatever"])
    permit # comments on end of line? (configurable?)
-   commas in variable values
    Feature to "break" to EOF?
 
 
@@ -88,7 +81,13 @@
 
    DONE
    ----
-
+x  commas in variable values
+x  More unit tests: standard, ...
+x  More custom exceptions
+x  (ongoing) Better error checking and corresponding tests
+x  (ongoing) separate classes for: seek, mixin, include, ...?
+x  Special parser for .set var=... and so on?
+x  Create module for helpers?
 x  Create intra-line parser!
 x  Create predefined variables (e.g., `[$_source_file], `$[_line])
 x  Create predefined functions (e.g., `[$$_date])

@@ -125,7 +125,7 @@ class TestingLivetext < MiniTest::Test
 
   TTY = File.open("/dev/tty","w")
 
-  cmdline = ARGV.first == "cmdline"
+  cmdline = ARGV.first == "cmdline"   # FIXME remove??
   if cmdline
     dir = "../"
     Dir.chdir `livetext --path`.chomp.chomp
@@ -134,36 +134,7 @@ class TestingLivetext < MiniTest::Test
   end
 
   Data = "#{dir}test/snapshots"
-  TestLines = []
   Dir.chdir(Data)
-
-  items = []
-  short_tests = File.open("lines.txt")
-  loop do 
-    4.times { items << short_tests.gets.chomp }
-    # Blank line terminates each "stanza"
-    raise "Oops? #{items.inspect}" unless items.last.empty?
-    TestLines << items
-    break if short_tests.eof?
-  end
-
-# FIXME what to do with this piece? 
-
-# if File.size("subset.txt")  == 0
-    puts "Defining via TestLines"
-    TestLines.each.with_index do |item, num|
-      msg, src, exp, blank = *item
-      define_method("test_formatting_#{num}") do
-        actual = FormatLine.parse!(src)
-        if exp[0] == "/" # regex!
-          exp = Regexp.compile(exp[1..-2])   # skip slashes
-          assert_match(exp, actual, msg)
-        else
-          assert_equal(exp, actual, msg)
-        end
-      end
-    end
-# end
 
   TestDirs = Dir.entries(".").reject {|fname| ! File.directory?(fname) } - %w[. ..]
 
@@ -194,15 +165,4 @@ class TestingLivetext < MiniTest::Test
       this.run
     end
   end
-
-  def green(str)
-    "[32m" + str.to_s + "[0m"
-  end
-
-  def red(str)
-    "[31m" + str.to_s + "[0m"
-  end
-
-  end
-
-
+end
