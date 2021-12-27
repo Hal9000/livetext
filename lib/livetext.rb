@@ -82,7 +82,10 @@ class Livetext
     @main = Processor.new(self, output)
     @indentation = [0]
     @_vars = Livetext::Vars
-   
+    initial_vars
+  end
+
+  def initial_vars
     # Other predefined variables (see also setfile)
     setvar(:User, `whoami`.chomp)
     setvar(:Version, Livetext::VERSION)

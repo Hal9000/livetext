@@ -8,4 +8,4 @@ error_missing_end      Output is duplicated somehow. Look for: puts @body or put
 error_no_such_mixin    ^ Same behavior as error_missing_end
 error_line_num         Same behavior as error_missing_end
 error_invalid_name     ^ Same behavior as error_no_such_inc
-more_complex_vars      ^ Bug related to var_func_parse in formatline.rb? 
+# more_complex_vars      ^ Bug related to var_func_parse in formatline.rb? 

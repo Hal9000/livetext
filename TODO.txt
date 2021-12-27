@@ -6,7 +6,7 @@
      # => Add "imports" directory"
      # Add Mixin Tests (looks like no tests for any mixin?)
      # Add Importable Tests
-   Unit tests for FormatLine
+   More unit tests for FormatLine
    More unit tests for StringParser
    Livetext::Parse:: namespace??
    Annoying require_relative paths:  ../../.. blah blah

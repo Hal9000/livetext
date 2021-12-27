@@ -29,7 +29,6 @@ class FormatLine < StringParser
 
   def initialize(line)
     super
-#   @line = line
     @token = Null.dup
     @tokenlist = []
   end
@@ -74,13 +73,11 @@ class FormatLine < StringParser
   end
 
   def self.var_func_parse(str)
-# TTY.puts "STR = #{str.inspect}"
     return nil if str.nil?
     x = self.new(str.chomp)
     char = x.peek
     loop do
       char = x.grab
-# TTY.puts "char   = #{char.inspect}"
       break if char == LF || char == nil
       x.handle_escaping if char == Escape
       x.dollar if char == "$"
@@ -121,12 +118,10 @@ class FormatLine < StringParser
             arg = gen.next  # for real
             param = arg[1]
             param = FormatLine.var_func_parse(param)
-# TTY.puts "vfp 1 = #{param.inspect}"
           end
           @out << funcall(val, param)
         when :b, :i, :t, :s
           val = FormatLine.var_func_parse(val)
-# TTY.puts "vfp 2 = #{param.inspect}"
           @out << embed(sym, val)
       else
         add_token :str
@@ -136,28 +131,11 @@ class FormatLine < StringParser
     @out
   end
 
-#   def curr
-#     @line[@i]
-#   end
-# 
-# 
-#   def next!
-#     @line[@i+1]
-#   end
-# 
-#   def grab
-#     @line[@i+=1]
-#   end
-# 
-#   def ungrab
-#     @line[@i-=1]
-#   end
-  
   def grab_colon_param
     grab  # grab :
     param = ""
     loop do 
-      case next!   # HF wait what?
+      case next!
         when Escape
           grab
           param << next!
@@ -209,7 +187,7 @@ class FormatLine < StringParser
     str = Null.dup
     grab
     loop do
-      break if peek.nil?   # FIXME
+      break if eos?
       str << peek
       break if terminate?(NoAlpha, next!)
       grab
@@ -221,7 +199,7 @@ class FormatLine < StringParser
     str = Null.dup
     grab
     loop do
-      break if peek.nil?
+      break if eos?   # peek.nil?
       str << peek
       break if terminate?(NoAlphaDot, next!)
       grab
@@ -322,8 +300,8 @@ class FormatLine < StringParser
     grab   # ZZZ
     loop do
       if peek == Escape
-        str << grab # ch = escaped char
         grab
+        str << grab
         next
       end
       if terminate?(terminators, peek)
@@ -343,9 +321,9 @@ class FormatLine < StringParser
     STDERR.puts "=== str = #{str.inspect}"
   end
 
-  def escaped    # FIXME this seems wrong??
-    ch = grab
+  def escaped
     grab
+    ch = grab
     ch
   end
 
@@ -377,12 +355,13 @@ class FormatLine < StringParser
   end
 
   def funcall(name, param)
+    err = "[Error evaluating $$#{name}(#{param})]"
     result = 
       if self.respond_to?("func_" + name.to_s)
         self.send("func_" + name.to_s, param)
       else
         fobj = ::Livetext::Functions.new
-        fobj.send(name, param)
+        fobj.send(name, param) rescue err
       end
     result
   end
