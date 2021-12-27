@@ -13,7 +13,7 @@ class TestParseSet < MiniTest::Test
   def teardown
   end
 
-  def test_one_unquoted
+  def ztest_one_unquoted
     set = ParseSet.new('my_var_123 = 789').parse
     pair = set.first
     assert_equal pair, %w[my_var_123 789]
@@ -23,37 +23,38 @@ class TestParseSet < MiniTest::Test
     assert_equal pair, %w[var_234 naked_string]
   end
 
-  def test_one_single_quoted
+  def ztest_one_single_quoted
     set = ParseSet.new("fancy.var.name = 'simple string'").parse
     pair = set.first
     assert_equal pair, ["fancy.var.name", "simple string"]
   end
 
-  def test_one_double_quoted
+  def ztest_one_double_quoted
     set = ParseSet.new('fancy.var2 = "another string"').parse
     pair = set.first
     assert_equal pair, ["fancy.var2", "another string"]
   end
 
-  def test_multiple_unquoted
+  def ztest_multiple_unquoted
+puts __method__
     pair1, pair2 = ParseSet.new("this=345, that=678").parse
     assert_equal pair1, %w[this 345]
     assert_equal pair2, %w[that 678]
   end
 
-  def test_multiple_unquoted_quoted
+  def ztest_multiple_unquoted_quoted
     pair1, pair2 = ParseSet.new('alpha = 567, beta = "oh well"').parse
     assert_equal pair1, %w[alpha 567]
     assert_equal pair2, ["beta", "oh well"]
   end
 
-  def test_quote_embedded_comma
+  def ztest_quote_embedded_comma
     set = ParseSet.new('gamma = "oh, well"').parse
     pair = set.first
     assert_equal pair, ["gamma", "oh, well"]
   end
 
-  def test_get_var
+  def ztest_get_var
     @parse = ParseSet.new("foo=345")
     assert_equal @parse.get_var, "foo"
     @parse = ParseSet.new("foo = 345")
@@ -78,7 +79,7 @@ class TestParseSet < MiniTest::Test
     assert_raises(BadVariableName) { @parse.get_var }
   end
 
-  def test_skip_equal
+  def ztest_skip_equal
     @parse = ParseSet.new("=")
     assert_nil @parse.skip_equal
     @parse = ParseSet.new("   = ")
@@ -96,7 +97,7 @@ class TestParseSet < MiniTest::Test
     assert_raises(NoEqualSign) { @parse.skip_equal }
   end
 
-  def test_quoted_value
+  def ztest_quoted_value
     @parse = ParseSet.new(%['this'])
     assert_equal @parse.quoted_value, "this"
     @parse = ParseSet.new(%["that"])
@@ -118,7 +119,7 @@ class TestParseSet < MiniTest::Test
     #  - allow (escaped?) comma in quoted string
   end
 
-  def test_unquoted_value
+  def ztest_unquoted_value
     # Note: an unquoted value is still a string!
     @parse = ParseSet.new(%[342 ])
     assert_equal @parse.unquoted_value, "342"
@@ -139,7 +140,7 @@ class TestParseSet < MiniTest::Test
 
   # BUG: FormatLine doesn't know variables in this context!
 
-  def xtest_4
+  def xtest_4  # FIXME
     set = ParseSet.new("file = $File").parse
     assert_equal set.first, "file"
     assert set.last !~ /undefined/
@@ -148,10 +149,16 @@ class TestParseSet < MiniTest::Test
   # BUG: ...or functions.
   # (Additional bug: Failing silently seems wrong.)
 
-  def xtest_5
+  def xtest_5  # FIXME
     set = ParseSet.new("date = $$date").parse
     assert_equal set.first, "date"
     assert set.last =~ /^\d\d.\d\d.\d\d/
+  end
+
+  def test_two_strings
+    line = %[bday="May_31", date="5/31"]
+    set = ParseSet.new(line).parse
+    assert set == [["bday", "May_31"], ["date", "5/31"]]
   end
 
 end

@@ -1,7 +1,7 @@
 # Class FormatLine handles the parsing of comments, dot commands, and 
 # simple formatting characters.
 
-class FormatLine
+class FormatLine < StringParser
   SimpleFormats     = {}
   SimpleFormats[:b] = %w[<b> </b>]
   SimpleFormats[:i] = %w[<i> </i>]
@@ -24,6 +24,47 @@ class FormatLine
 
   Syms = { "*" => :b, "_" => :i, "`" => :t, "~" => :s }
 
+  attr_reader :out
+  attr_reader :tokenlist
+
+  def initialize(line)
+    super
+#   @line = line
+    @token = Null.dup
+    @tokenlist = []
+  end
+
+  def self.parse!(line)
+    return nil if line.nil?
+    x = self.new(line.chomp)
+    t = x.tokenize
+# TTY.puts "tokens = \n#{t.inspect}\n "
+    x.evaluate
+  end
+
+  def tokenize
+#   add grab
+    loop do 
+      case peek
+        when Escape; grab; add peek; grab; add peek
+        when "$"
+          dollar
+        when "*", "_", "`", "~"
+          marker peek
+          add peek
+        when LF
+          break if @i >= line.size - 1
+        when nil
+          break
+        else
+          add peek
+      end
+      grab
+    end
+    add_token(:str)
+    @tokenlist
+  end
+
   def terminate?(terminators, ch)
     if terminators.is_a? Regexp
       terminators === ch
@@ -32,64 +73,27 @@ class FormatLine
     end
   end
 
-  attr_reader :out
-  attr_reader :tokenlist
-
-  def initialize(line)
-    @line = line
-    @i = -1
-    @token = Null.dup
-    @tokenlist = []
-  end
-
-  def self.parse!(line)
-    return nil if line.nil?
-    x = self.new(line.chomp)
-    t = x.tokenize(line)
-    x.evaluate
-  end
-
-  def tokenize(line)
-    grab
-    loop do 
-      case curr
-        when Escape; grab; add curr; grab; add curr
-        when "$"
-          dollar
-        when "*", "_", "`", "~"
-          marker curr
-          add curr
-        when LF
-          break if @i >= line.size - 1
-        when nil
-          break
-        else
-          add curr
-      end
-      grab
-    end
-    add_token(:str)
-    @tokenlist
-  end
-
   def self.var_func_parse(str)
+# TTY.puts "STR = #{str.inspect}"
     return nil if str.nil?
     x = self.new(str.chomp)
-    x.grab
-    loop do 
-      case x.curr
-        when Escape; x.grab; x.add x.curr; x.grab
-        when "$"
-          x.dollar
-        when LF, nil
-          break
-        else
-          x.add x.curr
-      end
-      x.grab
+    char = x.peek
+    loop do
+      char = x.grab
+# TTY.puts "char   = #{char.inspect}"
+      break if char == LF || char == nil
+      x.handle_escaping if char == Escape
+      x.dollar if char == "$"
+      x.add char
     end
     x.add_token(:str)
-    x.evaluate
+    result = x.evaluate
+    result
+  end
+
+  def handle_escaping
+    grab
+    add grab
   end
 
   def embed(sym, str)
@@ -117,10 +121,12 @@ class FormatLine
             arg = gen.next  # for real
             param = arg[1]
             param = FormatLine.var_func_parse(param)
+# TTY.puts "vfp 1 = #{param.inspect}"
           end
           @out << funcall(val, param)
         when :b, :i, :t, :s
           val = FormatLine.var_func_parse(val)
+# TTY.puts "vfp 2 = #{param.inspect}"
           @out << embed(sym, val)
       else
         add_token :str
@@ -130,32 +136,28 @@ class FormatLine
     @out
   end
 
-  def curr
-    @line[@i]
-  end
-
-  def prev
-    return nil if @i <= 0
-    @line[@i-1]
-  end
-
-  def next!
-    @line[@i+1]
-  end
-
-  def grab
-    @line[@i+=1]
-  end
-
-  def ungrab
-    @line[@i-=1]
-  end
-
+#   def curr
+#     @line[@i]
+#   end
+# 
+# 
+#   def next!
+#     @line[@i+1]
+#   end
+# 
+#   def grab
+#     @line[@i+=1]
+#   end
+# 
+#   def ungrab
+#     @line[@i-=1]
+#   end
+  
   def grab_colon_param
     grab  # grab :
     param = ""
     loop do 
-      case next!
+      case next!   # HF wait what?
         when Escape
           grab
           param << next!
@@ -187,7 +189,7 @@ class FormatLine
       end
     end
 
-    add curr
+    add peek
     grab
     param = nil if param.empty?
     param
@@ -207,8 +209,8 @@ class FormatLine
     str = Null.dup
     grab
     loop do
-      break if curr.nil?
-      str << curr
+      break if peek.nil?   # FIXME
+      str << peek
       break if terminate?(NoAlpha, next!)
       grab
     end
@@ -219,8 +221,8 @@ class FormatLine
     str = Null.dup
     grab
     loop do
-      break if curr.nil?
-      str << curr
+      break if peek.nil?
+      str << peek
       break if terminate?(NoAlphaDot, next!)
       grab
     end
@@ -229,7 +231,7 @@ class FormatLine
 
   def dollar
     grab
-    case curr
+    case peek
       when LF;  add "$";  add_token :str
       when " "; add "$ "; add_token :str
       when nil; add "$";  add_token :str
@@ -237,10 +239,10 @@ class FormatLine
 #     when "."; dollar_dot
       when /[A-Za-z]/
        add_token :str
-        var = curr + grab_alpha_dot
+        var = peek + grab_alpha_dot
         add_token(:var, var)
     else 
-      add "$" + curr
+      add "$" + peek
       add_token(:string)
     end
   end
@@ -258,7 +260,7 @@ class FormatLine
           when "["; param = grab_func_param; add_token(:brackets, param)
         end
       else
-        grab; add_token :str, "$$" + curr; return
+        grab; add_token :str, "$$" + peek; return
     end
   end
 
@@ -275,7 +277,7 @@ class FormatLine
     end
 
     grab
-    case curr
+    case peek
       when Space
         add char + " "
         add_token :str
@@ -286,7 +288,7 @@ class FormatLine
       when char;   double_marker(char)
       when LBrack; long_marker(char)
     else
-      str = curr + collect!(sym, Blank)
+      str = peek + collect!(sym, Blank)
       add str
       add_token sym, str
       grab
@@ -319,21 +321,19 @@ class FormatLine
     str = Null.dup   # next is not " ","*","["
     grab   # ZZZ
     loop do
-      if curr == Escape
+      if peek == Escape
         str << grab # ch = escaped char
         grab
         next
       end
-      if terminate?(terminators, curr)
+      if terminate?(terminators, peek)
         break 
       end
-                  # STDERR.puts "#{curr.inspect} is not a terminator"
-      str << curr    # not a terminator
+      str << peek    # not a terminator
       grab
-                  # STDERR.puts "After grab, curr is #{curr.inspect}"
     end
 
-    if curr == "]" # skip right bracket
+    if peek == "]" # skip right bracket
       grab 
     end
     add str
@@ -343,7 +343,7 @@ class FormatLine
     STDERR.puts "=== str = #{str.inspect}"
   end
 
-  def escaped
+  def escaped    # FIXME this seems wrong??
     ch = grab
     grab
     ch
@@ -356,15 +356,15 @@ class FormatLine
     grab   # ZZZ
     loop do
       case
-        when curr.nil?
+        when peek.nil?
           return str
-        when curr == Escape
+        when peek == Escape
           str << escaped
           next
-        when terminate?(terminators, curr)
+        when terminate?(terminators, peek)
           break 
       else
-        str << curr    # not a terminator
+        str << peek    # not a terminator
       end
       grab
     end
@@ -375,10 +375,6 @@ class FormatLine
     STDERR.puts "ERR = #{err}\n#{err.backtrace}"
     STDERR.puts "=== str = #{str.inspect}"
   end
-
-############
-
-  ### From FormatLine:
 
   def funcall(name, param)
     result = 
@@ -395,8 +391,6 @@ class FormatLine
     result = Livetext::Vars[name] || "[#{name} is undefined]"
     result
   end
-
-  #####
 
   def embedded?
     ! (['"', "'", " ", nil].include? prev)

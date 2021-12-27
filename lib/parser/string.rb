@@ -23,6 +23,15 @@ class StringParser
     @i -= 1    # FIXME what about eos...?
   end
 
+  def next!
+    @line[@i + 1]
+  end
+
+  def prev
+    return nil if @i <= 0
+    @line[@i-1]
+  end
+
   def last?
     @i > @len - 1
   end
@@ -38,11 +47,14 @@ class StringParser
   end
 
   def skip_spaces
+    char = nil
     loop do
-      break if peek != " "
+      char = peek
       break if eos?
+      break if char != " "
       grab
     end
+    char
   end
 
 end

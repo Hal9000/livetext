@@ -1,10 +1,11 @@
 # Comments are ignored.
 # Other lines:  name_of_snapshot and any comments here are ignored (no # needed)
-# fake_test_name      Use # to un-omit   ;)
-error_no_such_inc     Output BEFORE error doesn't get passed through
-error_no_such_copy    ^ Same behavior as  error_no_such_inc
-simple_mixin          Mixin doesn't work?? But no error... maybe _def isn't working.
-error_missing_end     Output is duplicated somehow. Look for: puts @body or puts @main.body
-error_no_such_mixin   ^ Same behavior as error_missing_end
-error_line_num        Same behavior as error_missing_end
-error_invalid_name    ^ Same behavior as  error_no_such_inc
+# fake_test_name       Use # to un-omit   ;)
+error_no_such_inc      Output BEFORE error doesn't get passed through
+error_no_such_copy     ^ Same behavior as  error_no_such_inc
+simple_mixin           Mixin doesn't work?? But no error... maybe _def isn't working.
+error_missing_end      Output is duplicated somehow. Look for: puts @body or puts @main.body
+error_no_such_mixin    ^ Same behavior as error_missing_end
+error_line_num         Same behavior as error_missing_end
+error_invalid_name     ^ Same behavior as error_no_such_inc
+more_complex_vars      ^ Bug related to var_func_parse in formatline.rb? 

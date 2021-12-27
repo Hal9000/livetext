@@ -17,22 +17,31 @@ class Livetext::ParseSet < StringParser
     super
   end
 
+  def wtf(note="")
+    TTY.puts "| PARSER: @i = #@i   @len = #@len"
+    TTY.puts "|#{note}"
+    TTY.puts "| [" + @line.gsub(" ", "_") + "]"
+    TTY.print "|  "    # 0-based (one extra space)
+    @i.times { TTY.print "-" }
+    TTY.puts "^"
+    TTY.puts
+  end
+
   def parse
     pairs = []
-
+    char = nil
     loop do
-      skip_spaces
-      char = self.peek
       break if eos?   # end of string
+      char = skip_spaces
       raise "Expected alpha to start var name" unless char =~ /[a-z]/i
       pairs << assignment
-      skip_spaces
-      char = self.peek
+      char = skip_spaces
       break if eos?   # end of string
       case char
         when nil  # end of string
         when ","
-          grab  # skip comma
+          char = grab  # skip comma
+          char = skip_spaces
       else
         raise "Expected comma or end of string (found #{char.inspect})"
       end
@@ -47,7 +56,7 @@ class Livetext::ParseSet < StringParser
     var = get_var
     skip_equal
     value = get_value
-    value = FormatLine.var_func_parse(value)
+    value = FormatLine.var_func_parse(value)    # FIXME broken now?
     pair = [var, value]
     pair
   end
@@ -55,7 +64,7 @@ class Livetext::ParseSet < StringParser
   def get_var
     name = ""
     loop do
-      char = self.peek
+      char = peek
       break if eos?   # end of string
       case char
         when /[a-zA-Z_\.0-9]/
@@ -73,11 +82,10 @@ class Livetext::ParseSet < StringParser
   def skip_equal
     found = false
     skip_spaces
-    raise NoEqualSign unless self.peek == "="
+    raise NoEqualSign unless peek == "="
     found = true
-    grab  # skip =... spaces too
-    self.skip_spaces
-    peek = self.peek
+    grab         # skip =
+    skip_spaces  # skip spaces too
     return peek  # just for testing
   rescue StopIteration
     raise NoEqualSign unless found
@@ -96,25 +104,27 @@ class Livetext::ParseSet < StringParser
     value = ""
     char = nil
     loop do
-      char = self.peek
-      break if self.eos?
+      char = grab
+      break if eos?
       break if char == quote
+#     break if char.nil?
       char = escaped if char == "\\"
       value << char
-      char = grab
     end
     if char == quote
-      char = grab
+      # char = grab
       return value
     end
     raise BadQuotedString, quote + value
   end
 
   def unquoted_value
+    char = nil
     value = ""
     loop do
-      char = self.peek
-      break if self.eos?
+      char = peek
+      break if eos?  #     FIXME oops???
+#     break if char.nil?
       break if char == " " || char == ","
       value << char
       char = grab
@@ -127,8 +137,8 @@ class Livetext::ParseSet < StringParser
   end
 
   def get_value
-    char = self.peek
-    value = quote?(char) ?  quoted_value : unquoted_value
+    char = peek
+    value = quote?(char) ? quoted_value : unquoted_value
     value
   end
 end
