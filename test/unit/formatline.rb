@@ -74,24 +74,17 @@ class TestingLivetext < MiniTest::Test
   def test_func_with_brackets_2
     parse = FormatLine.new("Calling $$myfunc3[] here.")
     tokens = parse.tokenize
-    assert_kind_of Array, tokens
-# BUG?? [:str, "Calling "], [:func, "myfunc3"], [:str, "[ here."]]
-#   assert tokens.size == 4
-    assert tokens[0] == [:str, "Calling "]
-    assert tokens[1] == [:func, "myfunc3"]
-#   assert tokens[2] == [:brackets, ""]
-#   assert tokens[3] == [:str, " here."]
+    expect = [[:str, "Calling "], [:func, "myfunc3"], [:str, " here."]]
+    assert_equal tokens, expect
     result = parse.evaluate
     expected = "Calling [Error evaluating $$myfunc3()] here."
-    # "Calling [Error evaluating $$myfunc3()][ here."
-    assert result == expected
+    assert_equal result, expected
   end
 
   def test_func_with_brackets_3
     parse = FormatLine.new("Calling $$myfunc4[just another test] here.")
     tokens = parse.tokenize
     assert_kind_of Array, tokens
-# BUG?? [:str, "Calling "], [:func, "myfunc3"], [:str, "[ here."]]
     assert tokens.size == 4
     assert tokens[0] == [:str, "Calling "]
     assert tokens[1] == [:func, "myfunc4"]
@@ -99,22 +92,21 @@ class TestingLivetext < MiniTest::Test
     assert tokens[3] == [:str, " here."]
     result = parse.evaluate
     expected = "Calling [Error evaluating $$myfunc4(just another test)] here."
-    # "Calling [Error evaluating $$myfunc3()][ here."
     assert result == expected
   end
 
   def test_simple_escaping
-    parse = FormatLine.new("Here is a backslash \\ for you")
-    expected = [[:str, %[Here is a backslash \ for you]]]
+    parse = FormatLine.new("Here is a backslash \\\\ for you")
+    expected = [[:str, %[Here is a backslash \\ for you]]]
     tokens = parse.tokenize
     assert tokens == expected
   end
 
   def test_escaping_quotes
     parse = FormatLine.new("\"here\" are quotes and \'also here\'")
-    expected = [[:str, %["here" are quotes and also 'here']]]
+    expected = [[:str, %["here" are quotes and 'also here']]]
     tokens = parse.tokenize
-    assert tokens == expected
+    assert_equal tokens, expected
   end
 
 end
