@@ -1,6 +1,6 @@
 require 'fileutils'
 
-def epub!
+def epub!(args = nil, body = nil)
   out = _format(@_args[0])
   src = @_args[1]
   @cover = @_args[2]

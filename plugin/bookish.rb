@@ -1,4 +1,4 @@
-def hardbreaks
+def hardbreaks(args = nil, body = nil)
   @hard = false
   @hard = true unless @_args.first == "off"
 end
@@ -7,15 +7,17 @@ def hardbreaks?
   @hard
 end
 
-def credit
+def credit(args = nil, body = nil)
   # really just a place marker in source
 end
+
+# These are duplicated. Remove safely
 
 def h1; _out "<h1>#{@_data}</h1>"; end
 def h2; _out "<h2>#{@_data}</h2>"; end
 def h3; _out "<h3>#{@_data}</h3>"; end
 
-def alpha_columns
+def alpha_columns(args = nil, body = nil)
   n = @_args.first.to_i   # FIXME: what if missing?
   words = []
   _body do |line| 
@@ -30,9 +32,9 @@ def alpha_columns
   _out "</table>"
 end
 
-def comment
-  _body { }  # ignore body
-end
+# def comment
+#   _body { }  # ignore body
+# end
 
 def _errout(*args)
   ::STDERR.puts *args
@@ -48,12 +50,14 @@ def _slug(str)
   s2
 end
 
-def image
+
+# FIXME duplicated?
+def image(args = nil, body = nil)
   name = @_args[0]
   _out "<img src='#{name}'></img>"
 end
 
-def figure
+def figure(args = nil, body = nil)
   name = @_args[0]
   num = @_args[1]
   title = @_args[2..-1].join(" ")
@@ -62,7 +66,7 @@ def figure
   _out "<center><b>Figure #{num}</b> #{title}</center>"
 end
 
-def chapter
+def chapter(args = nil, body = nil)
 # _errout("chapter")
   @chapter = @_args.first.to_i
   @sec = @sec2 = 0
@@ -78,7 +82,7 @@ def chapter
   HTML
 end
 
-def chapterN
+def chapterN(args = nil, body = nil)
   @chapter += 1
   @sec = @sec2 = 0
   title = @_data    # .split(" ",2)[1]
@@ -94,7 +98,7 @@ def chapterN
   HTML
 end
 
-def sec
+def sec(args = nil, body = nil)
   @sec += 1
   @sec2 = 0
   @section = "#@chapter.#@sec"
@@ -108,7 +112,7 @@ rescue => err
   exit
 end
 
-def subsec
+def subsec(args = nil, body = nil)
   @sec2 += 1
   @subsec = "#@chapter.#@sec.#@sec2"
   title = @_data.dup
@@ -118,7 +122,7 @@ def subsec
   _out "<h3>#@subsec #{title}</h3>\n"
 end
 
-def definition_table
+def definition_table(args = nil, body = nil)
   title = @_data
   wide = "95"
   delim = " :: "
@@ -140,7 +144,7 @@ def definition_table
   _optional_blank_line
 end
 
-def table2
+def table2(args = nil, body = nil)
   title = @_data
   wide = "90"
   extra = _args[2]
@@ -164,7 +168,7 @@ def table2
   _optional_blank_line
 end
 
-def simple_table
+def simple_table(args = nil, body = nil)
   title = @_data
   delim = " :: "
   _out "<table cellpadding=2>"
@@ -193,7 +197,7 @@ def simple_table
   _out "</table>"
 end
 
-def table
+def table(args = nil, body = nil)
   @table_num ||= 0
   @table_num += 1
   title = @_data
@@ -227,7 +231,7 @@ def table
   _out "<b>Table #@chapter.#@table_num &nbsp;&nbsp; #{title}</b></center><br>"
 end
 
-def toc!
+def toc!(args = nil, body = nil)
   _debug "Closing TOC"
   @toc.close
 rescue => err
@@ -236,7 +240,7 @@ rescue => err
   _errout "Exception: #{err.inspect}"
 end
 
-def toc2
+def toc2(args = nil, body = nil)
   file = @_args[0]
   @toc.close
   ::File.write(file, <<-EOS)
@@ -249,24 +253,24 @@ EOS
   system("cat toc.tmp >>#{file}")
 end
 
-def missing
+def missing(args = nil, body = nil)
   @toc << "#{_nbsp(8)}<font color=red>TBD: #@_data</font><br>"
   stuff = @_data.empty? ? "" : ": #@_data"
   _out "<br><font color=red><i>[Material missing#{stuff}]</i></font><br>\n "
 end
 
-def TBC
+def TBC(args = nil, body = nil)
   @toc << "#{_nbsp(8)}<font color=red>To be continued...</font><br>"
   _out "<br><font color=red><i>To be continued...</i></font><br>"
 end
 
-def note
+def note(args = nil, body = nil)
   _out "<br><font color=red><i>Note: "
   _out @_data 
   _out "</i></font><br>\n "
 end
 
-def quote
+def quote(args = nil, body = nil)
   _out "<blockquote>"
   _body {|line| _out line }
   _out "</blockquote>"

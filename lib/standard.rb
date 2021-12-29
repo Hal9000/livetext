@@ -30,7 +30,8 @@ module Livetext::Standard
     @_mixins = []
   end
 
-  def bits  # dumb name - bold, italic, teletype, striketrough
+  # dumb name - bold, italic, teletype, striketrough
+  def bits(args = nil, body = nil)
     b0, b1, i0, i1, t0, t1, s0, s1 = *@_args
     SimpleFormats[:b] = [b0, b1]
     SimpleFormats[:i] = [i0, i1]
@@ -38,23 +39,23 @@ module Livetext::Standard
     SimpleFormats[:s] = [s0, s1]
   end
 
-  def backtrace
+  def backtrace(args = nil, body = nil)
     @backtrace = onoff(@_args.first)
     _optional_blank_line
   end
 
-  def comment
+  def comment(args = nil, body = nil)
     _body
     _optional_blank_line
   end
 
-  def shell
+  def shell(args = nil, body = nil)
     cmd = @_data.chomp
     system(cmd)
     _optional_blank_line
   end
 
-  def func
+  def func(args = nil, body = nil)
     funcname = @_args[0]
     check_disallowed(funcname)
     func_def = <<~EOS
@@ -63,25 +64,24 @@ module Livetext::Standard
       end
     EOS
     _optional_blank_line
-
     Livetext::Functions.class_eval func_def
   end
 
-  def h1; _out wrapped(@_data, :h1); end
-  def h2; _out wrapped(@_data, :h2); end
-  def h3; _out wrapped(@_data, :h3); end
-  def h4; _out wrapped(@_data, :h4); end
-  def h5; _out wrapped(@_data, :h5); end
-  def h6; _out wrapped(@_data, :h6); end
+  def h1(args = nil, body = nil); _out wrapped(@_data, :h1); end
+  def h2(args = nil, body = nil); _out wrapped(@_data, :h2); end
+  def h3(args = nil, body = nil); _out wrapped(@_data, :h3); end
+  def h4(args = nil, body = nil); _out wrapped(@_data, :h4); end
+  def h5(args = nil, body = nil); _out wrapped(@_data, :h5); end
+  def h6(args = nil, body = nil); _out wrapped(@_data, :h6); end
 
-  def list
+  def list(args = nil, body = nil)
     wrap :ul do
       _body {|line| _out wrapped(line, :li) }
     end
     _optional_blank_line
   end
 
-  def list!
+  def list!(args = nil, body = nil)
     wrap(:ul) do
       lines = _body.each   # enumerator
       loop do
@@ -94,49 +94,49 @@ module Livetext::Standard
     _optional_blank_line
   end
 
-  def shell!
+  def shell!(args = nil, body = nil)
     cmd = @_data.chomp
     system(cmd)
     _optional_blank_line
   end
 
-  def errout
+  def errout(args = nil, body = nil)
     STDERR.puts @_data.chomp
     _optional_blank_line
   end
 
-  def ttyout
+  def ttyout(args = nil, body = nil)
     TTY.puts @_data.chomp
     _optional_blank_line
   end
 
-  def say
+  def say(args = nil, body = nil)
     str = _format(@_data.chomp)
     TTY.puts str
     _optional_blank_line
   end
 
-  def banner
+  def banner(args = nil, body = nil)
     str = _format(@_data.chomp)
     num = str.length - 1
     decor = "-"*num + "\n"
     puts decor + str + "\n" + decor
   end
 
-  def quit
+  def quit(args = nil, body = nil)
     puts @body
     @body = ""
     @output.close
   end
 
-  def cleanup
+  def cleanup(args = nil, body = nil)
     @_args.each do |item|
       cmd = ::File.directory?(item) ? "rm -f #{item}/*" : "rm #{item}"
       system(cmd)
     end
   end
 
-  def dot_def
+  def dot_def(args = nil, body = nil)
     name = @_args[0]
     str = "def #{name}\n"
     check_disallowed(name)
@@ -146,7 +146,7 @@ module Livetext::Standard
     eval str
   end
 
-  def set
+  def set(args = nil, body = nil)
     line = _data.chomp
     pairs = Livetext::ParseSet.new(line).parse
     set_variables(pairs)
@@ -154,7 +154,7 @@ module Livetext::Standard
 
   # FIXME really these should be one method...
 
-  def variables!  # cwd, not FileDir - weird, fix later
+  def variables!(args = nil, body = nil)  # cwd, not FileDir - weird, fix later
     prefix = _args[0]
     file = _args[1]
     prefix = nil if prefix == "-"  # FIXME dumb hack
@@ -168,7 +168,7 @@ module Livetext::Standard
     set_variables(pairs)
   end
 
-  def variables
+  def variables(args = nil, body = nil)
     prefix = _args[0]
     file = _args[1]
     prefix = nil if prefix == "-"  # FIXME dumb hack
@@ -182,7 +182,7 @@ module Livetext::Standard
     set_variables(pairs)
   end
 
-  def heredoc
+  def heredoc(args = nil, body = nil)
     var = @_args[0]
     text = _body.join("\n")
     rhs = ""
@@ -196,7 +196,7 @@ module Livetext::Standard
     _optional_blank_line
   end
 
-  def seek    # like include, but search upward as needed
+  def seek(args = nil, body = nil)    # like include, but search upward as needed
     file = @_args.first
 		file = search_upward(file)
     check_file_exists(file)
@@ -204,14 +204,14 @@ module Livetext::Standard
     _optional_blank_line
   end
 
-  def dot_include   # dot command
+  def dot_include(args = nil, body = nil)   # dot command
     file = _format(@_args.first)  # allows for variables
     check_file_exists(file)
     @parent.process_file(file)
     _optional_blank_line
   end
 
-  def inherit
+  def inherit(args = nil, body = nil)
     file = @_args.first
     upper = "../#{file}"
     got_upper, got_file = File.exist?(upper), File.exist?(file)
@@ -223,7 +223,7 @@ module Livetext::Standard
     _optional_blank_line
   end
 
-  def mixin
+  def mixin(args = nil, body = nil)
     name = @_args.first   # Expect a module name
     return if @_mixins.include?(name)
     @_mixins << name
@@ -233,7 +233,7 @@ module Livetext::Standard
     _optional_blank_line
   end
 
-  def import
+  def import(args = nil, body = nil)
     name = @_args.first   # Expect a module name
     return if @_mixins.include?(name)
     @_mixins << name
@@ -242,63 +242,63 @@ module Livetext::Standard
     _optional_blank_line
   end
 
-  def copy
+  def copy(args = nil, body = nil)
     file = @_args.first
     check_file_exists(file)
     _out grab_file(file)
     _optional_blank_line
   end
 
-  def r
+  def r(args = nil, body = nil)
     _out @_data.chomp  # No processing at all
   end
 
-  def raw
+  def raw(args = nil, body = nil)
     # No processing at all (terminate with __EOF__)
     _raw_body {|line| _out line }  # no formatting
   end
 
-  def debug
+  def debug(args = nil, body = nil)
     self._debug = onoff(@_args.first)
   end
 
-  def passthru
+  def passthru(args = nil, body = nil)
     # FIXME - add check for args size? (helpers)
     @_nopass = ! onoff(_args.first)
   end
 
-  def nopass
+  def nopass(args = nil, body = nil)
     @_nopass = true
   end
 
-  def para
+  def para(args = nil, body = nil)
     # FIXME - add check for args size? (helpers)
     @_nopara = ! onoff(_args.first)
   end
 
-  def nopara
+  def nopara(args = nil, body = nil)
     @_nopara = true
   end
 
-  def heading
+  def heading(args = nil, body = nil)
     _print "<center><font size=+1><b>"
     _print @_data.chomp
     _print "</b></font></center>"
   end
 
-  def newpage
+  def newpage(args = nil, body = nil)
     _out '<p style="page-break-after:always;"></p>'
     _out "<p/>"
   end
 
-  def mono
+  def mono(args = nil, body = nil)
     wrap ":pre" do
       _body(true) {|line| _out line }
     end
     _optional_blank_line
   end
 
-  def dlist
+  def dlist(args = nil, body = nil)
     delim = _args.first
     wrap(:dl) do
       _body do |line|
@@ -310,13 +310,13 @@ module Livetext::Standard
     end
   end
 
-  def link
+  def link(args = nil, body = nil)
     url = _args.first
     text = _args[2..-1].join(" ")
     _out "<a style='text-decoration: none' href='#{url}'>#{text}</a>"
   end
 
-  def xtable   # Borrowed from bookish - FIXME
+  def xtable(args = nil, body = nil)   # Borrowed from bookish - FIXME
     title = @_data.chomp
     delim = " :: "
     _out "<br><center><table width=90% cellpadding=5>"
@@ -343,12 +343,12 @@ module Livetext::Standard
     _out "</table></center>"
   end
 
-  def image
+  def image(args = nil, body = nil)
     name = @_args[0]
     _out "<img src='#{name}'></img>"
   end
 
-  def br
+  def br(args = nil, body = nil)
     num = _args.first || "1"
     out = ""
     num.to_i.times { out << "<br>" }

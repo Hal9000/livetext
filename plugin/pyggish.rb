@@ -134,7 +134,7 @@ def _colorize!(code, lexer=:elixir)
   text
 end
 
-def ruby
+def ruby(args = nil, body = nil)
   file = @_args.first 
   if file.nil?
     code = "# Ruby code\n"
@@ -148,7 +148,7 @@ def ruby
   _out "\n#{html}\n "
 end
 
-def elixir
+def elixir(args = nil, body = nil)
   file = @_args.first 
   if file.nil?
     code = ""
@@ -162,7 +162,7 @@ def elixir
   _out "\n#{html}\n "
 end
 
-def fragment
+def fragment(args = nil, body = nil)
 # debug
   lexer = @_args.empty? ? :elixir : @_args.first.to_sym   # ruby or elixir
   _debug "-- fragment: lexer = #{lexer.inspect}"
@@ -179,12 +179,12 @@ def fragment
   _out text + "\n<br>"
 end
 
-def code       # FIXME ?
+def code(args = nil, body = nil)       # FIXME ?
   text = ""   
   _body {|line| _out "    " + line }
 end
 
-def mono
+def mono(args = nil, body = nil)
   _out "<pre>"
   _body(true) {|line| _out "    " + line }
   _out "</pre>"

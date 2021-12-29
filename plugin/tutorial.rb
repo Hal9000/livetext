@@ -1,14 +1,14 @@
 require 'cgi'
 
-def title
+def title(args = nil, body = nil)
   h1
 end
 
-def section
+def section(args = nil, body = nil)
   h3
 end
 
-def code
+def code(args = nil, body = nil)
   first = true  # dumb hack! fixes blank space
   _body do |line| 
     tag, first = "<pre>", false if first
@@ -21,7 +21,7 @@ def rx(str)
   ::Regexp.compile(::Regexp.escape(str))
 end
 
-def inout
+def inout(args = nil, body = nil)
   src, out = _args
   t1 = ::File.readlines(src) rescue (abort "t1 = #{src}")
   t2 = ::File.readlines(out) rescue (abort "t2 = #{out}")
@@ -73,7 +73,7 @@ def put_table(src, exp)
   HTML
 end
 
-def testcase
+def testcase(args = nil, body = nil)
   name = _args.first
   _out "\n<font size=+1><b>Test: </font><font size=+2><tt>#{name}</tt></font></b></h3><br>"
   src, exp = "test/data/#{name}/source.lt3", "test/data/#{name}/expected-output.txt"
