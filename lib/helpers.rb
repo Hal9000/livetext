@@ -2,7 +2,7 @@
 module Helpers
 
   def check_disallowed(name)
-    raise DisallowedName, name if _disallowed?(name)
+    raise DisallowedName, name if disallowed?(name)
   end
 
   def check_file_exists(file)

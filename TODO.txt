@@ -6,7 +6,6 @@
      # => Add "imports" directory"
      # Add Mixin Tests (looks like no tests for any mixin?)
      # Add Importable Tests
-   More unit tests for FormatLine
    More unit tests for StringParser
    Livetext::Parse:: namespace??
    Annoying require_relative paths:  ../../.. blah blah
@@ -87,6 +86,7 @@
 
    DONE
    ----
+x  More unit tests for FormatLine
 x  Integrate stringparser into formatline.rb
 x  commas in variable values
 x  More unit tests: standard, ...

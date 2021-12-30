@@ -45,7 +45,7 @@ class Livetext
       raise GenericError.new("Error: #{err}") if raise_error
     end
 
-    def _disallowed?(name)
+    def disallowed?(name)
       Disallowed.include?(name.to_sym)
     end
 
