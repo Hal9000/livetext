@@ -53,7 +53,8 @@ class TestingLivetext < MiniTest::Test
         @match_out = File.exist?(MATCH_OUT)
         @match_err = File.exist?(MATCH_ERR)
       end
-      bad_files = (@literal_out && @match_out) || (@literal_err && @match_err)
+      bad_files = (@literal_out && @match_out) || (@literal_err && @match_err) ||
+                  (! @literal_out && ! @match_out)
       raise "Inconsistent structure for #@base" if bad_files
     end
 
@@ -116,8 +117,8 @@ class TestingLivetext < MiniTest::Test
       Dir.chdir(@base) do
         cmd = "../../../bin/livetext #{SOURCE} >#{ACTUAL_OUT} 2>#{ACTUAL_ERR}"
         system(cmd)
-        check_stdout
         check_stderr
+        check_stdout
         cleanup
       end
     end

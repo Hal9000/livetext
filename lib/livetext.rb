@@ -1,7 +1,7 @@
 # Class Livetext skeleton (top level).
 
 class Livetext
-  VERSION = "0.9.14"
+  VERSION = "0.9.15"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 end
 
@@ -31,16 +31,6 @@ class Livetext
 
   Vars = {}
 
-  Space = " "
-  Sigil = "." # Can't change yet
-
-  def self.rx(str, space=nil)
-    Regexp.compile("^" + Regexp.escape(str) + "#{space}")
-  end
-
-  Comment  = rx(Sigil, Livetext::Space)
-  Dotcmd   = rx(Sigil)
-  Ddotcmd  = /^ *\$\.[A-Za-z]/
 
   attr_reader :main
   attr_accessor :no_puts
@@ -67,6 +57,7 @@ class Livetext
   def customize(mix: [], call: [], vars: {})
     mix  = Array(mix)
     call = Array(call)
+    # FIXME HF won't this break??
     mix.each {|lib| mixin(lib) }
     call.each {|cmd| @main.send(cmd[1..-1]) }  # ignores leading dot, no param
     vars.each_pair {|var, val| setvar(var, val.to_s) }
@@ -89,28 +80,6 @@ class Livetext
     # Other predefined variables (see also setfile)
     setvar(:User, `whoami`.chomp)
     setvar(:Version, Livetext::VERSION)
-  end
-
-  def mixin(mod)
-    @main._mixin(mod)
-  end
-
-  def process_line(line)  # FIXME inefficient?
-    nomarkup = true
-    case line  # must apply these in order
-      when Comment
-        handle_scomment(line)
-      when Dotcmd
-        handle_dotcmd(line)
-      when Ddotcmd
-        indent = line.index("$") + 1
-        @indentation.push(indent)
-        line.sub!(/^ *\$/, "")
-        handle_dotcmd(line)
-        indentation.pop
-    else
-      @main._passthru(line)
-    end
   end
 
   def transform(text)
@@ -149,63 +118,6 @@ class Livetext
     @_vars.replace(vars) unless vars.nil?
     self.process_file(file)
     self.body
-  end
-
-## FIXME process_file[!] should call process[_text]
-
-  def process_file(fname, btrace=false)
-    setfile(fname)
-    text = File.readlines(fname)
-    enum = text.each
-    @backtrace = btrace
-    @main.source(enum, fname, 0)
-    line = nil
-    loop do 
-      line = @main.nextline
-      break if line.nil?
-      process_line(line)
-    end
-    val = @main.finalize if @main.respond_to? :finalize
-    @body
- rescue => err
-   STDERR.puts "[process_file] fname = #{fname.inspect}\n    line = #{line.inspect}"
-   STDERR.puts "ERROR #{err} in process_file"
-   err.backtrace.each {|x| STDERR.puts "   " + x }
-   # @body = ""
-  end
-
-  def handle_scomment(line)
-  end
-
-  def _get_name(line)    # FIXME - can't move into Helpers - why?
-    name, data = line.split(" ", 2)
-    name = name[1..-1]  # chop off sigil
-    name = "dot_" + name if %w[include def].include?(name)
-    @main.data = data
-    @main.check_disallowed(name)
-    name
-  end
-
-  def handle_dotcmd(line, indent = 0)    # FIXME - can't move into Helpers - why?
-    indent = @indentation.last # top of stack
-    line = line.sub(/# .*$/, "")
-    name = _get_name(line).to_sym
-    result = nil
-    case
-      when name == :end   # special case
-        puts @body
-        raise EndWithoutOpening()
-      when @main.respond_to?(name)
-        result = @main.send(name)
-    else
-      @main._error! "Name '#{name}' is unknown"
-      return
-    end
-    result
-  rescue => err
-    puts @body  # earlier correct output, not flushed yet
-    STDERR.puts "Error: #{err.inspect}"
-    STDERR.puts err.backtrace
   end
 
 end

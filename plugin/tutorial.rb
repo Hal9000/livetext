@@ -2,10 +2,12 @@ require 'cgi'
 
 def title(args = nil, body = nil)
   h1
+  _optional_blank_line
 end
 
 def section(args = nil, body = nil)
   h3
+  _optional_blank_line
 end
 
 def code(args = nil, body = nil)
@@ -15,6 +17,7 @@ def code(args = nil, body = nil)
     _out "#{tag}   #{::CGI.escape_html(line)}"   # indentation
   end
   _out "</pre>"
+  _optional_blank_line
 end
 
 def rx(str)
@@ -45,6 +48,7 @@ def inout(args = nil, body = nil)
     </tr>
     </table>
   HTML
+  _optional_blank_line
 end
 
 def put_table(src, exp)
@@ -80,4 +84,5 @@ def testcase(args = nil, body = nil)
   @_args = [src, exp]   # Better way to do this??
   put_table(src, exp)
   _out "<br>"
+  _optional_blank_line
 end

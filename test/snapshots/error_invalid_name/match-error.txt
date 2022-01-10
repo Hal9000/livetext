@@ -1,1 +1,1 @@
- 1 /Error: Illegal name 'to_s'/
+ 1 /name 'to_s' is invalid/

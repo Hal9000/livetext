@@ -1,58 +1,4 @@
-require 'pygments'
-
-module PygmentFix   # Remove CSS for Jutoh
-  Styles = {
-    :c  => "#408080-i",  # Comment
-    :k  => "#008000-b",  # Keyword
-    :o  => "#666666",    # Operator
-    :cm => "#408080-i",  # Comment.Multiline
-    :cp => "#BC7A00",    # Comment.Preproc
-    :c1 => "#408080-i",  # Comment.Single
-    :cs => "#408080-i",  # Comment.Special
-    :kc => "#008000-b",  # Keyword.Constant
-    :kd => "#008000-b",  # Keyword.Declaration
-    :kn => "#008000-b",  # Keyword.Namespace
-    :kp => "#008000",    # Keyword.Pseudo
-    :kr => "#008000-b",  # Keyword.Reserved
-    :kt => "#B00040",    # Keyword.Type
-    :m  => "#666666",    # Literal.Number
-    :s  => "#BA2121",    # Literal.String
-    :na => "#7D9029",    # Name.Attribute
-    :nb => "#008000",    # Name.Builtin
-    :nc => "#0000FF-b",  # Name.Class
-    :no => "#880000",    # Name.Constant
-    :nd => "#AA22FF",    # Name.Decorator
-    :ni => "#999999-b",  # Name.Entity
-    :ne => "#D2413A-b",  # Name.Exception
-    :nf => "#0000FF",    # Name.Function
-    :nl => "#A0A000",    # Name.Label
-    :nn => "#0000FF-b",  # Name.Namespace
-    :nt => "#008000-b",  # Name.Tag
-    :nv => "#19177C",    # Name.Variable
-    :ow => "#AA22FF-b",  # Operator.Word
-    :w  => "#bbbbbb",    # Text.Whitespace
-    :mb => "#666666",    # Literal.Number.Bin
-    :mf => "#666666",    # Literal.Number.Float
-    :mh => "#666666",    # Literal.Number.Hex
-    :mi => "#666666",    # Literal.Number.Integer
-    :mo => "#666666",    # Literal.Number.Oct
-    :sb => "#BA2121",    # Literal.String.Backtick
-    :sc => "#BA2121",    # Literal.String.Char
-    :sd => "#BA2121-i",  # Literal.String.Doc
-    :s2 => "#BA2121",    # Literal.String.Double 
-    :se => "#BB6622-b",  #  Literal.String.Escape 
-    :sh => "#BA2121",    # Literal.String.Heredoc
-    :si => "#BB6688-b",  # Literal.String.Interpol
-    :sx => "#008000",    # Literal.String.Other
-    :sr => "#BB6688",    # Literal.String.Regex
-    :s1 => "#BA2121",    # Literal.String.Single
-    :ss => "#19177C",    # Literal.String.Symbol
-    :bp => "#008000",    # Name.Builtin.Pseudo
-    :vc => "#19177C",    # Name.Variable.Class
-    :vg => "#19177C",    # Name.Variable.Global
-    :vi => "#19177C",    # Name.Variable.Instance
-    :il => "#666666"     # Literal.Number.Integer.Long
-  }
+require 'rouge'
 
   def self.pyg_change(code, klass, style)
     color = style[0..6]
@@ -82,13 +28,17 @@ module PygmentFix   # Remove CSS for Jutoh
 
   def self.pyg_finalize(code, lexer=:elixir)
     Styles.each_pair {|klass, style| pyg_change(code, klass, style) }
+File.open("debug-pf1", "w") {|f| f.puts code }
     code.sub!(/<pre>/, "<pre>\n")
     code.gsub!(/<span class="[np]">/, "")
     code.gsub!(/<\/span>/, "")
     color = _codebar_color(lexer)
-    code.sub!(/<td class="linenos"/, "<td width=6%></td><td width=5% bgcolor=#{color}")
+    code.sub!(/<td class="linenos"/, "<td width=2%></td><td width=5% bgcolor=#{color}")
+    code.gsub!(/<td/, "<td valign=top ")
     code.gsub!(/ class="[^"]*?"/, "")    # Get rid of remaining Pygments CSS
+File.open("debug-pf2", "w") {|f| f.puts code }
     lines = code.split("\n")
+#   lines.each {|line| line << "\n" }
     n1 = lines.index {|x| x =~ /<pre>/ }
     n2 = lines.index {|x| x =~ /<\/pre>/ }
     # FIXME ?
@@ -97,15 +47,13 @@ module PygmentFix   # Remove CSS for Jutoh
     lines[n1].sub!(/ 1$/, "  1 ")
     (n1+1).upto(n2) {|n| lines[n].replace(" " + lines[n] + " ") }
     code = lines.join("\n")
+File.open("debug-pf3", "w") {|f| f.puts code }
     code
   end
-end
 
-# Was in 'bookish':
-
-# include PygmentFix
 
 def _process_code(text)
+File.open("debug-pc1", "w") {|f| f.puts text }
   lines = text.split("\n")
   lines = lines.select {|x| x !~ /##~ omit/ }
   @refs = {}
@@ -117,28 +65,32 @@ def _process_code(text)
     end
   end
   lines.map! {|line| "  " + line }
-  text.replace(lines.join("\n"))
+  text2 = lines.join("\n")
+File.open("debug-pc2", "w") {|f| f.puts text2 }
+  text.replace(text2)
 end
 
 def _colorize(code, lexer=:elixir)
   text = ::Pygments.highlight(code, lexer: lexer, options: {linenos: "table"})
   _debug "--- in _colorize: text = #{text.inspect}"
-  PygmentFix.pyg_finalize(text, lexer)
-  text
+  text2 = PygmentFix.pyg_finalize(text, lexer)
+  result = "<!-- colorized code -->\n" + text2
+  result
 end
 
 def _colorize!(code, lexer=:elixir)
   text = ::Pygments.highlight(code, lexer: lexer, options: {})
   _debug "--- in _colorize!: text = #{text.inspect}"
-  PygmentFix.pyg_finalize(text, lexer)
-  text
+  text2 = PygmentFix.pyg_finalize(text, lexer)
+  result = "<!-- colorized code -->\n" + text2
+  result
 end
 
-def ruby(args = nil, body = nil)
+def OLD_ruby
   file = @_args.first 
   if file.nil?
     code = "# Ruby code\n"
-    _body {|line| code << line }
+    _body {|line| code << line + "\n" }
   else
     code = "# Ruby code\n\n" + ::File.read(file)
   end
@@ -148,11 +100,11 @@ def ruby(args = nil, body = nil)
   _out "\n#{html}\n "
 end
 
-def elixir(args = nil, body = nil)
+def OLD_elixir
   file = @_args.first 
   if file.nil?
     code = ""
-    _body {|line| code << line }
+    _body {|line| code << line + "\n" }
   else
     code = ::File.read(file)
   end
@@ -162,32 +114,90 @@ def elixir(args = nil, body = nil)
   _out "\n#{html}\n "
 end
 
-def fragment(args = nil, body = nil)
-# debug
-  lexer = @_args.empty? ? :elixir : @_args.first.to_sym   # ruby or elixir
-  _debug "-- fragment: lexer = #{lexer.inspect}"
-  code = ""
-  code << "# Ruby code\n\n" if lexer == :ruby
-  _body(true) {|line| code << "  " + line }
-  _debug "code = \n#{code}\n-----"
-  params = "(code, lexer: #{lexer.inspect}, options: {})"
-  _debug "-- pygments params = #{params}"
-  text = _colorize!(code, lexer)
-  text ||= "ERROR IN HIGHLIGHTER"
-  _debug "text = \n#{text.inspect}\n-----"
-# PygmentFix.pyg_finalize(text, lexer)
-  _out text + "\n<br>"
+def fragment
+  lang = @_args.empty? ? :elixir : @_args.first.to_sym   # ruby or elixir
+  @_args = []
+  send(lang)
+  _out "\n"
 end
 
-def code(args = nil, body = nil)       # FIXME ?
+def code       # FIXME ?
   text = ""   
   _body {|line| _out "    " + line }
 end
 
-def mono(args = nil, body = nil)
+def mono
   _out "<pre>"
-  _body(true) {|line| _out "    " + line }
+  _body {|line| _out "    " + line }
   _out "</pre>"
 end
 
+def create_code_styles
+  dir = @_outdir || "."
+  theme, back = "Github", "white"
+  css = Rouge::Themes.const_get(theme).render(scope: '.rb_highlight')
+  added = <<~CSS
+    .rb_highlight { 
+    font-family: 'Monaco', 'Andale Mono', 'Lucida Grande', 'Courier', 'Lucida Console', 'Courier New', monospace;
+    white-space: pre; 
+    background-color: #{back} 
+    }
+  CSS
 
+  css.gsub!(/{\n/, "{\n  font-family: courier;")
+  css = added + "\n" + css
+  # STDERR.puts "Writing #{theme} theme to ruby.css"
+  File.write("#{dir}/ruby.css", css)
+
+  css = Rouge::Themes.const_get(theme).render(scope: '.ex_highlight')
+  added = added.sub(/rb/, "ex")
+  css.gsub!(/{\n/, "{\n  font-family: courier;")
+  css = added + "\n" + css 
+  # STDERR.puts "Writing #{theme} theme to elixir.css"
+  File.write("#{dir}/elixir.css", css)
+end
+
+
+def format_ruby(source, theme = "Github", back = "black")
+  # theme/back not used now
+  formatter = Rouge::Formatters::HTML.new
+  lexer = Rouge::Lexers::Ruby.new
+  body = formatter.format(lexer.lex(source))
+  text = "<div class=rb_highlight>#{body}</div>"
+  text
+end
+
+def format_elixir(source, theme = "Github", back = "black")
+  # theme/back not used now
+  formatter = Rouge::Formatters::HTML.new
+  lexer = Rouge::Lexers::Elixir.new
+  body = formatter.format(lexer.lex(source))
+  text = "<div class=ex_highlight>#{body}</div>"
+  text
+end
+
+def ruby
+  file = @_args.first 
+  if file.nil?
+    code = "  # Ruby code\n\n"
+    _body {|line| code << "  " + line + "\n" }
+  else
+    code = "# Ruby code\n\n" + ::File.read(file)
+  end
+
+  html = format_ruby(code)
+  _out html
+end
+
+def elixir
+  file = @_args.first 
+  if file.nil?
+    code = ""
+    _body {|line| code << "  " + line + "\n" }
+  else
+    code = ::File.read(file)
+  end
+
+  html = format_elixir(code)
+  _out html
+end

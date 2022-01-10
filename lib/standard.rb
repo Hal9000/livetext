@@ -5,8 +5,8 @@ require_relative 'html'
 require_relative 'helpers'
 
 make_exception(:ExpectedOnOff,    "Error: expected 'on' or 'off'")
-make_exception(:DisallowedName,   "Error: name %1 is invalid")
-make_exception(:FileNotFound,     "Error: file %1 not found")
+make_exception(:DisallowedName,   "Error: name '%1' is invalid")
+make_exception(:FileNotFound,     "Error: file '%1' not found")
 
 
 # Module Standard comprises most of the standard or "common" methods.
@@ -227,9 +227,10 @@ module Livetext::Standard
     name = @_args.first   # Expect a module name
     return if @_mixins.include?(name)
     @_mixins << name
-    parse = Livetext::ParseMixin.new  # (name)  # FIXME??
-    file = parse.find_mixin(name)
-    parse.use_mixin(name, file)
+    mod = Livetext::ParseMixin.get_module(name)  # FIXME??
+    self.extend(mod)
+    init = "init_#{name}"
+    self.send(init) if self.respond_to? init
     _optional_blank_line
   end
 
@@ -237,7 +238,7 @@ module Livetext::Standard
     name = @_args.first   # Expect a module name
     return if @_mixins.include?(name)
     @_mixins << name
-    parse = Livetext::ParseImport.new(name)
+    mod = Livetext::ParseImport.get_module(name)
     parse.use_import(name)
     _optional_blank_line
   end

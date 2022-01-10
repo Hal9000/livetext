@@ -1,6 +1,7 @@
 # This file is intended to be used via a Livetext .mixin  
 # or the equivalent.
 
+SimpleFormats = {}
 SimpleFormats[:b] = %w[* *]
 SimpleFormats[:i] = %w[_ _]
 SimpleFormats[:t] = %w[` `]

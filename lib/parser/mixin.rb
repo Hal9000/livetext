@@ -9,30 +9,44 @@ make_exception(:NoEqualSign,     "Error: no equal sign found")
 
 class Livetext::ParseMixin   # < StringParser
 
+  include Helpers
+
+  def initialize(name)
+    @name = name
+    @file = find_file(name)
+  end
+
+  def self.get_module(name)
+    parse = self.new(name)
+    modname, code = parse.read_mixin
+    eval(code)   # Avoid in the future
+    newmod = Object.const_get("::" + modname)
+    # return actual module
+    newmod
+  end
+
+  def read_mixin
+    modname = @name.gsub("/","_").capitalize
+    meths = grab_file(@file)
+    [modname, "module ::#{modname}; #{meths}\nend"]
+  end
+
+  private
+
   def cwd_root?
     File.dirname(File.expand_path(".")) == "/"
   end
 
-  def find_mixin(name)
-    file = "#{Plugins}/" + name.downcase + ".rb"
+  def find_file(name, ext=".rb")
+    base = "./#{name}#{ext}"
+    file = "#{Plugins}/#{base}"
     return file if File.exist?(file)
 
-    file = "./#{name}.rb"
+    file = base
     return file if File.exist?(file)
 
     raise "No such mixin '#{name}'" if cwd_root?
-    Dir.chdir("..") { find_mixin(name) }
-  end
-
-  def use_mixin(name, file)
-    modname = name.gsub("/","_").capitalize
-    meths = grab_file(file)
-    string = "module ::#{modname}; #{meths}\nend"
-    eval(string)
-    newmod = Object.const_get("::" + modname)
-    self.extend(newmod)
-    init = "init_#{name}"
-    self.send(init) if self.respond_to? init
+    Dir.chdir("..") { find_file(name) }
   end
 
 end
