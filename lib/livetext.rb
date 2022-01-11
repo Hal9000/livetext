@@ -1,7 +1,7 @@
 # Class Livetext skeleton (top level).
 
 class Livetext
-  VERSION = "0.9.16"
+  VERSION = "0.9.17"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 
   module Handler
@@ -22,6 +22,7 @@ require_relative 'helpers'
 require_relative 'handler'
 
 Plugins = File.expand_path(File.join(File.dirname(__FILE__), "../plugin"))
+Imports = File.expand_path(File.join(File.dirname(__FILE__), "../imports"))
 
 TTY = ::File.open("/dev/tty", "w")
 

@@ -5,7 +5,6 @@ require_relative 'string'
 make_exception(:NoEqualSign,     "Error: no equal sign found")
 
 class Livetext::ParseMixin
-
   include Helpers
 
   def initialize(name)
@@ -34,17 +33,6 @@ class Livetext::ParseMixin
     File.dirname(File.expand_path(".")) == "/"
   end
 
-  def find_file(name, ext=".rb")
-    base = "./#{name}#{ext}"
-    file = "#{Plugins}/#{base}"
-    return file if File.exist?(file)
-
-    file = base
-    return file if File.exist?(file)
-
-    raise "No such mixin '#{name}'" if cwd_root?
-    Dir.chdir("..") { find_file(name) }
-  end
 
 end
 

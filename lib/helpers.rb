@@ -4,6 +4,37 @@ module Helpers
   Space = " "
   Sigil = "." # Can't change yet
 
+  def escape_html(string)
+    enc = string.encoding
+    unless enc.ascii_compatible?
+      if enc.dummy?
+        origenc = enc
+        enc = Encoding::Converter.asciicompat_encoding(enc)
+        string = enc ? string.encode(enc) : string.b
+      end
+      table = Hash[TABLE_FOR_ESCAPE_HTML__.map {|pair|pair.map {|s|s.encode(enc)}}]
+      string = string.gsub(/#{"['&\"<>]".encode(enc)}/, table)
+      string.encode!(origenc) if origenc
+      return string
+    end
+    string.gsub(/['&\"<>]/, TABLE_FOR_ESCAPE_HTML__)
+  end
+
+  def find_file(name, ext=".rb")
+    paths = [Livetext::Path.sub(/lib/, "imports/"), "./"]
+    base  = "#{name}#{ext}"
+    paths.each do |path|
+      file = path + base
+      return file if File.exist?(file)
+    end
+
+    raise "No such mixin '#{name}'"
+
+    # # Really want to search upward??
+    # raise "No such mixin '#{name}'" if cwd_root?
+    # Dir.chdir("..") { find_file(name) }
+  end
+
   def self.rx(str, space=nil)
     Regexp.compile("^" + Regexp.escape(str) + "#{space}")
   end
