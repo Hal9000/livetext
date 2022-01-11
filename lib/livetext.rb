@@ -1,7 +1,7 @@
 # Class Livetext skeleton (top level).
 
 class Livetext
-  VERSION = "0.9.17"
+  VERSION = "0.9.20"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 
   module Handler

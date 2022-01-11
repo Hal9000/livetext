@@ -1,10 +1,17 @@
-export vers=0.9.15
-export lib="/Users/Hal/.rvm/gems/ruby-2.7.0/gems/livetext-$vers/lib/"
-# puts lib.inspect
+#!/usr/bin/env ruby
 
-set +x 
-cp -r lib/* $lib/
-cp plugin/* $lib/../plugin/
-cp imports/* $lib/../imports/
-cp -r test/* $lib/../test/
-cp bin/* $lib/../bin/
+def sys(str)
+  puts str
+  system str
+end
+
+version = `livetext -v`.strip
+lib = "/Users/Hal/.rvm/gems/ruby-2.7.0/gems/livetext-#{version}/lib/"
+puts lib.inspect
+
+sys("cp -r lib/* #{lib}/")
+sys("cp plugin/* #{lib}/../plugin/")
+sys("cp imports/* #{lib}/../imports/")
+sys("cp -r test/* #{lib}/../test/")
+sys("cp bin/* #{lib}/../bin/")
+

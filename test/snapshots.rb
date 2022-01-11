@@ -43,6 +43,76 @@ class TestingLivetext < MiniTest::Test
     EXP_OUT,    EXP_ERR    = "expected-output.txt", "expected-error.txt"
     MATCH_OUT,  MATCH_ERR  =  "match-output.txt", "match-error.txt"
 
+    TTY = File.open("/dev/tty","w")
+
+    def self.get_dir   # FIXME - uh what?
+      cmdline = ARGV.first == "cmdline"   # FIXME remove??
+      if cmdline
+        dir = "../"
+        Dir.chdir `livetext --path`.chomp.chomp
+      else
+        dir = ""
+      end
+    end
+
+    args = ARGV - ["cmdline"]
+
+    dir = self.get_dir
+
+    Data = "#{dir}test/snapshots"
+    Dir.chdir(Data)
+
+    TestDirs = Dir.entries(".").reject {|fname| ! File.directory?(fname) } - %w[. ..]
+
+
+    def self.filter
+      all = Dir.entries(".").reject {|fname| ! File.directory?(fname) } - %w[. ..]
+      @included, @excluded = all, []
+      @reasons = []
+      @iflag, @eflag = true, false   # defaults to INCLUDE
+      control = File.new("subset.txt")
+      control.each_line do |raw_line|
+        line = raw_line.dup
+        line.sub!(/#.*/, "")
+        line.strip!
+        line.chomp!
+        lower = line.downcase
+        dejavu = false
+        case
+          when lower.empty?
+            # ignore
+          when lower == "default include all"
+            raise "Only one 'default' allowed" if dejavu
+            @iflag, @eflag = true, false   # defaults to INCLUDE
+            dejavu = true
+          when lower == "default exclude all"
+            raise "Only one 'default' allowed" if dejavu
+            @included = []
+            @iflag, @eflag = false, true
+            dejavu = true
+          when lower == "quit"
+            break
+          when lower[0] == "i" && lower[1] == " "
+            TTY.puts "Warning: Can't include with 'i' when that is default" if @iflag
+            val = raw_line.split(" ", 2)[1]
+            @included << val unless val.nil?  # add to @included
+          when lower[0] == "x" && lower[1] == " "
+            TTY.puts "Warning: Can't exclude with 'x' when that is default" if @eflag
+            val, why = raw_line.split(" ", 3).values_at(1, 2)
+            @excluded << val unless val.nil?  # add to @excluded
+            @reasons << why.chomp
+        end
+      end
+      unless @excluded.empty?
+        puts "\nExcluded:\n "
+        @excluded.each.with_index do |name, num| 
+          printf "  %-20s %s\n", name, @reasons[num]
+        end
+        puts
+      end
+      @included - @excluded
+    end
+
     def initialize(base, assertion = nil)
       @assertion = assertion
       @base = base
@@ -109,9 +179,6 @@ class TestingLivetext < MiniTest::Test
       system("rm -f #{ACTUAL_OUT} #{ACTUAL_ERR} *sdiff.txt")
     end
 
-    def filter  # TODO move subset/omit logic here??
-    end
-
     def run
       @errors = false   # oops, need to reset
       Dir.chdir(@base) do
@@ -124,48 +191,7 @@ class TestingLivetext < MiniTest::Test
     end
   end
 
-  def self.get_dir   # FIXME - uh what?
-    cmdline = ARGV.first == "cmdline"   # FIXME remove??
-    if cmdline
-      dir = "../"
-      Dir.chdir `livetext --path`.chomp.chomp
-    else
-      dir = ""
-    end
-  end
-
-  TTY = File.open("/dev/tty","w")
-
-  args = ARGV - ["cmdline"]
-
-  dir = self.get_dir
-
-  Data = "#{dir}test/snapshots"
-  Dir.chdir(Data)
-
-  TestDirs = Dir.entries(".").reject {|fname| ! File.directory?(fname) } - %w[. ..]
-
-  if args.empty?
-    selected = File.readlines("subset.txt").map(&:chomp)
-    omitfile = "OMIT.txt"
-    omitted  = File.readlines(omitfile).map(&:chomp)
-    omitted.reject! {|line| line.start_with?("#") }
-    omit_names = omitted.map {|line| line.split.first }
-    STDERR.puts
-    STDERR.puts "  >>> Warning: Omitting #{omitted.size} snapshot tests:\n " 
-    indented = " "*7
-    omitted.each do |line| 
-      STDERR.print indented 
-      name, info = line.split(" ", 2)
-      STDERR.printf "%-20s  %s\n", name, info
-    end
-    STDERR.puts
-    wanted   = selected.empty? ? TestDirs : selected
-    Subset = wanted - omit_names
-  else
-    Subset = args
-  end
-
+  Subset = Snapshot.filter
 
   Subset.each do |tdir|
     define_method("test_#{tdir}") do

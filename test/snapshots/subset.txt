@@ -1,0 +1,84 @@
+# This file specifies which snapshots will/won't be run.
+
+# Blank lines and comments are ignored.
+# Other lines:  name_of_snapshot and any comments here are ignored (no # needed)
+
+# You can start by uncommenting one of these:
+# Default INCLUDE all
+# Default EXCLUDE all
+# If you use neither, INCLUDE is the default (but explicit is better)
+
+# If you include all, you can specify exclusions with an x:
+# x  my_test_name           # this is a comment
+
+# Likewise if you EXCLUDE all, you can specify inclusions with an i:
+# i  some_other_test        # this is a comment
+
+# The i and x (to include/exclude) must be the first token on
+#   the line (preceding the test name)
+
+# Note that QUIT (on a line by itself) will stop processing the file
+
+x  error_no_such_inc        # Output BEFORE error doesn't get passed through ("leading" output)
+x  error_no_such_copy       # ^ Same behavior as  error_no_such_inc
+x  error_no_such_mixin      # ^ Same behavior as error_missing_end
+x  error_invalid_name       # ^ Same behavior as error_no_such_inc
+x  error_missing_end        # Output is duplicated somehow. Look for: puts @body or puts @main.body
+x  error_inc_line_num       # Forgot what's wrong here
+
+# Dummy command .icanhaz works like .mixin or .import
+
+x  icanhaz                  # "Leading" output doesn't get generated (same as error_no_such_inc)
+   icanhaz2                 # works?
+
+# Others (usually passing):
+
+# import/include/mixin, others...
+
+   simple_copy              #                      
+   simple_import            #                                            
+   simple_include           #                                                                      
+   simple_mixin             #                                                                      
+                       
+# raw input                       
+                       
+   single_raw_line          #                                            
+   raw_lines                #                                            
+   raw_text_block           #                                            
+   copy_is_raw              #                                            
+                       
+# comments                       
+                       
+   block_comment            #                                                                        
+   comments_ignored_1       #                                            
+                       
+# variables and heredocs                       
+                       
+   predef_vars              #                                            
+   simple_vars              #                                            
+   more_complex_vars        #                                            
+   table_with_heredocs      #                                            
+
+# testing def
+
+   def_method               #                                            
+                       
+# intraline formatting
+
+   basic_formatting         #                                            
+
+# Errors
+
+   error_line_num           #                                            
+   error_mismatched_end     #                                            
+   error_name_not_permitted #                                            
+
+# functions
+
+   functions                #                                            
+
+# More/misc...                       
+                       
+   example_alpha            #                                            
+   example_alpha2           #                                            
+   hello_world              #                                            
