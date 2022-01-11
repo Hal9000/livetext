@@ -2,6 +2,10 @@
 
 class Livetext
 
+  def self.interpolate(str)
+    FormatLine.var_func_parse(str)
+  end
+
   # Class Processor does the actual work of processing input.
 
   class Processor

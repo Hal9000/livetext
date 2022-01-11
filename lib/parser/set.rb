@@ -57,7 +57,7 @@ class Livetext::ParseSet < StringParser
     var = get_var
     skip_equal
     value = get_value
-    value = FormatLine.var_func_parse(value)    # FIXME broken now?
+    value = Livetext.interpolate(value)
     pair = [var, value]
     pair
   end

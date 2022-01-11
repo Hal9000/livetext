@@ -117,11 +117,11 @@ class FormatLine < StringParser
           if [:colon, :brackets].include? arg[0] 
             arg = gen.next  # for real
             param = arg[1]
-            param = FormatLine.var_func_parse(param)
+            param = Livetext.interpolate(param)
           end
           @out << funcall(val, param)
         when :b, :i, :t, :s
-          val = FormatLine.var_func_parse(val)
+          val = Livetext.interpolate(val)
           @out << embed(sym, val)
       else
         add_token :str

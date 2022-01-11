@@ -114,9 +114,9 @@ module Livetext::UserAPI
   end
 
   def _format(line)
-    return "" if line == "\n"
+    return "" if line == "\n" || line.nil?
     line2 = FormatLine.parse!(line)
-    line.replace(line2) unless line.nil?
+    line.replace(line2)
     line
   end
 

@@ -139,8 +139,9 @@ class TestParseSet < MiniTest::Test
 
   # BUG: FormatLine doesn't know variables in this context!
 
-  def xtest_4  # FIXME
+  def test_4  # FIXME
     set = ParseSet.new("file = $File").parse
+print "#{__method__}: #{set.inspect}"
     assert_equal set.first, "file"
     assert set.last !~ /undefined/
   end
@@ -148,8 +149,9 @@ class TestParseSet < MiniTest::Test
   # BUG: ...or functions.
   # (Additional bug: Failing silently seems wrong.)
 
-  def xtest_5  # FIXME
+  def test_5  # FIXME
     set = ParseSet.new("date = $$date").parse
+print "#{__method__}: #{set.inspect}"
     assert_equal set.first, "date"
     assert set.last =~ /^\d\d.\d\d.\d\d/
   end

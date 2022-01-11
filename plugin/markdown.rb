@@ -8,12 +8,12 @@ SimpleFormats[:t] = %w[` `]
 SimpleFormats[:s] = %w[<strike> </strike>]
 
 
-def h1(args = nil, body = nil); _out "# #{FormatLine.var_func_parse(@_data)}"; _optional_blank_line end       # atx style for now
-def h2(args = nil, body = nil); _out "## #{FormatLine.var_func_parse(@_data)}"; _optional_blank_line end
-def h3(args = nil, body = nil); _out "### #{FormatLine.var_func_parse(@_data)}"; _optional_blank_line end
-def h4(args = nil, body = nil); _out "#### #{FormatLine.var_func_parse(@_data)}"; _optional_blank_line end
-def h5(args = nil, body = nil); _out "##### #{FormatLine.var_func_parse(@_data)}"; _optional_blank_line end
-def h6(args = nil, body = nil); _out "###### #{FormatLine.var_func_parse(@_data)}"; _optional_blank_line end
+def h1(args = nil, body = nil); _out "# #{Livetext.interpolate(@_data)}"; _optional_blank_line end       # atx style for now
+def h2(args = nil, body = nil); _out "## #{Livetext.interpolate(@_data)}"; _optional_blank_line end
+def h3(args = nil, body = nil); _out "### #{Livetext.interpolate(@_data)}"; _optional_blank_line end
+def h4(args = nil, body = nil); _out "#### #{Livetext.interpolate(@_data)}"; _optional_blank_line end
+def h5(args = nil, body = nil); _out "##### #{Livetext.interpolate(@_data)}"; _optional_blank_line end
+def h6(args = nil, body = nil); _out "###### #{Livetext.interpolate(@_data)}"; _optional_blank_line end
 
 def title(args = nil, body = nil)
   h1

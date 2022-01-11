@@ -187,7 +187,7 @@ module Livetext::Standard
     text = _body.join("\n")
     rhs = ""
     text.each_line do |line|
-      str = FormatLine.var_func_parse(line.chomp)
+      str = Livetext.interpolate(line.chomp)
       rhs << str + "<br>"
     end
     indent = @parent.indentation.last
