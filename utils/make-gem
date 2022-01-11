@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+
+KBD = File.open("/dev/tty", "r")
+
+print "Source says: "
+src = `head -n 4 lib/livetext.rb | tail -n 1`
+ver = src.split.last[1..-2]
+puts ver
+puts
+
+print "Install says: "
+system("livetext -v")
+puts
+
+print "Continue? (Yn)  "
+resp = KBD.gets.chomp
+
+if resp == "y" || resp == "Y" || resp.empty?
+  puts "Continuing...\n "   # all OK
+else
+  abort "\nExiting\n "
+end
+
+update = <<-EOF
+  gem build livetext.gemspec && 
+  gem push livetext-*.gem && 
+  gem uninstall -x livetext && 
+  gem install livetext
+EOF
+
+system(update)
+

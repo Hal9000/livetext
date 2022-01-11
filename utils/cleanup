@@ -1,0 +1,2 @@
+find test/snapshots/ -name actual-* | xargs rm
+find test/snapshots/ -name *sdiff* | xargs rm
