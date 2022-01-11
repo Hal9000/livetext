@@ -52,7 +52,7 @@ class FormatLine < StringParser
           marker peek
           add peek
         when LF
-          break if @i >= line.size - 1
+          break if eos?  # @i >= line.size - 1
         when nil
           break
         else
@@ -199,7 +199,7 @@ class FormatLine < StringParser
     str = Null.dup
     grab
     loop do
-      break if eos?   # peek.nil?
+      break if peek.nil?   # eos?
       str << peek
       break if terminate?(NoAlphaDot, next!)
       grab

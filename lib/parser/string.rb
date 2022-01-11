@@ -15,12 +15,13 @@ class StringParser
     return nil if @eos
     char = @line[@i]
     @i += 1
-    @eos = true if @i > @len
+    @eos = @i >= @len
     char
   end
 
   def ungrab
-    @i -= 1    # FIXME what about eos...?
+    @i -= 1
+    @eos = @i >= @len
   end
 
   def next!
@@ -32,12 +33,8 @@ class StringParser
     @line[@i-1]
   end
 
-  def last?
-    @i > @len - 1
-  end
-
   def eos?
-    @eos = true if last? # duh?
+#   @eos = true if last? # duh?
     @eos
   end
 
@@ -52,7 +49,7 @@ class StringParser
       char = peek
       break if eos?
       break if char != " "
-      grab
+      char = grab
     end
     char
   end

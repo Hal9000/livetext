@@ -13,7 +13,7 @@ class TestParseSet < MiniTest::Test
   def teardown
   end
 
-  def ztest_one_unquoted
+  def test_one_unquoted
     set = ParseSet.new('my_var_123 = 789').parse
     pair = set.first
     assert_equal pair, %w[my_var_123 789]
@@ -23,38 +23,37 @@ class TestParseSet < MiniTest::Test
     assert_equal pair, %w[var_234 naked_string]
   end
 
-  def ztest_one_single_quoted
+  def test_one_single_quoted
     set = ParseSet.new("fancy.var.name = 'simple string'").parse
     pair = set.first
     assert_equal pair, ["fancy.var.name", "simple string"]
   end
 
-  def ztest_one_double_quoted
+  def test_one_double_quoted
     set = ParseSet.new('fancy.var2 = "another string"').parse
     pair = set.first
     assert_equal pair, ["fancy.var2", "another string"]
   end
 
-  def ztest_multiple_unquoted
-puts __method__
+  def test_multiple_unquoted
     pair1, pair2 = ParseSet.new("this=345, that=678").parse
     assert_equal pair1, %w[this 345]
     assert_equal pair2, %w[that 678]
   end
 
-  def ztest_multiple_unquoted_quoted
+  def test_multiple_unquoted_quoted
     pair1, pair2 = ParseSet.new('alpha = 567, beta = "oh well"').parse
     assert_equal pair1, %w[alpha 567]
     assert_equal pair2, ["beta", "oh well"]
   end
 
-  def ztest_quote_embedded_comma
+  def test_quote_embedded_comma
     set = ParseSet.new('gamma = "oh, well"').parse
     pair = set.first
     assert_equal pair, ["gamma", "oh, well"]
   end
 
-  def ztest_get_var
+  def test_get_var
     @parse = ParseSet.new("foo=345")
     assert_equal @parse.get_var, "foo"
     @parse = ParseSet.new("foo = 345")
@@ -79,7 +78,7 @@ puts __method__
     assert_raises(BadVariableName) { @parse.get_var }
   end
 
-  def ztest_skip_equal
+  def test_skip_equal
     @parse = ParseSet.new("=")
     assert_nil @parse.skip_equal
     @parse = ParseSet.new("   = ")
@@ -97,7 +96,7 @@ puts __method__
     assert_raises(NoEqualSign) { @parse.skip_equal }
   end
 
-  def ztest_quoted_value
+  def test_quoted_value
     @parse = ParseSet.new(%['this'])
     assert_equal @parse.quoted_value, "this"
     @parse = ParseSet.new(%["that"])
@@ -119,7 +118,7 @@ puts __method__
     #  - allow (escaped?) comma in quoted string
   end
 
-  def ztest_unquoted_value
+  def test_unquoted_value
     # Note: an unquoted value is still a string!
     @parse = ParseSet.new(%[342 ])
     assert_equal @parse.unquoted_value, "342"

@@ -33,7 +33,6 @@ x  Experimental icanhaz command (acts like import) - see also lib/handler, Livet
    Add .link, $$link
    `.if and `[.else]?
    change from .lt3 to .live
-   mixin as module?
    automated checking of output file age
    too many variations - transform, process, etc.
    Change predefined function names?? e.g. $$date becomes $$_date
@@ -87,6 +86,7 @@ x  Experimental icanhaz command (acts like import) - see also lib/handler, Livet
 
    DONE
    ----
+x  mixin as module?
 x  verify *empty* error file in snapshots
 x  handle_dotcmd - remove rescue
 x  More unit tests for FormatLine

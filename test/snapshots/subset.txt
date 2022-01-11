@@ -35,50 +35,50 @@ x  icanhaz                  # "Leading" output doesn't get generated (same as er
 
 # import/include/mixin, others...
 
-   simple_copy              #                      
-   simple_import            #                                            
-   simple_include           #                                                                      
-   simple_mixin             #                                                                      
-                       
-# raw input                       
-                       
-   single_raw_line          #                                            
-   raw_lines                #                                            
-   raw_text_block           #                                            
-   copy_is_raw              #                                            
-                       
-# comments                       
-                       
-   block_comment            #                                                                        
-   comments_ignored_1       #                                            
-                       
-# variables and heredocs                       
-                       
-   predef_vars              #                                            
-   simple_vars              #                                            
-   more_complex_vars        #                                            
-   table_with_heredocs      #                                            
+   simple_copy              #                    
+x  simple_import            # not working yet (but *could* sub in .icanhaz)
+   simple_include           #                            
+   simple_mixin             #                            
+                     
+# raw input                     
+                     
+   single_raw_line          #  
+   raw_lines                #  
+   raw_text_block           #  
+   copy_is_raw              #  
+                     
+# comments                     
+                     
+   block_comment            #                              
+   comments_ignored_1       #  
+                     
+# variables and heredocs                     
+                     
+   predef_vars              #  
+   simple_vars              #  
+   more_complex_vars        #  
+   table_with_heredocs      #  
 
 # testing def
 
-   def_method               #                                            
-                       
+   def_method               #  
+                     
 # intraline formatting
 
-   basic_formatting         #                                            
+   basic_formatting         #  
 
 # Errors
 
-   error_line_num           #                                            
-   error_mismatched_end     #                                            
-   error_name_not_permitted #                                            
+   error_line_num           #  
+   error_mismatched_end     #  
+   error_name_not_permitted #  
 
 # functions
 
-   functions                #                                            
+   functions                #  
 
-# More/misc...                       
-                       
-   example_alpha            #                                            
-   example_alpha2           #                                            
-   hello_world              #                                            
+# More/misc...                     
+                     
+   example_alpha            #  
+   example_alpha2           #  
+   hello_world              #  

@@ -58,7 +58,7 @@ class TestStringParser < MiniTest::Test
     assert @zero.eos?
     
     @one.grab
-    assert @one.eos?
+    assert @one.eos?   # FIXME??
     @one.grab
     assert @one.eos?
 
@@ -81,19 +81,15 @@ class TestStringParser < MiniTest::Test
     assert_nil char1
     assert_nil char2
     assert @zero.i == 0
-    assert @zero.last?
     assert @zero.eos?
 
-    refute @one.last?    # FIXME??
     char1 = @one.peek
-    refute @one.last?    # FIXME??
     char2 = @one.grab
     char3 = @one.peek
     assert char1
     assert char2 == char1
     assert char3 == @str1[1]
     assert @one.i == 1
-    assert @one.last?
     assert @one.eos?     # FIXME??
 
     char1 = @many.peek
@@ -103,7 +99,6 @@ class TestStringParser < MiniTest::Test
     assert char2 == char1
     assert char3 == @strN[1]
     assert @many.i == 1
-    refute @many.last?
     refute @many.eos?
   end
 
@@ -126,5 +121,13 @@ class TestStringParser < MiniTest::Test
     refute some.peek == " "
     assert_equal some.peek, "x"
     assert_equal some.i, 3
+
+    some = StringParser.new("abc   123")
+    3.times { some.grab }
+    assert_equal some.peek, " "
+    some.skip_spaces
+    refute some.peek == " "
+    assert_equal some.peek, "1"
+    assert_equal some.i, 6
   end
 end
