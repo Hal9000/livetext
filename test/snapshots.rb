@@ -124,40 +124,48 @@ class TestingLivetext < MiniTest::Test
     end
   end
 
+  def self.get_dir   # FIXME - uh what?
+    cmdline = ARGV.first == "cmdline"   # FIXME remove??
+    if cmdline
+      dir = "../"
+      Dir.chdir `livetext --path`.chomp.chomp
+    else
+      dir = ""
+    end
+  end
+
   TTY = File.open("/dev/tty","w")
 
-  cmdline = ARGV.first == "cmdline"   # FIXME remove??
-  if cmdline
-    dir = "../"
-    Dir.chdir `livetext --path`.chomp.chomp
-  else
-    dir = ""
-  end
+  args = ARGV - ["cmdline"]
+
+  dir = self.get_dir
 
   Data = "#{dir}test/snapshots"
   Dir.chdir(Data)
 
   TestDirs = Dir.entries(".").reject {|fname| ! File.directory?(fname) } - %w[. ..]
 
-  selected = File.readlines("subset.txt").map(&:chomp)
-
-  omitfile = "OMIT.txt"
-  omitted  = File.readlines(omitfile).map(&:chomp)
-  omitted.reject! {|line| line.start_with?("#") }
-  omit_names = omitted.map {|line| line.split.first }
-  STDERR.puts
-  STDERR.puts "  >>> Warning: Omitting #{omitted.size} snapshot tests:\n " 
-  indented = " "*7
-  omitted.each do |line| 
-    STDERR.print indented 
-    name, info = line.split(" ", 2)
-    STDERR.printf "%-20s  %s\n", name, info
+  if args.empty?
+    selected = File.readlines("subset.txt").map(&:chomp)
+    omitfile = "OMIT.txt"
+    omitted  = File.readlines(omitfile).map(&:chomp)
+    omitted.reject! {|line| line.start_with?("#") }
+    omit_names = omitted.map {|line| line.split.first }
+    STDERR.puts
+    STDERR.puts "  >>> Warning: Omitting #{omitted.size} snapshot tests:\n " 
+    indented = " "*7
+    omitted.each do |line| 
+      STDERR.print indented 
+      name, info = line.split(" ", 2)
+      STDERR.printf "%-20s  %s\n", name, info
+    end
+    STDERR.puts
+    wanted   = selected.empty? ? TestDirs : selected
+    Subset = wanted - omit_names
+  else
+    Subset = args
   end
-  STDERR.puts
 
-  wanted   = selected.empty? ? TestDirs : selected
-
-  Subset = wanted - omit_names
 
   Subset.each do |tdir|
     define_method("test_#{tdir}") do

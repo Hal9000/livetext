@@ -7,3 +7,5 @@
   error_invalid_name     ^ Same behavior as error_no_such_inc
   error_missing_end      Output is duplicated somehow. Look for: puts @body or puts @main.body
   error_inc_line_num     Forgot what's wrong here
+  simple_import          Not coded yet
+# icanhaz                Dummy command similar to import/mixin

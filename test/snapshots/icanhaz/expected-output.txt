@@ -1,0 +1,5 @@
+Test fake command .icanhaz:
+we give an error
+when a .rb does not
+exist:
+<p>

@@ -1,0 +1,10 @@
+Test fake command .icanhaz:
+we give an error
+when a .rb does not
+exist:
+
+.icanhaz nonexistent
+
+We shouldn't
+reach this point
+in the file.

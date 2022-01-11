@@ -118,7 +118,7 @@ module Livetext::Standard
 
   def banner(args = nil, body = nil)
     str = _format(@_data.chomp)
-    num = str.length - 1
+    num = str.length
     decor = "-"*num + "\n"
     puts decor + str + "\n" + decor
   end
@@ -228,6 +228,17 @@ module Livetext::Standard
     return if @_mixins.include?(name)
     @_mixins << name
     mod = Livetext::ParseMixin.get_module(name)  # FIXME??
+    self.extend(mod)
+    init = "init_#{name}"
+    self.send(init) if self.respond_to? init
+    _optional_blank_line
+  end
+
+  def icanhaz(args = nil, body = nil)
+    name = @_args.first   # Expect a module name
+    return if @_mixins.include?(name)
+    @_mixins << name
+    mod = Livetext::Handler::ICanHaz.get_module(name)  # FIXME??
     self.extend(mod)
     init = "init_#{name}"
     self.send(init) if self.respond_to? init

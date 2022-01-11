@@ -1,8 +1,11 @@
 # Class Livetext skeleton (top level).
 
 class Livetext
-  VERSION = "0.9.15"
+  VERSION = "0.9.16"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
+
+  module Handler
+  end
 end
 
 # $LOAD_PATH << Livetext::Path
@@ -16,6 +19,7 @@ require_relative 'standard'
 require_relative 'formatline'
 require_relative 'processor'
 require_relative 'helpers'
+require_relative 'handler'
 
 Plugins = File.expand_path(File.join(File.dirname(__FILE__), "../plugin"))
 

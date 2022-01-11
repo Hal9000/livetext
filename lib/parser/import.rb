@@ -4,9 +4,7 @@ require '../livetext/importable'
 make_exception(:BadVariableName, "Error: invalid variable name")
 make_exception(:NoEqualSign,     "Error: no equal sign found")
 
-# FIXME probably belongs elsewhere?
-
-class Livetext::ParseImport
+class Livetext::Handler::Import
   def use_import(name)
     require name
     include name

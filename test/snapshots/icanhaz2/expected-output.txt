@@ -1,0 +1,6 @@
+Testing fake command .icanhaz:
+<p>
+
+Now call a method:
+Hello, world.
+That's all.

@@ -1,0 +1,7 @@
+Here I am
+testing a simple import
+.mixin simple_import
+
+Now call a method:
+.hello_world
+That's all.

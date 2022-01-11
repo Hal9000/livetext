@@ -1,4 +1,5 @@
-export lib="/Users/Hal/.rvm/gems/ruby-2.7.0/gems/livetext-0.9.14/lib/"
+export vers=0.9.15
+export lib="/Users/Hal/.rvm/gems/ruby-2.7.0/gems/livetext-$vers/lib/"
 # puts lib.inspect
 
 set +x 
