@@ -1,1 +1,0 @@
-find testfiles -name actual-*.txt | xargs rm

@@ -1,6 +1,0 @@
-cd $1
-mv $1.err actual-error.txt
-mv $1.erx expected-error.txt
-mv $1.exp expected-output.txt
-mv $1.lt3 source.lt3
-mv $1.out actual-output.txt
