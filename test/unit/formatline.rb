@@ -4,59 +4,9 @@ require_relative '../../lib/livetext'
 
 class TestingLivetext < MiniTest::Test
 
-# Some (most) methods were generated via...
+# Some (most) methods were generated via the code
+# seen in the comment at the bottom of this file...
 
-=begin
-  TestLines = []
-
-  items = []
-  formatting_tests = File.open("test/snapshots/formatting-tests.txt")
-  loop do 
-    4.times { items << formatting_tests.gets.chomp }
-    # Blank line terminates each "stanza"
-    raise "Oops? #{items.inspect}" unless items.last.empty?
-    TestLines << items
-    break if formatting_tests.eof?
-  end
-
-  STDERR.puts <<~RUBY
-    require 'minitest/autorun'
-
-    require_relative '../lib/livetext'
-
-    # Just another testing class. Chill.
-
-    class TestingLivetext < MiniTest::Test
-  RUBY
-
-  TestLines.each.with_index do |item, num|
-    msg, src, exp, blank = *item
-    # generate tests...
-    name = "test_formatting_#{'%02d' % (num + 1)}"
-    method_source = <<~RUBY
-      def #{name}   # #{msg}
-        msg, src, exp = <<~STUFF.split("\\n")
-        #{msg}
-        #{src}
-        #{exp}
-        STUFF
-
-        actual = FormatLine.parse!(src)
-        # FIXME could simplify assert logic?
-        if exp[0] == "/" # regex!   FIXME doesn't honor %r[...]
-          exp = Regexp.compile(exp[1..-2])   # skip slashes
-          assert_match(exp, actual, msg)
-        else
-          assert_equal(exp, actual, msg)
-        end
-      end
-
-    RUBY
-    STDERR.puts method_source
-  end
-  STDERR.puts "\nend"
-end
-=end
 
   def test_simple_string
     parse = FormatLine.new("only testing")
@@ -648,3 +598,57 @@ end
   end
 
 end
+
+# Test generation logic:
+
+=begin
+  TestLines = []
+
+  items = []
+  formatting_tests = File.open("test/snapshots/formatting-tests.txt")
+  loop do 
+    4.times { items << formatting_tests.gets.chomp }
+    # Blank line terminates each "stanza"
+    raise "Oops? #{items.inspect}" unless items.last.empty?
+    TestLines << items
+    break if formatting_tests.eof?
+  end
+
+  STDERR.puts <<~RUBY
+    require 'minitest/autorun'
+
+    require_relative '../lib/livetext'
+
+    # Just another testing class. Chill.
+
+    class TestingLivetext < MiniTest::Test
+  RUBY
+
+  TestLines.each.with_index do |item, num|
+    msg, src, exp, blank = *item
+    # generate tests...
+    name = "test_formatting_#{'%02d' % (num + 1)}"
+    method_source = <<~RUBY
+      def #{name}   # #{msg}
+        msg, src, exp = <<~STUFF.split("\\n")
+        #{msg}
+        #{src}
+        #{exp}
+        STUFF
+
+        actual = FormatLine.parse!(src)
+        # FIXME could simplify assert logic?
+        if exp[0] == "/" # regex!   FIXME doesn't honor %r[...]
+          exp = Regexp.compile(exp[1..-2])   # skip slashes
+          assert_match(exp, actual, msg)
+        else
+          assert_equal(exp, actual, msg)
+        end
+      end
+
+    RUBY
+    STDERR.puts method_source
+  end
+  STDERR.puts "\nend"
+end
+=end

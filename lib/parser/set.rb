@@ -107,7 +107,6 @@ class Livetext::ParseSet < StringParser
       char = grab
       break if eos?
       break if char == quote
-#     break if char.nil?
       char = escaped if char == "\\"
       value << char
     end
@@ -124,7 +123,6 @@ class Livetext::ParseSet < StringParser
     loop do
       char = peek
       break if eos?  #     FIXME oops???
-#     break if char.nil?
       break if char == " " || char == ","
       value << char
       char = grab

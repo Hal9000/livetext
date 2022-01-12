@@ -38,7 +38,6 @@ File.open("debug-pf1", "w") {|f| f.puts code }
     code.gsub!(/ class="[^"]*?"/, "")    # Get rid of remaining Pygments CSS
 File.open("debug-pf2", "w") {|f| f.puts code }
     lines = code.split("\n")
-#   lines.each {|line| line << "\n" }
     n1 = lines.index {|x| x =~ /<pre>/ }
     n2 = lines.index {|x| x =~ /<\/pre>/ }
     # FIXME ?

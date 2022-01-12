@@ -33,10 +33,6 @@ module Bookish
     _out "</table>"
   end
 
-  # def comment
-  #   _body { }  # ignore body
-  # end
-
   def _errout(*args)
     ::STDERR.puts *args
   end
@@ -46,13 +42,15 @@ module Bookish
   end
 
   def _slug(str)
-    s2 = str.chomp.strip.gsub(/[?:,()'"\/]/,"").gsub(/ /, "-").downcase
-  # _errout "SLUG: #{str} => #{s2}"
-    s2
+    str2 = str.chomp.strip
+    str2 = str2.gsub(/[?:,()'"\/]/,"")
+    str2 = str2.gsub(/ /, "-")
+    str2.downcase!
+    str2
   end
 
-
   # FIXME duplicated?
+
   def image(args = nil, body = nil)
     name = @_args[0]
     _out "<img src='#{name}'></img>"

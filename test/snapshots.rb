@@ -45,8 +45,8 @@ class TestingLivetext < MiniTest::Test
 
     TTY = File.open("/dev/tty","w")
 
-    def self.get_dir   # FIXME - uh what?
-      cmdline = ARGV.first == "cmdline"   # FIXME remove??
+    def self.get_dir   # FIXME - uh what? remove this??
+      cmdline = ARGV.first == "cmdline"
       if cmdline
         dir = "../"
         Dir.chdir `livetext --path`.chomp.chomp

@@ -227,7 +227,7 @@ module Livetext::Standard
     name = @_args.first   # Expect a module name
     return if @_mixins.include?(name)
     @_mixins << name
-    mod = Livetext::ParseMixin.get_module(name)  # FIXME??
+    mod = Livetext::ParseMixin.get_module(name)
     self.extend(mod)
     init = "init_#{name}"
     self.send(init) if self.respond_to? init
@@ -238,7 +238,7 @@ module Livetext::Standard
     name = @_args.first   # Expect a module name
     return if @_mixins.include?(name)
     @_mixins << name
-    mod = Livetext::Handler::ICanHaz.get_module(name)  # FIXME??
+    mod = Livetext::Handler::ICanHaz.get_module(name)
     self.extend(mod)
     init = "init_#{name}"
     self.send(init) if self.respond_to? init

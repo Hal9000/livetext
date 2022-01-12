@@ -18,7 +18,7 @@ def h2; _out "<h2>#{@_data}</h2>"; end
 def h3; _out "<h3>#{@_data}</h3>"; end
 
 def alpha_columns(args = nil, body = nil)
-  n = @_args.first.to_i   # FIXME: what if missing?
+  n = @_args.first.to_i   # FIXME: what if it's missing?
   words = []
   _body do |line| 
     words << line.chomp
@@ -50,8 +50,8 @@ def _slug(str)
   s2
 end
 
-
 # FIXME duplicated?
+
 def image(args = nil, body = nil)
   name = @_args[0]
   _out "<img src='#{name}'></img>"
@@ -67,7 +67,6 @@ def figure(args = nil, body = nil)
 end
 
 def chapter(args = nil, body = nil)
-# _errout("chapter")
   @chapter = @_args.first.to_i
   @sec = @sec2 = 0
   title = @_data.split(" ",2)[1]

@@ -58,7 +58,7 @@ class TestStringParser < MiniTest::Test
     assert @zero.eos?
     
     @one.grab
-    assert @one.eos?   # FIXME??
+    assert @one.eos?
     @one.grab
     assert @one.eos?
 
@@ -90,7 +90,7 @@ class TestStringParser < MiniTest::Test
     assert char2 == char1
     assert char3 == @str1[1]
     assert @one.i == 1
-    assert @one.eos?     # FIXME??
+    assert @one.eos?
 
     char1 = @many.peek
     char2 = @many.grab
