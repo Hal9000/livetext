@@ -103,6 +103,8 @@ character in front of such a token: Underscore for italics, asterisk for boldfac
 for "code font." The formatting ends when the first blank space is encountered, without any 
 kind of suffixed character. 
 
+
+
 I also find it's common to want to terminate such a string with some kind of 
 naturally-occurring punctuation mark. If we double the initial delimiter, it 
 will be understood to terminate at the first period, comma, or right parenthesis.

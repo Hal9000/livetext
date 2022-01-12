@@ -85,7 +85,7 @@ module Tutorial
   def testcase(args = nil, body = nil)
     name = _args.first
     _out "\n<font size=+1><b>Test: </font><font size=+2><tt>#{name}</tt></font></b></h3><br>"
-    src, exp = "test/data/#{name}/source.lt3", "test/data/#{name}/expected-output.txt"
+    src, exp = "test/snapshots/#{name}/source.lt3", "test/snapshots/#{name}/expected-output.txt"
     @_args = [src, exp]   # Better way to do this??
     put_table(src, exp)
     _out "<br>"

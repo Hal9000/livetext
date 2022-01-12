@@ -52,8 +52,9 @@ def inout(args = nil, body = nil)
 end
 
 def put_table(src, exp)
-  t1 = ::File.readlines(src) rescue (abort "t1 = #{src}")
-  t2 = ::File.readlines(exp) rescue (abort "t2 = #{out}")
+STDERR.puts "put_table: #{[src, exp].inspect}"
+  t1 = ::File.readlines(src) rescue (abort "Fail - src = #{src}  t1 = #{src}")
+  t2 = ::File.readlines(exp) rescue (abort "Fail - src = #{exp}  t2 = #{out}")
   t1 = t1.map {|x| " " + x.sub(/ +$/,"").gsub(/_/, "\\_") }.join
   t2 = t2.map {|x| " " + x.sub(/ +$/,"").gsub(/_/, "\\_") }.join
 
@@ -80,7 +81,7 @@ end
 def testcase(args = nil, body = nil)
   name = _args.first
   _out "\n<font size=+1><b>Test: </font><font size=+2><tt>#{name}</tt></font></b></h3><br>"
-  src, exp = "test/data/#{name}/source.lt3", "test/data/#{name}/expected-output.txt"
+  src, exp = "test/snapshots/#{name}/source.lt3", "test/snapshots/#{name}/expected-output.txt"
   @_args = [src, exp]   # Better way to do this??
   put_table(src, exp)
   _out "<br>"

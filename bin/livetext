@@ -82,8 +82,6 @@ loop do
     when "-i", "--install"
       lib = ARGV.shift
       system("cp #{lib} #{Livetext::Path}/../plugin/")
-#   when /-.*/
-#     raise "Unknown argument '#{arg}'"
     when Object
       x.process_file(arg, true)  # , @backtrace)
   end

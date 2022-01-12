@@ -4,6 +4,9 @@ module Helpers
   Space = " "
   Sigil = "." # Can't change yet
 
+  ESCAPING = { "'" => '&#39;', '&' => '&amp;', '"' => '&quot;',
+               '<' => '&lt;', '>' => '&gt;' }
+
   def escape_html(string)
     enc = string.encoding
     unless enc.ascii_compatible?
@@ -12,12 +15,12 @@ module Helpers
         enc = Encoding::Converter.asciicompat_encoding(enc)
         string = enc ? string.encode(enc) : string.b
       end
-      table = Hash[TABLE_FOR_ESCAPE_HTML__.map {|pair|pair.map {|s|s.encode(enc)}}]
+      table = Hash[ESCAPING.map {|pair|pair.map {|s|s.encode(enc)}}]
       string = string.gsub(/#{"['&\"<>]".encode(enc)}/, table)
       string.encode!(origenc) if origenc
       return string
     end
-    string.gsub(/['&\"<>]/, TABLE_FOR_ESCAPE_HTML__)
+    string.gsub(/['&\"<>]/, ESCAPING)
   end
 
   def find_file(name, ext=".rb")
@@ -61,7 +64,7 @@ module Helpers
     @body
   end
 
-  def process_line(line)  # FIXME inefficient?
+  def process_line(line)
     nomarkup = true
     case line  # must apply these in order
       when Comment
