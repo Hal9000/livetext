@@ -52,7 +52,6 @@ def inout(args = nil, body = nil)
 end
 
 def put_table(src, exp)
-STDERR.puts "put_table: #{[src, exp].inspect}"
   t1 = ::File.readlines(src) rescue (abort "Fail - src = #{src}  t1 = #{src}")
   t2 = ::File.readlines(exp) rescue (abort "Fail - src = #{exp}  t2 = #{out}")
   t1 = t1.map {|x| " " + x.sub(/ +$/,"").gsub(/_/, "\\_") }.join

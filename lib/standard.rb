@@ -101,7 +101,7 @@ module Livetext::Standard
   end
 
   def errout(args = nil, body = nil)
-    STDERR.puts @_data.chomp
+    ::STDERR.puts @_data.chomp
     _optional_blank_line
   end
 
@@ -230,7 +230,7 @@ module Livetext::Standard
     mod = Livetext::ParseMixin.get_module(name)
     self.extend(mod)
     init = "init_#{name}"
-    self.send(init) if self.respond_to? init
+    self.send(init) rescue nil  # if self.respond_to? init
     _optional_blank_line
   end
 
@@ -241,7 +241,7 @@ module Livetext::Standard
     mod = Livetext::Handler::ICanHaz.get_module(name)
     self.extend(mod)
     init = "init_#{name}"
-    self.send(init) if self.respond_to? init
+    self.send(init) rescue nil  # if self.respond_to? init
     _optional_blank_line
   end
 

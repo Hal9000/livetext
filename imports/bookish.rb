@@ -107,7 +107,7 @@ module Bookish
     next_output
     _out "<h3>#@section #{title}</h3>\n"
   rescue => err
-    STDERR.puts "#{err}\n#{err.backtrace}"
+    ::STDERR.puts "#{err}\n#{err.backtrace}"
     exit
   end
 
@@ -274,7 +274,7 @@ module Bookish
     _body {|line| _out line }
     _out "</blockquote>"
   rescue => err
-    STDERR.puts "#{err}\n#{err.backtrace}"
+    ::STDERR.puts "#{err}\n#{err.backtrace}"
     exit
   end
 

@@ -107,7 +107,7 @@ def sec(args = nil, body = nil)
   next_output
   _out "<h3>#@section #{title}</h3>\n"
 rescue => err
-  STDERR.puts "#{err}\n#{err.backtrace}"
+  ::STDERR.puts "#{err}\n#{err.backtrace}"
   exit
 end
 
@@ -274,7 +274,7 @@ def quote(args = nil, body = nil)
   _body {|line| _out line }
   _out "</blockquote>"
 rescue => err
-  STDERR.puts "#{err}\n#{err.backtrace}"
+  ::STDERR.puts "#{err}\n#{err.backtrace}"
   exit
 end
 

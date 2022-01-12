@@ -9,7 +9,7 @@ class Livetext::Handler::Import
     require name
     include name
     init = "init_#{name}"
-    self.send(init) if self.respond_to? init
+    self.send(init) rescue nil  # if self.respond_to? init
   end
 end
 

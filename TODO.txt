@@ -8,17 +8,18 @@
      # Add Importable Tests
 x  Experimental icanhaz command (acts like import) - see also lib/handler, Livetext::Handler
 x  Notes for MC on logic
+   Better parameter handling for custom functions
    Livetext::Parse:: namespace??
    Annoying require_relative paths:  ../../.. blah blah
-   Miscellaneos "extraneous" requires? (but it breaks without them)
+   Miscellaneous "extraneous" requires? (but it breaks without them)
    Create high-level parser?
    All dot-commands into their own module??
    reify args/data passing?
    Better parameter handling for custom dot commands (see: reify args/data)
    Bug: dot-space inside block seen as comment (make configurable??)
    Allow turning on/off: formatting, variable interpolation, function interpolation?
-   Better parameter handling for custom functions
    Support "namespaced" variables  (`[.set code.font="whatever"])
+   Support function namespacing?
    permit # comments on end of line? (configurable?)
    Feature to "break" to EOF?
 
@@ -40,7 +41,6 @@ x  Notes for MC on logic
    way to set defaults for images, etc.
    Write as pure library in addition to executable
    More support for markdown
-   Support function namespacing?
    Improve vim syntax files
    Must have sane support for CSS
    Support for Pygments and/or other code processors

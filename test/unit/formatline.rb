@@ -4,9 +4,8 @@ require_relative '../../lib/livetext'
 
 class TestingLivetext < MiniTest::Test
 
-# Some (most) methods were generated via the code
-# seen in the comment at the bottom of this file...
-
+  # Some (most) methods were generated via the code
+  # seen in the comment at the bottom of this file...
 
   def test_simple_string
     parse = FormatLine.new("only testing")

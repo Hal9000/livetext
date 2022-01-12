@@ -65,14 +65,13 @@ class Livetext::CmdData
     # body:  true => this command has a body + .end
     # how raw is raw?
     #   remove comment - always/sometimes/never?
-    #   var_func_parse - always/sometimes/never?
-    #   var_func_parse inside body??
+    #   interpolate - always/sometimes/never?
+    #   interpolate inside body??
     @data = data.dup     # comment? vars? funcs?
     @raw  = data.dup     # comment? vars? funcs?
     @args  = data.split  # simple array
     @nargs = nargs       # not really "needed"
     check_num_args(nargs)
-    
     # @varfunc = Livetext.interpolate(data.dup)
   end
 

@@ -60,7 +60,7 @@ module Helpers
       break if line.nil?
       process_line(line)
     end
-    val = @main.finalize if @main.respond_to? :finalize
+    val = @main.finalize rescue nil  # if @main.respond_to? :finalize
     @body
   end
 
@@ -169,10 +169,10 @@ module Helpers
       value = path if File.exist?(path)
       break if value
     end
-    STDERR.puts "Cannot find #{file.inspect} from #{Dir.pwd}" unless value
+    ::STDERR.puts "Cannot find #{file.inspect} from #{Dir.pwd}" unless value
 	  return value
   rescue
-    STDERR.puts "Can't find #{file.inspect} from #{Dir.pwd}"
+    ::STDERR.puts "Can't find #{file.inspect} from #{Dir.pwd}"
 	  return nil
   end
 

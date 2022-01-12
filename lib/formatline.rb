@@ -317,8 +317,7 @@ class FormatLine < StringParser
     add str
     str
   rescue => err
-    STDERR.puts "ERR = #{err}\n#{err.backtrace}"
-    STDERR.puts "=== str = #{str.inspect}"
+    ::STDERR.puts "ERR = #{err}\n#{err.backtrace}"
   end
 
   def escaped
@@ -350,15 +349,15 @@ class FormatLine < StringParser
     add str
     str
   rescue => err
-    STDERR.puts "ERR = #{err}\n#{err.backtrace}"
-    STDERR.puts "=== str = #{str.inspect}"
+    ::STDERR.puts "ERR = #{err}\n#{err.backtrace}"
   end
 
   def funcall(name, param)
     err = "[Error evaluating $$#{name}(#{param})]"
+    func_name = "func_" + name.to_s
     result = 
-      if self.respond_to?("func_" + name.to_s)
-        self.send("func_" + name.to_s, param)
+      if self.send?(func_name, param)  # self.respond_to?(func_name)
+        # do nothing
       else
         fobj = ::Livetext::Functions.new
         fobj.send(name, param) rescue err

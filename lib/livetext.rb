@@ -12,6 +12,16 @@ end
 
 require 'fileutils'
 
+class Object
+  def send?(meth, *args)
+    if self.respond_to?(meth)
+      self.send(meth, *args)
+    else
+      return nil
+    end
+  end
+end
+
 require_relative 'errors'
 require_relative 'functions'
 require_relative 'userapi'
