@@ -1,0 +1,43 @@
+  1. livetext file1.lt3
+
+  2. See bin/livetext - line 88 - process_file
+
+  3. livetext.rb - #process_file (readlines, #source, process_line, ...)
+
+  4. #process_line - handle_dotcmd, etc.
+
+  5. #handle_dotcmd in lib/livetext.rb
+
+  7.   - #get_name is called
+
+  8.   - Note that it retrieves the data from after the dot-command
+
+  9.   - This is handed off to the processor: @main.data = data
+         (The data will just be the name of the file to be imported.)
+
+ 10.   - @get_name returns :mixin  (actually :icanhaz)
+
+ 11.   - @main.send(name) invokes #mixin (actually #icanhaz)
+
+ 12.   - (Actually - the more I look at #9 above, the weirder it seems.)
+
+ 13.   - So anyway. #icanhaz gets called and it finds the filename
+         in @main.data
+
+ 14. From #icanhaz in lib/standard.rb - 
+
+ 15.   - class method ICanHaz.get_module is called (see lib/handler/icanhaz.rb) 
+
+ 16.   - it does a 'require' of the file (containing sourcw for a Ruby module)
+
+ 17.   - class method get_module returns the actual Ruby module
+
+ 18.   - then #icanhaz (a method of Processor) does a self.extend(newmod)
+
+ 19.   - now the methods defined in that module are part of @main
+
+ 20. So in summary: 
+       - Run livetext file1.lt3
+       - the .icanhaz command references the "ad hoc" plugin called myplugin.rb
+       - the methods defined there are now available as dot commands
+       - e.g. file1.lt3 references .title which actually calls @main.title

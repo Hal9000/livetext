@@ -131,8 +131,8 @@ module Helpers
     name, data = line.split(" ", 2)
     name = name[1..-1]  # chop off sigil
     name = "dot_" + name if %w[include def].include?(name)
-    @main.data = data
     @main.check_disallowed(name)
+    @main.data = data
     name
   end
 

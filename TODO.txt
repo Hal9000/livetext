@@ -8,7 +8,6 @@
      # Add Importable Tests
 x  Experimental icanhaz command (acts like import) - see also lib/handler, Livetext::Handler
    Notes for MC on logic
-   More unit tests for StringParser?
    Livetext::Parse:: namespace??
    Annoying require_relative paths:  ../../.. blah blah
    Miscellaneos "extraneous" requires? (but it breaks without them)
@@ -22,7 +21,6 @@ x  Experimental icanhaz command (acts like import) - see also lib/handler, Livet
    Support "namespaced" variables  (`[.set code.font="whatever"])
    permit # comments on end of line? (configurable?)
    Feature to "break" to EOF?
-   README.lt3 is broken
 
 
    LATERISH?
@@ -87,6 +85,8 @@ x  Experimental icanhaz command (acts like import) - see also lib/handler, Livet
 
    DONE
    ----
+x  README.lt3 is broken
+x  More unit tests for StringParser?
 x  mixin as module?
 x  verify *empty* error file in snapshots
 x  handle_dotcmd - remove rescue

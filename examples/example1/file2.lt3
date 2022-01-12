@@ -1,0 +1,60 @@
+
+.icanhaz myplugin
+
+. copy basic.css
+
+.title Livetext: A smart processor for text
+
+*[This README is currently mangled. Fixes coming soon!]
+
+Livetext is simply a tool for transforming text from one format into another. The source file
+has commands embedded in it, and the output is dependent on those commands.  
+
+Why is this special? It's very flexible, very extensible, and it's extensible _[in Ruby].  
+
+.section Why Livetext?
+
+Livetext grew out of several motivations. One was a desire for a markup language that would permit
+me to write articles (and even books) in my own way and on my own terms. I've done this more
+than once (and I know others who have, as well).   
+
+I liked Softcover, but I found it to be very complex. I never liked Markdown much -- I find it very
+dumb, and it's not extensible at all. (In fairness to Markdown, it does serve a different purpose
+in everyday life.)
+
+I wanted something that had the basic functionality of all my _[ad hoc] solutions but allowed 
+extensions. Then my old solutions would be like subsets of the new format. This was a generalization
+similar to the way we began several years ago to view HTML as a subset of XML.  
+
+.section What is Livetext really?
+
+Here goes:
+.list
+It's a text transformer
+It's Ruby-based (later on, more language agnostic)
+It's (potentially) agnostic about output format
+It's designed to be flexible, extensible, and easy
+It's designed to be "plugin" oriented
+It's like an old-fashioned text formatter (but extensible)
+It's like a macro processor (but not)
+It's like markdown and others (but not)
+It's like erb or HAML (but not)
+It's powerful but not too dangerous
+It's not necesarily a markdown replacement
+It's definitely not a softcover replacement
+It could possibly augment markdown, softcover, others
+.end
+
+
+.section How does it work?
+
+A Livetext file is simply a text file which may have commands interspersed. A command is
+simply a period followed by a name and optional parameters (at the beginning of a line).  
+
+The period will be configurable later if you want to use another character. The names are (for now)
+actual Ruby method names, so names such as `to_s and `inspect are currently not allowed.  
+
+At present, I am mostly emitting "dumb HTML" or Markdown as output. In theory, you can write
+code (or use someone else's) to manipulate text in any way and output any format. Technically,
+you could even emit PDF, PNG, or SVG formats.
+
