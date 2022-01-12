@@ -7,7 +7,7 @@
      # Add Mixin Tests (looks like no tests for any mixin?)
      # Add Importable Tests
 x  Experimental icanhaz command (acts like import) - see also lib/handler, Livetext::Handler
-   Notes for MC on logic
+x  Notes for MC on logic
    Livetext::Parse:: namespace??
    Annoying require_relative paths:  ../../.. blah blah
    Miscellaneos "extraneous" requires? (but it breaks without them)

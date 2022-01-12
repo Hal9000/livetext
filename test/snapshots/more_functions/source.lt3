@@ -1,0 +1,40 @@
+Testing some more functions here...
+
+.func just_do_it
+  item = param
+  # Do "something" with the parameter...
+  return ""  # parameter disappears!
+.end
+
+Here I am calling a function $$just_do_it:foobar with 
+a colon parameter...
+
+
+Next let's *do* something with our parameter:
+
+.func reverse
+  param.reverse   # just reverse it
+.end
+
+I'll call these variants...
+
+"Motel" spelled backwards is $$reverse:motel :)
+
+"lamina" reversed is $$reverse:lamina
+
+I can also use the $$reverse[bracket feature] here.
+
+If I don't use a parameter for $$reverse - it gives
+me an error. (Bug or feature??)
+
+What if a function doesn't use parameters at all, but
+we pass them? Hmm...
+
+.func meditate 
+   "succeed"   # just replaces params with this verb
+.end
+
+Now we $$meditate:slowly and $$meditate some more
+and finally we $$meditate[on various things] in life.
+
+But can we $$meditate, when our beds are burning?

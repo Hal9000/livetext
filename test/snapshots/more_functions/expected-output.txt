@@ -1,0 +1,37 @@
+Testing some more functions here...
+<p>
+
+Here I am calling a function  with 
+a colon parameter...
+<p>
+
+<p>
+
+Next let's <b>do*</b> something with our parameter:
+<p>
+
+I'll call these variants...
+<p>
+
+"Motel" spelled backwards is letom :)
+<p>
+
+"lamina" reversed is animal
+<p>
+
+I can also use the erutaef tekcarb here.
+<p>
+
+If I don't use a parameter for [Error evaluating $$reverse()] - it gives
+me an error. (Bug or feature??)
+<p>
+
+What if a function doesn't use parameters at all, but
+we pass them? Hmm...
+<p>
+
+Now we succeed and succeed some more
+and finally we succeed in life.
+<p>
+
+But can we succeed, when our beds are burning?

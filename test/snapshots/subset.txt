@@ -76,6 +76,7 @@ x  simple_import            # not working yet (but *could* sub in .icanhaz)
 # functions
 
    functions                #  
+   more_functions           # 
 
 # More/misc...                     
                      
