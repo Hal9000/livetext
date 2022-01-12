@@ -90,6 +90,29 @@ module Helpers
         raise EndWithoutOpening()
       when @main.respond_to?(name)
         result = @main.send(name)
+
+        # NOTE: The above line is where the magic happens!
+        # A name like 'foobar' results in an invocation of 
+        # @main.foobar (where @main is a Processor, and any
+        # new methods (e.g. from a mixin) are added to @main
+        # 
+        # So all the functionality from _args and _raw_args
+        # and _data (among others?) will be encapsulated in
+        # 'some' kind of PORO which handles access to all 
+        # these things as well as the 'body' between the
+        # command and its corresponding .end
+        # 
+        # The 'body' functionality is so commonly used, I plan
+        # to pass it in separately as needed (even though the
+        # args object should make it available also).
+        # 
+        # Every method corresponding to a dot commmand will 
+        # get args and body passed in as needed. Every one of
+        # the signatures already has (args = nil, body = nil)
+        # but nothing is being passed in that way yet.
+        #
+        # Refer to lib/cmdargs.rb for more! This is *strictly*
+        # experimental and a "work in progress."
     else
       puts @body  # earlier correct output, not flushed yet
       raise "Name '#{name}' is unknown"

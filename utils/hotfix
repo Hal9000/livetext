@@ -1,13 +1,14 @@
 #!/usr/bin/env ruby
 
 def sys(str)
-  puts str
-  system str
+  ret = system str
+  puts "  Failed: #{str}" unless ret
 end
 
 version = `livetext -v`.strip
 lib = "/Users/Hal/.rvm/gems/ruby-2.7.0/gems/livetext-#{version}/lib/"
-puts lib.inspect
+puts
+puts "  Copying repo to gem at: #{lib.inspect}"
 
 sys("cp -r lib/* #{lib}/")
 sys("cp plugin/* #{lib}/../plugin/")
@@ -15,3 +16,4 @@ sys("cp imports/* #{lib}/../imports/")
 sys("cp -r test/* #{lib}/../test/")
 sys("cp bin/* #{lib}/../bin/")
 
+puts
