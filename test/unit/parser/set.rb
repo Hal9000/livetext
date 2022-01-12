@@ -139,21 +139,22 @@ class TestParseSet < MiniTest::Test
 
   # BUG: FormatLine doesn't know variables in this context!
 
-  def test_4  # FIXME
+  def test_var_eq_var
     set = ParseSet.new("file = $File").parse
-print "#{__method__}: #{set.inspect}"
+    set = set.first  # [["var", "value"]]
     assert_equal set.first, "file"
-    assert set.last !~ /undefined/
+    refute set.last =~ /undefined/, "Found 'undefined' for variable value"
   end
 
   # BUG: ...or functions.
   # (Additional bug: Failing silently seems wrong.)
 
-  def test_5  # FIXME
+  def test_var_eq_func
     set = ParseSet.new("date = $$date").parse
-print "#{__method__}: #{set.inspect}"
+    set = set.first  # [["var", "value"]]
     assert_equal set.first, "date"
-    assert set.last =~ /^\d\d.\d\d.\d\d/
+    refute set.last =~ /undefined/, "Found 'undefined' for variable value"
+    assert set.last =~ /^\d\d.\d\d.\d\d/, "Did not find 6-digit date with two separators"
   end
 
   def test_two_strings

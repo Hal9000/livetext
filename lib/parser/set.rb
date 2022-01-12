@@ -31,7 +31,6 @@ class Livetext::ParseSet < StringParser
     pairs = []
     char = nil
     loop do
-      break if eos?   # end of string
       char = skip_spaces
       break if eos?   # end of string
       raise "Expected alpha to start var name" unless char =~ /[a-z]/i

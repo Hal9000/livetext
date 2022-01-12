@@ -130,4 +130,40 @@ class TestStringParser < MiniTest::Test
     assert_equal some.peek, "1"
     assert_equal some.i, 6
   end
+
+  def test_ungrab
+    parse = StringParser.new("abcdef")
+    assert_equal parse.i, 0
+    assert_equal parse.peek, "a"
+    3.times { parse.grab }
+    assert_equal parse.i, 3
+    assert_equal parse.peek, "d"
+    parse.ungrab
+    assert_equal parse.i, 2
+    assert_equal parse.peek, "c"
+  end
+
+  def test_next_bang
+    parse = StringParser.new("abcdef")
+    assert_equal parse.peek, "a"
+    assert_equal parse.next!, "b"
+    assert_equal parse.i, 0
+    3.times { parse.grab }
+    before = parse.i
+    assert_equal parse.next!, "e"
+    after = parse.i
+    assert_equal before, after
+  end
+  
+  def test_prev
+    parse = StringParser.new("abcdef")
+    assert_nil parse.prev
+    assert_equal parse.i, 0
+    3.times { parse.grab }
+    before = parse.i
+    assert_equal parse.prev, "c"
+    after = parse.i
+    assert_equal before, after
+  end
+  
 end
