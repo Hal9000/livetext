@@ -234,23 +234,14 @@ module Livetext::Standard
     _optional_blank_line
   end
 
-  def icanhaz(args = nil, body = nil)
-    name = @_args.first   # Expect a module name
-    return if @_mixins.include?(name)
-    @_mixins << name
-    mod = Livetext::Handler::ICanHaz.get_module(name)
-    self.extend(mod)
-    init = "init_#{name}"
-    self.send(init) rescue nil  # if self.respond_to? init
-    _optional_blank_line
-  end
-
   def import(args = nil, body = nil)
     name = @_args.first   # Expect a module name
     return if @_mixins.include?(name)
     @_mixins << name
-    mod = Livetext::ParseImport.get_module(name)
-    parse.use_import(name)
+    mod = Livetext::Handler::Import.get_module(name)
+    self.extend(mod)
+    init = "init_#{name}"
+    self.send(init) rescue nil  # if self.respond_to? init
     _optional_blank_line
   end
 

@@ -1,9 +1,9 @@
-Test fake command .icanhaz:
+Test .import:
 we give an error
 when a .rb does not
 exist:
 
-.icanhaz nonexistent
+.import nonexistent
 
 We shouldn't
 reach this point

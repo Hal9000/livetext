@@ -1,1 +1,1 @@
-require_relative 'handler/icanhaz'
+require_relative 'handler/import'

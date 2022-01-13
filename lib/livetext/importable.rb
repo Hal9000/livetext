@@ -1,2 +1,0 @@
-class LiveText::Importable
-end

@@ -26,19 +26,18 @@ x  error_invalid_name       # ^ Same behavior as error_no_such_inc
 x  error_missing_end        # Output is duplicated somehow. Look for: puts @body or puts @main.body
 x  error_inc_line_num       # Forgot what's wrong here
 
-# Dummy command .icanhaz works like .mixin or .import
-
-x  icanhaz                  # "Leading" output doesn't get generated (same as error_no_such_inc)
-   icanhaz2                 # works?
 
 # Others (usually passing):
 
 # import/include/mixin, others...
 
    simple_copy              #                    
-x  simple_import            # not working yet (but *could* sub in .icanhaz)
+   simple_import            # 
    simple_include           #                            
    simple_mixin             #                            
+x  import                   # "Leading" output doesn't get generated (same as error_no_such_inc)
+   import2                  # 
+ 
                      
 # raw input                     
                      

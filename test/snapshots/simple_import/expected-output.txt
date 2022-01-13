@@ -4,4 +4,6 @@ testing a simple import
 
 Now call a method:
 Hello, world.
+<p>
+
 That's all.

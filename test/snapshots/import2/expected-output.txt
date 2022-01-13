@@ -1,6 +1,8 @@
-Testing fake command .icanhaz:
+Testing .import:
 <p>
 
 Now call a method:
 Hello, world.
+<p>
+
 That's all.

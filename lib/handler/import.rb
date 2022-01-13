@@ -1,5 +1,5 @@
 
-class Livetext::Handler::ICanHaz
+class Livetext::Handler::Import
   include Helpers
 
   attr_reader :file

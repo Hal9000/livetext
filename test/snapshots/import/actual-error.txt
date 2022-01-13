@@ -1,0 +1,13 @@
+/Users/Hal/Dropbox/topx/git/livetext/lib/helpers.rb:34:in `find_file': No such mixin 'nonexistent' (RuntimeError)
+	from /Users/Hal/Dropbox/topx/git/livetext/lib/handler/import.rb:9:in `initialize'
+	from /Users/Hal/Dropbox/topx/git/livetext/lib/handler/import.rb:13:in `new'
+	from /Users/Hal/Dropbox/topx/git/livetext/lib/handler/import.rb:13:in `get_module'
+	from /Users/Hal/Dropbox/topx/git/livetext/lib/standard.rb:241:in `import'
+	from /Users/Hal/Dropbox/topx/git/livetext/lib/helpers.rb:95:in `handle_dotcmd'
+	from /Users/Hal/Dropbox/topx/git/livetext/lib/helpers.rb:73:in `process_line'
+	from /Users/Hal/Dropbox/topx/git/livetext/lib/helpers.rb:61:in `block in process_file'
+	from /Users/Hal/Dropbox/topx/git/livetext/lib/helpers.rb:58:in `loop'
+	from /Users/Hal/Dropbox/topx/git/livetext/lib/helpers.rb:58:in `process_file'
+	from ../../../bin/livetext:86:in `block in <main>'
+	from ../../../bin/livetext:57:in `loop'
+	from ../../../bin/livetext:57:in `<main>'
