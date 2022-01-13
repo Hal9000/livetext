@@ -225,9 +225,11 @@ module Livetext::Standard
 
   def mixin(args = nil, body = nil)
     name = @_args.first   # Expect a module name
+puts "#{__method__}: name = #{name}"
     return if @_mixins.include?(name)
     @_mixins << name
     mod = Livetext::ParseMixin.get_module(name)
+puts "#{__method__}: mod  = #{mod.inspect}"
     self.extend(mod)
     init = "init_#{name}"
     self.send(init) rescue nil  # if self.respond_to? init
@@ -358,4 +360,11 @@ module Livetext::Standard
     _out out
   end
 
+  def reflection   # strictly experimental!
+    list = self.methods
+    obj  = Object.instance_methods
+    diff = (list - obj).sort
+    _out "#{diff.size} methods:"
+    _out diff.inspect
+  end
 end

@@ -1,8 +1,8 @@
-mkdir test/data/$1
+mkdir test/snapshots/$1
 
 # actual-error.txt        actual-output.txt       expected-error.txt      expected-output.txt     source.lt3
 
-cd test/data/$1
+cd test/snapshots/$1
 
 touch expected-output.txt expected-error.txt
 
