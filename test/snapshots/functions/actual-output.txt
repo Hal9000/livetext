@@ -1,0 +1,26 @@
+double_dollar: func = "myfunc"
+in funcall:
+check2
+double_dollar: func = "mean"
+in funcall:
+check2
+Testing out
+some functions 
+here...
+<p>
+
+I am calling Eureka! here...
+Let's see 
+what happens.
+<p>
+
+Functions can take a parameter in brackets 
+(which it can parse itself as needed):
+<p>
+
+The result is 4.0 as I see it.
+<p>
+
+Some functions like date and time are predefined.
+<p>
+

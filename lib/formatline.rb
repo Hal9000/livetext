@@ -99,6 +99,7 @@ class FormatLine < StringParser
   end
 
   def evaluate(tokens = @tokenlist)
+# TTY.puts "#{__method__}: tokens = #{tokens.inspect}"
     @out = ""
     return "" if tokens.empty?
     gen = tokens.each
@@ -113,12 +114,55 @@ class FormatLine < StringParser
           @out << varsub(val)
         when :func 
           param = nil
-          arg = gen.peek
-          if [:colon, :brackets].include? arg[0] 
-            arg = gen.next  # for real
-            param = arg[1]
-            param = Livetext.interpolate(param)
+          arg = gen.peek rescue :bogus
+          unless arg == :bogus
+            if [:colon, :brackets].include? arg[0] 
+              arg = gen.next  # for real
+              param = arg[1]
+              param = Livetext.interpolate(param)
+            end
           end
+          @out << funcall(val, param)
+        when :b, :i, :t, :s
+          val = Livetext.interpolate(val)
+          @out << embed(sym, val)
+      else
+        add_token :str
+      end
+      token = gen.next
+    end
+    @out
+  end
+
+  def OLD_evaluate(tokens = @tokenlist)
+puts "#{__method__}: tokens = #{tokens.inspect}"
+    @out = ""
+    return "" if tokens.empty?
+    gen = tokens.each
+    token = gen.next
+    loop do 
+      break if token.nil? 
+# puts "  token = #{token.inspect}"
+      sym, val = *token
+# puts "  sym = #{sym.inspect}"
+      case sym
+        when :str
+          @out << val unless val == "\n"   # BUG
+        when :var
+          @out << varsub(val)
+        when :func 
+          param = nil
+# puts "1 Found :func!"
+          arg = gen.peek rescue :bogus
+          unless arg == :bogus
+# puts "2 Found :func! arg = #{arg.inspect}"
+            if [:colon, :brackets].include? arg[0] 
+              arg = gen.next  # for real
+              param = arg[1]
+              param = Livetext.interpolate(param)
+            end
+          end
+# puts "val, param = #{[val, param].inspect}"
           @out << funcall(val, param)
         when :b, :i, :t, :s
           val = Livetext.interpolate(val)
@@ -216,7 +260,7 @@ class FormatLine < StringParser
       when "$"; double_dollar
 #     when "."; dollar_dot
       when /[A-Za-z]/
-       add_token :str
+        add_token :str
         var = peek + grab_alpha_dot
         add_token(:var, var)
     else 
@@ -232,6 +276,7 @@ class FormatLine < StringParser
       when Alpha
         add_token(:str, @token)
         func = grab_alpha
+puts "#{__method__}: func = #{func.inspect}"
         add_token(:func, func)
         case next!
           when ":"; param = grab_colon_param; add_token(:colon, param)
@@ -354,11 +399,14 @@ class FormatLine < StringParser
 
   def funcall(name, param)
     err = "[Error evaluating $$#{name}(#{param})]"
-    func_name = "func_" + name.to_s
+puts "in #{__method__}:"
+    func_name = name  # "func_" + name.to_s
     result = 
       if self.send?(func_name, param)  # self.respond_to?(func_name)
+puts :check1
         # do nothing
       else
+puts :check2
         fobj = ::Livetext::Functions.new
         fobj.send(name, param) rescue err
       end

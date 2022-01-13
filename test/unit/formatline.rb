@@ -41,6 +41,18 @@ class TestingLivetext < MiniTest::Test
     assert result == expected
   end
 
+  def test_func_2
+    str = "Today is $$date"
+    parse = FormatLine.new(str)
+    expect = [[:str, "Today is "], [:func, "date"]]
+# FIXME backwards??
+    tokens = parse.tokenize
+    assert_equal expect, tokens
+    result = parse.evaluate
+    expected = /Today is ....-..-../
+    assert result =~ expected, "Found unexpected: #{result.inspect}"
+  end
+
   def test_func_with_colon
     parse = FormatLine.new("Calling $$myfunc:foo here.")
     tokens = parse.tokenize
