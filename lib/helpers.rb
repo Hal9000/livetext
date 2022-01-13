@@ -60,7 +60,7 @@ module Helpers
       break if line.nil?
       process_line(line)
     end
-    val = @main.finalize rescue nil  # if @main.respond_to? :finalize
+    val = @main.finalize rescue nil
     @body
   end
 

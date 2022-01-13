@@ -6,20 +6,21 @@
      # => Add "imports" directory"
      # Add Mixin Tests (looks like no tests for any mixin?)
      # Add Importable Tests
-x  Experimental icanhaz command (acts like import) - see also lib/handler, Livetext::Handler
-x  Notes for MC on logic
+x  Notes for MC on logic (see examples/example1/)
+   Remove incomplete 'import' code
+   Change ICanHaz to Import
+   Get code coverage working with rubycritic
    Better parameter handling for custom functions
+   reify args/data passing?
+   Better parameter handling for custom dot commands (see: reify args/data)
+   Support function namespacing?
    Livetext::Parse:: namespace??
    Annoying require_relative paths:  ../../.. blah blah
    Miscellaneous "extraneous" requires? (but it breaks without them)
    Create high-level parser?
    All dot-commands into their own module??
-   reify args/data passing?
-   Better parameter handling for custom dot commands (see: reify args/data)
    Bug: dot-space inside block seen as comment (make configurable??)
    Allow turning on/off: formatting, variable interpolation, function interpolation?
-   Support "namespaced" variables  (`[.set code.font="whatever"])
-   Support function namespacing?
    permit # comments on end of line? (configurable?)
    Feature to "break" to EOF?
 
@@ -85,6 +86,8 @@ x  Notes for MC on logic
 
    DONE
    ----
+x  Experimental icanhaz command (acts like import) - see also lib/handler, Livetext::Handler
+x  Support "namespaced" variables  (`[.set code.font="whatever"])
 x  README.lt3 is broken
 x  More unit tests for StringParser?
 x  mixin as module?

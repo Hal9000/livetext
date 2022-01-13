@@ -8,8 +8,6 @@ class Livetext
   end
 end
 
-# $LOAD_PATH << Livetext::Path
-
 require 'fileutils'
 
 class Object
@@ -72,8 +70,7 @@ class Livetext
   def customize(mix: [], call: [], vars: {})
     mix  = Array(mix)
     call = Array(call)
-    # FIXME HF won't this break??
-    mix.each {|lib| mixin(lib) }
+    mix.each {|lib| mixin(lib) }  # FIXME HF won't this break??
     call.each {|cmd| @main.send(cmd[1..-1]) }  # ignores leading dot, no param
     vars.each_pair {|var, val| setvar(var, val.to_s) }
     self

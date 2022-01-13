@@ -25,7 +25,6 @@ class Livetext::Functions
     # Returns truncated integer
     Math.sqrt(num).to_i       # user need not do to_s
   rescue => err               # Malformed number? negative?
-#   TTY.puts "\nisqrt(#{param}) caused an error! #{err.inspect}"
     "[Error evaluating $$isqrt(#{arg})]"
   end
 

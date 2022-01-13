@@ -1,6 +1,6 @@
-# require 'cgi'
-
 require 'helpers'
+
+# Created as an "ad hoc" lib for generating the README
 
 module Tutorial
   include Helpers

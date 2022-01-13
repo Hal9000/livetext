@@ -1,5 +1,7 @@
 require 'rouge'
 
+# FIXME This file has suboptimal juju. See plugin/pyggish.rb also
+
 module Pyggish
   def self.pyg_change(code, klass, style)
     color = style[0..6]
@@ -29,7 +31,6 @@ module Pyggish
 
   def self.pyg_finalize(code, lexer=:elixir)
     Styles.each_pair {|klass, style| pyg_change(code, klass, style) }
-File.open("debug-pf1", "w") {|f| f.puts code }
     code.sub!(/<pre>/, "<pre>\n")
     code.gsub!(/<span class="[np]">/, "")
     code.gsub!(/<\/span>/, "")
@@ -37,9 +38,7 @@ File.open("debug-pf1", "w") {|f| f.puts code }
     code.sub!(/<td class="linenos"/, "<td width=2%></td><td width=5% bgcolor=#{color}")
     code.gsub!(/<td/, "<td valign=top ")
     code.gsub!(/ class="[^"]*?"/, "")    # Get rid of remaining Pygments CSS
-File.open("debug-pf2", "w") {|f| f.puts code }
     lines = code.split("\n")
-#   lines.each {|line| line << "\n" }
     n1 = lines.index {|x| x =~ /<pre>/ }
     n2 = lines.index {|x| x =~ /<\/pre>/ }
     # FIXME ?
@@ -48,12 +47,10 @@ File.open("debug-pf2", "w") {|f| f.puts code }
     lines[n1].sub!(/ 1$/, "  1 ")
     (n1+1).upto(n2) {|n| lines[n].replace(" " + lines[n] + " ") }
     code = lines.join("\n")
-File.open("debug-pf3", "w") {|f| f.puts code }
     code
   end
 
   def _process_code(text)
-  File.open("debug-pc1", "w") {|f| f.puts text }
     lines = text.split("\n")
     lines = lines.select {|x| x !~ /##~ omit/ }
     @refs = {}
@@ -66,7 +63,6 @@ File.open("debug-pf3", "w") {|f| f.puts code }
     end
     lines.map! {|line| "  " + line }
     text2 = lines.join("\n")
-  File.open("debug-pc2", "w") {|f| f.puts text2 }
     text.replace(text2)
   end
 
@@ -84,34 +80,6 @@ File.open("debug-pf3", "w") {|f| f.puts code }
     text2 = PygmentFix.pyg_finalize(text, lexer)
     result = "<!-- colorized code -->\n" + text2
     result
-  end
-
-  def OLD_ruby
-    file = @_args.first 
-    if file.nil?
-      code = "# Ruby code\n"
-      _body {|line| code << line + "\n" }
-    else
-      code = "# Ruby code\n\n" + ::File.read(file)
-    end
-
-    _process_code(code)
-    html = _colorize(code, :ruby)
-    _out "\n#{html}\n "
-  end
-
-  def OLD_elixir
-    file = @_args.first 
-    if file.nil?
-      code = ""
-      _body {|line| code << line + "\n" }
-    else
-      code = ::File.read(file)
-    end
-
-    _process_code(code)
-    html = _colorize(code, :elixir)
-    _out "\n#{html}\n "
   end
 
   def fragment

@@ -53,7 +53,7 @@ class Livetext
     def _error!(err, raise_error=false, trace=false)   # FIXME much bullshit happens here
       where = @sources.last || @save_location
       error "Error: #{err} (at #{where[1]} line #{where[2]})"
-      error (err.backtrace rescue nil)  # if err.respond_to?(:backtrace)
+      error(err.backtrace) rescue nil
       raise GenericError.new("Error: #{err}") if raise_error
     end
 

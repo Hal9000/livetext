@@ -122,7 +122,7 @@ class Livetext::ParseSet < StringParser
     value = ""
     loop do
       char = peek
-      break if eos?  #     FIXME oops???
+      break if eos?
       break if char == " " || char == ","
       value << char
       char = grab

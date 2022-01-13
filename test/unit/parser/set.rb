@@ -137,32 +137,26 @@ class TestParseSet < MiniTest::Test
     #  - allow/disallow escaping??
   end
 
-  # BUG: FormatLine doesn't know variables in this context!
-
   def test_var_eq_var
-    set = ParseSet.new("file = $Filed").parse
+    set = ParseSet.new("file = $File").parse
     set = set.first  # [["var", "value"]]
     assert_equal set.first, "file"
-    # FIXME Really an integration test...
-    # refute set.last =~ /undefined/, "Found 'undefined' for variable value"
+    assert set.last =~ /undefined/, "Found 'undefined' for variable value"
+    # ^ ParseSet isn't smart enough to know about variables/functions
   end
-
-  # BUG: ...or functions.
-  # (Additional bug: Failing silently seems wrong.)
 
   def test_var_eq_func
     set = ParseSet.new("date = $$date").parse
     set = set.first  # [["var", "value"]]
     assert_equal set.first, "date"
-    # FIXME Really an integration test...
-    # refute set.last =~ /undefined/, "Found 'undefined' for variable value"
-    # assert set.last =~ /^\d\d.\d\d.\d\d/, "Did not find 6-digit date with two separators"
+    assert set.last =~ /undefined/, "Found 'undefined' for variable value"
+    # ^ ParseSet isn't smart enough to know about variables/functions
   end
 
   def test_two_strings
-    line = %[bday="May_31", date="5/31"]
+    line = %[bday="May 31", date='5/31']
     set = ParseSet.new(line).parse
-    assert set == [["bday", "May_31"], ["date", "5/31"]]
+    assert set == [["bday", "May 31"], ["date", "5/31"]]
   end
 
 end

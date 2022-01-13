@@ -1,10 +1,12 @@
-# User API
-
 require_relative 'formatline'
 
 # UserAPI deals mostly with user-level methods.
 
 module Livetext::UserAPI
+
+  # FIXME I am tired of all my leading underscores...
+  # FIXME Q: Could this be converted into a class?? What about its
+  # interaction thru instance vars?
 
   def setvar(var, val)
     str, sym = var.to_s, var.to_sym
