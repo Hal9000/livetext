@@ -45,7 +45,7 @@ class FormatLine < StringParser
 #   add grab
     loop do 
       case peek
-        when Escape; grab; add peek; grab; add peek
+        when Escape; grab; add peek; grab; #  add peek  # <-- last is an error??
         when "$"
           dollar
         when "*", "_", "`", "~"
@@ -99,7 +99,6 @@ class FormatLine < StringParser
   end
 
   def evaluate(tokens = @tokenlist)
-# TTY.puts "#{__method__}: tokens = #{tokens.inspect}"
     @out = ""
     return "" if tokens.empty?
     gen = tokens.each
@@ -108,24 +107,11 @@ class FormatLine < StringParser
       break if token.nil? 
       sym, val = *token
       case sym
-        when :str
-          @out << val unless val == "\n"   # BUG
-        when :var
-          @out << varsub(val)
-        when :func 
-          param = nil
-          arg = gen.peek rescue :bogus
-          unless arg == :bogus
-            if [:colon, :brackets].include? arg[0] 
-              arg = gen.next  # for real
-              param = arg[1]
-              param = Livetext.interpolate(param)
-            end
-          end
-          @out << funcall(val, param)
+        when :str;    eval_str(val)
+        when :var;    eval_var(val)
+        when :func;   eval_func(val, gen)
         when :b, :i, :t, :s
-          val = Livetext.interpolate(val)
-          @out << embed(sym, val)
+          eval_bits(sym, val)
       else
         add_token :str
       end
@@ -175,46 +161,16 @@ puts "#{__method__}: tokens = #{tokens.inspect}"
     @out
   end
 
-  def grab_colon_param
-    grab  # grab :
-    param = ""
-    loop do 
-      case next!
-        when Escape
-          grab
-          param << next!
-          grab
-        when Space, LF, nil; break
-      else
-        param << next!
-        grab
-      end
-    end
-
-    param = nil if param.empty?
-    param
-  end
-
   def grab_func_param
-    grab # [
-    param = ""
-    loop do 
-      case next!
-        when Escape
-          grab
-          param << next!
-          grab
-        when "]", LF, nil; break
-      else
-        param << next!
-        grab
-      end
+    case lookahead
+      when "["
+        param = grab_bracket_param
+        add_token(:brackets, param)
+      when ":"
+        param = grab_colon_param
+        add_token(:colon, param)
+    else  # do nothing
     end
-
-    add peek
-    grab
-    param = nil if param.empty?
-    param
   end
 
   def add(str)
@@ -233,7 +189,7 @@ puts "#{__method__}: tokens = #{tokens.inspect}"
     loop do
       break if eos?
       str << peek
-      break if terminate?(NoAlpha, next!)
+      break if terminate?(NoAlpha, lookahead)
       grab
     end
     str
@@ -245,7 +201,7 @@ puts "#{__method__}: tokens = #{tokens.inspect}"
     loop do
       break if peek.nil?   # eos?
       str << peek
-      break if terminate?(NoAlphaDot, next!)
+      break if terminate?(NoAlphaDot, lookahead)
       grab
     end
     str
@@ -270,18 +226,14 @@ puts "#{__method__}: tokens = #{tokens.inspect}"
   end
 
   def double_dollar
-    case next!
+    case lookahead
       when Space; add_token :string, "$$ "; grab; return
       when LF, nil; add "$$"; add_token :str
       when Alpha
         add_token(:str, @token)
         func = grab_alpha
-puts "#{__method__}: func = #{func.inspect}"
         add_token(:func, func)
-        case next!
-          when ":"; param = grab_colon_param; add_token(:colon, param)
-          when "["; param = grab_func_param; add_token(:brackets, param)
-        end
+        param = grab_func_param    # may be null/missing
       else
         grab; add_token :str, "$$" + peek; return
     end
@@ -321,7 +273,7 @@ puts "#{__method__}: func = #{func.inspect}"
   def double_marker(char)
     sym = Syms[char]
     kind = sym
-    case next!   # first char after **
+    case lookahead   # first char after **
       when Space, LF, nil
         pre, post = SimpleFormats[sym]
         add_token kind
@@ -366,8 +318,8 @@ puts "#{__method__}: func = #{func.inspect}"
   end
 
   def escaped
-    grab
-    ch = grab
+    grab        # Eat the backslash
+    ch = grab   # Take next char
     ch
   end
 
@@ -399,18 +351,15 @@ puts "#{__method__}: func = #{func.inspect}"
 
   def funcall(name, param)
     err = "[Error evaluating $$#{name}(#{param})]"
-puts "in #{__method__}:"
     func_name = name  # "func_" + name.to_s
     result = 
       if self.send?(func_name, param)  # self.respond_to?(func_name)
-puts :check1
         # do nothing
       else
-puts :check2
         fobj = ::Livetext::Functions.new
         fobj.send(name, param) rescue err
       end
-    result
+    result.to_s
   end
 
   def varsub(name)
@@ -421,4 +370,75 @@ puts :check2
   def embedded?
     ! (['"', "'", " ", nil].include? prev)
   end
+
+  private 
+
+  def grab_colon_param
+    grab  # grab :
+    param = ""
+    loop do 
+      case lookahead
+        when Escape
+          grab
+          param << lookahead
+          grab
+        when Space, LF, nil; break
+      else
+        param << lookahead
+        grab
+      end
+    end
+
+    param = nil if param.empty?
+    param
+  end
+
+  def grab_bracket_param
+    grab # [
+    param = ""
+    loop do 
+      case lookahead
+        when Escape
+          grab
+          param << lookahead
+          grab
+        when "]", LF, nil; break
+      else
+        param << lookahead
+        grab
+      end
+    end
+    add peek
+    grab
+    param = nil if param.empty?
+    param
+  end
+
+  def eval_bits(sym, val)
+    val = Livetext.interpolate(val)
+    @out << embed(sym, val)
+  end
+
+  def eval_func(val, gen)
+    param = nil
+    arg = gen.peek rescue :bogus
+    unless arg == :bogus
+      if [:colon, :brackets].include? arg[0] 
+        arg = gen.next  # for real
+        param = arg[1]
+        # FIXME - unsure - interpolate again??
+        # param = Livetext.interpolate(param)
+      end
+    end
+    @out << funcall(val, param)
+  end
+
+  def eval_var(val)
+    @out << varsub(val)
+  end
+
+  def eval_str(val)
+    @out << val unless val == "\n"   # BUG
+  end
+
 end

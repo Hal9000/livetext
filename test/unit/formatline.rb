@@ -10,48 +10,182 @@ class TestingLivetext < MiniTest::Test
   def test_simple_string
     parse = FormatLine.new("only testing")
     tokens = parse.tokenize
-    assert_equal tokens, [[:str, "only testing"]]
+    assert_equal tokens, [[:str, "only testing"]], "Tokens were: #{tokens.inspect}"
     expected = "only testing"
     result = parse.evaluate
-    assert result == expected
+    assert_equal expected, result
   end
 
   def test_variable_interpolation
     parse = FormatLine.new("File is $File and user is $User")
     tokens = parse.tokenize
-    assert_equal tokens, [[:str, "File is "],
-                          [:var, "File"],
-                          [:str, " and user is "],
-                          [:var, "User"]
-                         ]
+    expected_tokens = [[:str, "File is "],
+                       [:var, "File"],
+                       [:str, " and user is "],
+                       [:var, "User"]]
+    assert_equal expected_tokens, tokens
     result = parse.evaluate
     expected = "File is [File is undefined] and user is [User is undefined]"
-    assert result == expected
+    assert_equal expected, result
   end
 
   def test_func_expansion
     parse = FormatLine.new("myfunc() results in $$myfunc apparently.")
     tokens = parse.tokenize
-    assert_equal tokens, [[:str, "myfunc() results in "],
-                          [:func, "myfunc"],
-                          [:str, " apparently."]
-                        ]
+    expected_tokens = [[:str, "myfunc() results in "],
+                       [:func, "myfunc"],
+                       [:str, " apparently."]]
+    assert_equal expected_tokens, tokens
     result = parse.evaluate
     expected = "myfunc() results in [Error evaluating $$myfunc()] apparently."
-    assert result == expected
+    assert_equal expected, result
   end
+
+# These tests follow this form:
+#
+#  def test_func_SUFFIX
+#    str = "WHATEVER"
+#    parse = FormatLine.new(str)
+#    tokens_expected = [[], [], ...]
+#    tokens = parse.tokenize
+#    assert_equal tokens_expected, tokens
+#    result = parse.evaluate
+#    regex_expected = /Today is ....-..-../
+#    assert_match regex_expected, result, "Found unexpected: #{result.inspect}"
+#  end
 
   def test_func_2
     str = "Today is $$date"
     parse = FormatLine.new(str)
-    expect = [[:str, "Today is "], [:func, "date"]]
-# FIXME backwards??
+    tokens_expected = [[:str, "Today is "], [:func, "date"]]
     tokens = parse.tokenize
-    assert_equal expect, tokens
+    assert_equal tokens_expected, tokens, "Tokens were: #{tokens.inspect}"
     result = parse.evaluate
-    expected = /Today is ....-..-../
-    assert result =~ expected, "Found unexpected: #{result.inspect}"
+    regex_expected = /Today is ....-..-../
+    assert_match regex_expected, result, "Found unexpected: #{result.inspect}"
   end
+
+  def test_var_before_comma
+    str = "User name is $User, and all is well"
+    parse = FormatLine.new(str)
+    tokens_expected = [[:str, "User name is "], [:var, "User"], [:str, ", and all is well"]]
+    tokens = parse.tokenize
+    assert_equal tokens_expected, tokens, "Tokens were: #{tokens.inspect}"
+    result = parse.evaluate
+    regex_expected = /User name is .*, /
+    assert_match regex_expected, result, "Found unexpected: #{result.inspect}"
+  end
+
+  def test_var_at_EOS
+    str = "File name is $File"
+    parse = FormatLine.new(str)
+    tokens_expected = [[:str, "File name is "], [:var, "File"]]
+    tokens = parse.tokenize
+    assert_equal tokens_expected, tokens
+    result = parse.evaluate
+    string_expected = "File name is [File is undefined]"
+    assert_equal string_expected, result, "Found unexpected: #{result.inspect}"
+  end
+
+  def test_var_starts_string
+    str = "$File is my file name"
+    parse = FormatLine.new(str)
+    tokens_expected = [[:var, "File"], [:str, " is my file name"]]
+    tokens = parse.tokenize
+    assert_equal tokens_expected, tokens
+    result = parse.evaluate
+    string_expected = "[File is undefined] is my file name"
+    assert_equal string_expected, result, "Found unexpected: #{result.inspect}"
+  end
+
+# Next one is/will be a problem... 
+# I permit periods *inside* variable names
+
+  def test_var_before_period
+    str = "This is $File."
+    parse = FormatLine.new(str)
+    tokens_expected = [[:str, "This is "], [:var, "File"]]
+    tokens = parse.tokenize
+    assert_equal tokens_expected, tokens
+    result = parse.evaluate
+    string_expected = "This is [File is undefined]."
+    assert_equal string_expected, result, "Found unexpected: #{result.inspect}"
+  end
+
+  def test_func_needing_parameter_colon_eos  # colon, param, EOS
+    str = "Square root of 225 is $$isqrt:225"
+    parse = FormatLine.new(str)
+    tokens_expected = [[:str, "Square root of 225 is "], [:func, "isqrt"], [:colon, "225"]]
+    tokens = parse.tokenize
+    assert_equal tokens_expected, tokens
+    result = parse.evaluate
+    string_expected = "Square root of 225 is 15"
+    assert_equal string_expected, result, "Found unexpected: #{result.inspect}"
+  end
+
+  def test_func_needing_parameter_colon  # colon, param, more chars
+    str = "Answer is $$isqrt:225 today"
+    parse = FormatLine.new(str)
+    tokens_expected = [[:str, "Answer is "], 
+                       [:func, "isqrt"], 
+                       [:colon, "225"], 
+                       [:str, " today"]]
+    tokens = parse.tokenize
+    assert_equal tokens_expected, tokens
+    result = parse.evaluate
+    string_expected = "Answer is 15 today"
+    assert_equal string_expected, result, "Found unexpected: #{result.inspect}"
+  end
+
+  # isqrt: Not real tests?? 
+
+  def test_isqrt_empty_colon_param
+    str = "Calculate $$isqrt:"
+    parse = FormatLine.new(str)
+    tokens_expected = [[:str, "Calculate "], 
+                       [:func, "isqrt"]  # , [:colon, ""]
+                      ] 
+    # If param is null, we don't get [:colon, value]!
+    # ^ FIXME function should be more like:  [:func, name, param]
+    tokens = parse.tokenize
+    assert_equal tokens_expected, tokens
+    result = parse.evaluate
+    string_expected = "Calculate [Error evaluating $$isqrt(NO PARAM)]"
+    assert_equal string_expected, result, "Found unexpected: #{result.inspect}"
+  end
+
+  def test_isqrt_empty_bracket_param
+    str = "Calculate $$isqrt[]"
+    parse = FormatLine.new(str)
+    tokens_expected = [[:str, "Calculate "], 
+                       [:func, "isqrt"]  # , [:colon, ""]
+                      ] 
+    # If param is null, we don't get [:brackets, value]!
+    # ^ FIXME function should be more like:  [:func, name, param]
+    tokens = parse.tokenize
+    assert_equal tokens_expected, tokens
+    result = parse.evaluate
+    string_expected = "Calculate [Error evaluating $$isqrt(NO PARAM)]"
+    assert_equal string_expected, result, "Found unexpected: #{result.inspect}"
+  end
+
+  def test_isqrt_malformed_number
+    str = "Calculate $$isqrt[3a5]"
+    parse = FormatLine.new(str)
+    tokens_expected = [[:str, "Calculate "], 
+                       [:func, "isqrt"],
+                       [:brackets, "3a5"]
+                      ] 
+    # If param is null, we don't get [:brackets, value]!
+    # ^ FIXME function should be more like:  [:func, name, param]
+    tokens = parse.tokenize
+    assert_equal tokens_expected, tokens
+    result = parse.evaluate
+    string_expected = "Calculate [Error evaluating $$isqrt(3a5)]"
+    assert_equal string_expected, result, "Found unexpected: #{result.inspect}"
+  end
+
+# ...end of this group
 
   def test_func_with_colon
     parse = FormatLine.new("Calling $$myfunc:foo here.")
@@ -63,22 +197,22 @@ class TestingLivetext < MiniTest::Test
                         ]
     result = parse.evaluate
     expected = "Calling [Error evaluating $$myfunc(foo)] here."
-    assert result == expected
+    assert_equal expected, result
   end
 
   def test_func_with_brackets
     parse = FormatLine.new("Calling $$myfunc2[foo bar] here.")
     tokens = parse.tokenize
     assert_kind_of Array, tokens
-    assert tokens.size == 4
-    assert_equal tokens, [[:str, "Calling "],
-                          [:func, "myfunc2"],
-                          [:brackets, "foo bar"],
-                          [:str, " here."]
-                         ]
+    assert_equal 4, tokens.size
+    expected_tokens = [[:str, "Calling "],
+                       [:func, "myfunc2"],
+                       [:brackets, "foo bar"],
+                       [:str, " here."]]
+    assert_equal expected_tokens, tokens
     result = parse.evaluate
     expected = "Calling [Error evaluating $$myfunc2(foo bar)] here."
-    assert result == expected
+    assert_equal expected, result
   end
 
   def test_formatting_01   # Check output of $$date

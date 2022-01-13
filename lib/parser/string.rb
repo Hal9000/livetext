@@ -24,7 +24,7 @@ class StringParser
     check_eos
   end
 
-  def next!
+  def lookahead
     @line[@i + 1]
   end
 
@@ -62,7 +62,7 @@ end
 
 =begin
   skip
-  next! skip! peek!(?)
+  lookahead skip! peek!(?)
   expect_alpha
   expect_number
   skip_spaces

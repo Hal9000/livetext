@@ -1,0 +1,98 @@
+All about functions...
+----------------------
+
+ 0. See lib/functions.rb and test/unit/formatline.rb
+
+ 1. Some functions, such as $$date, are predefined. All
+    functions return a result that is converted to a string
+    and copied into output.
+
+ 2. Predefined functions so far mostly don't take parameters.
+
+ 3. An exception is $$sqrt, which I created mostly for testing.
+
+ 4. Parameters may be passed in two ways: colon and square brackets.
+
+ 5. A colon is for a parameter that contains no spaces (terminated 
+    either by a space or EOS (end of string).
+    Example:  "$$sqrt:256"
+    
+ 6. Brackets are for parameters containing spaces
+    Example: "$$no_such_func[just a string]"
+
+ 7. The user may define a function with .func/.end
+
+ 8. A user function may access its one parameter and manippulate
+    it at will.
+
+ 9. In reality, only one "parameter" is passed in. But the user
+    writing a function may split it as needed into multiple
+    "actual parameters." (CHANGE LATER??)
+
+10. A user function is wholly responsible for:
+      - checking presence/absence of its "virtual" parameter
+      - checking presence/absence of "actual" parameter(s)
+      - checking number of parameters
+      - validating types of parameters
+      - validating values of parameters
+
+11. Note that VARIABLE names may contain periods for the "illusion"
+    of namespacing: ".set intro.text.color = blue" 
+    There is a current bug where a terminal period is taken as a 
+    part of a variable name.
+
+12. Function names currently may NOT contain periods (though I plan
+    to change that). This means that the logic will get more complex:
+    If a we're parsing a function name and find a period, we must 
+    find out what comes afterward (as with variables). If it's an 
+    alpha character, the period is considered "still part of the name,"
+    and we continue parsing. If it's NOT, the name already terminated,
+    and the period is just a character FOLLOWING the function call.
+    Examples:
+      "$$myfunc."      # calls myfunc, appends a period
+      "$$myfunc.ver2"  # calls myfunc, appends ".ver2"
+                       # LATER: will call $$myfunc.ver2 as a function
+
+13. Because : and [ (colon and left bracket) indicate parameters, that
+    is the only valid way they can be used IMMEDIATELY following a
+    function call:
+      "$$myfunc:35"     # calls myfunc, passing in "35"
+      "$$myfunc[35]"    # same
+      "$$myfunc:"       # Should this pass in a null? do I test that?
+                        # (Anyhow, there will be no colon in output.)
+      "$$myfunc["       # Error!
+      "$$myfunc\["      # But escaping is sufficient to fix it
+      "$$myfunc[]"      # I *think* the null param works OK?
+                        # But brackets could/should be omitted then.
+
+14. Using sqrt as an example:
+      
+      def isqrt(param = nil)      # "integer square root" - Just for testing
+        arg = num = param         #  Takes any number
+        if num.nil? || num.empty?
+          arg = "NO PARAM"        # Just for error text
+        end
+        # Integer()/Float() can raise error
+        num = num.include?(".") ? Float(num) : Integer(num)   
+        # Returns truncated integer
+        Math.sqrt(num).to_i       # user need not do to_s
+      rescue => err               # Malformed number? negative?
+        # TTY.puts "\nisqrt(#{param}) caused an error! #{err.inspect}"
+        "[Error evaluating $$isqrt(#{arg})]"
+      end
+
+15. Note: I want to change #tokenize so that it handles functions and
+    parameters more intelligently. Currently, a function with a parameter
+    adds more than one tuple to the list of tokens.
+    Currently:
+       "$$meh"       # [[:func, "meh"]]
+       "$$meh:5"     # [[:func, "meh"], [:colon, "5"]]
+       "$$meh[abc]"  # [[:func, "meh"], [:brackets, "abc"]]
+    Better?:
+       "$$meh"       # [[:func, "meh", nil]]
+       "$$meh:5"     # [[:func, "meh", "5"]]
+       "$$meh[abc]"  # [[:func, "meh", "abc"]]
+
+16. Referring to #15 - Should the code care (post-tokenize) whether 
+    a colon or brackets were used in the call?
+

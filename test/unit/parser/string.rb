@@ -143,14 +143,14 @@ class TestStringParser < MiniTest::Test
     assert_equal parse.peek, "c"
   end
 
-  def test_next_bang
+  def test_lookahead
     parse = StringParser.new("abcdef")
     assert_equal parse.peek, "a"
-    assert_equal parse.next!, "b"
+    assert_equal parse.lookahead, "b"
     assert_equal parse.i, 0
     3.times { parse.grab }
     before = parse.i
-    assert_equal parse.next!, "e"
+    assert_equal parse.lookahead, "e"
     after = parse.i
     assert_equal before, after
   end

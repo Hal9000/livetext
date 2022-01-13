@@ -13,6 +13,22 @@ class Livetext::Functions
     attr_accessor :param   # kill this?
   end
 
+# FIXME Function parameters need to be fixed...
+
+  def isqrt(param = nil)      # "integer square root" - Just for testing
+    arg = num = param         #  Takes any number
+    if num.nil? || num.empty?
+      arg = "NO PARAM"        # Just for error text
+    end
+    # Integer()/Float() can raise error
+    num = num.include?(".") ? Float(num) : Integer(num)   
+    # Returns truncated integer
+    Math.sqrt(num).to_i       # user need not do to_s
+  rescue => err               # Malformed number? negative?
+#   TTY.puts "\nisqrt(#{param}) caused an error! #{err.inspect}"
+    "[Error evaluating $$isqrt(#{arg})]"
+  end
+
   def date(param=nil)
     Time.now.strftime("%F")
   end
@@ -40,7 +56,7 @@ class Livetext::Functions
     "<br>"*n
   end
 
-  def yt(param)
+  def yt(param)   # FIXME uh, this is crap
     param = self.class.param
     "https://www.youtube.com/watch?v=#{param}"
   end
