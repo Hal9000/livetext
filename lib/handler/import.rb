@@ -28,8 +28,5 @@ class Livetext::Handler::Import
     File.dirname(File.expand_path(".")) == "/"
   end
 
-  def fname2module(name)
-  end
-
 end
 

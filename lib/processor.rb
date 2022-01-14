@@ -3,6 +3,7 @@
 class Livetext
 
   def self.interpolate(str)
+    # FIXME There are issues here...
     FormatLine.var_func_parse(str)
   end
 

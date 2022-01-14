@@ -88,6 +88,9 @@ class Livetext
     initial_vars
   end
 
+  def interpolate(str)
+  end
+
   def initial_vars
     # Other predefined variables (see also setfile)
     setvar(:User, `whoami`.chomp)

@@ -39,7 +39,6 @@ class FormatLine < StringParser
     return nil if line.nil?
     x = self.new(line.chomp)
     t = x.tokenize
-# TTY.puts "tokens = \n#{t.inspect}\n "
     x.evaluate
   end
 
@@ -47,7 +46,7 @@ class FormatLine < StringParser
 #   add grab
     loop do 
       case peek
-        when Escape; grab; add peek; grab; #  add peek  # <-- last is an error??
+        when Escape; grab; add peek; grab
         when "$"
           dollar
         when "*", "_", "`", "~"

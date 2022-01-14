@@ -9,7 +9,7 @@ class Livetext::ParseMixin
 
   def initialize(name)
     @name = name
-    @file = find_file(name)
+    @file = find_file(name, ".rb", "plugin")
   end
 
   def self.get_module(name)
@@ -17,8 +17,7 @@ class Livetext::ParseMixin
     modname, code = parse.read_mixin
     eval(code)   # Avoid in the future
     newmod = Object.const_get("::" + modname)
-    # return actual module
-    newmod
+    newmod   # return actual module
   end
 
   def read_mixin

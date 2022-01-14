@@ -1,0 +1,10 @@
+<table cellpadding=2>
+<tr>
+  <td width=[0, 0]% valign=top>this</td>
+  <td width=[0, 0]% valign=top>that</td>
+</tr>
+<tr>
+  <td width=[0, 0]% valign=top>foo</td>
+  <td width=[0, 0]% valign=top>bar</td>
+</tr>
+</table>

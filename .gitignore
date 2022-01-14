@@ -1,5 +1,6 @@
 *.gem
 *.rbc
+toc.tmp
 /.config
 /coverage/
 /InstalledFiles

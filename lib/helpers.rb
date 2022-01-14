@@ -23,8 +23,10 @@ module Helpers
     string.gsub(/['&\"<>]/, ESCAPING)
   end
 
-  def find_file(name, ext=".rb")
-    paths = [Livetext::Path.sub(/lib/, "imports/"), "./"]
+  def find_file(name, ext=".rb", which="imports")
+    failed = "#{__method__}: expected 'imports' or 'plugin'"
+    raise failed unless %w[imports plugin].include?(which)
+    paths = [Livetext::Path.sub(/lib/, "#{which}/"), "./"]
     base  = "#{name}#{ext}"
     paths.each do |path|
       file = path + base

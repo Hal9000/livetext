@@ -33,8 +33,9 @@ x  error_no_such_mixin      # ^ Same behavior as error_missing_end
    simple_mixin             #                            
 x  import                   # "Leading" output doesn't get generated (same as error_no_such_inc)
    import2                  # 
- 
-                     
+   mixin_bookish            # 
+   import_bookish           # 
+                    
 # raw input                     
                      
    single_raw_line          #  

@@ -1,0 +1,7 @@
+.mixin bookish
+
+.simple_table
+this :: that
+foo :: bar
+.end
+
