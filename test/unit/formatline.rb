@@ -104,7 +104,7 @@ class TestingLivetext < MiniTest::Test
   def test_var_before_period
     str = "This is $File."
     parse = FormatLine.new(str)
-    tokens_expected = [[:str, "This is "], [:var, "File"]]
+    tokens_expected = [[:str, "This is "], [:var, "File"], [:str, "."]]
     tokens = parse.tokenize
     assert_equal tokens_expected, tokens
     result = parse.evaluate

@@ -55,17 +55,24 @@ class TestingLivetext < MiniTest::Test
       end
     end
 
-    args = ARGV - ["cmdline"]
-
+    Args = ARGV - ["cmdline"]
     dir = self.get_dir
-
     Data = "#{dir}test/snapshots"
     Dir.chdir(Data)
-
     TestDirs = Dir.entries(".").reject {|fname| ! File.directory?(fname) } - %w[. ..]
 
+    Specified = []
+    Args.each do |name| 
+      which = TestDirs.select {|tdir| Regexp.new(name) =~ tdir }
+      which.each {|item| Specified << item }
+    end
+    Specified.uniq!
 
     def self.filter
+      unless Args.empty?
+        puts "Running: #{Args.map {|arg| "/#{arg}/" }}"
+        return Args
+      end
       all = Dir.entries(".").reject {|fname| ! File.directory?(fname) } - %w[. ..]
       @included, @excluded = all, []
       @reasons = []
@@ -191,7 +198,8 @@ class TestingLivetext < MiniTest::Test
     end
   end
 
-  Subset = Snapshot.filter
+  Subset = Specified = Snapshot::Specified
+  Subset.replace(Snapshot.filter) if Specified.empty?
 
   Subset.each do |tdir|
     define_method("test_#{tdir}") do

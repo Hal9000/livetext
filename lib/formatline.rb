@@ -7,6 +7,8 @@ class FormatLine < StringParser
   SimpleFormats[:i] = %w[<i> </i>]
   SimpleFormats[:t] = ["<font size=+1><tt>", "</tt></font>"]
   SimpleFormats[:s] = %w[<strike> </strike>]
+
+  BITS = SimpleFormats.keys
  
   Null   = ""
   Space  = " "
@@ -107,52 +109,10 @@ class FormatLine < StringParser
       break if token.nil? 
       sym, val = *token
       case sym
-        when :str;    eval_str(val)
-        when :var;    eval_var(val)
-        when :func;   eval_func(val, gen)
-        when :b, :i, :t, :s
-          eval_bits(sym, val)
-      else
-        add_token :str
-      end
-      token = gen.next
-    end
-    @out
-  end
-
-  def OLD_evaluate(tokens = @tokenlist)
-puts "#{__method__}: tokens = #{tokens.inspect}"
-    @out = ""
-    return "" if tokens.empty?
-    gen = tokens.each
-    token = gen.next
-    loop do 
-      break if token.nil? 
-# puts "  token = #{token.inspect}"
-      sym, val = *token
-# puts "  sym = #{sym.inspect}"
-      case sym
-        when :str
-          @out << val unless val == "\n"   # BUG
-        when :var
-          @out << varsub(val)
-        when :func 
-          param = nil
-# puts "1 Found :func!"
-          arg = gen.peek rescue :bogus
-          unless arg == :bogus
-# puts "2 Found :func! arg = #{arg.inspect}"
-            if [:colon, :brackets].include? arg[0] 
-              arg = gen.next  # for real
-              param = arg[1]
-              param = Livetext.interpolate(param)
-            end
-          end
-# puts "val, param = #{[val, param].inspect}"
-          @out << funcall(val, param)
-        when :b, :i, :t, :s
-          val = Livetext.interpolate(val)
-          @out << embed(sym, val)
+        when :str;   eval_str(val)
+        when :var;   eval_var(val)
+        when :func;  eval_func(val, gen)
+        when *BITS;  eval_bits(sym, val)
       else
         add_token :str
       end
@@ -402,7 +362,8 @@ puts "#{__method__}: tokens = #{tokens.inspect}"
           grab
           param << lookahead
           grab
-        when "]", LF, nil; break
+        when "]", LF, nil
+          break
       else
         param << lookahead
         grab

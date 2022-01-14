@@ -19,18 +19,14 @@
 
 # Note that QUIT (on a line by itself) will stop processing the file
 
-x  error_no_such_inc        # Output BEFORE error doesn't get passed through ("leading" output)
-x  error_no_such_copy       # ^ Same behavior as  error_no_such_inc
-x  error_no_such_mixin      # ^ Same behavior as error_missing_end
-x  error_invalid_name       # ^ Same behavior as error_no_such_inc
-x  error_missing_end        # Output is duplicated somehow. Look for: puts @body or puts @main.body
-x  error_inc_line_num       # Forgot what's wrong here
-
 
 # Others (usually passing):
 
 # import/include/mixin, others...
 
+x  error_no_such_inc        # Output BEFORE error doesn't get passed through ("leading" output)
+x  error_no_such_copy       # ^ Same behavior as  error_no_such_inc
+x  error_no_such_mixin      # ^ Same behavior as error_missing_end
    simple_copy              #                    
    simple_import            # 
    simple_include           #                            
@@ -71,6 +67,9 @@ x  import                   # "Leading" output doesn't get generated (same as er
    error_line_num           #  
    error_mismatched_end     #  
    error_name_not_permitted #  
+x  error_invalid_name       # ^ Same behavior as error_no_such_inc
+x  error_missing_end        # Output is duplicated somehow. Look for: puts @body or puts @main.body
+x  error_inc_line_num       # Forgot what's wrong here
 
 # functions
 
