@@ -1,6 +1,6 @@
-.mixin bookish
+.import bookish
 
-.simple_table 
+.simple_table
 this :: that
 foo :: bar
 .end
