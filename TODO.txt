@@ -1,11 +1,15 @@
    SOONISH?
    --------
+   Fix/improve overall structure
    Address failing snapshot tests (one at a time?)
    Get code coverage working with rubycritic
+   Address duplication in code
+   Improve UserAPI...
    Better parameter handling for custom functions
    reify args/data passing?
    Better parameter handling for custom dot commands (see: reify args/data)
    Support function namespacing?
+   Improve imports -- functionality, duplication, inconsistency, ...
    Livetext::Parse:: namespace??
    Annoying require_relative paths:  ../../.. blah blah
    Miscellaneous "extraneous" requires? (but it breaks without them)
