@@ -63,7 +63,11 @@ module Helpers
       process_line(line)
     end
     val = @main.finalize rescue nil
-    @body
+    @body    # FIXME?   @body.join("\n")  # array
+  rescue StandardError => err
+# TTY.puts ">>> rescue in process_file!! (helpers)"
+#     TTY.puts @body
+    raise err
   end
 
   def process_line(line)

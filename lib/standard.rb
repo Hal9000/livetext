@@ -209,6 +209,9 @@ module Livetext::Standard
     check_file_exists(file)
     @parent.process_file(file)
     _optional_blank_line
+  rescue StandardError => err
+TTY.puts ">>> #{__method__}: rescue in process_file!!"
+#    _out @body
   end
 
   def inherit(args = nil, body = nil)

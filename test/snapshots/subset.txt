@@ -1,4 +1,4 @@
-# This file specifies which snapshots will/won't be run.
+h This file specifies which snapshots will/won't be run.
 
 # Blank lines and comments are ignored.
 # Other lines:  name_of_snapshot and any comments here are ignored (no # needed)
