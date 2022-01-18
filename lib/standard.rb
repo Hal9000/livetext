@@ -2,6 +2,7 @@ require 'pathname'   # For _seek - remove later??
 
 require_relative 'parser'   # nested requires
 require_relative 'html'
+require_relative 'global_helpers'
 require_relative 'helpers'
 
 make_exception(:ExpectedOnOff,    "Error: expected 'on' or 'off'")
@@ -14,7 +15,7 @@ make_exception(:FileNotFound,     "Error: file '%1' not found")
 module Livetext::Standard
 
   include HTMLHelper
-  include Helpers
+  include Livetext::Helpers
 
   SimpleFormats =     # Move this?
    { b: %w[<b> </b>],
@@ -210,6 +211,11 @@ module Livetext::Standard
     @parent.process_file(file)
     _optional_blank_line
   rescue StandardError => err
+p err
+puts "-----"
+err.backtrace.to_a.each {|x| puts x }
+puts "-----"
+exit
 TTY.puts ">>> #{__method__}: rescue in process_file!!"
 #    _out @body
   end

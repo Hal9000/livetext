@@ -1,11 +1,9 @@
-require_relative '../livetext'
-require_relative '../helpers'
-require_relative 'string'
+require_relative '../helpers'  # FIXME This seems wrong
 
 make_exception(:NoEqualSign,     "Error: no equal sign found")
 
 class Livetext::ParseMixin
-  include Helpers
+  include Livetext::Helpers
 
   def initialize(name)
     @name = name
@@ -31,7 +29,6 @@ class Livetext::ParseMixin
   def cwd_root?
     File.dirname(File.expand_path(".")) == "/"
   end
-
 
 end
 

@@ -1,7 +1,7 @@
 
 require 'minitest/autorun'
 
-require_relative '../../../lib/parser/general'
+require_relative '../parser'      # nested
 
 ParseGeneral = ::Livetext::ParseGeneral
 

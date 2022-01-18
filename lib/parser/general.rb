@@ -1,7 +1,4 @@
 
-require_relative '../livetext'
-require_relative 'string'
-
 make_exception(:MismatchedQuotes, "Error: mismatched quotes")
 make_exception(:NilValue,         "Error: nil value")
 make_exception(:NullString,       "Error: null string")

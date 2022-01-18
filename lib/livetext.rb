@@ -21,13 +21,14 @@ class Object
 end
 
 require_relative 'errors'
+require_relative 'standard'
 require_relative 'functions'
 require_relative 'userapi'
-require_relative 'standard'
 require_relative 'formatline'
 require_relative 'processor'
 require_relative 'helpers'
 require_relative 'handler'
+
 
 Plugins = File.expand_path(File.join(File.dirname(__FILE__), "../plugin"))
 Imports = File.expand_path(File.join(File.dirname(__FILE__), "../imports"))

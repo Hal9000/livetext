@@ -85,6 +85,7 @@ end
 def fragment
   lang = @_args.empty? ? :elixir : @_args.first.to_sym   # ruby or elixir
   @_args = []
+# TTY.puts "\n#{self.inspect}"
   send(lang)
   _out "\n"
 end

@@ -1,6 +1,10 @@
 
+require_relative '../helpers'
+require_relative '../global_helpers'
+
 class Livetext::Handler::Import
-  include Helpers
+  include Livetext::Helpers
+  include GlobalHelpers
 
   attr_reader :file
 
@@ -9,15 +13,23 @@ class Livetext::Handler::Import
     @file = find_file(name)
   end
 
-  def self.get_module(name)
-    handler = self.new(name)
-    const1 = Object.constants
+  def self.get_mod_name
+    file = File.new(@file + ".rb")
+    str = nil
+    file.each_line do |line| 
+      str = line
+      break if str =~ /^module /
+    end
+    junk, name, junk2 = str.split
+    name
+  end
+
+  def self.get_module(filename)
+    handler = self.new(filename)
     @file = handler.file.sub(/.rb$/, "")
     require @file   # + ".rb"
-    const2 = Object.constants
-    names = (const2 - const1)
-    abort "Expected ONE new constant: #{names.inspect}" if names.size != 1
-    modname = names.first.to_s
+    modname = get_mod_name
+# TTY.puts "modname = #{modname.inspect}"
     newmod = Object.const_get("::" + modname)
     newmod   # return actual module
   end

@@ -1,9 +1,9 @@
 
 require 'minitest/autorun'
 
-require_relative '../../../lib/parser/set'
+require_relative '../parser'      # nested
 
-ParseSet = Livetext::ParseSet
+ParseSet = ::Livetext::ParseSet
 
 class TestParseSet < MiniTest::Test
 

@@ -1,5 +1,5 @@
 
-module Helpers
+module Livetext::Helpers
 
   Space = " "
   Sigil = "." # Can't change yet

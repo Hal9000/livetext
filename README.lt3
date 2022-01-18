@@ -1,5 +1,5 @@
-.icanhaz tutorial
-.icanhaz markdown
+.import tutorial
+.import markdown
 
 . copy basic.css
 

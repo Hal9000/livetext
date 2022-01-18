@@ -1,6 +1,6 @@
 require 'minitest/autorun'
 
-require '../../lib/livetext'
+require 'livetext'
 
 class TestingLivetext < MiniTest::Test
   include Livetext::Standard
