@@ -1,3 +1,5 @@
+# p __FILE__
+
 require 'pathname'   # For _seek - remove later??
 
 require_relative 'parser'   # nested requires

@@ -1,10 +1,22 @@
+# p __FILE__
+
+require_relative 'parser/string'
+
 # Class Livetext skeleton (top level).
 
 class Livetext
-  VERSION = "0.9.22"
+  VERSION = "0.9.23"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 
   module Handler
+  end
+
+  module ParsingConstants
+  end
+
+  class FormatLine < StringParser
+    module FunCall
+    end
   end
 end
 
@@ -56,6 +68,11 @@ class Livetext
 
   def vars
     Livetext::Vars.dup
+  end
+
+  def self.interpolate(str)
+    # FIXME There are issues here...
+    Livetext::FormatLine.var_func_parse(str)
   end
 
   def self.customize(mix: [], call: [], vars: {})

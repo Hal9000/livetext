@@ -4,6 +4,8 @@ require_relative '../../lib/livetext'
 
 class TestingLivetext < MiniTest::Test
 
+  FormatLine = Livetext::FormatLine
+
   # Some (most) methods were generated via the code
   # seen in the comment at the bottom of this file...
 

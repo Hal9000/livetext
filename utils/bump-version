@@ -3,7 +3,7 @@
 system("vi lib/livetext.rb +4")
 
 require 'date'
-require_relative "livetext"
+require "livetext"
 
 today = Date.today.strftime("%Y-%m-%d")
 version = Livetext::VERSION

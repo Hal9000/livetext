@@ -53,7 +53,6 @@ class TestParseGeneral < MiniTest::Test
     vars = ["alpha 'simple string'", 'beta "another string"']
     expect = [["this.that.alpha", "'simple string'"], ["this.that.beta", '"another string"']]
     assert_equal ParseGeneral.parse_vars(vars, prefix: "this.that"), expect
-
   end
 
 end

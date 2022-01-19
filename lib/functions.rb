@@ -1,3 +1,5 @@
+# p __FILE__
+
 
 # Class Functions is where '$$func' functions are stored dynamically... 
 # user-def AND pre-def??

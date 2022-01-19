@@ -1,3 +1,5 @@
+# p __FILE__
+
 require_relative 'formatline'
 
 # UserAPI deals mostly with user-level methods.
@@ -117,7 +119,7 @@ module Livetext::UserAPI
 
   def _format(line)
     return "" if line == "\n" || line.nil?
-    line2 = FormatLine.parse!(line)
+    line2 = Livetext::FormatLine.parse!(line)
     line.replace(line2)
     line
   end

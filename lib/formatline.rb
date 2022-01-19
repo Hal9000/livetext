@@ -1,30 +1,14 @@
+# p __FILE__
+
+require_relative 'parsing'
+require_relative 'funcall'
+
 # Class FormatLine handles the parsing of comments, dot commands, and 
 # simple formatting characters.
 
-class FormatLine < StringParser
-  SimpleFormats     = {}
-  SimpleFormats[:b] = %w[<b> </b>]
-  SimpleFormats[:i] = %w[<i> </i>]
-  SimpleFormats[:t] = ["<font size=+1><tt>", "</tt></font>"]
-  SimpleFormats[:s] = %w[<strike> </strike>]
-
-  BITS = SimpleFormats.keys
- 
-  Null   = ""
-  Space  = " "
-  Alpha  = /[A-Za-z]/
-  AlNum  = /[A-Za-z0-9_]/
-  LF     = "\n"
-  LBrack = "["
-
-  Blank   = [" ", nil, "\n"]
-  Punc    = [")", ",", ".", " ", "\n"]
-  NoAlpha = /[^A-Za-z0-9_]/
-  NoAlphaDot = /[^.A-Za-z0-9_]/
-  Param   = ["]", "\n", nil]
-  Escape  = "\\"   # not an ESC char
-
-  Syms = { "*" => :b, "_" => :i, "`" => :t, "~" => :s }
+class Livetext::FormatLine < StringParser
+  include Livetext::ParsingConstants
+  include Livetext::FormatLine::FunCall
 
   attr_reader :out
   attr_reader :tokenlist
@@ -81,7 +65,7 @@ class FormatLine < StringParser
       char = x.grab
       break if char == LF || char == nil
       x.handle_escaping if char == Escape
-      x.dollar if char == "$"
+      x.dollar if char == "$"  # Could be $$
       x.add char
     end
     x.add_token(:str)
@@ -118,18 +102,6 @@ class FormatLine < StringParser
       token = gen.next
     end
     @out
-  end
-
-  def grab_func_param
-    case lookahead
-      when "["
-        param = grab_bracket_param
-        add_token(:brackets, param)
-      when ":"
-        param = grab_colon_param
-        add_token(:colon, param)
-    else  # do nothing
-    end
   end
 
   def add(str)
@@ -181,20 +153,6 @@ class FormatLine < StringParser
     else 
       add "$" + peek
       add_token(:string)
-    end
-  end
-
-  def double_dollar
-    case lookahead
-      when Space; add_token :string, "$$ "; grab; return
-      when LF, nil; add "$$"; add_token :str
-      when Alpha
-        add_token(:str, @token)
-        func = grab_alpha
-        add_token(:func, func)
-        param = grab_func_param    # may be null/missing
-      else
-        grab; add_token :str, "$$" + peek; return
     end
   end
 
@@ -308,19 +266,6 @@ class FormatLine < StringParser
     ::STDERR.puts "ERR = #{err}\n#{err.backtrace}"
   end
 
-  def funcall(name, param)
-    err = "[Error evaluating $$#{name}(#{param})]"
-    func_name = name  # "func_" + name.to_s
-    result = 
-      if self.send?(func_name, param)  # self.respond_to?(func_name)
-        # do nothing
-      else
-        fobj = ::Livetext::Functions.new
-        fobj.send(name, param) rescue err
-      end
-    result.to_s
-  end
-
   def varsub(name)
     result = Livetext::Vars[name] || "[#{name} is undefined]"
     result
@@ -331,48 +276,6 @@ class FormatLine < StringParser
   end
 
   private 
-
-  def grab_colon_param
-    grab  # grab :
-    param = ""
-    loop do 
-      case lookahead
-        when Escape
-          grab
-          param << lookahead
-          grab
-        when Space, LF, nil; break
-      else
-        param << lookahead
-        grab
-      end
-    end
-
-    param = nil if param.empty?
-    param
-  end
-
-  def grab_bracket_param
-    grab # [
-    param = ""
-    loop do 
-      case lookahead
-        when Escape
-          grab
-          param << lookahead
-          grab
-        when "]", LF, nil
-          break
-      else
-        param << lookahead
-        grab
-      end
-    end
-    add peek
-    grab
-    param = nil if param.empty?
-    param
-  end
 
   def eval_bits(sym, val)
     val = Livetext.interpolate(val)

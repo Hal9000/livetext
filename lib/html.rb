@@ -1,3 +1,5 @@
+# p __FILE__
+
 module HTMLHelper
 
   def wrapped(str, *tags)   # helper

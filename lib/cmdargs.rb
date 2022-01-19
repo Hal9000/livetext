@@ -1,3 +1,5 @@
+# p __FILE__
+
 require_relative 'livetext'
 
 =begin
