@@ -25,6 +25,21 @@ module Livetext::Helpers
     string.gsub(/['&\"<>]/, ESCAPING)
   end
 
+  def showme(obj, tag = "")
+    whence = caller[0]
+    file, line, meth = whence.split(":")   # helpers.rb:79:in `BTC'
+    file = File.basename(file)
+    meth = meth[4..-2]
+    tag << " =" if tag
+    hide_class = [true, false, nil].include?(obj)
+    klass = hide_class ? "" : "(#{obj.class}) "
+    puts " #{tag} #{klass}#{obj.inspect}  in ##{meth}  [#{file} line #{line}]"
+  end
+
+  def debug(*args)
+    puts(*args) if $debug
+  end
+
   def find_file(name, ext=".rb", which="imports")
     failed = "#{__method__}: expected 'imports' or 'plugin'"
     raise failed unless %w[imports plugin].include?(which)
@@ -46,9 +61,9 @@ module Livetext::Helpers
     Regexp.compile("^" + Regexp.escape(str) + "#{space}")
   end
 
-  Comment  = rx(Sigil, Space)
-  Dotcmd   = rx(Sigil)
-  Ddotcmd  = /^ *\$\.[A-Za-z]/
+  Comment   = rx(Sigil, Space)
+  Dotcmd    = rx(Sigil)
+  DollarDot = /^ *\$\.[A-Za-z]/
 
 ## FIXME process_file[!] should call process[_text]
 
@@ -79,15 +94,19 @@ module Livetext::Helpers
         handle_scomment(line)
       when Dotcmd
         handle_dotcmd(line)
-      when Ddotcmd
-        indent = line.index("$") + 1
-        @indentation.push(indent)
-        line.sub!(/^ *\$/, "")
-        handle_dotcmd(line)
-        indentation.pop
+      when DollarDot
+        handle_dollar_dot
     else
       @main._passthru(line)
     end
+  end
+
+  def handle_dollar_dot
+    indent = line.index("$") + 1
+    @indentation.push(indent)
+    line.sub!(/^ *\$/, "")
+    handle_dotcmd(line)
+    indentation.pop
   end
 
   def handle_dotcmd(line, indent = 0)
