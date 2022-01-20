@@ -4,7 +4,6 @@ require 'pathname'   # For _seek - remove later??
 
 require_relative 'parser'   # nested requires
 require_relative 'html'
-require_relative 'global_helpers'
 require_relative 'helpers'
 
 make_exception(:ExpectedOnOff,    "Error: expected 'on' or 'off'")

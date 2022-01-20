@@ -1,5 +1,5 @@
-# p __FILE__
 
+require_relative 'global_helpers'
 
 module Livetext::Helpers
 
@@ -27,7 +27,7 @@ module Livetext::Helpers
 
   def showme(obj, tag = "")
     whence = caller[0]
-    file, line, meth = whence.split(":")   # helpers.rb:79:in `BTC'
+    file, line, meth = whence.split(":")
     file = File.basename(file)
     meth = meth[4..-2]
     tag << " =" if tag
@@ -82,7 +82,7 @@ module Livetext::Helpers
     val = @main.finalize rescue nil
     @body    # FIXME?   @body.join("\n")  # array
   rescue StandardError => err
-# TTY.puts ">>> rescue in process_file!! (helpers)"
+# TTY.puts ">>> rescue in process_file!!"
 #     TTY.puts @body
     raise err
   end

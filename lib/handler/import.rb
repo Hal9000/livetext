@@ -1,6 +1,5 @@
 
 require_relative '../helpers'
-require_relative '../global_helpers'
 
 class Livetext::Handler::Import
   include Livetext::Helpers
