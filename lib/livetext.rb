@@ -67,7 +67,7 @@ class Livetext
   end
 
   def vars
-    Livetext::Vars.dup
+    @_vars
   end
 
   def self.interpolate(str)

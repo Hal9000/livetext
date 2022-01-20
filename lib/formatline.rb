@@ -1,4 +1,3 @@
-# p __FILE__
 
 require_relative 'parsing'
 require_relative 'funcall'
@@ -267,7 +266,9 @@ class Livetext::FormatLine < StringParser
   end
 
   def varsub(name)
-    result = Livetext::Vars[name] || "[#{name} is undefined]"
+    live = Livetext.new
+    value = live.vars[name]
+    result = value || "[#{name} is undefined]"
     result
   end
 

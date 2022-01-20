@@ -1,7 +1,5 @@
-# p __FILE__
 
 require_relative 'livetext'
-# require_relative 'formatline'
 
 # Parse function calls
 
@@ -9,45 +7,32 @@ module Livetext::FormatLine::FunCall
 
   include Livetext::ParsingConstants
 
-  def grab_colon_param
-    grab  # grab :
+  def param_loop(char)
     param = ""
-    loop do 
+    loop do
       case lookahead
         when Escape
-          grab
-          param << lookahead
-          grab
-        when Space, LF, nil; break
-      else
-        param << lookahead
-        grab
-      end
-    end
-
-    param = nil if param.empty?
-    param
-  end
-
-  def grab_bracket_param
-    grab # [
-    param = ""
-    loop do 
-      case lookahead
-        when Escape
-          grab
-          param << lookahead
-          grab
-        when "]", LF, nil
+          param << escaped
+        when char, LF, nil
           break
       else
         param << lookahead
         grab
       end
     end
-    add peek
-    grab
     param = nil if param.empty?
+    param
+  end
+
+  def grab_colon_param
+    grab  # grab :
+    param = param_loop(Space)
+  end
+
+  def grab_bracket_param
+    grab # [
+    param = param_loop("]")
+    grab  # "]"
     param
   end
 
@@ -88,6 +73,12 @@ module Livetext::FormatLine::FunCall
         add_token(:colon, param)
     else  # do nothing
     end
+  end
+
+  def escaped
+    grab        # Eat the backslash
+    ch = grab   # Take next char
+    ch
   end
 
 end
