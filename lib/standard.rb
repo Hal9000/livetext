@@ -236,11 +236,10 @@ TTY.puts ">>> #{__method__}: rescue in process_file!!"
 
   def mixin(args = nil, body = nil)
     name = @_args.first   # Expect a module name
-# TTY.puts "#{__method__}: name = #{name}"
     return if @_mixins.include?(name)
     @_mixins << name
-    mod = Livetext::ParseMixin.get_module(name)
-# TTY.puts "#{__method__}: mod  = #{mod.inspect}"
+#   mod = Livetext::ParseMixin.get_module(name)
+    mod = Livetext::Handler::Mixin.get_module(name)
     self.extend(mod)
     init = "init_#{name}"
     self.send(init) rescue nil  # if self.respond_to? init
