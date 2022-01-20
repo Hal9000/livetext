@@ -1,11 +1,10 @@
-# p __FILE__
 
 require_relative 'parser/string'
 
 # Class Livetext skeleton (top level).
 
 class Livetext
-  VERSION = "0.9.23"
+  VERSION = "0.9.24"
   Path  = File.expand_path(File.join(File.dirname(__FILE__)))
 
   module Handler
