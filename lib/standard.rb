@@ -213,11 +213,11 @@ module Livetext::Standard
     @parent.process_file(file)
     _optional_blank_line
   rescue StandardError => err
-p err
-puts "-----"
-err.backtrace.to_a.each {|x| puts x }
-puts "-----"
-exit
+# p err
+# puts "-----"
+# err.backtrace.to_a.each {|x| puts x }
+# puts "-----"
+# exit
 TTY.puts ">>> #{__method__}: rescue in process_file!!"
 #    _out @body
   end
