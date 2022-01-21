@@ -1,0 +1,137 @@
+
+MISC...
+-------
+.
+├── README.lt3                  # generates README.md 
+├── README.md                   # markdown version
+├── TODO.txt
+├── reek.yml                    # sample reek file
+├── livetext.gemspec
+├── runtests                    # can run any/all tests
+├── utils                       # utils for development
+│   ├── bump-version            # increment version
+│   ├── cleanup                 # manual cleanup of snapshots
+│   ├── hotfix                  # copy from repo to local gem installation
+│   ├── make-gem                # create/push new gem
+│   ├── newtest                 # broken/unused?
+│   └── sdtest                  # broken/unused?
+└── examples                    # examples for a "deep dive" into logic
+    └── example1                # work in progress
+        ├── README.lt3
+        ├── file1.lt3
+        ├── file2.lt3
+        ├── flow.txt            # notes on logic flow
+        ├── myplugin.rb
+        └── notes.txt
+
+
+
+The "guts"
+----------
+
+├── bin
+│   └── livetext               # actual livetext executable
+├── lib
+│   ├── livetext.rb            # the "main" require
+│   ├── html.rb                # random HTML stuff
+│   ├── formatline.rb          # one of the "monsters" - boldface, italics, variables, function calls, ...
+│   ├── functions.rb           # where $$foo style functions go
+│   ├── cmdargs.rb
+│   ├── errors.rb              # make_exception
+│   ├── parsing.rb             # definitions (strings, regexes)
+│   ├── funcall.rb             # function calls (for FormatLine)
+│   ├── helpers.rb             # random stuff
+│   ├── global_helpers.rb      # More random stuff
+│   ├── handler                # For running specific "complex" dot commands
+│   │   ├── import.rb          # Handle .import
+│   │   └── mixin.rb           # Handle .mixin
+│   ├── handler.rb
+│   ├── parser.rb              # tests all under parser/
+│   ├── parser
+│   │   ├── string.rb          # string parser (very generic)
+│   │   ├── set.rb             # parse a .set command
+│   │   └── misc.rb            # various small parseable items
+│   ├── processor.rb           # hmm, kind of a parser itself?
+│   ├── standard.rb            # standard commands (hmm, needs work)
+│   └── userapi.rb             # things you'd call if you're using .def or .func
+├── imports                    # imports (will replace plugin/ later) - names can change!!
+│   ├── bookish.rb             # stuff for creating a full book
+│   ├── calibre.rb             # (simple for now) for creating an ebook
+│   ├── livemagick.rb          # small demo - create images using RMagick
+│   ├── markdown.rb            # (incomplete) generates markdown
+│   ├── pyggish.rb             # syntax highlighting - originally invoked pygments - needs a new name
+│   └── tutorial.rb            # stuff just for tutorial/README
+├── plugin                     # mixins (will be replaced by imports)
+│   ├── bookish.rb             # (same as import above)
+│   ├── calibre.rb             #   "
+│   ├── livemagick.rb          #   "
+│   ├── markdown.rb            #   "
+│   ├── pyggish.rb             #   "
+│   └── tutorial.rb            #   "
+├── test
+│   ├── all.rb                           # test all the things!
+│   ├── snapshots
+│   ├── snapshots.rb                     # run all snapshot tests
+│   │   ├── subset.txt                   # which tests to run/omit
+│   │   ├── basic_formatting             # boldface, italics, ...
+│   │   ├── block_comment                # .comment/.end
+│   │   ├── comments_ignored_1           # testing comments more
+│   │   ├── copy_is_raw                  # ensure .copy doesn't "interpret"
+│   │   ├── def_method                   # test .def/.end
+│   │   ├── error_inc_line_num           # test .include
+│   │   ├── error_invalid_name           # test we catch an "illegal" name
+│   │   ├── error_line_num               # 
+│   │   ├── error_mismatched_end         # .end without anything preceding
+│   │   ├── error_missing_end            # expect .end, not found
+│   │   ├── error_name_not_permitted     # test we catch an "illegal" name
+│   │   ├── error_no_such_inc            # .include nonexistent file
+│   │   ├── error_no_such_mixin          # .mixin nonexistent file
+│   │   ├── example_alpha                # random example - alphabetizing
+│   │   ├── example_alpha2               # random example - alphabetizing
+│   │   ├── functions                    # test .func/.end and builtins
+│   │   ├── hello_world                  # 
+│   │   ├── import                       # testing .import
+│   │   ├── import2                      # testing .import
+│   │   ├── import_bookish               # testing:   .import bookish
+│   │   ├── mixin_bookish                # testing:   .mixin bookish
+│   │   ├── more_complex_vars            # 
+│   │   ├── more_functions
+│   │   ├── predef_vars
+│   │   ├── raw_lines
+│   │   ├── raw_text_block
+│   │   ├── simple_copy
+│   │   ├── simple_import
+│   │   ├── simple_include
+│   │   ├── simple_mixin
+│   │   ├── simple_vars
+│   │   ├── single_raw_line
+│   │   └── table_with_heredocs
+│   ├── test_helper.rb                  # unused?
+│   ├── testlines.rb                    # unused?
+│   └── unit                    
+│       ├── all.rb                      # run ALL unit tests
+│       ├── formatline.rb
+│       ├── html.rb
+│       ├── parser.rb
+│       ├── parser
+│       │   ├── all.rb
+│       │   ├── general.rb
+│       │   ├── set.rb
+│       │   └── string.rb
+│       ├── standard.rb
+│       └── stringparser.rb
+└── docs                                # Mostly half-baked baloney
+    ├── bookish.lt3
+    ├── calibre.lt3
+    ├── docsen.rb
+    ├── formatline.lt3
+    ├── functions.lt3
+    ├── liveblog.lt3
+    ├── livemagick.lt3
+    ├── livetext.lt3
+    ├── make.rb
+    ├── markdown.lt3
+    ├── pyggish.lt3
+    ├── standard.lt3
+    ├── tutorial.lt3
+    └── userapi.lt3
