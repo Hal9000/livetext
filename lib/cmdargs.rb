@@ -1,4 +1,3 @@
-# p __FILE__
 
 require_relative 'livetext'
 
@@ -80,13 +79,13 @@ class Livetext::CmdData
   def check_num_args(num)
     num_range = /(\d{0,2})(\.\.)(\d{0,2})/   # Not "really" right...
     min, max = 0, 9999
-    md = num_range.match(@nargs).to_a
+    mdata = num_range.match(@nargs).to_a
     bad_args = nil
     case 
       when @nargs == ":N"          # arbitrary
         # max already set
-      when md[2] == ".."           # range: 4..6 1.. ..4
-        vmin, vmax = md.values_at(1, 2)
+      when mdata[2] == ".."           # range: 4..6 1.. ..4
+        vmin, vmax = mdata.values_at(1, 2)
         min = Integer(vmin) unless vmin.empty?
         max = Integer(vmax) unless vmax.empty?
         min, max = Integer(min), Integer(max)
@@ -98,6 +97,10 @@ class Livetext::CmdData
 
     bad_args = @args.size.between?(min, max)
     raise "Expected #{num} args but found #{@args.size}!" if bad_args
+  end
+
+  def strip_comments(str)
+    str.sub!(/ # .*/, "")
   end
 
 end

@@ -71,7 +71,9 @@ class Livetext
 
   def self.interpolate(str)
     # FIXME There are issues here...
-    Livetext::FormatLine.var_func_parse(str)
+    # Livetext::FormatLine.var_func_parse(str)
+    parse = Livetext::FormatLine.new(str)
+    parse.var_func_parse
   end
 
   def self.customize(mix: [], call: [], vars: {})

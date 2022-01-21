@@ -36,7 +36,7 @@ class Livetext::FormatLine < StringParser
           marker peek
           add peek
         when LF
-          break if eos?  # @i >= line.size - 1
+          break if eos?
         when nil
           break
         else
@@ -54,6 +54,20 @@ class Livetext::FormatLine < StringParser
     else
       terminators.include?(ch)
     end
+  end
+
+  def var_func_parse
+    char = self.peek
+    loop do
+      char = self.grab
+      break if char == LF || char == nil
+      self.handle_escaping if char == Escape
+      self.dollar if char == "$"  # Could be $$
+      self.add char
+    end
+    self.add_token(:str)
+    result = self.evaluate
+    result
   end
 
   def self.var_func_parse(str)

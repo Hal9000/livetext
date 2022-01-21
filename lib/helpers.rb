@@ -49,12 +49,7 @@ module Livetext::Helpers
       file = path + base
       return file if File.exist?(file)
     end
-
-    raise "No such mixin '#{name}'"
-
-    # # Really want to search upward??
-    # raise "No such mixin '#{name}'" if cwd_root?
-    # Dir.chdir("..") { find_file(name) }
+    return nil
   end
 
   def self.rx(str, space=nil)
@@ -62,7 +57,7 @@ module Livetext::Helpers
   end
 
   Comment   = rx(Sigil, Space)
-  Dotcmd    = rx(Sigil)
+  DotCmd    = rx(Sigil)
   DollarDot = /^ *\$\.[A-Za-z]/
 
 ## FIXME process_file[!] should call process[_text]
@@ -92,7 +87,7 @@ module Livetext::Helpers
     case line  # must apply these in order
       when Comment
         handle_scomment(line)
-      when Dotcmd
+      when DotCmd
         handle_dotcmd(line)
       when DollarDot
         handle_dollar_dot
@@ -119,6 +114,7 @@ module Livetext::Helpers
         puts @body
         raise EndWithoutOpening()
       when @main.respond_to?(name)
+        # FIXME Add cmdargs stuff... depends on name, etc.
         result = @main.send(name)
 
         # NOTE: The above line is where the magic happens!
