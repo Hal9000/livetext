@@ -1,3 +1,9 @@
+require 'simplecov'            # These two lines must go first
+SimpleCov.start  do
+  puts "SimpleCov: Snapshots"
+  add_filter "/test/"
+end
+
 require 'minitest/autorun'
 
 require_relative '../lib/livetext'
@@ -7,10 +13,10 @@ Snapshots...
 
 NOTE that the external_files method has been replaced by the Snapshot class.
 
-You can add any ordinary test method above. But so far, most of these tests simply 
+You can add any ordinary test method above. But so far, most of these tests simply
 call Snapshot.new
 
-It works this way: 
+It works this way:
   - If the test (caller) method is test_my_silly_feature, then we will
     look for a directory called snapshots/my_silly_feature
   - In here, there must be a source.lt3
@@ -20,12 +26,12 @@ It works this way:
   - The expected-* files are "literal" data
       * compared byte-for-byte
       * watch spaces and bad regexes, etc. #duh
-      * each of these files corresponds to a single assertion 
-  - A match-* file has two entries per line: 
+      * each of these files corresponds to a single assertion
+  - A match-* file has two entries per line:
       * a ONE-BASED line number (in actual-* file)
       * a String OR a Regexp (to match against that line)
       * If there is nonsense here, it currently isn't caught
-      * each of these files MAY correspond to many assertions 
+      * each of these files MAY correspond to many assertions
   - We run livetext on the source and compare actual vs expected (stdout, stderr)
   - The error output gets checked first (expected or match), THEN standard output
   - Of course, both must compare correctly for the test to pass
@@ -62,7 +68,7 @@ class TestingLivetext < MiniTest::Test
     TestDirs = Dir.entries(".").reject {|fname| ! File.directory?(fname) } - %w[. ..]
 
     Specified = []
-    Args.each do |name| 
+    Args.each do |name|
       which = TestDirs.select {|tdir| Regexp.new(name) =~ tdir }
       which.each {|item| Specified << item }
     end
@@ -112,7 +118,7 @@ class TestingLivetext < MiniTest::Test
       end
       unless @excluded.empty?
         puts "\nExcluded:\n "
-        @excluded.each.with_index do |name, num| 
+        @excluded.each.with_index do |name, num|
           printf "  %-20s %s\n", name, @reasons[num]
         end
         puts
