@@ -1,6 +1,7 @@
 require 'simplecov'            # These two lines must go first
 SimpleCov.start  do
   puts "SimpleCov: Snapshots"
+  enable_coverage :branch
   add_filter "/test/"
 end
 
