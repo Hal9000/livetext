@@ -64,7 +64,7 @@ module Livetext::Helpers
 
   def process_file(fname, btrace=false)
 #   TTY.puts ">>> #{__method__} in #{__FILE__}  debug = #{ENV['debug']}"
-#   TTY.puts ">>> #{__method__} in #{__FILE__}" if ENV['debug']
+    graceful_error FileNotFound(fname) unless File.exist?(fname)
     setfile(fname)
     text = File.readlines(fname)
     enum = text.each
