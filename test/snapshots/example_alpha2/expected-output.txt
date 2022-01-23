@@ -7,6 +7,4 @@ fishmonger     fusillade      glyph
 gryphon        halcyon        manicotti      
 mataeotechny   pareidolia     quark          
 zootrope       zymurgy        
-<p>
-
 And that is all.

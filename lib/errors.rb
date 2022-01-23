@@ -1,5 +1,3 @@
-# p __FILE__
-
 
 # More later?
 
@@ -10,7 +8,7 @@ def make_exception(sym, str, target_class = Object)
   define_method(sym) do |*args|
     args = [] unless args.first
     msg = str.dup
-    args.each.with_index {|arg, i| msg.sub!("%#{i+1}", arg) }
+    args.each.with_index {|arg, i| msg.sub!("%#{i+1}", arg.to_s) }
     target_class.class_eval(klass.to_s).new(msg)
   end
 end

@@ -10,6 +10,7 @@
      row.each {|w| _out! '%-15s' % w }
      _out
    end
+   _optional_blank_line
 .end
 Here is an alphabetized list:
 

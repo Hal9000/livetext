@@ -32,7 +32,7 @@ class TestingLivetext < MiniTest::Test
   def xtest_wrap
     # bogus!
     wrap(:ul) { 2.times {|i| _out i } }
-    puts @body
+    dump  # puts @body
   end
 
 end

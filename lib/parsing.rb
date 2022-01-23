@@ -1,5 +1,3 @@
-# p __FILE__
-
 
 # Constants for parsing
 

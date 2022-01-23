@@ -4,12 +4,8 @@ require 'rubygems'
 
 require_relative '../lib/livetext'
 
-def handle_lt3(src)
-  abort "Unknown file extension" unless src =~ /.lt3$/
-end
-
 def usage
-  puts <<-EOF
+  STDERR.puts <<~EOF
   Usage: 
     livetext filename
 
@@ -41,50 +37,71 @@ def usage
     Install plugin:
       livetext -i filename.rb
       livetext -install filename.rb
+
   EOF
-  puts
   exit
+end
+
+def version
+  puts "#{Livetext::VERSION}\n "
+end
+
+def testing
+  file = "#{Livetext::Path}/../test/test.rb"
+  flag = @backtrace ? "-back" : ""
+  cmd = "ruby #{file} cmdline#{flag}"
+  puts cmd
+  system(cmd)
+end
+
+def mixin_flag
+  mod = ARGV.shift
+  @live.mixin(ARGV.shift)
+end
+
+def read_stdin
+  src = STDIN.read
+  @live.process(src)
+end
+
+def install_plugin
+  lib = ARGV.shift
+  system("cp #{lib} #{Livetext::Path}/../plugin/")
+end
+
+def parse_command_line
+  usage if ARGV.empty?
+  success = true
+  loop do
+    arg = ARGV.shift
+    break if arg.nil?
+    case arg
+    when "-v", "--version";   version
+    when "-t", "--test";      testing
+    when "-p", "--path";      puts Livetext::Path
+    when "-b", "--backtrace"; @backtrace = true
+    when "-m", "--mixin"
+      mixin_flag
+      next
+    when "-s", "--stdin";     read_stdin
+    when "-h", "--help";      usage
+    when "-i", "--install";   install_plugin
+    when Object;              @live.process_file(arg, true)  # , @backtrace)
+    else
+      success = false
+      STDERR.puts "Command line - #{arg.inspect} is  unknown"
+    end
+  end
+  @live.dump if success
+# rescue => err
+#   STDERR.puts "Unexpected error! #{err.inspect}"
 end
 
 # Main
 
-x = Livetext.new
+@live = Livetext.new
 
 @backtrace = false
 
-usage if ARGV.empty?
+parse_command_line
 
-loop do
-  arg = ARGV.shift
-  break if arg.nil?
-  case arg
-    when "-v", "--version"
-      puts "#{Livetext::VERSION}\n "
-    when "-t", "--test"
-      file = "#{Livetext::Path}/../test/test.rb"
-      flag = @backtrace ? "-back" : ""
-      cmd = "ruby #{file} cmdline#{flag}"
-      puts cmd
-      system(cmd)
-    when "-p", "--path"
-      puts Livetext::Path
-    when "-b", "--backtrace"
-      @backtrace = true
-    when "-m", "--mixin"
-      mod = ARGV.shift
-      x.mixin(ARGV.shift)
-      next
-    when "-s", "--stdin"
-      src = STDIN.read
-      x.process(src)
-    when "-h", "--help"
-      usage
-    when "-i", "--install"
-      lib = ARGV.shift
-      system("cp #{lib} #{Livetext::Path}/../plugin/")
-    when Object
-      x.process_file(arg, true)  # , @backtrace)
-  end
-end
-
-puts x.body

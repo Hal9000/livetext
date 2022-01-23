@@ -47,6 +47,7 @@ Imports = File.expand_path(File.join(File.dirname(__FILE__), "../imports"))
 TTY = ::File.open("/dev/tty", "w")
 
 make_exception(:EndWithoutOpening, "Error: found .end with no opening command")
+make_exception(:UnknownMethod,     "Error: name '%1' is unknown")
 
 # Class Livetext reopened (top level).
 
@@ -86,6 +87,18 @@ class Livetext
     obj
   end
 
+  def dump(file = nil)   # not a dot command!
+    file ||= ::STDOUT
+    file.puts @body
+  rescue => err
+    TTY.puts ">>>>>> #dump had an error: #{err.inspect}"
+  end
+
+  def graceful_error(err)
+    dump
+    raise err
+  end
+
   def customize(mix: [], call: [], vars: {})
     mix  = Array(mix)
     call = Array(call)
@@ -98,6 +111,7 @@ class Livetext
   def initialize(output = ::STDOUT)
     @source = nil
     @_mixins = []
+    @_imports = []
     @_outdir = "."
     @no_puts = output.nil?
     @body = ""
@@ -127,7 +141,7 @@ class Livetext
       process_line(line)
     end
     result = @body
-    @body = ""
+#   @body = ""
     result
   end
 

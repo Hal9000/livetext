@@ -1,5 +1,3 @@
-# p __FILE__
-
 
 # Class Processor does the actual work of processing input.
 
@@ -26,6 +24,8 @@ class Processor
          instance_variable_get                instance_variable_set
          remove_instance_variable             instance_variables ]
 
+  attr_reader :parent
+
   def initialize(parent, output = nil)
     @parent = parent
     @_nopass = false
@@ -35,6 +35,7 @@ class Processor
     @sources = []
     @indentation = @parent.indentation
     @_mixins = []
+    @_imports = []
   end
 
   def output=(io)
@@ -61,11 +62,15 @@ class Processor
   end
 
   def peek_nextline
-    line = @sources.last[0].peek
+#   TTY.puts ":::: #{__method__} @ #{__FILE__} / #{__LINE__}"
+    source = @sources.last
+    line = source[0].peek
+    line
   rescue StopIteration
     @sources.pop
     nil
   rescue => err
+    TTY.puts "#{__method__}: RESCUE err = #{err.inspect}"
     nil
   end
 

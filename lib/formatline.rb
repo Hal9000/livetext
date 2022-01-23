@@ -26,7 +26,6 @@ class Livetext::FormatLine < StringParser
   end
 
   def tokenize
-#   add grab
     loop do 
       case peek
         when Escape; grab; add peek; grab

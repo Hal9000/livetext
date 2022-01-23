@@ -1,1 +1,1 @@
-1 /Name 'foobar' is unknown/
+1 /Error: name 'foobar' is unknown/

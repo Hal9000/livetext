@@ -1,4 +1,3 @@
-# p __FILE__
 
 module HTMLHelper
 

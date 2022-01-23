@@ -1,4 +1,3 @@
-# p __FILE__
 
 require_relative 'formatline'
 
@@ -41,6 +40,7 @@ module Livetext::UserAPI
     peek = peek_nextline
     return if peek.nil?
     @line = nextline if peek =~ /^ *$/
+    return true  # This way, dot commands will usually return true
   end
 
   def _comment?(str)
@@ -62,7 +62,8 @@ module Livetext::UserAPI
 
   def _raw_body(tag = "__EOF__")
     lines = []
-#   @save_location = @sources.last
+# FIXME??
+    @save_location = @sources.last
     loop do
       @line = nextline
       break if @line.nil?

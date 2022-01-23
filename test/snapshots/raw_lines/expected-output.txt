@@ -8,6 +8,4 @@ Ordinary line... plus two blank lines:
 No formatting: *foo `foo _foo ~foo
 No variables: $alpha $beta
 No functions: $$this $$that
-<p>
-
 That's all.

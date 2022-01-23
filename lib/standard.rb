@@ -1,4 +1,3 @@
-# p __FILE__
 
 require 'pathname'   # For _seek - remove later??
 
@@ -30,15 +29,18 @@ module Livetext::Standard
     @_data = val.chomp
     @_args = val.split rescue []
     @_mixins = []
+    @_imports = []
   end
 
   # dumb name - bold, italic, teletype, striketrough
-  def bits(args = nil, body = nil)
+
+  def bits(args = nil, body = nil)   # FIXME umm what is this?
     b0, b1, i0, i1, t0, t1, s0, s1 = *@_args
     SimpleFormats[:b] = [b0, b1]
     SimpleFormats[:i] = [i0, i1]
     SimpleFormats[:t] = [t0, t1]
     SimpleFormats[:s] = [s0, s1]
+    _optional_blank_line
   end
 
   def backtrace(args = nil, body = nil)
@@ -51,7 +53,7 @@ module Livetext::Standard
     _optional_blank_line
   end
 
-  def shell(args = nil, body = nil)
+  def shell(args = nil, body = gnil)
     cmd = @_data.chomp
     system(cmd)
     _optional_blank_line
@@ -67,14 +69,15 @@ module Livetext::Standard
     EOS
     _optional_blank_line
     Livetext::Functions.class_eval func_def
+    return true
   end
 
-  def h1(args = nil, body = nil); _out wrapped(@_data, :h1); end
-  def h2(args = nil, body = nil); _out wrapped(@_data, :h2); end
-  def h3(args = nil, body = nil); _out wrapped(@_data, :h3); end
-  def h4(args = nil, body = nil); _out wrapped(@_data, :h4); end
-  def h5(args = nil, body = nil); _out wrapped(@_data, :h5); end
-  def h6(args = nil, body = nil); _out wrapped(@_data, :h6); end
+  def h1(args = nil, body = nil); _out wrapped(@_data, :h1); return true; end
+  def h2(args = nil, body = nil); _out wrapped(@_data, :h2); return true; end
+  def h3(args = nil, body = nil); _out wrapped(@_data, :h3); return true; end
+  def h4(args = nil, body = nil); _out wrapped(@_data, :h4); return true; end
+  def h5(args = nil, body = nil); _out wrapped(@_data, :h5); return true; end
+  def h6(args = nil, body = nil); _out wrapped(@_data, :h6); return true; end
 
   def list(args = nil, body = nil)
     wrap :ul do
@@ -126,8 +129,6 @@ module Livetext::Standard
   end
 
   def quit(args = nil, body = nil)
-    puts @body
-    @body = ""
     @output.close
   end
 
@@ -136,6 +137,7 @@ module Livetext::Standard
       cmd = ::File.directory?(item) ? "rm -f #{item}/*" : "rm #{item}"
       system(cmd)
     end
+    _optional_blank_line
   end
 
   def dot_def(args = nil, body = nil)
@@ -146,12 +148,14 @@ module Livetext::Standard
     str << _body(true).join("\n")
     str << "\nend\n"
     eval str
+    _optional_blank_line
   end
 
   def set(args = nil, body = nil)
     line = _data.chomp
     pairs = Livetext::ParseSet.new(line).parse
     set_variables(pairs)
+    _optional_blank_line
   end
 
   # FIXME really these should be one method...
@@ -168,6 +172,7 @@ module Livetext::Standard
     end
     pairs = Livetext::ParseGeneral.parse_vars(prefix, lines)
     set_variables(pairs)
+    _optional_blank_line
   end
 
   def variables(args = nil, body = nil)
@@ -182,6 +187,7 @@ module Livetext::Standard
     end
     pairs = Livetext::ParseGeneral.parse_vars(prefix, lines)
     set_variables(pairs)
+    _optional_blank_line
   end
 
   def heredoc(args = nil, body = nil)
@@ -211,14 +217,6 @@ module Livetext::Standard
     check_file_exists(file)
     @parent.process_file(file)
     _optional_blank_line
-  rescue StandardError => err
-# p err
-# puts "-----"
-# err.backtrace.to_a.each {|x| puts x }
-# puts "-----"
-# exit
-TTY.puts ">>> #{__method__}: rescue in process_file!!"
-#    _out @body
   end
 
   def inherit(args = nil, body = nil)
@@ -237,7 +235,6 @@ TTY.puts ">>> #{__method__}: rescue in process_file!!"
     name = @_args.first   # Expect a module name
     return if @_mixins.include?(name)
     @_mixins << name
-#   mod = Livetext::ParseMixin.get_module(name)
     mod = Livetext::Handler::Mixin.get_module(name)
     self.extend(mod)
     init = "init_#{name}"
@@ -247,8 +244,8 @@ TTY.puts ">>> #{__method__}: rescue in process_file!!"
 
   def import(args = nil, body = nil)
     name = @_args.first   # Expect a module name
-    return if @_mixins.include?(name)
-    @_mixins << name
+    return if @_imports.include?(name)
+    @_imports << name
     mod = Livetext::Handler::Import.get_module(name)
     self.extend(mod)
     init = "init_#{name}"
@@ -257,52 +254,65 @@ TTY.puts ">>> #{__method__}: rescue in process_file!!"
   end
 
   def copy(args = nil, body = nil)
+#   TTY.puts ">>> #{__method__} in #{__FILE__}" if ENV['debug']
     file = @_args.first
-    check_file_exists(file)
-    _out grab_file(file)
+    ok = check_file_exists(file)
+
+    self.parent.graceful_error FileNotFound(file) unless ok   # FIXME seems weird?
+      _out grab_file(file)
     _optional_blank_line
+    [ok, file]
   end
 
   def r(args = nil, body = nil)
     _out @_data.chomp  # No processing at all
+    _optional_blank_line
   end
 
   def raw(args = nil, body = nil)
     # No processing at all (terminate with __EOF__)
     _raw_body {|line| _out line }  # no formatting
+    _optional_blank_line
   end
 
   def debug(args = nil, body = nil)
     self._debug = onoff(@_args.first)
+    _optional_blank_line
   end
 
   def passthru(args = nil, body = nil)
     # FIXME - add check for args size? (helpers)
     @_nopass = ! onoff(_args.first)
+    _optional_blank_line
   end
 
   def nopass(args = nil, body = nil)
     @_nopass = true
+    _optional_blank_line
   end
 
   def para(args = nil, body = nil)
     # FIXME - add check for args size? (helpers)
     @_nopara = ! onoff(_args.first)
+    _optional_blank_line
   end
 
   def nopara(args = nil, body = nil)
     @_nopara = true
+    _optional_blank_line
   end
 
   def heading(args = nil, body = nil)
     _print "<center><font size=+1><b>"
     _print @_data.chomp
     _print "</b></font></center>"
+    _optional_blank_line
   end
 
   def newpage(args = nil, body = nil)
     _out '<p style="page-break-after:always;"></p>'
     _out "<p/>"
+    _optional_blank_line
   end
 
   def mono(args = nil, body = nil)
@@ -322,15 +332,18 @@ TTY.puts ">>> #{__method__}: rescue in process_file!!"
         _out wrapped(defn, :dd)
       end
     end
+    _optional_blank_line
   end
 
   def link(args = nil, body = nil)
     url = _args.first
     text = _args[2..-1].join(" ")
     _out "<a style='text-decoration: none' href='#{url}'>#{text}</a>"
+    _optional_blank_line
   end
 
   def xtable(args = nil, body = nil)   # Borrowed from bookish - FIXME
+# TTY.puts "=== #{__method__} #{__FILE__} #{__LINE__}"
     title = @_data.chomp
     delim = " :: "
     _out "<br><center><table width=90% cellpadding=5>"
@@ -355,18 +368,21 @@ TTY.puts ">>> #{__method__}: rescue in process_file!!"
       end
     end
     _out "</table></center>"
+    _optional_blank_line
   end
 
   def image(args = nil, body = nil)
     name = @_args[0]
     _out "<img src='#{name}'></img>"
+    _optional_blank_line
   end
 
   def br(args = nil, body = nil)
     num = _args.first || "1"
-    out = ""
-    num.to_i.times { out << "<br>" }
-    _out out
+    str = ""
+    num.to_i.times { str << "<br>" }
+    _out str
+    _optional_blank_line
   end
 
   def reflection   # strictly experimental!
@@ -375,5 +391,6 @@ TTY.puts ">>> #{__method__}: rescue in process_file!!"
     diff = (list - obj).sort
     _out "#{diff.size} methods:"
     _out diff.inspect
+    _optional_blank_line
   end
 end

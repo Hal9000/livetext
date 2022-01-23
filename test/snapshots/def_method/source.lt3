@@ -2,10 +2,12 @@
 abc
 123
 .def foobar     # yet another experimental comment
-::STDERR.puts "This is the"
-::STDERR.puts "foobar method"
+  ::STDERR.puts "This is the"
+  ::STDERR.puts "foobar method"
+  true
 .end
 xyz
 .foobar     # and still another
+
 xyzzy
 123

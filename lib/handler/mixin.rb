@@ -10,6 +10,7 @@ class Livetext::Handler::Mixin
   def initialize(name)
     @name = name
     @file = find_file(name, ".rb", "plugin")
+    graceful_error FileNotFound(name) if @file.nil?
   end
 
   def self.get_module(filename)

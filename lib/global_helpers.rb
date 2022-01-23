@@ -1,5 +1,3 @@
-# p __FILE__
-
 
 module GlobalHelpers
 
@@ -8,7 +6,7 @@ module GlobalHelpers
   end
 
   def check_file_exists(file)
-    raise FileNotFound(file) unless File.exist?(file)
+    graceful_error FileNotFound(file) unless File.exist?(file)
   end
 
   def grab_file(fname)

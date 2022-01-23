@@ -163,7 +163,6 @@ module Bookish
       _out "</tr>"
     end
     _out "</table></center><br><br>"
-
     _optional_blank_line
   end
 
@@ -194,6 +193,7 @@ module Bookish
       _out "</tr>"
     end
     _out "</table>"
+    _optional_blank_line
   end
 
   def table(args = nil, body = nil)
@@ -228,6 +228,7 @@ module Bookish
     @toc << "#{_nbsp(8)}<b>Table #@chapter.#@table_num</b> #{title}<br>"
   # _next_output(_slug("table_#{title}"))
     _out "<b>Table #@chapter.#@table_num &nbsp;&nbsp; #{title}</b></center><br>"
+    _optional_blank_line
   end
 
   def toc!(args = nil, body = nil)

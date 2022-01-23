@@ -36,7 +36,7 @@ The "guts"
 │   ├── html.rb                # random HTML stuff
 │   ├── formatline.rb          # one of the "monsters" - boldface, italics, variables, function calls, ...
 │   ├── functions.rb           # where $$foo style functions go
-│   ├── cmdargs.rb
+│   ├── cmdargs.rb             # EXPERIMENTAL - make dot-command arguments more "first class"
 │   ├── errors.rb              # make_exception
 │   ├── parsing.rb             # definitions (strings, regexes)
 │   ├── funcall.rb             # function calls (for FormatLine)
@@ -94,22 +94,22 @@ The "guts"
 │   │   ├── import2                      # testing .import
 │   │   ├── import_bookish               # testing:   .import bookish
 │   │   ├── mixin_bookish                # testing:   .mixin bookish
-│   │   ├── more_complex_vars            # 
-│   │   ├── more_functions
-│   │   ├── predef_vars
-│   │   ├── raw_lines
-│   │   ├── raw_text_block
-│   │   ├── simple_copy
-│   │   ├── simple_import
-│   │   ├── simple_include
-│   │   ├── simple_mixin
-│   │   ├── simple_vars
-│   │   ├── single_raw_line
-│   │   └── table_with_heredocs
-│   ├── test_helper.rb                  # unused?
-│   ├── testlines.rb                    # unused?
+│   │   ├── more_complex_vars            # Variable names with dots, etc.
+│   │   ├── more_functions               # 
+│   │   ├── predef_vars                  # Predefined variables ($File, etc.)
+│   │   ├── raw_lines                    # 
+│   │   ├── raw_text_block               # Raw (uninterpreted) text block
+│   │   ├── simple_copy                  # .copy
+│   │   ├── simple_import                # .import
+│   │   ├── simple_include               # 
+│   │   ├── simple_mixin                 # 
+│   │   ├── simple_vars                  # 
+│   │   ├── single_raw_line              # 
+│   │   └── table_with_heredocs          # 
+│   ├── test_helper.rb                   # unused?
+│   ├── testlines.rb                     # unused?
 │   └── unit                    
-│       ├── all.rb                      # run ALL unit tests
+│       ├── all.rb                       # run ALL unit tests
 │       ├── formatline.rb
 │       ├── html.rb
 │       ├── parser.rb
@@ -120,7 +120,7 @@ The "guts"
 │       │   └── string.rb
 │       ├── standard.rb
 │       └── stringparser.rb
-└── docs                                # Mostly half-baked baloney
+└── docs                                 # Mostly half-baked baloney
     ├── bookish.lt3
     ├── calibre.lt3
     ├── docsen.rb

@@ -5,6 +5,4 @@ without interpretation:
 .comment This is not a real comment.
 This is not _italics or *boldface
 This is not a $variable reference
-<p>
-
 That's all.
