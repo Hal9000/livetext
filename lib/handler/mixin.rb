@@ -7,14 +7,14 @@ class Livetext::Handler::Mixin
 
   attr_reader :file
 
-  def initialize(name)
+  def initialize(name, parent)
     @name = name
     @file = find_file(name, ".rb", "plugin")
-    graceful_error FileNotFound(name) if @file.nil?
+    parent.graceful_error FileNotFound(name) if @file.nil?
   end
 
-  def self.get_module(filename)
-    handler = self.new(filename)
+  def self.get_module(filename, parent)
+    handler = self.new(filename, parent)
     modname, code = handler.read_mixin
     eval(code)   # Avoid in the future
     newmod = Object.const_get("::" + modname)

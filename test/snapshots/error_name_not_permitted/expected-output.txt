@@ -1,0 +1,4 @@
+Names such as 'class'
+are not permitted here...
+<p>
+

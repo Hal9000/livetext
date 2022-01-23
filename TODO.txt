@@ -1,24 +1,23 @@
    SOONISH?
    --------
-   Address failing snapshot tests (one at a time?)
-   Fix/improve overall structure
+   Fix/improve overall structure 
+     - Clean up livetext.rb (like rubocop)
+     - Annoying require_relative paths:  ../../.. blah blah
+     - Livetext::Parse:: namespace??
+     - Miscellaneous "extraneous" requires? (but it breaks without them)
+     - Address duplication in code
    Get code coverage working with rubycritic
-   Better parameter handling for custom functions
-   reify args/data passing?
-   Better parameter handling for custom dot commands (see: reify args/data)
-   Address duplication in code
+   Reify args/data passing?
+     - Better parameter handling for custom dot commands (see: reify args/data)
+     - Better parameter handling for custom functions
    Improve UserAPI...
-   Support function namespacing?
-   Improve imports -- functionality, duplication, inconsistency, ...
-   Livetext::Parse:: namespace??
-   Annoying require_relative paths:  ../../.. blah blah
-   Miscellaneous "extraneous" requires? (but it breaks without them)
-   Create high-level parser?
-   All dot-commands into their own module??
+     - Improve imports -- functionality, duplication, inconsistency, ...
+     - All dot-commands into their own module?? (as an "import" or similar)
+     - Support function "namespacing" like variables   $$some.func.name
+     - More tests
    Bug: dot-space inside block seen as comment (make configurable??)
    Allow turning on/off: formatting, variable interpolation, function interpolation?
    permit # comments on end of line? (configurable?)
-   Feature to "break" to EOF?
 
 
    LATERISH?
@@ -29,7 +28,9 @@
    HTML helper? (in its own library?)
    Add .link, $$link
    `.if and `[.else]?
+   Feature to "break" to EOF?
    change from .lt3 to .live
+   Create high-level parser?
    automated checking of output file age
    too many variations - transform, process, etc.
    Change predefined function names?? e.g. $$date becomes $$_date
@@ -82,6 +83,7 @@
 
    DONE
    ----
+x  Address failing snapshot tests (one at a time?)
 x  import command
 x  Remove incomplete 'import' code
 x  Change ICanHaz to Import

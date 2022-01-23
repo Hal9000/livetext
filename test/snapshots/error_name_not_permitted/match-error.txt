@@ -1,1 +1,1 @@
- 1  /Disallowed/
+ 1  /name 'class' is invalid/

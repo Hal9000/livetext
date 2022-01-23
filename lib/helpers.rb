@@ -9,6 +9,14 @@ module Livetext::Helpers
   ESCAPING = { "'" => '&#39;', '&' => '&amp;', '"' => '&quot;',
                '<' => '&lt;', '>' => '&gt;' }
 
+  def friendly_error(err)
+    return graceful_error(err) if self.respond_to?(:graceful_error)
+    return self.parent.graceful_error(err) if self.respond_to?(:parent)
+    raise err
+  rescue => myerr
+    TTY.puts "--- Warning: friendly_error #{myerr.inspect}"
+  end
+
   def escape_html(string)
     enc = string.encoding
     unless enc.ascii_compatible?
@@ -60,10 +68,9 @@ module Livetext::Helpers
   DotCmd    = rx(Sigil)
   DollarDot = /^ *\$\.[A-Za-z]/
 
-## FIXME process_file[!] should call process[_text]
+## FIXME process_file[!] should call process[_text] ?
 
   def process_file(fname, btrace=false)
-#   TTY.puts ">>> #{__method__} in #{__FILE__}  debug = #{ENV['debug']}"
     graceful_error FileNotFound(fname) unless File.exist?(fname)
     setfile(fname)
     text = File.readlines(fname)
@@ -75,10 +82,7 @@ module Livetext::Helpers
       line = @main.nextline
       break if line.nil?
       success = process_line(line)
-      unless success
-        TTY.puts ">>> process_line failed for #{line.inspect}"
-        break
-      end
+      break unless success
     end
     val = @main.finalize rescue nil
     @body    # FIXME?   @body.join("\n")  # array
@@ -86,7 +90,6 @@ module Livetext::Helpers
   end
 
   def process_line(line)
-#   TTY.puts ">>> #{__method__} in #{__FILE__}"
     success = true
     case line  # must apply these in order
       when Comment
@@ -111,10 +114,11 @@ module Livetext::Helpers
   end
 
   def invoke_dotcmd(name)
-#   TTY.puts ">>> #{__method__} in #{__FILE__}"
     # FIXME Add cmdargs stuff... depends on name, etc.
     retval = @main.send(name)
     retval
+# rescue NoMethodError => err
+#   graceful_error(err)
   rescue => err
     graceful_error(err)
   end
@@ -150,7 +154,7 @@ module Livetext::Helpers
   end
 
   def check_disallowed(name)
-    graceful_error DisallowedName(name) if disallowed?(name)
+    friendly_error DisallowedName(name) if disallowed?(name)
   end
 
   def check_file_exists(file)

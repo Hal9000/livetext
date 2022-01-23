@@ -235,7 +235,7 @@ module Livetext::Standard
     name = @_args.first   # Expect a module name
     return if @_mixins.include?(name)
     @_mixins << name
-    mod = Livetext::Handler::Mixin.get_module(name)
+    mod = Livetext::Handler::Mixin.get_module(name, @parent)
     self.extend(mod)
     init = "init_#{name}"
     self.send(init) rescue nil  # if self.respond_to? init
@@ -246,7 +246,7 @@ module Livetext::Standard
     name = @_args.first   # Expect a module name
     return if @_imports.include?(name)
     @_imports << name
-    mod = Livetext::Handler::Import.get_module(name)
+    mod = Livetext::Handler::Import.get_module(name, @parent)
     self.extend(mod)
     init = "init_#{name}"
     self.send(init) rescue nil  # if self.respond_to? init
@@ -254,7 +254,6 @@ module Livetext::Standard
   end
 
   def copy(args = nil, body = nil)
-#   TTY.puts ">>> #{__method__} in #{__FILE__}" if ENV['debug']
     file = @_args.first
     ok = check_file_exists(file)
 

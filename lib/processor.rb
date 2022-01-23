@@ -62,7 +62,7 @@ class Processor
   end
 
   def peek_nextline
-#   TTY.puts ":::: #{__method__} @ #{__FILE__} / #{__LINE__}"
+    return nil if @sources.empty?
     source = @sources.last
     line = source[0].peek
     line

@@ -91,7 +91,7 @@ class Livetext
     file ||= ::STDOUT
     file.puts @body
   rescue => err
-    TTY.puts ">>>>>> #dump had an error: #{err.inspect}"
+    TTY.puts "#dump had an error: #{err.inspect}"
   end
 
   def graceful_error(err)
@@ -102,7 +102,7 @@ class Livetext
   def customize(mix: [], call: [], vars: {})
     mix  = Array(mix)
     call = Array(call)
-    mix.each {|lib| mixin(lib) }  # FIXME HF won't this break??
+    mix.each {|lib| mixin(lib) }
     call.each {|cmd| @main.send(cmd[1..-1]) }  # ignores leading dot, no param
     vars.each_pair {|var, val| setvar(var, val.to_s) }
     self
