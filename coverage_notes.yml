@@ -1,0 +1,212 @@
+lib/parser/set.rb
+  self.parse(str)
+    - Not used/tested/covered.
+  wtf(note="")
+    - Probably should add test for this
+  parse
+    - Test for error condition - missing comma
+  skip_equal
+    - Test for error condition - No equal Sign
+  escaped
+    - Not tested/covered?
+lib/funcall.rb
+  param_loop(char)
+    - ESCAPE not tested/covered
+  double_dollar
+    - SPACE case not tested/covered
+    - LF case not tested/covered
+    - else case not tested/covered
+  escaped
+    - Not tested/covered
+lib/functions.rb
+  time
+    - Not tested/covered
+  pwd
+    - Not tested/covered
+  rand
+    - Not tested/covered
+  link
+    - Not tested/covered
+  br
+    - Not tested/covered
+  yt
+    - Not tested/covered
+  simple_format
+    - Not tested/covered
+lib/livetext.rb
+  Object#send?
+    - Not tested/covered or not needed.
+  self.customize(mix: [], call: [], vars: {})
+    - Not tested/covered
+  dump
+    - Not tested/covered
+  graceful_error
+    - Not tested/covered
+  customize
+    - Not tested/covered
+  transform
+    - Not tested/covered
+  xform
+    - Not tested/covered
+  xform_file
+    - Not tested/covered
+lib/errors.rb
+  make_exception
+    - Not tested/covered
+lib/formatline.rb
+  tokenize
+    - "*",
+      - Case Not tested/covered
+    - "_",
+      - Case Not tested/covered
+    - "`",
+      - Case Not tested/covered
+    - "~"
+      - Case Not tested/covered
+    - LF
+      - Case Not tested/covered
+  terminate?(terminators, ch)
+    - else condition not tested/covered
+  var_func_parse
+    - Not tested/covered
+  handle_escaping
+    - Not tested/covered
+  embed
+    - Not tested/covered
+  evaluate
+    - *BITS
+      - Case Not tested/covered
+    - else
+      - Case Not tested/covered
+  dollar
+    - LF
+      - Case Not tested/covered
+    - " "
+      - Case Not tested/covered
+    - nil
+      - Case Not tested/covered
+    - else
+      - Case Not tested/covered
+  marker
+    - Not tested/covered
+  double_marker
+    - Not tested/covered
+  long_marker
+    - Not tested/covered
+  collect_bracketed
+    - Not tested/covered
+  escaped
+    - Not tested/covered
+  collect!
+    - Not tested/covered
+  embedded?
+    - Not tested/covered
+  eval_bits
+    - Not tested/covered
+lib/processor.rb
+  - No coverage. Rather interesting. Possible issue with included files?
+lib/handler/mixin.rb
+  - No coverage. Rather interesting.
+lib/handler/import.rb
+  - No coverage. Rather interesting.
+lib/helpers.rb
+  - Minimal coverage. Rather interesting. Looks like just 'setfile!'
+lib/html.rb
+  - No coverage
+lib/userapi.rb
+  - No coverage
+lib/standard.rb
+  data
+    - Not tested/covered
+  bits
+    - Not tested/covered
+  backtrace
+    - Not tested/covered
+  comment
+    - Not tested/covered
+  shell
+    - Not tested/covered
+  func
+    - Not tested/covered
+  list
+    - Not tested/covered
+  list!
+    - Not tested/covered
+  shell!
+    - Not tested/covered
+  errout
+    - Not tested/covered
+  ttyout
+    - Not tested/covered
+  say
+    - Not tested/covered
+  banner
+    - Not tested/covered
+  quit
+    - Not tested/covered
+  cleanup
+    - Not tested/covered
+  dot_def
+    - Not tested/covered
+  set
+    - Not tested/covered
+  variables!
+    - Not tested/covered
+  variables
+    - Not tested/covered
+  heredoc
+    - Not tested/covered
+  seek
+    - Not tested/covered
+  dot_include
+    - Not tested/covered
+  inherit
+    - Not tested/covered
+  mixin
+    - Not tested/covered
+  import
+    - Not tested/covered
+  copy
+    - Not tested/covered
+  r
+    - Not tested/covered
+  debug
+    - Not tested/covered
+  passthru
+    - Not tested/covered
+  nopass
+    - Not tested/covered
+  para
+    - Not tested/covered
+  nopara
+    - Not tested/covered
+  heading
+    - Not tested/covered
+  newpage
+    - Not tested/covered
+  mono
+    - Not tested/covered
+  dlist
+    - Not tested/covered
+  link
+    - Not tested/covered
+  xtable
+    - Not tested/covered
+  image
+    - Not tested/covered
+  br
+    - Not tested/covered
+  reflection
+    - Not tested/covered
+lib/global_helpers.rb
+  - No coverage. Rather interesting.
+lib/cmdargs.rb
+  - Untouched
+
+
+
+
+
+
+
+
