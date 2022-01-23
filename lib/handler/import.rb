@@ -24,15 +24,12 @@ class Livetext::Handler::Import
   end
 
   def self.get_module(filename)
-TTY.puts "#{__method__}: filename = #{filename.inspect}"
+# TTY.puts "#{__method__}: filename = #{filename.inspect}"
     handler = self.new(filename)
-TTY.puts "#{__method__}: handler = #{handler.inspect}"
-TTY.puts "#{__method__}: handler.file = #{handler.file.inspect}"
     graceful_error FileNotFound(filename) if handler.file.nil?
     @file = handler.file.sub(/.rb$/, "")
     require @file   # + ".rb"
     modname = get_mod_name
-# TTY.puts "modname = #{modname.inspect}"
     newmod = Object.const_get("::" + modname)
     newmod   # return actual module
   end
