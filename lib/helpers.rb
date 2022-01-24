@@ -99,7 +99,7 @@ module Livetext::Helpers
       when DollarDot
         success = handle_dollar_dot
     else
-      @main._passthru(line)  # must succeed?
+      api.passthru(line)  # must succeed?
     end
     success
   end
@@ -133,7 +133,7 @@ module Livetext::Helpers
       when name == :end   # special case
         graceful_error EndWithoutOpening()
       when @main.respond_to?(name)
-        success, *extra = invoke_dotcmd(name)
+        success = invoke_dotcmd(name)
     else
       graceful_error UnknownMethod(name)
     end
@@ -199,7 +199,7 @@ module Livetext::Helpers
   end
 
   def include_file(file)
-    @_args = [file]
+    api.args = [file]
     dot_include
   end
 

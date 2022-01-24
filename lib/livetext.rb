@@ -58,8 +58,8 @@ class Livetext
   Vars = {}
 
 
-  attr_reader :main
-  attr_accessor :no_puts
+  attr_reader :main, :sources
+  attr_accessor :nopass, :nopara
   attr_accessor :body, :indentation
 
   class << self
@@ -88,11 +88,23 @@ class Livetext
   end
 
   def peek_nextline
-    @main.peek_nextline
+    @main.peek_nextline  # delegate
   end
 
   def nextline
-    @main.nextline
+    @main.nextline       # delegate
+  end
+
+  def sources
+    @main.sources        # delegate
+  end
+
+  def save_location
+    @save_location  # delegate
+  end
+
+  def save_location=(where)
+    @save_location = where  # delegate
   end
 
   def dump(file = nil)   # not a dot command!
@@ -127,7 +139,7 @@ class Livetext
     @indentation = [0]
     @_vars = Livetext::Vars
     initial_vars
-    @api = NewAPI.new(self)
+    @api = UserAPI.new(self)
   end
 
   def api

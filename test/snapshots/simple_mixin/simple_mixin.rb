@@ -1,3 +1,3 @@
 def hello_world
-  _out "Hello, world."
+  api.out "Hello, world."
 end

@@ -186,7 +186,7 @@ the text. Here's an example.
 
   . This is also a comment, by the way.
   .def chapter
-     params = _args
+     params = api.args
      raise "chapter: expecting at least two args" unless params.size > 1
      num, *title = params     # Chapter number + title
      title = title.join(" ")  # Join all words into one string
@@ -195,7 +195,7 @@ the text. Here's an example.
      <h2>#{title}</h2>
      <hr>
      HTML
-     _puts text
+     api.puts text
   .end
   . Now let's invoke it...
   .chapter 1 Why I Went to the Woods
@@ -270,16 +270,16 @@ in here (and nothing else).
 # File: mylib.rb
 
 def alpha
-  cols = _args.first
+  cols = api.args.first
   cols = "1" if cols == ""
   cols = cols.to_i
   raise "Columns must be 1-5" unless cols.between?(1,5)
-  text = _body.join
+  text = api.body.join
   text.gsub!(/\n/, " ")
   words = text.split.sort
   words.each_slice(cols) do |row| 
-    row.each {|w| _print '%-15s' % w }
-    _puts 
+    row.each {|w| api.print '%-15s' % w }
+    api.puts 
   end
 end
 .end

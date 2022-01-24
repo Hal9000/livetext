@@ -2,24 +2,24 @@ require 'rmagick'
 include ::Magick
 
 def image(args = nil, body = nil)
-  xx, yy, bg = _args
+  xx, yy, bg = api.args
   xx, yy = xx.to_i, yy.to_i
   @image = Image.new(xx,yy) { self.background_color = bg }
-  _optional_blank_line
+  api.optional_blank_line
 end
 
 def canvas(args = nil, body = nil)
-  color, width, opacity = _args
+  color, width, opacity = api.args
   opacity, width = opacity.to_i, width.to_i
   @canvas = Draw.new
   @canvas.fill_opacity(0)
   @canvas.stroke('black')
   @canvas.stroke_width(1)
-  _optional_blank_line
+  api.optional_blank_line
 end
 
 def rectangle(args = nil, body = nil)
-  xy, wxh, stroke_color, stroke_width = _args
+  xy, wxh, stroke_color, stroke_width = api.args
   x, y = xy.split(",").map(&:to_i)
   width, height = wxh.split("x").map(&:to_i)
   stroke_width = stroke_width.to_i
@@ -30,19 +30,19 @@ def rectangle(args = nil, body = nil)
 end
 
 def pen(args = nil, body = nil)
-  @fill, @stroke = _args
+  @fill, @stroke = api.args
   @stroke = "black" if @stroke.nil? || @stroke.empty?
   _debug "pen: fill=#@fill stroke=#@stroke"
-  _optional_blank_line
+  api.optional_blank_line
 end
 
 def font(args = nil, body = nil)
-  size, font = _args
+  size, font = api.args
   font = "Helvetica" if font.nil? || font.empty? 
   size = "32" if size.nil? || size.empty? 
   @size, @font = size.to_i, font
   _debug "font: size=#@size font=#@font"
-  _optional_blank_line
+  api.optional_blank_line
 end
 
 def _text(xy, wxh, str, weight, gravity)
@@ -60,34 +60,34 @@ def _text(xy, wxh, str, weight, gravity)
 end
 
 def text(args = nil, body = nil)
-  xy, wxh, str = _data.split
+  xy, wxh, str = api.data.split
   weight, gravity = BoldWeight, CenterGravity
   _text(xy, wxh, str, weight, gravity)
-  _optional_blank_line
+  api.optional_blank_line
 end
 
 def text!(args = nil, body = nil)
-  xy, wxh = _data.split
-  str = _body_text  # .join
+  xy, wxh = api.data.split
+  str = api.body_text  # .join
   weight, gravity = BoldWeight, CenterGravity
   _text(xy, wxh, str, weight, gravity)
-  _optional_blank_line
+  api.optional_blank_line
 end
 
 def draw(args = nil, body = nil)
   @canvas.draw(@image)
-  _optional_blank_line
+  api.optional_blank_line
 end
 
 def save(args = nil, body = nil)
   @image.write(_args.first)
-  _optional_blank_line
+  api.optional_blank_line
 end
 
 def save!(args = nil, body = nil)
   save
   system("open #{_args.first}")
-  _optional_blank_line
+  api.optional_blank_line
 end
 
 =begin

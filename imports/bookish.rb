@@ -1,7 +1,7 @@
 module Bookish
   def hardbreaks(args = nil, body = nil)
     @hard = false
-    @hard = true unless @_args.first == "off"
+    @hard = true unless api.args.first == "off"
   end
 
   def hardbreaks?
@@ -14,23 +14,23 @@ module Bookish
 
   # These are duplicated. Remove safely
 
-  def h1; _out "<h1>#{@_data}</h1>"; end
-  def h2; _out "<h2>#{@_data}</h2>"; end
-  def h3; _out "<h3>#{@_data}</h3>"; end
+  def h1; api.out "<h1>#{api.data}</h1>"; end
+  def h2; api.out "<h2>#{api.data}</h2>"; end
+  def h3; api.out "<h3>#{api.data}</h3>"; end
 
   def alpha_columns(args = nil, body = nil)
-    n = @_args.first.to_i   # FIXME: what if missing?
+    n = api.args.first.to_i   # FIXME: what if missing?
     words = []
-    _body do |line| 
+    api.body do |line| 
       words << line.chomp
     end
     words.sort!
-    _out "<table cellpadding=2>"
+    api.out "<table cellpadding=2>"
     words.each_slice(n) do |w|
       items = w.map {|x| "<tt>#{x}</tt>" }
-      _out "<tr><td width=5% valign=top></td><td>" + items.join("</td><td>") + "</td></tr>"
+      api.out "<tr><td width=5% valign=top></td><td>" + items.join("</td><td>") + "</td></tr>"
     end
-    _out "</table>"
+    api.out "</table>"
   end
 
   def _errout(*args)
@@ -52,29 +52,29 @@ module Bookish
   # FIXME duplicated?
 
   def image(args = nil, body = nil)
-    name = @_args[0]
-    _out "<img src='#{name}'></img>"
+    name = api.args[0]
+    api.out "<img src='#{name}'></img>"
   end
 
   def figure(args = nil, body = nil)
-    name = @_args[0]
-    num = @_args[1]
-    title = @_args[2..-1].join(" ")
-    title = _format(title)
-    _out "<img src='#{name}'></img>"
-    _out "<center><b>Figure #{num}</b> #{title}</center>"
+    name = api.args[0]
+    num = api.args[1]
+    title = api.args[2..-1].join(" ")
+    title = api.format(title)
+    api.out "<img src='#{name}'></img>"
+    api.out "<center><b>Figure #{num}</b> #{title}</center>"
   end
 
   def chapter(args = nil, body = nil)
   # _errout("chapter")
-    @chapter = @_args.first.to_i
+    @chapter = api.args.first.to_i
     @sec = @sec2 = 0
-    title = @_data.split(" ",2)[1]
+    title = api.data.split(" ",2)[1]
     @toc << "<br><b>#@chapter</b> #{title}<br>"
-    @_data = _slug(title)
+    api.data = _slug(title)
     next_output
-    _out "<title>#{@chapter}. #{title}</title>"
-    _out <<-HTML
+    api.out "<title>#{@chapter}. #{title}</title>"
+    api.out <<-HTML
       <h2>Chapter #{@chapter}</h2>
       <h1>#{title}</h1>
 
@@ -84,13 +84,13 @@ module Bookish
   def chapterN(args = nil, body = nil)
     @chapter += 1
     @sec = @sec2 = 0
-    title = @_data    # .split(" ",2)[1]
+    title = api.data    # .split(" ",2)[1]
     _errout("Chapter #@chapter: #{title}")
     @toc << "<br><b>#@chapter</b> #{title}<br>"
-    @_data = _slug(title)
+    api.data = _slug(title)
     next_output
-    _out "<title>#{@chapter}. #{title}</title>"
-    _out <<-HTML
+    api.out "<title>#{@chapter}. #{title}</title>"
+    api.out <<-HTML
       <h2>Chapter #{@chapter}</h2>
       <h1>#{title}</h1>
 
@@ -101,11 +101,11 @@ module Bookish
     @sec += 1
     @sec2 = 0
     @section = "#@chapter.#@sec"
-    title = @_data.dup
+    title = api.data.dup
     @toc << "#{_nbsp(3)}<b>#@section</b> #{title}<br>"
-    @_data = _slug(@_data)
+    api.data = _slug(api.data)
     next_output
-    _out "<h3>#@section #{title}</h3>\n"
+    api.out "<h3>#@section #{title}</h3>\n"
   rescue => err
     ::STDERR.puts "#{err}\n#{err.backtrace}"
     exit
@@ -114,66 +114,66 @@ module Bookish
   def subsec(args = nil, body = nil)
     @sec2 += 1
     @subsec = "#@chapter.#@sec.#@sec2"
-    title = @_data.dup
+    title = api.data.dup
     @toc << "#{_nbsp(6)}<b>#@subsec</b> #{title}<br>"
-    @_data = _slug(@_data)
+    api.data = _slug(api.data)
     next_output
-    _out "<h3>#@subsec #{title}</h3>\n"
+    api.out "<h3>#@subsec #{title}</h3>\n"
   end
 
   def definition_table(args = nil, body = nil)
-    title = @_data
+    title = api.data
     wide = "95"
     delim = " :: "
-    _out "<br><center><table width=#{wide}% cellpadding=5>"
-    lines = _body(true)
-    lines.map! {|line| _format(line) }
+    api.out "<br><center><table width=#{wide}% cellpadding=5>"
+    lines = api.body(true)
+    lines.map! {|line| api.format(line) }
 
     lines.each do |line|
       cells = line.split(delim)
-      _out "<tr>"
+      api.out "<tr>"
       cells.each.with_index do |cell, i| 
         width = (i == 0) ? "width=15%" : ""
-        _out "  <td #{width} valign=top>#{cell}</td>"
+        api.out "  <td #{width} valign=top>#{cell}</td>"
       end
-      _out "</tr>"
+      api.out "</tr>"
     end
-    _out "</table></center><br><br>"
+    api.out "</table></center><br><br>"
 
-    _optional_blank_line
+    api.optional_blank_line
   end
 
   def table2(args = nil, body = nil)
-    title = @_data
+    title = api.data
     wide = "90"
-    extra = _args[2]
+    extra = api.args[2]
     delim = " :: "
-    _out "<br><center><table width=#{wide}% cellpadding=5>"
-    lines = _body(true)
-    lines.map! {|line| _format(line) }
+    api.out "<br><center><table width=#{wide}% cellpadding=5>"
+    lines = api.body(true)
+    lines.map! {|line| api.format(line) }
 
     lines.each do |line|
       cells = line.split(delim)
       percent = (100/cells.size.to_f).round
-      _out "<tr>"
+      api.out "<tr>"
       cells.each do |cell| 
-        _out "  <td width=#{percent}% valign=top " + 
+        api.out "  <td width=#{percent}% valign=top " + 
               "#{extra}>#{cell}</td>"
       end
-      _out "</tr>"
+      api.out "</tr>"
     end
-    _out "</table></center><br><br>"
-    _optional_blank_line
+    api.out "</table></center><br><br>"
+    api.optional_blank_line
   end
 
   def simple_table(args = nil, body = nil)
-    title = @_data
+    title = api.data
     delim = " :: "
-    _out "<table cellpadding=2>"
-    lines = _body(true)
+    api.out "<table cellpadding=2>"
+    lines = api.body(true)
     maxw = nil
     lines.each do |line|
-      _format(line)
+      api.format(line)
       cells = line.split(delim)
       wide = cells.map {|x| x.length }
       maxw = [0] * cells.size
@@ -185,27 +185,27 @@ module Bookish
 
     lines.each do |line|
       cells = line.split(delim)
-      _out "<tr>"
+      api.out "<tr>"
       cells.each.with_index do |cell, i| 
-        _out "  <td width=#{maxw}% valign=top>" + 
+        api.out "  <td width=#{maxw}% valign=top>" + 
               "#{cell}</td>"
       end
-      _out "</tr>"
+      api.out "</tr>"
     end
-    _out "</table>"
-    _optional_blank_line
+    api.out "</table>"
+    api.optional_blank_line
   end
 
   def table(args = nil, body = nil)
     @table_num ||= 0
     @table_num += 1
-    title = @_data
+    title = api.data
     delim = " :: "
-    _out "<br><center><table width=90% cellpadding=5>"
-    lines = _body(true)
+    api.out "<br><center><table width=90% cellpadding=5>"
+    lines = api.body(true)
     maxw = nil
     lines.each do |line|
-      _format(line)
+      api.format(line)
       cells = line.split(delim)
       wide = cells.map {|x| x.length }
       maxw = [0] * cells.size
@@ -217,18 +217,18 @@ module Bookish
 
     lines.each do |line|
       cells = line.split(delim)
-      _out "<tr>"
+      api.out "<tr>"
       cells.each.with_index do |cell, i| 
-        _out "  <td width=#{maxw}% valign=top>" + 
+        api.out "  <td width=#{maxw}% valign=top>" + 
               "#{cell}</td>"
       end
-      _out "</tr>"
+      api.out "</tr>"
     end
-    _out "</table>"
+    api.out "</table>"
     @toc << "#{_nbsp(8)}<b>Table #@chapter.#@table_num</b> #{title}<br>"
   # _next_output(_slug("table_#{title}"))
-    _out "<b>Table #@chapter.#@table_num &nbsp;&nbsp; #{title}</b></center><br>"
-    _optional_blank_line
+    api.out "<b>Table #@chapter.#@table_num &nbsp;&nbsp; #{title}</b></center><br>"
+    api.optional_blank_line
   end
 
   def toc!(args = nil, body = nil)
@@ -241,7 +241,7 @@ module Bookish
   end
 
   def toc2(args = nil, body = nil)
-    file = @_args[0]
+    file = api.args[0]
     @toc.close
     ::File.write(file, <<-EOS)
   <p style="page-break-after:always;"></p>
@@ -254,26 +254,26 @@ module Bookish
   end
 
   def missing(args = nil, body = nil)
-    @toc << "#{_nbsp(8)}<font color=red>TBD: #@_data</font><br>"
-    stuff = @_data.empty? ? "" : ": #@_data"
-    _out "<br><font color=red><i>[Material missing#{stuff}]</i></font><br>\n "
+    @toc << "#{_nbsp(8)}<font color=red>TBD: #{api.data}</font><br>"
+    stuff = api.data.empty? ? "" : ": #{api.data}"
+    api.out "<br><font color=red><i>[Material missing#{stuff}]</i></font><br>\n "
   end
 
   def TBC(args = nil, body = nil)
     @toc << "#{_nbsp(8)}<font color=red>To be continued...</font><br>"
-    _out "<br><font color=red><i>To be continued...</i></font><br>"
+    api.out "<br><font color=red><i>To be continued...</i></font><br>"
   end
 
   def note(args = nil, body = nil)
-    _out "<br><font color=red><i>Note: "
-    _out @_data 
-    _out "</i></font><br>\n "
+    api.out "<br><font color=red><i>Note: "
+    api.out api.data 
+    api.out "</i></font><br>\n "
   end
 
   def quote(args = nil, body = nil)
-    _out "<blockquote>"
-    _body {|line| _out line }
-    _out "</blockquote>"
+    api.out "<blockquote>"
+    api.body {|line| api.out line }
+    api.out "</blockquote>"
   rescue => err
     ::STDERR.puts "#{err}\n#{err.backtrace}"
     exit

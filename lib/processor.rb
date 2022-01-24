@@ -6,7 +6,6 @@ class Processor
   GenericError = Class.new(StandardError)
 
   include Livetext::Standard
-  include Livetext::UserAPI
 
   Disallowed = 
      %i[ __binding__        __id__            __send__          class
@@ -24,12 +23,12 @@ class Processor
          instance_variable_get                instance_variable_set
          remove_instance_variable             instance_variables ]
 
-  attr_reader :parent
+  attr_reader :parent, :sources
 
   def initialize(parent, output = nil)
     @parent = parent
-    @_nopass = false
-    @_nopara = false
+    @nopass = false
+    @nopara = false
     # Meh?
     @output = ::Livetext.output = (output || File.open("/dev/null", "w"))
     @sources = []
@@ -51,7 +50,7 @@ class Processor
   end
 
   def _error!(err, raise_error=false, trace=false)   # FIXME much bullshit happens here
-    where = @sources.last || @save_location
+    where = @sources.last || @live.save_location
     error "Error: #{err} (at #{where[1]} line #{where[2]})"
     error(err.backtrace) rescue nil
     raise GenericError.new("Error: #{err}") if raise_error
