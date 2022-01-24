@@ -10,6 +10,7 @@ module Livetext::UserAPI
   # interaction thru instance vars?
 
   def setvar(var, val)
+    # FIXME don't like this...
     str, sym = var.to_s, var.to_sym
     Livetext::Vars[str] = val
     Livetext::Vars[sym] = val
@@ -46,8 +47,7 @@ module Livetext::UserAPI
   def _comment?(str)
     sigil = Livetext::Sigil
     c1 = sigil + Livetext::Space
-    c2 = sigil + sigil + Livetext::Space
-    str.index(c1) == 0 || str.index(c2) == 0
+    str.index(c1) == 0
   end
 
   def _trailing?(char)
