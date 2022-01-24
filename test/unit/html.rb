@@ -4,7 +4,6 @@ require 'livetext'
 
 class TestingLivetext < MiniTest::Test
   include Livetext::Standard
-  include Livetext::UserAPI
 
   # Some of these methods being tested "really" belong elsewhere?
   # Same is probably true of the methods that are testing them.
