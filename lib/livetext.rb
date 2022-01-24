@@ -87,6 +87,14 @@ class Livetext
     obj
   end
 
+  def peek_nextline
+    @main.peek_nextline
+  end
+
+  def nextline
+    @main.nextline
+  end
+
   def dump(file = nil)   # not a dot command!
     file ||= ::STDOUT
     file.puts @body
@@ -119,6 +127,11 @@ class Livetext
     @indentation = [0]
     @_vars = Livetext::Vars
     initial_vars
+    @api = NewAPI.new(self)
+  end
+
+  def api
+    @api
   end
 
   def interpolate(str)

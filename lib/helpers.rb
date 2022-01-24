@@ -150,6 +150,7 @@ module Livetext::Helpers
     name = "dot_" + name if %w[include def].include?(name)
     @main.check_disallowed(name)
     @main.data = data
+    @main.api.data = data
     name.to_sym
   end
 

@@ -38,6 +38,10 @@ class Processor
     @_imports = []
   end
 
+  def api
+    @parent.api   # FIXME Is this weird??
+  end
+
   def output=(io)
     @output = io
   end
