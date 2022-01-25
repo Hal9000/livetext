@@ -83,21 +83,21 @@ module Pyggish
   end
 
   def fragment
-    lang = @_args.empty? ? :elixir : @_args.first.to_sym   # ruby or elixir
-    @_args = []
+    lang = api.args.empty? ? :elixir : api.args.first.to_sym   # ruby or elixir
+    api.args = []
     send(lang)
-    _out "\n"
+    api.out "\n"
   end
 
   def code       # FIXME ?
     text = ""   
-    _body {|line| _out "    " + line }
+    api.body {|line| api.out "    " + line }
   end
 
   def mono
-    _out "<pre>"
-    _body {|line| _out "    " + line }
-    _out "</pre>"
+    api.out "<pre>"
+    api.body {|line| api.out "    " + line }
+    api.out "</pre>"
   end
 
   def create_code_styles
@@ -145,28 +145,28 @@ module Pyggish
   end
 
   def ruby
-    file = @_args.first 
+    file = api.args.first 
     if file.nil?
       code = "  # Ruby code\n\n"
-      _body {|line| code << "  " + line + "\n" }
+      api.body {|line| code << "  " + line + "\n" }
     else
       code = "# Ruby code\n\n" + ::File.read(file)
     end
 
     html = format_ruby(code)
-    _out html
+    api.out html
   end
 
   def elixir
-    file = @_args.first 
+    file = api.args.first 
     if file.nil?
       code = ""
-      _body {|line| code << "  " + line + "\n" }
+      api.body {|line| code << "  " + line + "\n" }
     else
       code = ::File.read(file)
     end
 
     html = format_elixir(code)
-    _out html
+    api.out html
   end
 end

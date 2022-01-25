@@ -51,7 +51,7 @@ module Livetext::Helpers
   def find_file(name, ext=".rb", which="imports")
     failed = "#{__method__}: expected 'imports' or 'plugin'"
     raise failed unless %w[imports plugin].include?(which)
-    paths = [Livetext::Path.sub(/lib/, "#{which}/"), "./"]
+    paths = [Livetext::Path.sub(/lib.livetext/, "#{which}/"), "./"]
     base  = "#{name}#{ext}"
     paths.each do |path|
       file = path + base
@@ -99,7 +99,7 @@ module Livetext::Helpers
       when DollarDot
         success = handle_dollar_dot
     else
-      @main._passthru(line)  # must succeed?
+      api.passthru(line)  # must succeed?
     end
     success
   end
@@ -133,7 +133,7 @@ module Livetext::Helpers
       when name == :end   # special case
         graceful_error EndWithoutOpening()
       when @main.respond_to?(name)
-        success, *extra = invoke_dotcmd(name)
+        success = invoke_dotcmd(name)
     else
       graceful_error UnknownMethod(name)
     end
@@ -150,6 +150,7 @@ module Livetext::Helpers
     name = "dot_" + name if %w[include def].include?(name)
     @main.check_disallowed(name)
     @main.data = data
+    @main.api.data = data
     name.to_sym
   end
 
@@ -198,7 +199,7 @@ module Livetext::Helpers
   end
 
   def include_file(file)
-    @_args = [file]
+    api.args = [file]
     dot_include
   end
 

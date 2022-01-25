@@ -1,7 +1,7 @@
 .def alpha
-   text = _body.to_a.join(" ")
+   text = api.body.to_a.join(" ")
    words = text.split.sort
-   words.each {|w| _out "    #{w}" }
+   words.each {|w| api.out "    #{w}" }
 .end
 Here is an alphabetized list:
 

@@ -1,16 +1,18 @@
    SOONISH?
    --------
    Fix/improve overall structure 
-     - Clean up livetext.rb (like rubocop)
-     - Annoying require_relative paths:  ../../.. blah blah
+x    - Clean up livetext.rb (like rubocop)
+x    - Annoying require_relative paths:  ../../.. blah blah
      - Livetext::Parse:: namespace??
      - Miscellaneous "extraneous" requires? (but it breaks without them)
      - Address duplication in code
-   Get code coverage working with rubycritic
+     - Hide FormatLine better inside Livetext
+x  Get code coverage working with rubycritic
    Reify args/data passing?
      - Better parameter handling for custom dot commands (see: reify args/data)
      - Better parameter handling for custom functions
    Improve UserAPI...
+x    - Make it a class, not a module
      - Improve imports -- functionality, duplication, inconsistency, ...
      - All dot-commands into their own module?? (as an "import" or similar)
      - Support function "namespacing" like variables   $$some.func.name

@@ -1,5 +1,5 @@
 
-require_relative 'livetext'
+require_relative '../livetext'
 
 # Parse function calls
 

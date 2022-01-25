@@ -1,16 +1,16 @@
 .def alpha
-   cols = _args.first
+   cols = api.args.first
    cols = "1" if cols == ""
    cols = cols.to_i
    raise "Columns must be 1-5" unless cols.between?(1,5)
-   text = _body.join("\n")
+   text = api.body.join("\n")
    text.gsub!(/\n/, " ")
    words = text.split.sort
    words.each_slice(cols) do |row| 
-     row.each {|w| _out! '%-15s' % w }
-     _out
+     row.each {|w| api.out! '%-15s' % w }
+     api.out
    end
-   _optional_blank_line
+   api.optional_blank_line
 .end
 Here is an alphabetized list:
 

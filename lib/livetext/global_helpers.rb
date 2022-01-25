@@ -34,4 +34,8 @@ module GlobalHelpers
 	  return nil
   end
 
+  def cwd_root?
+    File.dirname(File.expand_path(".")) == "/"
+  end
+
 end

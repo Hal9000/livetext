@@ -7,22 +7,22 @@ module Tutorial
 
   def title(args = nil, body = nil)
     h1
-    _optional_blank_line
+    api.optional_blank_line
   end
 
   def section(args = nil, body = nil)
     h3
-    _optional_blank_line
+    api.optional_blank_line
   end
 
   def code(args = nil, body = nil)
     first = true  # dumb hack! fixes blank space
-    _body do |line| 
+    api.body do |line| 
       tag, first = "<pre>", false if first
-      _out "#{tag}   #{escape_html(line)}"   # indentation
+      api.out "#{tag}   #{escape_html(line)}"   # indentation
     end
-    _out "</pre>"
-    _optional_blank_line
+    api.out "</pre>"
+    api.optional_blank_line
   end
 
   def rx(str)
@@ -30,14 +30,14 @@ module Tutorial
   end
 
   def inout(args = nil, body = nil)
-    src, out = _args
+    src, out = api.args
     t1 = ::File.readlines(src) rescue (abort "t1 = #{src}")
     t2 = ::File.readlines(out) rescue (abort "t2 = #{out}")
     # To pacify markdown for README (FIXME later)
     t1 = t1.map {|x| " " + x.sub(/ +$/,"").gsub(/_/, "\\_") }.join
     t2 = t2.map {|x| " " + x.sub(/ +$/,"").gsub(/_/, "\\_") }.join
 
-    _out <<-HTML
+    api.out <<-HTML
       <table width=80% cellpadding=4>
       <tr>
         <td width=50%><b>Input</b></td>
@@ -53,7 +53,7 @@ module Tutorial
       </tr>
       </table>
     HTML
-    _optional_blank_line
+    api.optional_blank_line
   end
 
   def put_table(src, exp)
@@ -62,7 +62,7 @@ module Tutorial
     t1 = t1.map {|x| " " + x.sub(/ +$/,"").gsub(/_/, "\\_") }.join
     t2 = t2.map {|x| " " + x.sub(/ +$/,"").gsub(/_/, "\\_") }.join
 
-    _out <<-HTML
+    api.out <<-HTML
       <font size=+1>
       <table width=80% cellpadding=4>
       <tr>
@@ -83,13 +83,13 @@ module Tutorial
   end
 
   def testcase(args = nil, body = nil)
-    name = _args.first
-    _out "\n<font size=+1><b>Test: </font><font size=+2><tt>#{name}</tt></font></b></h3><br>"
+    name = api.args.first
+    api.out "\n<font size=+1><b>Test: </font><font size=+2><tt>#{name}</tt></font></b></h3><br>"
     src, exp = "test/snapshots/#{name}/source.lt3", "test/snapshots/#{name}/expected-output.txt"
-    @_args = [src, exp]   # Better way to do this??
+    api.args = [src, exp]   # Better way to do this??
     put_table(src, exp)
-    _out "<br>"
-    _optional_blank_line
+    api.out "<br>"
+    api.optional_blank_line
   end
 end
 

@@ -1,9 +1,9 @@
 require 'fileutils'
 
 def epub!(args = nil, body = nil)
-  out = _format(@_args[0])
-  src = @_args[1]
-  @cover = @_args[2]
+  out = api.format(api.args[0])
+  src = api.args[1]
+  @cover = api.args[2]
   if ::File.directory?(src)
     files = ::Dir["#{src}/*"].grep /\.html$/
     files = files.sort  # why is this necessary now?

@@ -4,7 +4,6 @@ require_relative '../../lib/livetext'
 
 class TestingLivetext < MiniTest::Test
   include Livetext::Standard
-  include Livetext::UserAPI
 
   # Only method here "really" belongs elsewhere?  FIXME
 

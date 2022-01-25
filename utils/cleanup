@@ -1,3 +1,4 @@
 find test/snapshots/ -name "actual-*" | xargs rm
 find test/snapshots/ -name "*sdiff*"  | xargs rm
+find test/snapshots/ -name toc.tmp    | xargs rm
 find test/snapshots/ -name coverage   | xargs rm -rf

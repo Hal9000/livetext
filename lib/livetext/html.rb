@@ -16,9 +16,9 @@ module HTMLHelper
 
   def wrap(*tags)     # helper
     open, close = open_close_tags(*tags)
-    _out open
+    api.out open
     yield
-    _out close
+    api.out close
   end
 
   def open_close_tags(*tags)

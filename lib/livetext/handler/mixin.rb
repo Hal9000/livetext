@@ -1,6 +1,8 @@
 
 require_relative '../helpers'
 
+# Handle a .mixin
+
 class Livetext::Handler::Mixin
   include Livetext::Helpers
   include GlobalHelpers
@@ -25,12 +27,6 @@ class Livetext::Handler::Mixin
     modname = @name.gsub("/","_").capitalize
     meths = grab_file(@file)  # already has .rb?
     [modname, "module ::#{modname}; #{meths}\nend"]
-  end
-
-  private
-
-  def cwd_root?
-    File.dirname(File.expand_path(".")) == "/"
   end
 
 end
