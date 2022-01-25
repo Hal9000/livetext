@@ -1,11 +1,12 @@
    SOONISH?
    --------
    Fix/improve overall structure 
-     - Clean up livetext.rb (like rubocop)
-     - Annoying require_relative paths:  ../../.. blah blah
+x    - Clean up livetext.rb (like rubocop)
+x    - Annoying require_relative paths:  ../../.. blah blah
      - Livetext::Parse:: namespace??
      - Miscellaneous "extraneous" requires? (but it breaks without them)
      - Address duplication in code
+     - Hide FormatLine better inside Livetext
 x  Get code coverage working with rubycritic
    Reify args/data passing?
      - Better parameter handling for custom dot commands (see: reify args/data)

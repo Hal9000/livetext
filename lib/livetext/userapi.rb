@@ -1,9 +1,12 @@
 
-require_relative 'formatline'
+require_relative 'formatline'   # FIXME  meh, because of #format
 
 # Encapsulate the UserAPI as a class
 
 class Livetext::UserAPI
+
+  KBD = File.new("/dev/tty", "r")
+  TTY = File.new("/dev/tty", "w")
 
   attr_accessor :data, :args
 
@@ -111,7 +114,6 @@ class Livetext::UserAPI
   def format(line)
     return "" if line == "\n" || line.nil?
     line2 = Livetext::FormatLine.parse!(line)
-#   line.replace(line2)
     line2
   end
 
@@ -131,6 +133,14 @@ class Livetext::UserAPI
 
   def out!(str = "")
     @live.body << str  # no newline
+  end
+
+  def tty(*args)
+    TTY.puts *args
+  end
+
+  def err(*args)
+    STDERR.puts *args
   end
 
   def puts(*args)

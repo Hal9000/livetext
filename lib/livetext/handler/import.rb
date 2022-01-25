@@ -1,6 +1,8 @@
 
 require_relative '../helpers'
 
+# Handle a .import
+
 class Livetext::Handler::Import
   include Livetext::Helpers
   include GlobalHelpers
@@ -32,12 +34,6 @@ class Livetext::Handler::Import
     modname = get_mod_name
     newmod = Object.const_get("::" + modname)
     newmod   # return actual module
-  end
-
-  private
-
-  def cwd_root?
-    File.dirname(File.expand_path(".")) == "/"
   end
 
 end

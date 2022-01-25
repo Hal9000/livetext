@@ -13,3 +13,6 @@ def make_exception(sym, str, target_class = Object)
   end
 end
 
+make_exception(:EndWithoutOpening, "Error: found .end with no opening command")
+make_exception(:UnknownMethod,     "Error: name '%1' is unknown")
+
