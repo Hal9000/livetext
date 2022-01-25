@@ -1,50 +1,20 @@
 
-require_relative 'parser/string'
+require_relative 'livetext/skeleton'
+require_relative 'livetext/version'
+require_relative 'livetext/paths'
 
-# Class Livetext skeleton (top level).
+require_relative 'livetext/reopen'
 
-class Livetext
-  VERSION = "0.9.24"
-  Path  = File.expand_path(File.join(File.dirname(__FILE__)))
-
-  module Handler
-  end
-
-  module ParsingConstants
-  end
-
-  class FormatLine < StringParser
-    module FunCall
-    end
-  end
-end
-
-require 'fileutils'
-
-class Object
-  def send?(meth, *args)
-    if self.respond_to?(meth)
-      self.send(meth, *args)
-    else
-      return nil
-    end
-  end
-end
-
-require_relative 'errors'
-require_relative 'standard'
-require_relative 'functions'
-require_relative 'userapi'
-require_relative 'formatline'
-require_relative 'processor'
-require_relative 'helpers'
-require_relative 'handler'
+require_relative 'livetext/errors'
+require_relative 'livetext/standard'
+require_relative 'livetext/functions'
+require_relative 'livetext/userapi'
+require_relative 'livetext/formatline'
+require_relative 'livetext/processor'
+require_relative 'livetext/helpers'
+require_relative 'livetext/handler'
 
 
-Plugins = File.expand_path(File.join(File.dirname(__FILE__), "../plugin"))
-Imports = File.expand_path(File.join(File.dirname(__FILE__), "../imports"))
-
-TTY = ::File.open("/dev/tty", "w")
 
 make_exception(:EndWithoutOpening, "Error: found .end with no opening command")
 make_exception(:UnknownMethod,     "Error: name '%1' is unknown")
@@ -57,6 +27,7 @@ class Livetext
 
   Vars = {}
 
+TTY = ::File.open("/dev/tty", "w")
 
   attr_reader :main, :sources
   attr_accessor :nopass, :nopara

@@ -51,7 +51,7 @@ module Livetext::Helpers
   def find_file(name, ext=".rb", which="imports")
     failed = "#{__method__}: expected 'imports' or 'plugin'"
     raise failed unless %w[imports plugin].include?(which)
-    paths = [Livetext::Path.sub(/lib/, "#{which}/"), "./"]
+    paths = [Livetext::Path.sub(/lib.livetext/, "#{which}/"), "./"]
     base  = "#{name}#{ext}"
     paths.each do |path|
       file = path + base

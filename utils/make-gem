@@ -3,7 +3,7 @@
 KBD = File.open("/dev/tty", "r")
 
 print "Source says: "
-src = `head -n 8 lib/livetext.rb | tail -n 1`   # fragile af
+src = `grep VERSION.= lib/livetext/version.rb`
 ver = src.split.last[1..-2]
 puts ver
 puts

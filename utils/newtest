@@ -1,6 +1,7 @@
 mkdir test/snapshots/$1
 
-# actual-error.txt        actual-output.txt       expected-error.txt      expected-output.txt     source.lt3
+# actual-error.txt actual-output.txt expected-error.txt expected-output.txt source.lt3
+# may have match-* instead of expected-*
 
 cd test/snapshots/$1
 
