@@ -1,3 +1,9 @@
+require 'simplecov'            # These two lines must go first
+SimpleCov.start  do
+  puts "SimpleCov: Snapshots"
+  enable_coverage :branch
+end
+
 require 'minitest/autorun'
 
 require 'livetext'
@@ -19,11 +25,11 @@ class TestingLivetext < MiniTest::Test
 
   def test_wrapped_bang
     cdata = "nothing much"
-    assert_equal wrapped!(cdata, :td, valign: :top), 
+    assert_equal wrapped!(cdata, :td, valign: :top),
                      "<td valign='top'>#{cdata}</td>"
     assert_equal wrapped!(cdata, :img, src: "foo.jpg"),
                     "<img src='foo.jpg'>#{cdata}</img>"
-    assert_equal wrapped!(cdata, :a, style: 'text-decoration: none', 
+    assert_equal wrapped!(cdata, :a, style: 'text-decoration: none',
                      href: 'foo.com'),
                      "<a style='text-decoration: none' href='foo.com'>#{cdata}</a>"
   end

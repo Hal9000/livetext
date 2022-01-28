@@ -1,3 +1,9 @@
+require 'simplecov'            # These two lines must go first
+SimpleCov.start  do
+  puts "SimpleCov: Snapshots"
+  enable_coverage :branch
+end
+
 require 'minitest/autorun'
 
 require_relative '../parser'      # nested
@@ -25,7 +31,7 @@ class TestStringParser < MiniTest::Test
     assert_equal @zero.line, ""
     assert @zero.eos, "EOS was initially false for #{@zero.inspect}"
     assert_equal @zero.i, 0
-    
+
     assert_equal @one.line, "x"
     refute @one.eos, "EOS was initially true for #{@one.inspect}"
     assert_equal @one.i, 0
@@ -38,7 +44,7 @@ class TestStringParser < MiniTest::Test
   def test_grab
     assert_nil @zero.grab
     assert_equal @zero.i, 0      # nothing happens
-    
+
     assert_equal @one.grab, "x"
     assert_equal @one.i, 1
 
@@ -56,7 +62,7 @@ class TestStringParser < MiniTest::Test
   def test_grab_eos
     @zero.grab
     assert @zero.eos?
-    
+
     @one.grab
     assert @one.eos?
     @one.grab
@@ -154,7 +160,7 @@ class TestStringParser < MiniTest::Test
     after = parse.i
     assert_equal before, after
   end
-  
+
   def test_prev
     parse = StringParser.new("abcdef")
     assert_nil parse.prev
@@ -165,5 +171,5 @@ class TestStringParser < MiniTest::Test
     after = parse.i
     assert_equal before, after
   end
-  
+
 end

@@ -100,7 +100,13 @@ class TestingLivetext < MiniTest::Test
     assert_equal string_expected, result, "Found unexpected: #{result.inspect}"
   end
 
-# Next one is/will be a problem... 
+require 'simplecov'            # These two lines must go first
+SimpleCov.start  do
+  puts "SimpleCov: Snapshots"
+  enable_coverage :branch
+end
+
+# Next one is/will be a problem...
 # I permit periods *inside* variable names
 
   def test_var_before_period
@@ -128,9 +134,9 @@ class TestingLivetext < MiniTest::Test
   def test_func_needing_parameter_colon  # colon, param, more chars
     str = "Answer is $$isqrt:225 today"
     parse = FormatLine.new(str)
-    tokens_expected = [[:str, "Answer is "], 
-                       [:func, "isqrt"], 
-                       [:colon, "225"], 
+    tokens_expected = [[:str, "Answer is "],
+                       [:func, "isqrt"],
+                       [:colon, "225"],
                        [:str, " today"]]
     tokens = parse.tokenize
     assert_equal tokens_expected, tokens
@@ -139,14 +145,14 @@ class TestingLivetext < MiniTest::Test
     assert_equal string_expected, result, "Found unexpected: #{result.inspect}"
   end
 
-  # isqrt: Not real tests?? 
+  # isqrt: Not real tests??
 
   def test_isqrt_empty_colon_param
     str = "Calculate $$isqrt:"
     parse = FormatLine.new(str)
-    tokens_expected = [[:str, "Calculate "], 
+    tokens_expected = [[:str, "Calculate "],
                        [:func, "isqrt"]  # , [:colon, ""]
-                      ] 
+                      ]
     # If param is null, we don't get [:colon, value]!
     # ^ FIXME function should be more like:  [:func, name, param]
     tokens = parse.tokenize
@@ -159,9 +165,9 @@ class TestingLivetext < MiniTest::Test
   def test_isqrt_empty_bracket_param
     str = "Calculate $$isqrt[]"
     parse = FormatLine.new(str)
-    tokens_expected = [[:str, "Calculate "], 
+    tokens_expected = [[:str, "Calculate "],
                        [:func, "isqrt"]  # , [:colon, ""]
-                      ] 
+                      ]
     # If param is null, we don't get [:colon, value]!
     # ^ FIXME function should be more like:  [:func, name, param]
     tokens = parse.tokenize
@@ -174,10 +180,10 @@ class TestingLivetext < MiniTest::Test
   def test_isqrt_malformed_number
     str = "Calculate $$isqrt[3a5]"
     parse = FormatLine.new(str)
-    tokens_expected = [[:str, "Calculate "], 
+    tokens_expected = [[:str, "Calculate "],
                        [:func, "isqrt"],
                        [:brackets, "3a5"]
-                      ] 
+                      ]
     # ^ FIXME function should be more like:  [:func, name, param]
     tokens = parse.tokenize
     assert_equal tokens_expected, tokens
@@ -224,7 +230,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
 
     actual = FormatLine.parse!(src)
-    if exp[0] == "/" 
+    if exp[0] == "/"
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
     else
@@ -240,7 +246,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
 
     actual = FormatLine.parse!(src)
-    if exp[0] == "/" 
+    if exp[0] == "/"
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
     else
@@ -256,7 +262,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
 
     actual = FormatLine.parse!(src)
-    if exp[0] == "/" 
+    if exp[0] == "/"
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
     else
@@ -272,7 +278,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
 
     actual = FormatLine.parse!(src)
-    if exp[0] == "/" 
+    if exp[0] == "/"
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
     else
@@ -288,7 +294,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
 
     actual = FormatLine.parse!(src)
-    if exp[0] == "/" 
+    if exp[0] == "/"
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
     else
@@ -304,7 +310,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
 
     actual = FormatLine.parse!(src)
-    if exp[0] == "/" 
+    if exp[0] == "/"
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
     else
@@ -320,7 +326,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
 
     actual = FormatLine.parse!(src)
-    if exp[0] == "/" 
+    if exp[0] == "/"
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
     else
@@ -336,7 +342,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
 
     actual = FormatLine.parse!(src)
-    if exp[0] == "/" 
+    if exp[0] == "/"
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
     else
@@ -352,7 +358,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
 
     actual = FormatLine.parse!(src)
-    if exp[0] == "/" 
+    if exp[0] == "/"
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
     else
@@ -368,7 +374,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
 
     actual = FormatLine.parse!(src)
-    if exp[0] == "/" 
+    if exp[0] == "/"
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
     else
@@ -384,7 +390,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
 
     actual = FormatLine.parse!(src)
-    if exp[0] == "/" 
+    if exp[0] == "/"
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
     else
@@ -400,7 +406,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
 
     actual = FormatLine.parse!(src)
-    if exp[0] == "/" 
+    if exp[0] == "/"
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
     else
@@ -416,7 +422,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
 
     actual = FormatLine.parse!(src)
-    if exp[0] == "/" 
+    if exp[0] == "/"
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
     else
@@ -432,7 +438,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
 
     actual = FormatLine.parse!(src)
-    if exp[0] == "/" 
+    if exp[0] == "/"
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
     else
@@ -448,7 +454,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
 
     actual = FormatLine.parse!(src)
-    if exp[0] == "/" 
+    if exp[0] == "/"
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
     else
@@ -464,7 +470,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
 
     actual = FormatLine.parse!(src)
-    if exp[0] == "/" 
+    if exp[0] == "/"
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
     else
@@ -480,7 +486,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
 
     actual = FormatLine.parse!(src)
-    if exp[0] == "/" 
+    if exp[0] == "/"
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
     else
@@ -496,7 +502,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
 
     actual = FormatLine.parse!(src)
-    if exp[0] == "/" 
+    if exp[0] == "/"
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
     else
@@ -512,7 +518,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
 
     actual = FormatLine.parse!(src)
-    if exp[0] == "/" 
+    if exp[0] == "/"
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
     else
@@ -528,7 +534,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
 
     actual = FormatLine.parse!(src)
-    if exp[0] == "/" 
+    if exp[0] == "/"
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
     else
@@ -544,7 +550,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
 
     actual = FormatLine.parse!(src)
-    if exp[0] == "/" 
+    if exp[0] == "/"
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
     else
@@ -560,7 +566,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
 
     actual = FormatLine.parse!(src)
-    if exp[0] == "/" 
+    if exp[0] == "/"
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
     else
@@ -576,7 +582,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
 
     actual = FormatLine.parse!(src)
-    if exp[0] == "/" 
+    if exp[0] == "/"
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
     else
@@ -592,7 +598,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
 
     actual = FormatLine.parse!(src)
-    if exp[0] == "/" 
+    if exp[0] == "/"
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
     else
@@ -608,7 +614,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
 
     actual = FormatLine.parse!(src)
-    if exp[0] == "/" 
+    if exp[0] == "/"
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
     else
@@ -624,7 +630,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
 
     actual = FormatLine.parse!(src)
-    if exp[0] == "/" 
+    if exp[0] == "/"
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
     else
@@ -640,7 +646,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
 
     actual = FormatLine.parse!(src)
-    if exp[0] == "/" 
+    if exp[0] == "/"
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
     else
@@ -656,7 +662,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
 
     actual = FormatLine.parse!(src)
-    if exp[0] == "/" 
+    if exp[0] == "/"
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
     else
@@ -672,7 +678,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
 
     actual = FormatLine.parse!(src)
-    if exp[0] == "/" 
+    if exp[0] == "/"
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
     else
@@ -688,7 +694,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
 
     actual = FormatLine.parse!(src)
-    if exp[0] == "/" 
+    if exp[0] == "/"
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
     else
@@ -704,7 +710,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
 
     actual = FormatLine.parse!(src)
-    if exp[0] == "/" 
+    if exp[0] == "/"
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
     else
@@ -721,7 +727,7 @@ end
 
   items = []
   formatting_tests = File.open("test/snapshots/formatting-tests.txt")
-  loop do 
+  loop do
     4.times { items << formatting_tests.gets.chomp }
     # Blank line terminates each "stanza"
     raise "Oops? #{items.inspect}" unless items.last.empty?
@@ -753,7 +759,7 @@ end
 
         actual = FormatLine.parse!(src)
         # FIXME could simplify assert logic?
-        if exp[0] == "/" 
+        if exp[0] == "/"
           exp = Regexp.compile(exp[1..-2])   # skip slashes
           assert_match(exp, actual, msg)
         else

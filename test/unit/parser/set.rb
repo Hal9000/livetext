@@ -1,3 +1,8 @@
+require 'simplecov'            # These two lines must go first
+SimpleCov.start  do
+  puts "SimpleCov: Snapshots"
+  enable_coverage :branch
+end
 
 require 'minitest/autorun'
 
@@ -114,7 +119,7 @@ class TestParseSet < MiniTest::Test
     assert_raises(BadQuotedString) { @parse.quoted_value }
     @parse = ParseSet.new(%["bam])
     assert_raises(BadQuotedString) { @parse.quoted_value }
-    # LATER: 
+    # LATER:
     #  - allow (escaped?) comma in quoted string
   end
 
@@ -131,7 +136,7 @@ class TestParseSet < MiniTest::Test
     @parse = ParseSet.new(%[whatever])
     assert_equal @parse.unquoted_value, "whatever"
 
-    # LATER: 
+    # LATER:
     #  - disallow comma in unquoted string
     #  - disallow quote trailing unquoted string
     #  - allow/disallow escaping??

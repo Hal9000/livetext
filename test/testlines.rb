@@ -1,3 +1,9 @@
+require 'simplecov'            # These two lines must go first
+SimpleCov.start  do
+  puts "SimpleCov: Snapshots"
+  enable_coverage :branch
+end
+
 require '../lib/livetext'
 require '../lib/formatline'
 
@@ -15,7 +21,7 @@ data.each_slice(4).with_index do |lines, i|
   input.chomp!
   expected.chomp!
   expected = eval(expected) if expected[0] == "/"
-  
+
 
   actual = FormatLine.parse!(input)
   if expected === actual
@@ -30,7 +36,7 @@ data.each_slice(4).with_index do |lines, i|
   puts "Input: #{input}"
   puts "  #{red('FAIL Expected: ')} #{expected.inspect}"
   puts "  #{red('     Actual  : ')} #{actual.inspect}"
-  puts 
+  puts
 end
 
 puts

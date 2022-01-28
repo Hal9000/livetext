@@ -1,3 +1,9 @@
+require 'simplecov'            # These two lines must go first
+SimpleCov.start  do
+  puts "SimpleCov: Snapshots"
+  enable_coverage :branch
+end
+
 require 'minitest/autorun'
 
 require_relative '../../lib/stringparser'
