@@ -1,0 +1,16 @@
+
+Testing STILL more functions here...
+
+
+.func reverse
+  param.reverse   # just reverse it
+.end
+
+Now... let's try passing a variable to a function. Will this work??
+
+.set alpha = regal
+
+Variable \$alpha is $alpha, which reversed is $$reverse:$alpha
+
+That's all.
+

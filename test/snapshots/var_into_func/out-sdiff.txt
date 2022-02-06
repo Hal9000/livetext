@@ -1,0 +1,17 @@
+ACTUAL                                                      | EXPECTED                                                    
+<p>                                                           <p>
+
+Testing STILL more functions here...                          Testing STILL more functions here...
+<p>                                                           <p>
+
+<p>                                                           <p>
+
+Now... let's try passing a variable to a function. Will thi   Now... let's try passing a variable to a function. Will thi
+<p>                                                           <p>
+
+Variable $lpha is regal, which reversed is ahpla$           | Variable $alpha is regal, which reversed is ahpla$
+<p>                                                           <p>
+
+That's all.                                                   That's all.
+<p>                                                           <p>
+

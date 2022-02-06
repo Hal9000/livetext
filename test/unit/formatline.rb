@@ -712,6 +712,54 @@ class TestingLivetext < MiniTest::Test
     end
   end
 
+  def test_formatting_32   # Check "real" dollar signs
+    msg, src, exp = <<~STUFF.split("\n")
+      Check "real" dollar signs
+      You paid $75 for that item.
+      You paid $75 for that item.
+    STUFF
+
+    actual = FormatLine.parse!(src)
+    if exp[0] == "/" 
+      exp = Regexp.compile(exp[1..-2])   # skip slashes
+      assert_match(exp, actual, msg)
+    else
+      assert_equal(exp, actual, msg)
+    end
+  end
+
+  def test_formatting_33   # Check dollar-space
+    msg, src, exp = <<~STUFF.split("\n")
+      Check dollar-space
+      He paid $ 76 for it...
+      He paid $ 76 for it...
+    STUFF
+
+    actual = FormatLine.parse!(src)
+    if exp[0] == "/" 
+      exp = Regexp.compile(exp[1..-2])   # skip slashes
+      assert_match(exp, actual, msg)
+    else
+      assert_equal(exp, actual, msg)
+    end
+  end
+
+  def test_formatting_34   # Check escaped dollar signs
+    msg, src, exp = <<~STUFF.split("\n")
+      Check escaped dollar signs
+      I paid \$77 for it, though.
+      I paid $77 for it, though.
+    STUFF
+
+    actual = FormatLine.parse!(src)
+    if exp[0] == "/" 
+      exp = Regexp.compile(exp[1..-2])   # skip slashes
+      assert_match(exp, actual, msg)
+    else
+      assert_equal(exp, actual, msg)
+    end
+  end
+
 end
 
 # Test generation logic:

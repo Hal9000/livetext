@@ -60,7 +60,7 @@ class Livetext::FormatLine < StringParser
     loop do
       char = self.grab
       break if char == LF || char == nil
-      self.handle_escaping if char == Escape
+      self.escaped if char == Escape
       self.dollar if char == "$"  # Could be $$
       self.add char
     end
@@ -76,7 +76,7 @@ class Livetext::FormatLine < StringParser
     loop do
       char = x.grab
       break if char == LF || char == nil
-      x.handle_escaping if char == Escape
+      x.escaped if char == Escape
       x.dollar if char == "$"  # Could be $$
       x.add char
     end
@@ -85,10 +85,10 @@ class Livetext::FormatLine < StringParser
     result
   end
 
-  def handle_escaping
-    grab
-    add grab
-  end
+#   def handle_escaping
+#     grab
+#     add grab
+#   end
 
   def embed(sym, str)
     pre, post = SimpleFormats[sym]
