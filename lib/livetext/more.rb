@@ -5,7 +5,22 @@ class Livetext
 
   include Helpers
 
-  Vars = {}
+  class Variables
+    def initialize(hash = {})
+      @vars = {}
+      hash.each_pair {|k, v| @vars[k.to_sym] = v }
+    end
+  
+    def [](var)
+      @vars[var.to_sym]
+    end
+
+    def []=(var, value)
+      @vars[var.to_sym] = value
+    end
+  end
+
+  Vars = Variables.new
 
   TTY = ::File.open("/dev/tty", "w")
 
@@ -75,7 +90,7 @@ class Livetext
     call = Array(call)
     mix.each {|lib| mixin(lib) }
     call.each {|cmd| @main.send(cmd[1..-1]) }  # ignores leading dot, no param
-    vars.each_pair {|var, val| setvar(var, val.to_s) }
+    vars.each_pair {|var, val| setvar(var, val.to_s) }  # FIXME should this say @api??
     self
   end
 
@@ -89,8 +104,8 @@ class Livetext
     @main = Processor.new(self, output)
     @indentation = [0]
     @_vars = Livetext::Vars
-    initial_vars
     @api = UserAPI.new(self)
+    initial_vars
   end
 
   def api
@@ -99,8 +114,8 @@ class Livetext
 
   def initial_vars
     # Other predefined variables (see also setfile)
-    setvar(:User, `whoami`.chomp)
-    setvar(:Version, Livetext::VERSION)
+    @api.setvar(:User, `whoami`.chomp)
+    @api.setvar(:Version, Livetext::VERSION)
   end
 
   def transform(text)

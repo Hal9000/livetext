@@ -117,14 +117,11 @@ module Livetext::Helpers
     # FIXME Add cmdargs stuff... depends on name, etc.
     retval = @main.send(name)
     retval
-# rescue NoMethodError => err
-#   graceful_error(err)
   rescue => err
     graceful_error(err)
   end
 
   def handle_dotcmd(line, indent = 0)
-#   TTY.puts ">>> #{__method__} in #{__FILE__}" #  if ENV['debug']
     indent = @indentation.last # top of stack
     line = line.sub(/# .*$/, "")   # FIXME Could be problematic?
     name = get_name(line)
@@ -159,8 +156,7 @@ module Livetext::Helpers
   end
 
   def check_file_exists(file)
-#   raise FileNotFound(file) unless File.exist?(file)
-     return File.exist?(file)
+    return File.exist?(file)
   end
 
   def set_variables(pairs)

@@ -8,6 +8,8 @@ class Livetext::UserAPI
   KBD = File.new("/dev/tty", "r")
   TTY = File.new("/dev/tty", "w")
 
+  DotSpace = ". "  # Livetext::Sigil + Livetext::Space
+
   attr_accessor :data, :args
 
   def initialize(live)
@@ -16,10 +18,7 @@ class Livetext::UserAPI
   end
 
   def setvar(var, val)
-    # FIXME don't like this...
-    str, sym = var.to_s, var.to_sym
-    Livetext::Vars[str] = val
-    Livetext::Vars[sym] = val
+    Livetext::Vars[var] = val  # Now indifferent and "safe"
   end
 
   def check_existence(file, msg)
@@ -48,9 +47,7 @@ class Livetext::UserAPI
   end
 
   def comment?(str)
-    sigil = Livetext::Sigil
-    c1 = sigil + Livetext::Space
-    str.index(c1) == 0
+    str.index(DotSpace) == 0
   end
 
   def trailing?(char)
