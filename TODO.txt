@@ -1,6 +1,11 @@
    SOONISH?
    --------
-   Bug: \$alpha prints as $lpha (3 tests failing, all related to formatline.rb?)
+   Bugs, failing tests, weirdness
+     - 4 tests failing, all related to formatline.rb?
+     - Bug: \$alpha prints as $lpha
+     - Bug: Comma after function with param (see test_formatting_35)
+     - Many identical duplicated tests in test/unit/formatline - see test_formatting_NN
+     - Somehow have "def setvar" in two places.
    New tests: 
      - test suite for each import?
      - more "here-doc" style snapshot tests?

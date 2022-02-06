@@ -760,6 +760,38 @@ class TestingLivetext < MiniTest::Test
     end
   end
 
+  def test_formatting_35   # Check ignored function param (bug or feature?)
+    msg, src, exp = <<~STUFF.split("\n")
+      Check ignored function param (bug or feature?)
+      Today is $$date:foobar, apparently.
+      /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, apparently./
+    STUFF
+
+    actual = FormatLine.parse!(src)
+    if exp[0] == "/" 
+      exp = Regexp.compile(exp[1..-2])   # skip slashes
+      assert_match(exp, actual, msg)
+    else
+      assert_equal(exp, actual, msg)
+    end
+  end
+
+  def test_formatting_36   # Check ignored function bracket param (bug or feature?)
+    msg, src, exp = <<~STUFF.split("\n")
+      Check ignored function bracket param (bug or feature?)
+      Today is $$date[a useless parameter], apparently.
+      /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, apparently./
+    STUFF
+
+    actual = FormatLine.parse!(src)
+    if exp[0] == "/" 
+      exp = Regexp.compile(exp[1..-2])   # skip slashes
+      assert_match(exp, actual, msg)
+    else
+      assert_equal(exp, actual, msg)
+    end
+  end
+
 end
 
 # Test generation logic:
