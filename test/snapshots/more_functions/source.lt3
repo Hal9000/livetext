@@ -10,7 +10,7 @@ Here I am calling a function $$just_do_it:foobar with
 a colon parameter...
 
 
-Next let's *do* something with our parameter:
+Next let's *do something with our parameter:
 
 .func reverse
   param.reverse   # just reverse it

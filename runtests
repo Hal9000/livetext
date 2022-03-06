@@ -23,6 +23,8 @@ case arg
     system("ruby test/unit/parser/all.rb")
   when "standard"
     system("ruby test/unit/standard.rb")
+  when "tokenizer"
+    system("ruby test/unit/tokenizer.rb")
   when "html"
     system("ruby test/unit/html.rb")
   when "snapshots"

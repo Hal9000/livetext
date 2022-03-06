@@ -25,13 +25,13 @@ module Livetext::Standard
 
   attr_reader :data
 
-  def data=(val)    # FIXME this is weird, let's remove it soonish
-    api.data = val.chomp
-#   @args = val.split rescue []
+  def data=(val)    # FIXME this is weird, let's remove it soonish  and why are there two???
+# api.tty ">>>> in #{__FILE__}: api id = #{api.object_id}"
+    val = val.chomp
+    api.data = val
+    api.args = format(val).split rescue []
     @mixins = []
     @imports = []
-    ###
-    # api.data = val
   end
 
   # dumb name - bold, italic, teletype, striketrough
@@ -143,10 +143,14 @@ module Livetext::Standard
   end
 
   def dot_def(args = nil, body = nil)
+# api.tty "in #{__FILE__}: api id = #{api.inspect}"
     name = api.args[0]
-    str = "def #{name}\n"
+# api.tty :dd1
+# api.tty name.inspect
     check_disallowed(name)
+# api.tty :dd2
     # Difficult to avoid eval here
+    str = "def #{name}\n"
     str << api.body(true).join("\n")
     str << "\nend\n"
     eval str
@@ -172,7 +176,7 @@ module Livetext::Standard
     else
       lines = api.body
     end
-    pairs = Livetext::ParseGeneral.parse_vars(prefix, lines)
+    pairs = Livetext::ParseGeneral.parse_vars(lines, prefix: nil)
     set_variables(pairs)
     api.optional_blank_line
   end
@@ -187,7 +191,7 @@ module Livetext::Standard
     else
       lines = api.body
     end
-    pairs = Livetext::ParseGeneral.parse_vars(prefix, lines)
+    pairs = Livetext::ParseGeneral.parse_vars(lines, prefix: nil)
     set_variables(pairs)
     api.optional_blank_line
   end

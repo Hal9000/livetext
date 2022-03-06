@@ -20,20 +20,85 @@ class Livetext::FormatLine < StringParser
 
   def self.parse!(line)
     return nil if line.nil?
-    x = self.new(line.chomp)
+    line.chomp!
+    x = self.new(line)
+::Livetext::TTY.puts "\n-- string: #{line.inspect}" if $testme
     t = x.tokenize
-    x.evaluate
+::Livetext::TTY.puts "\n-- Tokens: #{t.inspect}" if $testme
+    result = x.evaluate
+::Livetext::TTY.puts "\n-- result: #{result.inspect}\n " if $testme
+    result
   end
 
   def tokenize
     loop do 
-      case peek
+      ch = peek
+::Livetext::TTY.puts "\n-- #{__method__}: ch1 = #{ch.inspect}\n " if $testme
+      case ch
         when Escape; grab; add peek; grab
         when "$"
           dollar
         when "*", "_", "`", "~"
           marker peek
           add peek
+        when LF
+          break if eos?
+        when nil
+          break
+        else
+          add peek
+      end
+      ch = grab
+#     add ch
+::Livetext::TTY.puts "\n-- #{__method__}: !!! ch2 = #{ch.inspect}\n " if $testme
+    end
+    add_token(:str)
+    @tokenlist
+  end
+
+  def parse_formatting
+    loop do 
+      case peek
+        when Escape; grab; add peek; grab
+        when "*", "_", "`", "~"
+          marker peek
+          add peek
+        when LF
+          break if eos?
+        when nil
+          break
+        else
+          add peek
+      end
+      grab
+    end
+    add_token(:str)
+    @tokenlist
+  end
+
+  def self.get_vars
+    grab
+    case peek
+      when LF, " ", nil
+        add "$"
+        add_token :str
+      when "$"; double_dollar
+#     when "."; dollar_dot
+      when /[A-Za-z]/
+        add_token :str
+        var = peek + grab_alpha_dot
+        add_token(:var, var)
+    else 
+      add "$" + peek
+      add_token(:str)
+    end
+  end
+
+  def self.parse_var_func   # FIXME Hmm...
+    loop do 
+      case peek
+        when "$"
+          dollar
         when LF
           break if eos?
         when nil
@@ -85,10 +150,21 @@ class Livetext::FormatLine < StringParser
     result
   end
 
-#   def handle_escaping
-#     grab
-#     add grab
-#   end
+  def self.parse_variables(str)
+    return nil if str.nil?
+    x = self.new(str.chomp)
+    char = x.peek
+    loop do
+      char = x.grab
+      break if char == LF || char == nil
+      x.escaped if char == Escape
+      x.dollar if char == "$"  # Could be $$
+      x.add char
+    end
+    x.add_token(:str)
+    result = x.evaluate
+    result
+  end
 
   def embed(sym, str)
     pre, post = SimpleFormats[sym]
@@ -151,20 +227,31 @@ class Livetext::FormatLine < StringParser
   end
 
   def dollar
-    grab
-    case peek
-      when LF;  add "$";  add_token :str
-      when " "; add "$ "; add_token :str
-      when nil; add "$";  add_token :str
+    ch = grab         # "$"
+::Livetext::TTY.puts "\n-- #{__method__}: ch1 = #{ch.inspect}\n  self = #{self.inspect}" if $testme
+    ch = peek
+::Livetext::TTY.puts "\n-- #{__method__}: ch2 = #{ch.inspect}\n  self = #{self.inspect}" if $testme
+    case ch
+      when " "
+::Livetext::TTY.puts "\n-- #{__method__}: (space)" if $testme
+        add "$ "
+        add_token :str
+      when LF, nil
+::Livetext::TTY.puts "\n-- #{__method__}: (LF/nil)" if $testme
+        add "$"
+        add_token :str
       when "$"; double_dollar
 #     when "."; dollar_dot
       when /[A-Za-z]/
+::Livetext::TTY.puts "\n-- #{__method__}: (Alpha)" if $testme
         add_token :str
         var = peek + grab_alpha_dot
         add_token(:var, var)
     else 
-      add "$" + peek
-      add_token(:string)
+      ch = grab         # "$"
+::Livetext::TTY.puts "\n-- ch3 = #{ch.inspect}\n  self = #{self.inspect}" if $testme
+      add "$" + ch 
+      add_token(:str)
     end
   end
 

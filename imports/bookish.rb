@@ -187,8 +187,7 @@ module Bookish
       cells = line.split(delim)
       api.out "<tr>"
       cells.each.with_index do |cell, i| 
-        api.out "  <td width=#{maxw}% valign=top>" + 
-              "#{cell}</td>"
+        api.out "  <td width=#{maxw[i]}% valign=top>#{cell}</td>"
       end
       api.out "</tr>"
     end

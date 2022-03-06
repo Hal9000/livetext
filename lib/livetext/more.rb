@@ -37,9 +37,7 @@ class Livetext
   end
 
   def self.interpolate(str)
-    # FIXME There are issues here...
-    # Livetext::FormatLine.var_func_parse(str)
-    parse = Livetext::FormatLine.new(str)
+    parse = Livetext::LineParser.new(str)
     parse.var_func_parse
   end
 
@@ -90,7 +88,7 @@ class Livetext
     call = Array(call)
     mix.each {|lib| mixin(lib) }
     call.each {|cmd| @main.send(cmd[1..-1]) }  # ignores leading dot, no param
-    vars.each_pair {|var, val| setvar(var, val.to_s) }  # FIXME should this say @api??
+    vars.each_pair {|var, val| @api.setvar(var, val.to_s) }
     self
   end
 

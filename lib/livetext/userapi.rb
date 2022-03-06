@@ -1,5 +1,6 @@
 
-require_relative 'formatline'   # FIXME  meh, because of #format
+# require_relative 'formatline'   # FIXME  meh, because of #format
+require_relative 'lineparser'     # FIXME  meh, because of #format
 
 # Encapsulate the UserAPI as a class
 
@@ -17,6 +18,14 @@ class Livetext::UserAPI
     @vars = live.vars
   end
 
+  def api
+    @live.api
+  end
+
+  def dot
+    @live
+  end
+
   def setvar(var, val)
     Livetext::Vars[var] = val  # Now indifferent and "safe"
   end
@@ -26,6 +35,7 @@ class Livetext::UserAPI
   end
 
   def data=(value)
+# TTY.puts "in #{__FILE__}: api = #{@live.api.inspect}"
     @data = value
     @args = format(@data).chomp.split
   end
@@ -110,7 +120,7 @@ class Livetext::UserAPI
 
   def format(line)
     return "" if line == "\n" || line.nil?
-    line2 = Livetext::FormatLine.parse!(line)
+    line2 = Livetext::LineParser.parse!(line)
     line2
   end
 

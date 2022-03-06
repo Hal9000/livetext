@@ -62,6 +62,8 @@ h This file specifies which snapshots will/won't be run.
 # intraline formatting
 
    basic_formatting         #  
+   test_formatting_34       # 
+   test_formatting_35       # 
 
 # Errors
 

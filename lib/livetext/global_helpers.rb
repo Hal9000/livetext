@@ -2,6 +2,7 @@
 module GlobalHelpers
 
   def check_disallowed(name)
+api.tty "GLOBAL cdis"
     raise DisallowedName(name) if disallowed?(name)
   end
 

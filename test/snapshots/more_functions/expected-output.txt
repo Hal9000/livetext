@@ -7,7 +7,7 @@ a colon parameter...
 
 <p>
 
-Next let's <b>do*</b> something with our parameter:
+Next let's <b>do</b> something with our parameter:
 <p>
 
 I'll call these variants...

@@ -57,7 +57,9 @@ class Processor
   end
 
   def disallowed?(name)
-    Disallowed.include?(name.to_sym)
+    flag = Disallowed.include?(name.to_sym)
+# api.tty "disa name = #{name.inspect} flag = #{flag}"
+    flag
   end
 
   def source(enum, file, line)

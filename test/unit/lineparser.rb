@@ -4,10 +4,22 @@ require_relative '../../lib/livetext'
 
 class TestingLivetext < MiniTest::Test
 
-  FormatLine = Livetext::FormatLine
+  LineParser = Livetext::LineParser
+
+  def perform_test(recv, sym, msg, src, exp)
+    actual = recv.send(sym, src)
+    if exp[0] == "/" 
+      exp = Regexp.compile(exp[1..-2])   # skip slashes
+      $testme = false
+      assert_match(exp, actual, msg)
+    else
+      $testme = false
+      assert_equal(exp, actual, msg)
+    end
+  end
 
   def invoke_test(msg, src, exp)
-    actual = FormatLine.parse!(src)
+    actual = LineParser.parse!(src)
     if exp[0] == "/" 
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       $testme = false
@@ -22,7 +34,7 @@ class TestingLivetext < MiniTest::Test
   # seen in the comment at the bottom of this file...
 
   def test_simple_string
-    parse = FormatLine.new("only testing")
+    parse = LineParser.new("only testing")
     tokens = parse.tokenize
     assert_equal tokens, [[:str, "only testing"]], "Tokens were: #{tokens.inspect}"
     expected = "only testing"
@@ -31,7 +43,8 @@ class TestingLivetext < MiniTest::Test
   end
 
   def test_variable_interpolation
-    parse = FormatLine.new("File is $File and user is $User")
+    $testme = true
+    parse = LineParser.new("File is $File and user is $User")
     tokens = parse.tokenize
     expected_tokens = [[:str, "File is "],
                        [:var, "File"],
@@ -41,10 +54,11 @@ class TestingLivetext < MiniTest::Test
     result = parse.evaluate
     expected = "File is [File is undefined] and user is Hal"  # FIXME
     assert_equal expected, result
+    $testme = false
   end
 
   def test_func_expansion
-    parse = FormatLine.new("myfunc() results in $$myfunc apparently.")
+    parse = LineParser.new("myfunc() results in $$myfunc apparently.")
     tokens = parse.tokenize
     expected_tokens = [[:str, "myfunc() results in "],
                        [:func, "myfunc"],
@@ -59,7 +73,7 @@ class TestingLivetext < MiniTest::Test
 #
 #  def test_func_SUFFIX
 #    str = "WHATEVER"
-#    parse = FormatLine.new(str)
+#    parse = LineParser.new(str)
 #    tokens_expected = [[], [], ...]
 #    tokens = parse.tokenize
 #    assert_equal tokens_expected, tokens
@@ -68,9 +82,9 @@ class TestingLivetext < MiniTest::Test
 #    assert_match regex_expected, result, "Found unexpected: #{result.inspect}"
 #  end
 
-  def xtest_func_2
+  def test_func_2
     str = "Today is $$date"
-    parse = FormatLine.new(str)
+    parse = LineParser.new(str)
     tokens_expected = [[:str, "Today is "], [:func, "date"]]
     tokens = parse.tokenize
     assert_equal tokens_expected, tokens, "Tokens were: #{tokens.inspect}"
@@ -79,9 +93,9 @@ class TestingLivetext < MiniTest::Test
     assert_match regex_expected, result, "Found unexpected: #{result.inspect}"
   end
 
-  def xtest_var_before_comma
+  def test_var_before_comma
     str = "User name is $User, and all is well"
-    parse = FormatLine.new(str)
+    parse = LineParser.new(str)
     tokens_expected = [[:str, "User name is "], [:var, "User"], [:str, ", and all is well"]]
     tokens = parse.tokenize
     assert_equal tokens_expected, tokens, "Tokens were: #{tokens.inspect}"
@@ -90,9 +104,9 @@ class TestingLivetext < MiniTest::Test
     assert_match regex_expected, result, "Found unexpected: #{result.inspect}"
   end
 
-  def xtest_var_at_EOS
+  def test_var_at_EOS
     str = "File name is $File"
-    parse = FormatLine.new(str)
+    parse = LineParser.new(str)
     tokens_expected = [[:str, "File name is "], [:var, "File"]]
     tokens = parse.tokenize
     assert_equal tokens_expected, tokens
@@ -101,9 +115,9 @@ class TestingLivetext < MiniTest::Test
     assert_equal string_expected, result, "Found unexpected: #{result.inspect}"
   end
 
-  def xtest_var_starts_string
+  def test_var_starts_string
     str = "$File is my file name"
-    parse = FormatLine.new(str)
+    parse = LineParser.new(str)
     tokens_expected = [[:var, "File"], [:str, " is my file name"]]
     tokens = parse.tokenize
     assert_equal tokens_expected, tokens
@@ -115,9 +129,9 @@ class TestingLivetext < MiniTest::Test
 # Next one is/will be a problem... 
 # I permit periods *inside* variable names
 
-  def xtest_var_before_period
+  def test_var_before_period
     str = "This is $File\\."      # FIXME escaped for now...
-    parse = FormatLine.new(str)
+    parse = LineParser.new(str)
     tokens_expected = [[:str, "This is "], [:var, "File"], [:str, "."]]
     tokens = parse.tokenize
     assert_equal tokens_expected, tokens
@@ -126,9 +140,9 @@ class TestingLivetext < MiniTest::Test
     assert_equal string_expected, result, "Found unexpected: #{result.inspect}"
   end
 
-  def xtest_func_needing_parameter_colon_eos  # colon, param, EOS
+  def test_func_needing_parameter_colon_eos  # colon, param, EOS
     str = "Square root of 225 is $$isqrt:225"
-    parse = FormatLine.new(str)
+    parse = LineParser.new(str)
     tokens_expected = [[:str, "Square root of 225 is "], [:func, "isqrt"], [:colon, "225"]]
     tokens = parse.tokenize
     assert_equal tokens_expected, tokens
@@ -137,9 +151,9 @@ class TestingLivetext < MiniTest::Test
     assert_equal string_expected, result, "Found unexpected: #{result.inspect}"
   end
 
-  def xtest_func_needing_parameter_colon  # colon, param, more chars
+  def test_func_needing_parameter_colon  # colon, param, more chars
     str = "Answer is $$isqrt:225 today"
-    parse = FormatLine.new(str)
+    parse = LineParser.new(str)
     tokens_expected = [[:str, "Answer is "], 
                        [:func, "isqrt"], 
                        [:colon, "225"], 
@@ -153,9 +167,9 @@ class TestingLivetext < MiniTest::Test
 
   # isqrt: Not real tests?? 
 
-  def xtest_isqrt_empty_colon_param
+  def test_isqrt_empty_colon_param
     str = "Calculate $$isqrt:"
-    parse = FormatLine.new(str)
+    parse = LineParser.new(str)
     tokens_expected = [[:str, "Calculate "], 
                        [:func, "isqrt"]  # , [:colon, ""]
                       ] 
@@ -168,9 +182,9 @@ class TestingLivetext < MiniTest::Test
     assert_equal string_expected, result, "Found unexpected: #{result.inspect}"
   end
 
-  def xtest_isqrt_empty_bracket_param
+  def test_isqrt_empty_bracket_param
     str = "Calculate $$isqrt[]"
-    parse = FormatLine.new(str)
+    parse = LineParser.new(str)
     tokens_expected = [[:str, "Calculate "], 
                        [:func, "isqrt"]  # , [:colon, ""]
                       ] 
@@ -183,9 +197,9 @@ class TestingLivetext < MiniTest::Test
     assert_equal string_expected, result, "Found unexpected: #{result.inspect}"
   end
 
-  def xtest_isqrt_malformed_number
+  def test_isqrt_malformed_number
     str = "Calculate $$isqrt[3a5]"
-    parse = FormatLine.new(str)
+    parse = LineParser.new(str)
     tokens_expected = [[:str, "Calculate "], 
                        [:func, "isqrt"],
                        [:brackets, "3a5"]
@@ -200,8 +214,8 @@ class TestingLivetext < MiniTest::Test
 
 # ...end of this group
 
-  def xtest_func_with_colon
-    parse = FormatLine.new("Calling $$myfunc:foo here.")
+  def test_func_with_colon
+    parse = LineParser.new("Calling $$myfunc:foo here.")
     tokens = parse.tokenize
     assert_equal tokens, [[:str, "Calling "],
                           [:func, "myfunc"],
@@ -213,8 +227,8 @@ class TestingLivetext < MiniTest::Test
     assert_equal expected, result
   end
 
-  def xtest_func_with_brackets
-    parse = FormatLine.new("Calling $$myfunc2[foo bar] here.")
+  def test_func_with_brackets
+    parse = LineParser.new("Calling $$myfunc2[foo bar] here.")
     tokens = parse.tokenize
     assert_kind_of Array, tokens
     assert_equal 4, tokens.size
@@ -228,7 +242,7 @@ class TestingLivetext < MiniTest::Test
     assert_equal expected, result
   end
 
-  def xtest_parse_formatting
+  def test_parse_formatting
     msg, src, exp = <<~STUFF.split("\n")
     Check simple formatting
     This is *bold and _italics ...
@@ -237,7 +251,7 @@ class TestingLivetext < MiniTest::Test
     invoke_test(msg, src, exp)
   end
 
-  def xtest_formatting_01   # Check output of $$date
+  def test_formatting_01   # Check output of $$date
     msg, src, exp = <<~STUFF.split("\n")
     Check output of $$date
     Today is $$date, I guess
@@ -246,7 +260,7 @@ class TestingLivetext < MiniTest::Test
     invoke_test(msg, src, exp)
   end
 
-  def xtest_formatting_02   # Check output of $$date
+  def test_formatting_02   # Check output of $$date
     msg, src, exp = <<~STUFF.split("\n")
     Check output of $$date
     Today is $$date, I guess
@@ -255,7 +269,7 @@ class TestingLivetext < MiniTest::Test
     invoke_test(msg, src, exp)
   end
 
-  def xtest_formatting_03   # Check output of $$date
+  def test_formatting_03   # Check output of $$date
     msg, src, exp = <<~STUFF.split("\n")
     Check output of $$date
     Today is $$date, I guess
@@ -264,7 +278,7 @@ class TestingLivetext < MiniTest::Test
     invoke_test(msg, src, exp)
   end
 
-  def xtest_formatting_04   # Check output of $$date
+  def test_formatting_04   # Check output of $$date
     msg, src, exp = <<~STUFF.split("\n")
     Check output of $$date
     Today is $$date, I guess
@@ -273,7 +287,7 @@ class TestingLivetext < MiniTest::Test
     invoke_test(msg, src, exp)
   end
 
-  def xtest_formatting_05   # Check output of $$date
+  def test_formatting_05   # Check output of $$date
     msg, src, exp = <<~STUFF.split("\n")
     Check output of $$date
     Today is $$date, I guess
@@ -282,7 +296,7 @@ class TestingLivetext < MiniTest::Test
     invoke_test(msg, src, exp)
   end
 
-  def xtest_formatting_06   # Check output of $$date
+  def test_formatting_06   # Check output of $$date
     msg, src, exp = <<~STUFF.split("\n")
     Check output of $$date
     Today is $$date, I guess
@@ -290,7 +304,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
     invoke_test(msg, src, exp)
 
-    actual = FormatLine.parse!(src)
+    actual = LineParser.parse!(src)
     if exp[0] == "/" 
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
@@ -299,7 +313,7 @@ class TestingLivetext < MiniTest::Test
     end
   end
 
-  def xtest_formatting_07   # Check output of $$date
+  def test_formatting_07   # Check output of $$date
     msg, src, exp = <<~STUFF.split("\n")
     Check output of $$date
     Today is $$date, I guess
@@ -307,7 +321,7 @@ class TestingLivetext < MiniTest::Test
     STUFF
     invoke_test(msg, src, exp)
 
-    actual = FormatLine.parse!(src)
+    actual = LineParser.parse!(src)
     if exp[0] == "/" 
       exp = Regexp.compile(exp[1..-2])   # skip slashes
       assert_match(exp, actual, msg)
@@ -316,7 +330,7 @@ class TestingLivetext < MiniTest::Test
     end
   end
 
-  def xtest_formatting_08   # Check output of $$date
+  def test_formatting_08   # Check output of $$date
     msg, src, exp = <<~STUFF.split("\n")
     Check output of $$date
     Today is $$date, I guess
@@ -325,7 +339,7 @@ class TestingLivetext < MiniTest::Test
     invoke_test(msg, src, exp)
   end
 
-  def xtest_formatting_09   # Check output of $$date
+  def test_formatting_09   # Check output of $$date
     msg, src, exp = <<~STUFF.split("\n")
     Check output of $$date
     Today is $$date, I guess
@@ -334,7 +348,7 @@ class TestingLivetext < MiniTest::Test
     invoke_test(msg, src, exp)
   end
 
-  def xtest_formatting_10   # Check output of $$date
+  def test_formatting_10   # Check output of $$date
     msg, src, exp = <<~STUFF.split("\n")
     Check output of $$date
     Today is $$date, I guess
@@ -343,7 +357,7 @@ class TestingLivetext < MiniTest::Test
     invoke_test(msg, src, exp)
   end
 
-  def xtest_formatting_11   # Check output of $$date
+  def test_formatting_11   # Check output of $$date
     msg, src, exp = <<~STUFF.split("\n")
     Check output of $$date
     Today is $$date, I guess
@@ -352,7 +366,7 @@ class TestingLivetext < MiniTest::Test
     invoke_test(msg, src, exp)
   end
 
-  def xtest_formatting_12   # Check output of $$date
+  def test_formatting_12   # Check output of $$date
     msg, src, exp = <<~STUFF.split("\n")
     Check output of $$date
     Today is $$date, I guess
@@ -361,7 +375,7 @@ class TestingLivetext < MiniTest::Test
     invoke_test(msg, src, exp)
   end
 
-  def xtest_formatting_13   # Check output of $$date
+  def test_formatting_13   # Check output of $$date
     msg, src, exp = <<~STUFF.split("\n")
     Check output of $$date
     Today is $$date, I guess
@@ -370,7 +384,7 @@ class TestingLivetext < MiniTest::Test
     invoke_test(msg, src, exp)
   end
 
-  def xtest_formatting_14   # Check output of $$date
+  def test_formatting_14   # Check output of $$date
     msg, src, exp = <<~STUFF.split("\n")
     Check output of $$date
     Today is $$date, I guess
@@ -379,7 +393,7 @@ class TestingLivetext < MiniTest::Test
     invoke_test(msg, src, exp)
   end
 
-  def xtest_formatting_15   # Check output of $$date
+  def test_formatting_15   # Check output of $$date
     msg, src, exp = <<~STUFF.split("\n")
     Check output of $$date
     Today is $$date, I guess
@@ -388,7 +402,7 @@ class TestingLivetext < MiniTest::Test
     invoke_test(msg, src, exp)
   end
 
-  def xtest_formatting_16   # Check output of $$date
+  def test_formatting_16   # Check output of $$date
     msg, src, exp = <<~STUFF.split("\n")
     Check output of $$date
     Today is $$date, I guess
@@ -397,7 +411,7 @@ class TestingLivetext < MiniTest::Test
     invoke_test(msg, src, exp)
   end
 
-  def xtest_formatting_17   # Check output of $$date
+  def test_formatting_17   # Check output of $$date
     msg, src, exp = <<~STUFF.split("\n")
     Check output of $$date
     Today is $$date, I guess
@@ -406,7 +420,7 @@ class TestingLivetext < MiniTest::Test
     invoke_test(msg, src, exp)
   end
 
-  def xtest_formatting_18   # Check output of $$date
+  def test_formatting_18   # Check output of $$date
     msg, src, exp = <<~STUFF.split("\n")
     Check output of $$date
     Today is $$date, I guess
@@ -415,7 +429,7 @@ class TestingLivetext < MiniTest::Test
     invoke_test(msg, src, exp)
   end
 
-  def xtest_formatting_19   # Check output of $$date
+  def test_formatting_19   # Check output of $$date
     msg, src, exp = <<~STUFF.split("\n")
     Check output of $$date
     Today is $$date, I guess
@@ -424,7 +438,18 @@ class TestingLivetext < MiniTest::Test
     invoke_test(msg, src, exp)
   end
 
-  def xtest_formatting_20   # Check output of $$date
+  def test_formatting_20   # Check output of $$date
+    $testme = true
+    msg, src, exp = <<~STUFF.split("\n")
+    Check output of $$date
+    Today is $$date, I guess
+    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
+    STUFF
+    invoke_test(msg, src, exp)
+    $testme = false
+  end
+
+  def test_formatting_21   # Check output of $$date
     msg, src, exp = <<~STUFF.split("\n")
     Check output of $$date
     Today is $$date, I guess
@@ -433,7 +458,7 @@ class TestingLivetext < MiniTest::Test
     invoke_test(msg, src, exp)
   end
 
-  def xtest_formatting_21   # Check output of $$date
+  def test_formatting_22   # Check output of $$date
     msg, src, exp = <<~STUFF.split("\n")
     Check output of $$date
     Today is $$date, I guess
@@ -442,7 +467,7 @@ class TestingLivetext < MiniTest::Test
     invoke_test(msg, src, exp)
   end
 
-  def xtest_formatting_22   # Check output of $$date
+  def test_formatting_23   # Check output of $$date
     msg, src, exp = <<~STUFF.split("\n")
     Check output of $$date
     Today is $$date, I guess
@@ -451,7 +476,7 @@ class TestingLivetext < MiniTest::Test
     invoke_test(msg, src, exp)
   end
 
-  def xtest_formatting_23   # Check output of $$date
+  def test_formatting_24   # Check output of $$date
     msg, src, exp = <<~STUFF.split("\n")
     Check output of $$date
     Today is $$date, I guess
@@ -460,7 +485,7 @@ class TestingLivetext < MiniTest::Test
     invoke_test(msg, src, exp)
   end
 
-  def xtest_formatting_24   # Check output of $$date
+  def test_formatting_25   # Check output of $$date
     msg, src, exp = <<~STUFF.split("\n")
     Check output of $$date
     Today is $$date, I guess
@@ -469,7 +494,7 @@ class TestingLivetext < MiniTest::Test
     invoke_test(msg, src, exp)
   end
 
-  def xtest_formatting_25   # Check output of $$date
+  def test_formatting_26   # Check output of $$date
     msg, src, exp = <<~STUFF.split("\n")
     Check output of $$date
     Today is $$date, I guess
@@ -478,7 +503,7 @@ class TestingLivetext < MiniTest::Test
     invoke_test(msg, src, exp)
   end
 
-  def xtest_formatting_26   # Check output of $$date
+  def test_formatting_27   # Check output of $$date
     msg, src, exp = <<~STUFF.split("\n")
     Check output of $$date
     Today is $$date, I guess
@@ -487,7 +512,7 @@ class TestingLivetext < MiniTest::Test
     invoke_test(msg, src, exp)
   end
 
-  def xtest_formatting_27   # Check output of $$date
+  def test_formatting_28   # Check output of $$date
     msg, src, exp = <<~STUFF.split("\n")
     Check output of $$date
     Today is $$date, I guess
@@ -496,7 +521,7 @@ class TestingLivetext < MiniTest::Test
     invoke_test(msg, src, exp)
   end
 
-  def xtest_formatting_28   # Check output of $$date
+  def test_formatting_29   # Check output of $$date
     msg, src, exp = <<~STUFF.split("\n")
     Check output of $$date
     Today is $$date, I guess
@@ -505,7 +530,7 @@ class TestingLivetext < MiniTest::Test
     invoke_test(msg, src, exp)
   end
 
-  def xtest_formatting_29   # Check output of $$date
+  def test_formatting_30   # Check output of $$date
     msg, src, exp = <<~STUFF.split("\n")
     Check output of $$date
     Today is $$date, I guess
@@ -514,7 +539,7 @@ class TestingLivetext < MiniTest::Test
     invoke_test(msg, src, exp)
   end
 
-  def xtest_formatting_30   # Check output of $$date
+  def test_formatting_31   # Check output of $$date
     msg, src, exp = <<~STUFF.split("\n")
     Check output of $$date
     Today is $$date, I guess
@@ -523,16 +548,7 @@ class TestingLivetext < MiniTest::Test
     invoke_test(msg, src, exp)
   end
 
-  def xtest_formatting_31   # Check output of $$date
-    msg, src, exp = <<~STUFF.split("\n")
-    Check output of $$date
-    Today is $$date, I guess
-    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
-    STUFF
-    invoke_test(msg, src, exp)
-  end
-
-  def xtest_formatting_32   # Check "real" dollar signs
+  def test_formatting_32   # Check "real" dollar signs
     msg, src, exp = <<~STUFF.split("\n")
       Check "real" dollar signs
       You paid $75 for that item.
@@ -541,7 +557,7 @@ class TestingLivetext < MiniTest::Test
     invoke_test(msg, src, exp)
   end
 
-  def xtest_formatting_33   # Check dollar-space
+  def test_formatting_33   # Check dollar-space
     msg, src, exp = <<~STUFF.split("\n")
       Check dollar-space
       He paid $ 76 for it...
@@ -551,28 +567,24 @@ class TestingLivetext < MiniTest::Test
   end
 
   def test_formatting_34   # Check escaped dollar signs
-    $testme = true
     msg, src, exp = <<~STUFF.split("\n")
       Check escaped dollar signs
-      I paid \\$78 for it, though.
-      I paid $78 for it, though.
+      Paid \\$78 yo
+      Paid $78 yo
     STUFF
     invoke_test(msg, src, exp)
-    $testme = false
   end
 
-  def xtest_formatting_35   # Check ignored function param (bug or feature?)
-    $testme = true
+  def test_formatting_35   # Check ignored function param (bug or feature?)
     msg, src, exp = <<~STUFF.split("\n")
       Check ignored function param (bug or feature?)
       Today is $$date:foobar, apparently.
       /Today is \\d\\d\\d\\d.\\d\\d.\\d\\d apparently./
     STUFF
     invoke_test(msg, src, exp)
-    $testme = false
   end
 
-  def xtest_formatting_36   # Check ignored function bracket param (bug or feature?)
+  def test_formatting_36   # Check ignored function bracket param (bug or feature?)
     msg, src, exp = <<~STUFF.split("\n")
       Check ignored function bracket param (bug or feature?)
       Today is $$date[a useless parameter], apparently.
@@ -620,7 +632,7 @@ end
         #{exp}
         STUFF
 
-        actual = FormatLine.parse!(src)
+        actual = LineParser.parse!(src)
         # FIXME could simplify assert logic?
         if exp[0] == "/" 
           exp = Regexp.compile(exp[1..-2])   # skip slashes

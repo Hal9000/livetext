@@ -9,6 +9,11 @@ class Livetext
   module ParsingConstants
   end
 
+  class LineParser < StringParser
+    module FunCall
+    end
+  end
+
   class FormatLine < StringParser
     module FunCall
     end

@@ -8,7 +8,7 @@ Testing STILL more functions here...
 Now... let's try passing a variable to a function. Will this work??
 <p>
 
-Variable $lpha is regal, which reversed is ahpla$
+Variable \regal is regal, which reversed is ahpla$
 <p>
 
 That's all.

@@ -55,8 +55,10 @@ module Livetext::Helpers
     base  = "#{name}#{ext}"
     paths.each do |path|
       file = path + base
+::Livetext::TTY.puts  "   Checking: #{file}"
       return file if File.exist?(file)
     end
+::Livetext::TTY.puts  "   ...oops"
     return nil
   end
 
@@ -92,12 +94,12 @@ module Livetext::Helpers
   def process_line(line)
     success = true
     case line  # must apply these in order
-      when Comment
-        success = handle_scomment(line)
-      when DotCmd
-        success = handle_dotcmd(line)
-      when DollarDot
-        success = handle_dollar_dot
+    when Comment
+      success = handle_scomment(line)
+    when DotCmd
+      success = handle_dotcmd(line)
+    when DollarDot
+      success = handle_dollar_dot
     else
       api.passthru(line)  # must succeed?
     end

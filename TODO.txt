@@ -3,6 +3,7 @@
    Bugs, failing tests, weirdness
      - 4 tests failing, all related to formatline.rb?
      - Bug: \$alpha prints as $lpha
+     - Bug: Can't pass a variable into a function (snapshots/var_into_func)
      - Bug: Comma after function with param (see test_formatting_35)
      - Many identical duplicated tests in test/unit/formatline - see test_formatting_NN
      - Somehow have "def setvar" in two places.
@@ -10,12 +11,13 @@
      - test suite for each import?
      - more "here-doc" style snapshot tests?
    Fix/improve overall structure 
+     - Break up FormatLine into pieces: parse_formatting, etc.
+     - Hide FormatLine better inside Livetext
 x    - Clean up livetext.rb (like rubocop)
 x    - Annoying require_relative paths:  ../../.. blah blah
      - Livetext::Parse:: namespace??
      - Miscellaneous "extraneous" requires? (but it breaks without them)
      - Address duplication in code
-     - Hide FormatLine better inside Livetext
    ? Get code coverage working with rubycritic
    Reify args/data passing?
      - Better parameter handling for custom dot commands (see: reify args/data)
