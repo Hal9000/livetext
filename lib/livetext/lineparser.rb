@@ -3,7 +3,7 @@ require_relative 'parsing'
 require_relative 'funcall'
 
 # Class LineParser handles the parsing of comments, dot commands, and 
-# simple formatting characters, as well as variables and functions.
+  # simple formatting characters, as well as variables and functions.
 
 class Livetext::LineParser < StringParser
   include Livetext::ParsingConstants
@@ -145,6 +145,12 @@ api.tty "-- result: #{result.inspect}" if $testme
 # api.tty "tokenize:  i = #{self.i}" 
 # api.tty "tokenize:  token = #{@token.inspect}  tokenlist = #{@tokenlist.inspect}"
    @tokenlist
+ end
+
+ def expand_variables(str)
+   var    = "\\$"
+   dotted = "#{ident}(\\.#{ident})*"
+   rx = Regexp.compile("^" + var + dotted)
  end
 
 #  def self.get_vars

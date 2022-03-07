@@ -41,7 +41,6 @@ colon  = ":"
             "$foo..bar"      => [:var, "partial"]
            }
 
-
 def classify(str)
   @rx.each_pair do |kind, rx|
     match = rx.match(str)
@@ -51,6 +50,42 @@ def classify(str)
   end
   return [:junk, "", ""]  # "What are birds? We just don't know."
 end
+
+######
+
+ def expand_variables(str)
+   var    = "\\$"
+   ident  = "[[:alpha:]]([[:alnum:]]|_)*"
+   dotted = "#{ident}(\\.#{ident})*"
+   rx = Regexp.compile("(?<result>" + var + dotted + ")")
+
+   enum = str.each_char
+   buffer = ""
+   loop do |i|
+     case             # var or func or false alarm
+     when str.empty?  # end of string
+       break
+     when str.slice(0..1) == "$$"   # func?
+       buffer << str.slice!(0..1)    
+       puts "1 buffer = #{buffer.inspect}"
+     when str.slice(0) == "$"       # var?
+       vname = rx.match(str)
+       str.sub!(vname["result"], "")
+       buffer << "[#{vname.to_s} is not defined]"
+       puts "2 buffer = #{buffer.inspect}"
+     else             # other
+       print "3 str = "; p str
+       buffer << str.slice!(0)
+       puts "3 buffer = #{buffer.inspect}"
+     end
+   end
+   p buffer
+ end
+
+expand_variables("This is $File and $Dir apparently") 
+
+
+exit
 
 maxlen = @strings.keys.inject(0) {|acc, x| acc = [acc, x.length].max }
 maxlen += 2
