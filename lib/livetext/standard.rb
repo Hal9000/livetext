@@ -207,7 +207,6 @@ module Livetext::Standard
     indent = @parent.indentation.last
     indented = " " * indent
     api.setvar(var, rhs.chomp)
-#   @parent.setvar(var, rhs.chomp)
     api.optional_blank_line
   end
 

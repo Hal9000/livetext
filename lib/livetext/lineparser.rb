@@ -105,15 +105,6 @@ api.tty "-- result: #{result.inspect}" if $testme
 
 #########
 
- def handle_simple_formatting(ch)
- # api.tty "ch = #{ch.inspect}"
-   marker ch
-   add ch
- # api.tty "token = #{@token.inspect}  #{@tokenlist.inspect}"
-   c2 = grab
- # api.tty "c2 = #{c2.inspect}"
- end
-
  def grab_string
    weird = ["$", nil]  # [Escape, "$", nil]
    ch = grab
@@ -136,7 +127,7 @@ api.tty "-- result: #{result.inspect}" if $testme
      when LF;     finish = true # do nothing  - break if eos?
      when Escape; ch = self.escaped; add ch
      when "$";    dollar
-     when *FMTS;  handle_simple_formatting(ch)
+     when *FMTS;  marker(ch)
      else         grab_string
    end
 # api.tty "#{__method__}: AFTER CASE:  api.data = #{api.data.inspect}"
