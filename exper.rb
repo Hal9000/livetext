@@ -82,7 +82,7 @@ end
    p buffer
  end
 
-expand_variables("This is $File and $Dir apparently") 
+expand_variables("This is $whatever") 
 
 
 exit

@@ -25,7 +25,12 @@ class StringParser
   end
 
   def lookahead
+    # Get rid of this?
     @line[@i + 1]
+  end
+
+  def remainder
+    @line[@i..-1]
   end
 
   def prev

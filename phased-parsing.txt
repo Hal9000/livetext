@@ -1,0 +1,35 @@
+Here's the deal...
+
+A typical input line may require three general kinds of processing:
+  - formatting such as boldface, italics, etc.
+  - variable expansion
+  - function call expansion
+
+In the past, these have all been handled "simultaneously" in a 
+single method. This has made the code complex and fragile.
+
+I had the idea of handling these in sequence instead of all at once.
+Additionally, there "could" be times I only want to do one or two
+of these operations.
+
+In addition, the current code doesn't work for the case where a
+variable is passed to a function. While I don't intend to write a
+full "language" as such, this use case seems reasonable to me.
+
+I'm thinking through this, so I'll make up an example.
+
+  .set num1=5, num2=10
+  *[Hi, there!] I am $User, and my _totally random number is $$rand[$num1,$num2].
+
+First pass:
+
+  <b>Hi, there!</b> I am $User, and my <i>totally</i> random number is $$rand[$num1,$num2].
+
+Second pass: 
+
+  <b>Hi, there!</b> I am Hal, and my <i>totally</i> random number is $$rand[5,10].
+ 
+Third pass: 
+
+  <b>Hi, there!</b> I am Hal, and my <i>totally</i> random number is 7.
+ 
