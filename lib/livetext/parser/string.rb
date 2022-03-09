@@ -11,10 +11,12 @@ class StringParser
     @i = 0
   end
 
-  def grab
+  def grab(n = 1)
+    raise "n <= 0 for #grab" if n <= 0
     return nil if @eos
-    char = @line[@i]
-    @i += 1
+    i2 = @i + n - 1
+    char = @line[@i..i2]
+    @i += n
     check_eos
     char
   end
@@ -42,9 +44,11 @@ class StringParser
     @eos
   end
 
-  def peek
+  def peek(n = 1)
+    raise "n <= 0 for #grab" if n <= 0
     return nil if @eos
-    @line[@i]
+    i2 = @i + n - 1
+    @line[@i..i2]
   end
 
   def skip_spaces
