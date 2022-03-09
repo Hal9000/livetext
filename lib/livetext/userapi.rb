@@ -1,5 +1,4 @@
 
-# require_relative 'formatline'   # FIXME  meh, because of #format
 require_relative 'lineparser'     # FIXME  meh, because of #format
 
 # Encapsulate the UserAPI as a class

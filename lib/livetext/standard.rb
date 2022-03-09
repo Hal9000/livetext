@@ -63,7 +63,8 @@ module Livetext::Standard
 
   def func(args = nil, body = nil)
     funcname = api.args[0]
-    check_disallowed(funcname)
+    # check_disallowed(funcname)  # should any be invalid?
+    funcname = funcname.gsub(/\./, "__")
     func_def = <<~EOS
       def #{funcname}(param)
         #{api.body.to_a.join("\n")}

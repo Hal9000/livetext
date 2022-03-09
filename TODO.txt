@@ -1,7 +1,7 @@
    SOONISH?
    --------
    Vars/functions via regex (integrate into existing code)
-   Change .func to permit dotted function names
+x  Change .func to permit dotted function names
    Bugs, failing tests, weirdness
      - 4 tests failing, all related to formatline.rb?
      - Bug: \$alpha prints as $lpha

@@ -14,9 +14,5 @@ class Livetext
     end
   end
 
-  class FormatLine < StringParser
-    module FunCall
-    end
-  end
 end
 
