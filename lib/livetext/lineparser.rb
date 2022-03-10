@@ -469,7 +469,7 @@ api.tty "-- result: #{result.inspect}" if $testme
 
   def expand_function_calls
     # Assume variables already resolved?
-    rx = Regexp.compile("(?<result>" + Var + Dotted + ")")
+    rx = Regexp.compile("(?<result>" + Func + Dotted + ")")
     buffer = ""
     loop do |i|
       case             # Var or Func or false alarm
