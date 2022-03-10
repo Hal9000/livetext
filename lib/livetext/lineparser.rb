@@ -11,6 +11,23 @@ class Livetext::LineParser < StringParser
 
   FMTS = %w[* _ ~ `]
 
+  Ident  = "[[:alpha:]]([[:alnum:]]|_)*"
+  Dotted = "#{Ident}(\\.#{Ident})*"
+  Func   = "\\$\\$"
+  Var    = "\\$"
+  Lbrack = "\\["
+  Colon  = ":"
+
+  rx_func_brack = Regexp.compile("^" + Func + Dotted + Lbrack)
+  rx_func_colon = Regexp.compile("^" + Func + Dotted + Colon)
+  rx_func_bare  = Regexp.compile("^" + Func + Dotted)
+  rx_var        = Regexp.compile("^" + Var + Dotted)
+
+  RX = {Func_brack: rx_func_brack,  # This hash is
+        Func_colon: rx_func_colon,  #   order-dependent! 
+        Func_bare:  rx_func_bare,
+        Var:        rx_var}
+
   attr_reader :out
   attr_reader :tokenlist
 
@@ -145,12 +162,6 @@ api.tty "-- result: #{result.inspect}" if $testme
 # api.tty "tokenize:  i = #{self.i}" 
 # api.tty "tokenize:  token = #{@token.inspect}  tokenlist = #{@tokenlist.inspect}"
    @tokenlist
- end
-
- def expand_variables(str)
-   var    = "\\$"
-   dotted = "#{ident}(\\.#{ident})*"
-   rx = Regexp.compile("^" + var + dotted)
  end
 
 #  def self.get_vars
@@ -435,4 +446,41 @@ api.tty "-- result: #{result.inspect}" if $testme
    @out << val unless val == "\n"   # BUG
  end
 
+  def expand_variables
+    rx = Regexp.compile("(?<result>" + Var + Dotted + ")")
+ 
+    buffer = ""
+    loop do |i|
+      case             # Var or Func or false alarm
+      when str.empty?  # end of string
+        break
+      when self.peek(2) == "$$"   # Func?
+        buffer << self.grab(2)
+      when self.peek == "$"       # Var?
+        vname = rx.match(str)
+        value = @live.vars[vname[1..-1]]
+        str.sub!(vname["result"], value)
+      else                           # other
+        buffer << self.grab
+      end
+    end
+    buffer
+  end
+
+  def expand_function_calls
+    # Assume variables already resolved?
+    rx = Regexp.compile("(?<result>" + Var + Dotted + ")")
+    buffer = ""
+    loop do |i|
+      case             # Var or Func or false alarm
+      when eos?        # end of string
+        break
+      when self.peek(2) == "$$"   # Func?
+        buffer << self.grab(2)
+      else                           # other
+        buffer << self.grab(1)
+      end
+    end
+    buffer
+  end
 end
