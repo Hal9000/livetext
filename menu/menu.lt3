@@ -1,0 +1,31 @@
+.nopara
+
+.mixin html_menu
+
+.copy front.css
+
+.comment
+In the block below, the first character is a "hint."
+
+  "-"  Item with no children
+  "="  Item with children
+  " "  A child menu item
+
+The last non-blank token on each line is the URL
+
+The "arg*" arguments are for illustration only.
+.end
+
+.menu arg1 arg2 arg3
+-Home           http://fake.com/home
+=Blog           http://fake.com/blog
+  Design        http://fake.com/design
+  HTML          http://fake.com/html
+  CSS           http://fake.com/css
+  Javascript    http://fake.com/jscript
+=Work           http://fake.com/work
+  Web Design    http://fake.com/webdes
+  Typography    http://fake.com/typog
+  Front-end     http://fake.com/frontend
+-About          http://about
+.end

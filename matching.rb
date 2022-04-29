@@ -59,6 +59,9 @@ class Livetext::Matching
         break
       when str.slice(0..1) == "$$"   # Func?
         buffer << str.slice!(0..1)    
+        fname = rx.match(str)
+        str.sub!(vname["result"], "")
+        buffer << "[#{vname.to_s} is not defined]"
       else                           # other
         buffer << str.slice!(0)
       end

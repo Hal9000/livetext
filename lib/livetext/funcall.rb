@@ -52,7 +52,7 @@ module Livetext::LineParser::FunCall
     add_token(:str, @token)
     func = grab_alpha
     add_token(:func, func)
-    param = grab_func_param    # may be null/missing
+    param = grab_func_param(grab)    # may be null/missing
     param
   end
 
@@ -65,17 +65,17 @@ module Livetext::LineParser::FunCall
     end
   end
 
-  def grab_func_param
-    case peek
-      when "["
-        param = grab_bracket_param
-        add_token(:brackets, param)
-      when ":"
-        param = grab_colon_param
-        add_token(:colon, param)
-    else  # do nothing
-    end
-  end
+#   def grab_func_param
+#     case peek
+#       when "["
+#         param = grab_bracket_param
+#         add_token(:brackets, param)
+#       when ":"
+#         param = grab_colon_param
+#         add_token(:colon, param)
+#     else  # do nothing
+#     end
+#   end
 
   def escaped
     grab        # Eat the backslash

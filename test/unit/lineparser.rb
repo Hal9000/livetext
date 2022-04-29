@@ -35,43 +35,50 @@ class TestingLivetext < MiniTest::Test
 
   def test_simple_string
     parse = LineParser.new("only testing")
-    tokens = parse.tokenize
+    tokens = parse.parse_variables  # .tokenize
     assert_equal tokens, [[:str, "only testing"]], "Tokens were: #{tokens.inspect}"
-    expected = "only testing"
-    result = parse.evaluate
-    assert_equal expected, result
+#   expected = "only testing"
+#   result = parse.evaluate
+#   assert_equal expected, result
   end
 
   def test_variable_interpolation
     $testme = true
     parse = LineParser.new("File is $File and user is $User")
-    tokens = parse.tokenize
+    tokens = parse.parse_variables   # tokenize
     expected_tokens = [[:str, "File is "],
                        [:var, "File"],
                        [:str, " and user is "],
                        [:var, "User"]]
     assert_equal expected_tokens, tokens
-    result = parse.evaluate
-    expected = "File is [File is undefined] and user is Hal"  # FIXME
-    assert_equal expected, result
+#   result = parse.evaluate
+#   expected = "File is [File is undefined] and user is Hal"  # FIXME
+#   assert_equal expected, result
     $testme = false
+  end
+
+  def test_NEW_var_expansion
+    parse = LineParser.new("File is $File and user is $User")
+    expected = "File is [File is undefined] and user is Hal"  # FIXME
+    str = parse.parse_variables
+    assert_equal expected, str
   end
 
   def test_func_expansion
     parse = LineParser.new("myfunc() results in $$myfunc apparently.")
-    tokens = parse.tokenize
+    tokens = parse.parse_functions  # .tokenize
     expected_tokens = [[:str, "myfunc() results in "],
-                       [:func, "myfunc"],
+                       [:func, "myfunc", nil, nil],
                        [:str, " apparently."]]
     assert_equal expected_tokens, tokens
-    result = parse.evaluate
-    expected = "myfunc() results in [Error evaluating $$myfunc()] apparently."
-    assert_equal expected, result
+#   result = parse.evaluate
+#   expected = "myfunc() results in [Error evaluating $$myfunc()] apparently."
+#   assert_equal expected, result
   end
 
 # These tests follow this form:
 #
-#  def test_func_SUFFIX
+#  def xtest_func_SUFFIX
 #    str = "WHATEVER"
 #    parse = LineParser.new(str)
 #    tokens_expected = [[], [], ...]
@@ -85,8 +92,8 @@ class TestingLivetext < MiniTest::Test
   def test_func_2
     str = "Today is $$date"
     parse = LineParser.new(str)
-    tokens_expected = [[:str, "Today is "], [:func, "date"]]
-    tokens = parse.tokenize
+    tokens_expected = [[:str, "Today is "], [:func, "date", nil, nil]]
+    tokens = parse.parse_functions  # tokenize
     assert_equal tokens_expected, tokens, "Tokens were: #{tokens.inspect}"
     result = parse.evaluate
     regex_expected = /Today is ....-..-../
@@ -97,7 +104,7 @@ class TestingLivetext < MiniTest::Test
     str = "User name is $User, and all is well"
     parse = LineParser.new(str)
     tokens_expected = [[:str, "User name is "], [:var, "User"], [:str, ", and all is well"]]
-    tokens = parse.tokenize
+    tokens = parse.parse_variables # tokenize
     assert_equal tokens_expected, tokens, "Tokens were: #{tokens.inspect}"
     result = parse.evaluate
     regex_expected = /User name is .*, /
@@ -108,7 +115,7 @@ class TestingLivetext < MiniTest::Test
     str = "File name is $File"
     parse = LineParser.new(str)
     tokens_expected = [[:str, "File name is "], [:var, "File"]]
-    tokens = parse.tokenize
+    tokens = parse.parse_variables # tokenize
     assert_equal tokens_expected, tokens
     result = parse.evaluate
     string_expected = "File name is [File is undefined]"
@@ -119,7 +126,7 @@ class TestingLivetext < MiniTest::Test
     str = "$File is my file name"
     parse = LineParser.new(str)
     tokens_expected = [[:var, "File"], [:str, " is my file name"]]
-    tokens = parse.tokenize
+    tokens = parse.parse_variables # tokenize
     assert_equal tokens_expected, tokens
     result = parse.evaluate
     string_expected = "[File is undefined] is my file name"
@@ -143,26 +150,25 @@ class TestingLivetext < MiniTest::Test
   def test_func_needing_parameter_colon_eos  # colon, param, EOS
     str = "Square root of 225 is $$isqrt:225"
     parse = LineParser.new(str)
-    tokens_expected = [[:str, "Square root of 225 is "], [:func, "isqrt"], [:colon, "225"]]
-    tokens = parse.tokenize
+    tokens_expected = [[:str, "Square root of 225 is "], [:func, "isqrt", :colon, "225"]]
+    tokens = parse.parse_functions  # tokenize
     assert_equal tokens_expected, tokens
-    result = parse.evaluate
-    string_expected = "Square root of 225 is 15"
-    assert_equal string_expected, result, "Found unexpected: #{result.inspect}"
+#   result = parse.evaluate
+#   string_expected = "Square root of 225 is 15"
+#   assert_equal string_expected, result, "Found unexpected: #{result.inspect}"
   end
 
   def test_func_needing_parameter_colon  # colon, param, more chars
     str = "Answer is $$isqrt:225 today"
     parse = LineParser.new(str)
     tokens_expected = [[:str, "Answer is "], 
-                       [:func, "isqrt"], 
-                       [:colon, "225"], 
+                       [:func, "isqrt", :colon, "225"], 
                        [:str, " today"]]
-    tokens = parse.tokenize
+    tokens = parse.parse_functions  # tokenize
     assert_equal tokens_expected, tokens
-    result = parse.evaluate
-    string_expected = "Answer is 15 today"
-    assert_equal string_expected, result, "Found unexpected: #{result.inspect}"
+#   result = parse.evaluate
+#   string_expected = "Answer is 15 today"
+#   assert_equal string_expected, result, "Found unexpected: #{result.inspect}"
   end
 
   # isqrt: Not real tests?? 
@@ -171,75 +177,66 @@ class TestingLivetext < MiniTest::Test
     str = "Calculate $$isqrt:"
     parse = LineParser.new(str)
     tokens_expected = [[:str, "Calculate "], 
-                       [:func, "isqrt"]  # , [:colon, ""]
-                      ] 
-    # If param is null, we don't get [:colon, value]!
-    # ^ FIXME function should be more like:  [:func, name, param]
-    tokens = parse.tokenize
+                       [:func, "isqrt", :colon, ""]] 
+    tokens = parse.parse_functions  # tokenize
     assert_equal tokens_expected, tokens
-    result = parse.evaluate
-    string_expected = "Calculate [Error evaluating $$isqrt(NO PARAM)]"
-    assert_equal string_expected, result, "Found unexpected: #{result.inspect}"
+#   result = parse.evaluate
+#   string_expected = "Calculate [Error evaluating $$isqrt(NO PARAM)]"
+#   assert_equal string_expected, result, "Found unexpected: #{result.inspect}"
   end
 
   def test_isqrt_empty_bracket_param
     str = "Calculate $$isqrt[]"
     parse = LineParser.new(str)
     tokens_expected = [[:str, "Calculate "], 
-                       [:func, "isqrt"]  # , [:colon, ""]
+                       [:func, "isqrt", :brackets, ""]  # , [:colon, ""]
                       ] 
     # If param is null, we don't get [:colon, value]!
     # ^ FIXME function should be more like:  [:func, name, param]
-    tokens = parse.tokenize
+    tokens = parse.parse_functions  # tokenize
     assert_equal tokens_expected, tokens
-    result = parse.evaluate
-    string_expected = "Calculate [Error evaluating $$isqrt(NO PARAM)]"
-    assert_equal string_expected, result, "Found unexpected: #{result.inspect}"
+#   result = parse.evaluate
+#   string_expected = "Calculate [Error evaluating $$isqrt(NO PARAM)]"
+#   assert_equal string_expected, result, "Found unexpected: #{result.inspect}"
   end
 
   def test_isqrt_malformed_number
     str = "Calculate $$isqrt[3a5]"
     parse = LineParser.new(str)
     tokens_expected = [[:str, "Calculate "], 
-                       [:func, "isqrt"],
-                       [:brackets, "3a5"]
+                       [:func, "isqrt", :brackets, "3a5"]
                       ] 
     # ^ FIXME function should be more like:  [:func, name, param]
-    tokens = parse.tokenize
+    tokens = parse.parse_functions  # tokenize
     assert_equal tokens_expected, tokens
-    result = parse.evaluate
-    string_expected = "Calculate [Error evaluating $$isqrt(3a5)]"
-    assert_equal string_expected, result, "Found unexpected: #{result.inspect}"
+#   result = parse.evaluate
+#   string_expected = "Calculate [Error evaluating $$isqrt(3a5)]"
+#   assert_equal string_expected, result, "Found unexpected: #{result.inspect}"
   end
 
 # ...end of this group
 
   def test_func_with_colon
     parse = LineParser.new("Calling $$myfunc:foo here.")
-    tokens = parse.tokenize
+    tokens = parse.parse_functions  # tokenize
     assert_equal tokens, [[:str, "Calling "],
-                          [:func, "myfunc"],
-                          [:colon, "foo"],
-                          [:str, " here."]
-                        ]
-    result = parse.evaluate
-    expected = "Calling [Error evaluating $$myfunc(foo)] here."
-    assert_equal expected, result
+                          [:func, "myfunc", :colon, "foo"],
+                          [:str, " here."]]
+#   result = parse.evaluate
+#   expected = "Calling [Error evaluating $$myfunc(foo)] here."
+#   assert_equal expected, result
   end
 
   def test_func_with_brackets
     parse = LineParser.new("Calling $$myfunc2[foo bar] here.")
-    tokens = parse.tokenize
-    assert_kind_of Array, tokens
-    assert_equal 4, tokens.size
+    tokens = parse.parse_functions  # .tokenize
     expected_tokens = [[:str, "Calling "],
-                       [:func, "myfunc2"],
-                       [:brackets, "foo bar"],
+                       [:func, "myfunc2", :brackets, "foo bar"],
                        [:str, " here."]]
     assert_equal expected_tokens, tokens
-    result = parse.evaluate
-    expected = "Calling [Error evaluating $$myfunc2(foo bar)] here."
-    assert_equal expected, result
+#   result = parse.evaluate
+#   expected = "Calling [Error evaluating $$myfunc2(foo bar)] here."
+#   assert_equal expected, result
   end
 
   def test_parse_formatting
@@ -252,294 +249,6 @@ class TestingLivetext < MiniTest::Test
   end
 
   def test_formatting_01   # Check output of $$date
-    msg, src, exp = <<~STUFF.split("\n")
-    Check output of $$date
-    Today is $$date, I guess
-    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
-    STUFF
-    invoke_test(msg, src, exp)
-  end
-
-  def test_formatting_02   # Check output of $$date
-    msg, src, exp = <<~STUFF.split("\n")
-    Check output of $$date
-    Today is $$date, I guess
-    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
-    STUFF
-    invoke_test(msg, src, exp)
-  end
-
-  def test_formatting_03   # Check output of $$date
-    msg, src, exp = <<~STUFF.split("\n")
-    Check output of $$date
-    Today is $$date, I guess
-    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
-    STUFF
-    invoke_test(msg, src, exp)
-  end
-
-  def test_formatting_04   # Check output of $$date
-    msg, src, exp = <<~STUFF.split("\n")
-    Check output of $$date
-    Today is $$date, I guess
-    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
-    STUFF
-    invoke_test(msg, src, exp)
-  end
-
-  def test_formatting_05   # Check output of $$date
-    msg, src, exp = <<~STUFF.split("\n")
-    Check output of $$date
-    Today is $$date, I guess
-    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
-    STUFF
-    invoke_test(msg, src, exp)
-  end
-
-  def test_formatting_06   # Check output of $$date
-    msg, src, exp = <<~STUFF.split("\n")
-    Check output of $$date
-    Today is $$date, I guess
-    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
-    STUFF
-    invoke_test(msg, src, exp)
-
-    actual = LineParser.parse!(src)
-    if exp[0] == "/" 
-      exp = Regexp.compile(exp[1..-2])   # skip slashes
-      assert_match(exp, actual, msg)
-    else
-      assert_equal(exp, actual, msg)
-    end
-  end
-
-  def test_formatting_07   # Check output of $$date
-    msg, src, exp = <<~STUFF.split("\n")
-    Check output of $$date
-    Today is $$date, I guess
-    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
-    STUFF
-    invoke_test(msg, src, exp)
-
-    actual = LineParser.parse!(src)
-    if exp[0] == "/" 
-      exp = Regexp.compile(exp[1..-2])   # skip slashes
-      assert_match(exp, actual, msg)
-    else
-      assert_equal(exp, actual, msg)
-    end
-  end
-
-  def test_formatting_08   # Check output of $$date
-    msg, src, exp = <<~STUFF.split("\n")
-    Check output of $$date
-    Today is $$date, I guess
-    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
-    STUFF
-    invoke_test(msg, src, exp)
-  end
-
-  def test_formatting_09   # Check output of $$date
-    msg, src, exp = <<~STUFF.split("\n")
-    Check output of $$date
-    Today is $$date, I guess
-    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
-    STUFF
-    invoke_test(msg, src, exp)
-  end
-
-  def test_formatting_10   # Check output of $$date
-    msg, src, exp = <<~STUFF.split("\n")
-    Check output of $$date
-    Today is $$date, I guess
-    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
-    STUFF
-    invoke_test(msg, src, exp)
-  end
-
-  def test_formatting_11   # Check output of $$date
-    msg, src, exp = <<~STUFF.split("\n")
-    Check output of $$date
-    Today is $$date, I guess
-    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
-    STUFF
-    invoke_test(msg, src, exp)
-  end
-
-  def test_formatting_12   # Check output of $$date
-    msg, src, exp = <<~STUFF.split("\n")
-    Check output of $$date
-    Today is $$date, I guess
-    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
-    STUFF
-    invoke_test(msg, src, exp)
-  end
-
-  def test_formatting_13   # Check output of $$date
-    msg, src, exp = <<~STUFF.split("\n")
-    Check output of $$date
-    Today is $$date, I guess
-    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
-    STUFF
-    invoke_test(msg, src, exp)
-  end
-
-  def test_formatting_14   # Check output of $$date
-    msg, src, exp = <<~STUFF.split("\n")
-    Check output of $$date
-    Today is $$date, I guess
-    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
-    STUFF
-    invoke_test(msg, src, exp)
-  end
-
-  def test_formatting_15   # Check output of $$date
-    msg, src, exp = <<~STUFF.split("\n")
-    Check output of $$date
-    Today is $$date, I guess
-    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
-    STUFF
-    invoke_test(msg, src, exp)
-  end
-
-  def test_formatting_16   # Check output of $$date
-    msg, src, exp = <<~STUFF.split("\n")
-    Check output of $$date
-    Today is $$date, I guess
-    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
-    STUFF
-    invoke_test(msg, src, exp)
-  end
-
-  def test_formatting_17   # Check output of $$date
-    msg, src, exp = <<~STUFF.split("\n")
-    Check output of $$date
-    Today is $$date, I guess
-    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
-    STUFF
-    invoke_test(msg, src, exp)
-  end
-
-  def test_formatting_18   # Check output of $$date
-    msg, src, exp = <<~STUFF.split("\n")
-    Check output of $$date
-    Today is $$date, I guess
-    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
-    STUFF
-    invoke_test(msg, src, exp)
-  end
-
-  def test_formatting_19   # Check output of $$date
-    msg, src, exp = <<~STUFF.split("\n")
-    Check output of $$date
-    Today is $$date, I guess
-    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
-    STUFF
-    invoke_test(msg, src, exp)
-  end
-
-  def test_formatting_20   # Check output of $$date
-    $testme = true
-    msg, src, exp = <<~STUFF.split("\n")
-    Check output of $$date
-    Today is $$date, I guess
-    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
-    STUFF
-    invoke_test(msg, src, exp)
-    $testme = false
-  end
-
-  def test_formatting_21   # Check output of $$date
-    msg, src, exp = <<~STUFF.split("\n")
-    Check output of $$date
-    Today is $$date, I guess
-    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
-    STUFF
-    invoke_test(msg, src, exp)
-  end
-
-  def test_formatting_22   # Check output of $$date
-    msg, src, exp = <<~STUFF.split("\n")
-    Check output of $$date
-    Today is $$date, I guess
-    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
-    STUFF
-    invoke_test(msg, src, exp)
-  end
-
-  def test_formatting_23   # Check output of $$date
-    msg, src, exp = <<~STUFF.split("\n")
-    Check output of $$date
-    Today is $$date, I guess
-    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
-    STUFF
-    invoke_test(msg, src, exp)
-  end
-
-  def test_formatting_24   # Check output of $$date
-    msg, src, exp = <<~STUFF.split("\n")
-    Check output of $$date
-    Today is $$date, I guess
-    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
-    STUFF
-    invoke_test(msg, src, exp)
-  end
-
-  def test_formatting_25   # Check output of $$date
-    msg, src, exp = <<~STUFF.split("\n")
-    Check output of $$date
-    Today is $$date, I guess
-    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
-    STUFF
-    invoke_test(msg, src, exp)
-  end
-
-  def test_formatting_26   # Check output of $$date
-    msg, src, exp = <<~STUFF.split("\n")
-    Check output of $$date
-    Today is $$date, I guess
-    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
-    STUFF
-    invoke_test(msg, src, exp)
-  end
-
-  def test_formatting_27   # Check output of $$date
-    msg, src, exp = <<~STUFF.split("\n")
-    Check output of $$date
-    Today is $$date, I guess
-    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
-    STUFF
-    invoke_test(msg, src, exp)
-  end
-
-  def test_formatting_28   # Check output of $$date
-    msg, src, exp = <<~STUFF.split("\n")
-    Check output of $$date
-    Today is $$date, I guess
-    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
-    STUFF
-    invoke_test(msg, src, exp)
-  end
-
-  def test_formatting_29   # Check output of $$date
-    msg, src, exp = <<~STUFF.split("\n")
-    Check output of $$date
-    Today is $$date, I guess
-    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
-    STUFF
-    invoke_test(msg, src, exp)
-  end
-
-  def test_formatting_30   # Check output of $$date
-    msg, src, exp = <<~STUFF.split("\n")
-    Check output of $$date
-    Today is $$date, I guess
-    /Today is \\d\\d\\d\\d-\\d\\d-\\d\\d, I guess/
-    STUFF
-    invoke_test(msg, src, exp)
-  end
-
-  def test_formatting_31   # Check output of $$date
     msg, src, exp = <<~STUFF.split("\n")
     Check output of $$date
     Today is $$date, I guess

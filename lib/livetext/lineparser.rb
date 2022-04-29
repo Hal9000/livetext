@@ -3,7 +3,7 @@ require_relative 'parsing'
 require_relative 'funcall'
 
 # Class LineParser handles the parsing of comments, dot commands, and 
-  # simple formatting characters, as well as variables and functions.
+# simple formatting characters, as well as variables and functions.
 
 class Livetext::LineParser < StringParser
   include Livetext::ParsingConstants
@@ -18,21 +18,12 @@ class Livetext::LineParser < StringParser
   Lbrack = "\\["
   Colon  = ":"
 
-  rx_func_brack = Regexp.compile("^" + Func + Dotted + Lbrack)
-  rx_func_colon = Regexp.compile("^" + Func + Dotted + Colon)
-  rx_func_bare  = Regexp.compile("^" + Func + Dotted)
-  rx_var        = Regexp.compile("^" + Var + Dotted)
-
-  RX = {Func_brack: rx_func_brack,  # This hash is
-        Func_colon: rx_func_colon,  #   order-dependent! 
-        Func_bare:  rx_func_bare,
-        Var:        rx_var}
-
-  attr_reader :out
-  attr_reader :tokenlist
-
   def initialize(line)
     super
+    @rx_func_brack = Regexp.compile("^" + Func + Dotted + Lbrack)
+    @rx_func_colon = Regexp.compile("^" + Func + Dotted + Colon)
+    @rx_func_bare  = Regexp.compile("^" + Func + Dotted)
+    @rx_var        = Regexp.compile("^" + Var + Dotted)
     @token = Null.dup
     @tokenlist = []
     @live = Livetext.new
@@ -58,6 +49,14 @@ api.tty "-- result: #{result.inspect}" if $testme
     result
   end
 
+ 
+ def parse_formatting_brute_force
+   # For each format * _ ` ~
+   # search for: [Space|^] Char Char .* [\.,]|$
+   # search for: [Space|^] Char [^\[]* Space|$
+   # search for: [Space|^] Char \[ [^\]*] ]|$
+ end
+
  def parse_formatting
    loop do 
      case peek
@@ -77,7 +76,123 @@ api.tty "-- result: #{result.inspect}" if $testme
    add_token(:str)
    @tokenlist
  end
+
+ def grab_str
+   @buffer = ""
+   loop do 
+     @buffer << self.grab
+     break if remainder.empty? || self.peek == "$"
+   end
+   @buffer
+ end
+
+ def grab_dd
+   @buffer = self.grab(2)
+   add_token(:str, @buffer)
+   @buffer = ""
+ end
+
+ def grab_var
+   matched = @rx_var.match(remainder)
+   vname = matched[0]
+   add_token(:var, vname[1..-1])
+   grab(vname.length)
+ end
+
+ def parse_variables
+   @buffer = ""
+   loop do
+     case 
+     when remainder.empty?  # end of string
+       break
+     when self.peek != "$"            # Junk
+       str = grab_str
+       add_token(:str, str)
+     when self.peek(2) == "$$"        # Func?
+       grab_dd
+     when self.peek == "$"            # Var?
+       grab_var
+     end
+   end
+   @tokenlist
+ end
+
+ def grab_until(char)
+   string = ""
+   loop do 
+     break if remainder.empty? || peek == char
+     string << grab
+   end
+   # ch = grab  # eat the delimiter
+   # check ch == char ?
+   string
+ end
+
+ def grab_func_param(which)
+   case which
+     when ":"
+       param = grab_until(" ") # don't eat the space
+     when "["
+       param = grab_until("]")
+       grab  # eat the ]
+     else
+       ungrab  # just "forget" this character
+       param = nil
+       # abort "#{__method__}: Can't happen - which = #{which.inspect}"
+   end
+   param
+ end
+
+ def grab_funcall
+   matched = func_name = param = nil
+   case 
+     when remainder.empty?
+       return
+     when matched = @rx_func_brack.match(remainder)
+       func_name = matched[0]
+       grab(2)  # eat the $$
+       func_name = grab(func_name.length-3)   # $$...[
+       param = grab_func_param(grab)  # "["
+       add_token(:func, func_name, :brackets, param)
+# Livetext::TTY.puts "1 matched is #{matched.inspect}"
+     when matched = @rx_func_colon.match(remainder)
+       func_name = matched[0]
+       grab(2)  # eat the $$
+       func_name = grab(func_name.length-3)   # $$...:
+       param = grab_func_param(grab)  # ":"
+       add_token(:func, func_name, :colon, param)
+# Livetext::TTY.puts "2 matched is #{matched.inspect}"
+     when matched = @rx_func_bare.match(remainder)
+       func_name = matched[0]
+       grab(2)  # eat the $$
+       func_name = grab(func_name.length-2)  # $$...
+       add_token(:func, func_name, nil, nil)
+# Livetext::TTY.puts "3 matched is #{matched.inspect}"
+   else
+     abort "#{__method__}: Can't happen"
+   end
+ end
+
+ def parse_functions
+   # Assume variables already expanded?
+   @buffer = ""
+   loop do
+     break if remainder.empty?  # end of string
+     if self.peek(2) == "$$"    # Func?
+       grab_funcall
+     else                       # Junk
+       add_token(:str, grab_str)
+     end
+   end
+   @tokenlist
+ end
  
+  def expand_function_calls
+    # Assume variables already resolved?
+    tokens = self.parse_functions
+    self.evaluate
+  end
+
  def self.parse_formatting(str)
    fmt = self.new(str)
    loop do 
@@ -99,22 +214,6 @@ api.tty "-- result: #{result.inspect}" if $testme
    fmt.tokenlist
  end
  
- def self.parse_variables(str)
-   return nil if str.nil?
-   x = self.new(str.chomp)
-   char = x.peek
-   loop do
-     char = x.grab
-     break if char == LF || char == nil
-     x.escaped if char == Escape
-     x.dollar if char == "$"  # Could be $$
-     x.add char
-   end
-   x.add_token(:str)
-   result = x.evaluate
-   result
- end
-
  def embed(sym, str)
    pre, post = SimpleFormats[sym]
    pre + str + post
@@ -133,7 +232,7 @@ api.tty "-- result: #{result.inspect}" if $testme
      break if eos?  #    ch = grab     # advance pointer #    api.tty "gs3  ch = #{ch.inspect}"
      add grab
    end              #  ch = grab     # advance pointer #  api.tty "-- gs4  ch = #{ch.inspect}"; sleep 0.01
-   add_token :str
+   add_token :str, @token
  end
 
  def grab_token(ch)
@@ -263,9 +362,9 @@ api.tty "-- result: #{result.inspect}" if $testme
    @token << str unless str.nil?
  end
 
- def add_token(kind, token = @token)
+ def add_token(kind, *token)
    return if token.nil?
-   @tokenlist << [kind, token] unless token.empty?
+   @tokenlist << [kind, token].flatten unless token.empty?
    @token = Null.dup
  end
 
@@ -447,19 +546,25 @@ api.tty "-- result: #{result.inspect}" if $testme
  end
 
   def expand_variables
-    rx = Regexp.compile("(?<result>" + Var + Dotted + ")")
- 
+    rx = @rx_var
     buffer = ""
     loop do |i|
       case             # Var or Func or false alarm
-      when str.empty?  # end of string
+      when remainder.empty?  # end of string
         break
       when self.peek(2) == "$$"   # Func?
         buffer << self.grab(2)
       when self.peek == "$"       # Var?
-        vname = rx.match(str)
-        value = @live.vars[vname[1..-1]]
-        str.sub!(vname["result"], value)
+        vname = rx.match(remainder)
+puts "----"
+p @line
+p rx.match(@line)
+p vname
+puts "----"
+#       value = @live.vars[vname[1..-1]]
+#       @line.sub!(vname["result"], value)
+        add_token(:var, vname[1..-1])
+        grab(vname.length)
       else                           # other
         buffer << self.grab
       end
@@ -467,20 +572,4 @@ api.tty "-- result: #{result.inspect}" if $testme
     buffer
   end
 
-  def expand_function_calls
-    # Assume variables already resolved?
-    rx = Regexp.compile("(?<result>" + Func + Dotted + ")")
-    buffer = ""
-    loop do |i|
-      case             # Var or Func or false alarm
-      when eos?        # end of string
-        break
-      when self.peek(2) == "$$"   # Func?
-        buffer << self.grab(2)
-      else                           # other
-        buffer << self.grab(1)
-      end
-    end
-    buffer
-  end
 end
