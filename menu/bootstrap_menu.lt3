@@ -1,0 +1,19 @@
+.nopara
+
+.mixin html_menu
+
+.copy front.css
+
+.menu
+  .menu_link "Home", "http://fake.com/home"
+  .menu_dropdown "Blog"
+    .menu_dropdown_link "Home", "http://fake.com/blog"
+    .menu_dropdown_link "Design", "http://fake.com/design"
+    .menu_dropdown_link "HTML", "http://fake.com/html"
+    .menu_dropdown_link "CSS", "http://fake.com/css"
+    .menu_dropdown_link "Javascript", "http://fake.com/jscript"
+  .menu_dropdown "Work"
+    .menu_dropdown_item "Web Design", "http://fake.com/webdes"
+    .menu_dropdown_item "Typography", "http://fake.com/typog"
+    .menu_dropdown_item "Front-end", "http://fake.com/fronten"
+  .menu_link "About", "http://fake.com/about"
