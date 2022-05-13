@@ -80,6 +80,11 @@ def read_next_line(indent_level: 0)
       read_next_line(indent_level: new_indent_level)
     end
 
+    # if we use .end
+    # while row_parsed[:command] != :end do
+    #   read_next_line(indent_level: new_indent_level)
+    # end
+
     read_line(indent_level: new_indent_level) # This will not run if function doesn't accept a block
   end
 end
@@ -112,7 +117,7 @@ def simple_test
   #   .menu_dropdown "Blog"
   #     .menu_dropdown_link "Home", "http://fake.com/blog"
   #   .menu_link "About", "http://fake.com/about"
-  # or this if we end up sticking with .end, but .end _may_ be harder to implement (uncertain atm)
+  # or this if we end up sticking with .end
   # .menu
   #   .menu_link
   #   .menu_dropdown "Blog"
