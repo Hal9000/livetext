@@ -93,7 +93,7 @@ class Livetext::UserAPI
       break if end?(@line)
       next if comment?(@line)
       @line = format(@line) unless raw
-      lines << @line 
+      lines << @line
     end
     raise "Expected .end, found end of file" unless end?(@line)  # use custom exception
     optional_blank_line   # FIXME Delete this??
@@ -133,7 +133,7 @@ class Livetext::UserAPI
   def out(str = "", file = nil)
     return if str.nil?
     return file.puts str unless file.nil?
-    @live.body << str 
+    @live.body << str
     @live.body << "\n" unless str.end_with?("\n")
   end
 
@@ -150,11 +150,11 @@ class Livetext::UserAPI
   end
 
   def puts(*args)
-    @live.output.puts *args 
+    @live.output.puts *args
   end
 
   def print(*args)
-    @live.output.print *args 
+    @live.output.print *args
   end
 
   def debug=(val)

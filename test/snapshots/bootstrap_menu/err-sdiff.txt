@@ -1,8 +1,10 @@
 ACTUAL                                                      | EXPECTED                                                    
-(eval):50:in `peek_next_line': undefined method `peek_nextl <
-        from (eval):82:in `block in read_to_end_of_block'   <
-        from (eval):81:in `loop'                            <
-        from (eval):81:in `read_to_end_of_block'            <
+/home/ec2-user/.rvm/rubies/ruby-2.6.3/lib/ruby/2.6.0/json/c <
+        from /home/ec2-user/.rvm/rubies/ruby-2.6.3/lib/ruby <
+        from (eval):74:in `line_attributes_array'           <
+        from (eval):98:in `block in read_to_end_of_block'   <
+        from (eval):80:in `loop'                            <
+        from (eval):80:in `read_to_end_of_block'            <
         from (eval):13:in `menu'                            <
         from /home/ec2-user/environment/lib/livetext/helper <
         from /home/ec2-user/environment/lib/livetext/helper <

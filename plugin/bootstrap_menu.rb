@@ -43,11 +43,11 @@ def menu_dropdown_link(title, href, active: false, indent_level: 0)
 end
 
 def next_line
-  @main.next_line
+  nextline
 end
 
 def peek_next_line
-  @main.peek_nextline
+  peek_nextline
 end
 
 def line_indent_level(line)
@@ -61,7 +61,7 @@ def line_command(line)
 
   base_command = base_line.split.first
 
-  if base_command.starts_with?(".")
+  if base_command.start_with?(".")
     return base_command.gsub(".")
   else
     raise "Command Expected: #{base_line}"
@@ -70,7 +70,7 @@ end
 
 def line_attributes_array(line)
   line_attributes = line.strip.split("", 2).last
-  api_out line_attributes.inspect
+  api.out 0, line_attributes.inspect
 
   attributes_parsed = JSON.parse(line_attributes)
   attributes_parsed.is_a?(String) ? [attributes_parsed] : attributes_parsed
@@ -81,7 +81,7 @@ def read_to_end_of_block(root_indent_level: 0)
   loop do
     peeked_line = peek_next_line
     return if peeked_line.nil? # End of File
-    unless peeked_line.present? # Blank line
+    unless peeked_line.strip.size > 0 # Blank line
       next_line
       next
     end

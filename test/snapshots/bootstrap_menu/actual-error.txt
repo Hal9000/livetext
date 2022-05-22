@@ -1,7 +1,9 @@
-(eval):50:in `peek_next_line': undefined method `peek_nextline' for nil:NilClass (NoMethodError)
-	from (eval):82:in `block in read_to_end_of_block'
-	from (eval):81:in `loop'
-	from (eval):81:in `read_to_end_of_block'
+/home/ec2-user/.rvm/rubies/ruby-2.6.3/lib/ruby/2.6.0/json/common.rb:156:in `parse': 767: unexpected token at 'menu_link "Home", "http://fake.com/home"' (JSON::ParserError)
+	from /home/ec2-user/.rvm/rubies/ruby-2.6.3/lib/ruby/2.6.0/json/common.rb:156:in `parse'
+	from (eval):74:in `line_attributes_array'
+	from (eval):98:in `block in read_to_end_of_block'
+	from (eval):80:in `loop'
+	from (eval):80:in `read_to_end_of_block'
 	from (eval):13:in `menu'
 	from /home/ec2-user/environment/lib/livetext/helpers.rb:120:in `invoke_dotcmd'
 	from /home/ec2-user/environment/lib/livetext/helpers.rb:135:in `handle_dotcmd'
