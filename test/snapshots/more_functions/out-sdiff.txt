@@ -1,0 +1,38 @@
+ACTUAL                                                      | EXPECTED                                                    
+Testing some more functions here...                           Testing some more functions here...
+<p>                                                           <p>
+
+Here I am calling a function  with                            Here I am calling a function  with 
+a colon parameter...                                          a colon parameter...
+<p>                                                           <p>
+
+<p>                                                           <p>
+
+Next let's <b></b> something with our parameter:            | Next let's <b>do</b> something with our parameter:
+<p>                                                           <p>
+
+I'll call these variants...                                   I'll call these variants...
+<p>                                                           <p>
+
+"Motel" spelled backwards is [Error evaluating $$reverse()] | "Motel" spelled backwards is letom :)
+<p>                                                           <p>
+
+"lamina" reversed is [Error evaluating $$reverse()]         | "lamina" reversed is animal
+<p>                                                           <p>
+
+I can also use the [Error evaluating $$reverse()] here.     | I can also use the erutaef tekcarb here.
+<p>                                                           <p>
+
+If I don't use a parameter for [Error evaluating $$reverse(   If I don't use a parameter for [Error evaluating $$reverse(
+me an error. (Bug or feature??)                               me an error. (Bug or feature??)
+<p>                                                           <p>
+
+What if a function doesn't use parameters at all, but         What if a function doesn't use parameters at all, but
+we pass them? Hmm...                                          we pass them? Hmm...
+<p>                                                           <p>
+
+Now we succeed and succeed some more                          Now we succeed and succeed some more
+and finally we succeed in life.                               and finally we succeed in life.
+<p>                                                           <p>
+
+But can we succeed, when our beds are burning?                But can we succeed, when our beds are burning?

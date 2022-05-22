@@ -1,0 +1,16 @@
+ACTUAL                                                      | EXPECTED                                                    
+(eval):50:in `peek_next_line': undefined method `peek_nextl <
+        from (eval):82:in `block in read_to_end_of_block'   <
+        from (eval):81:in `loop'                            <
+        from (eval):81:in `read_to_end_of_block'            <
+        from (eval):13:in `menu'                            <
+        from /home/ec2-user/environment/lib/livetext/helper <
+        from /home/ec2-user/environment/lib/livetext/helper <
+        from /home/ec2-user/environment/lib/livetext/helper <
+        from /home/ec2-user/environment/lib/livetext/helper <
+        from /home/ec2-user/environment/lib/livetext/helper <
+        from /home/ec2-user/environment/lib/livetext/helper <
+        from ../../../bin/livetext:89:in `block in parse_co <
+        from ../../../bin/livetext:75:in `loop'             <
+        from ../../../bin/livetext:75:in `parse_command_lin <
+        from ../../../bin/livetext:106:in `<main>'          <

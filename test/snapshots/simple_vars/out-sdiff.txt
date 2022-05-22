@@ -1,0 +1,7 @@
+ACTUAL                                                      | EXPECTED                                                    
+Just                                                          Just
+some text.                                                    some text.
+Hi, there.                                                    Hi, there.
+ is my name, and  is my nation.                             | GulliverFoyle is my name, and Terra is my nation.
+I'm , from                                                  | I'm GulliverFoyle, from Terra.
+That's all.                                                   That's all.

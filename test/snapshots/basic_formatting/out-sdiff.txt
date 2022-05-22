@@ -1,0 +1,14 @@
+ACTUAL                                                      | EXPECTED                                                    
+Here are examples of <b></b>                                | Here are examples of <b>boldface</b> 
+and <i></i>                                                 | and <i>italics</i>
+and <font size=+1><tt></tt></font>                          | and <font size=+1><tt>code</tt></font>
+as well as <b></b> examples                                 | as well as <b>more complex</b> examples 
+of <i></i>                                                  | of <i>italicized text</i>
+and <font size=+1><tt></tt></font>.                         | and <font size=+1><tt>code font</tt></font>.
+<p>                                                           <p>
+
+Here are some random punctuation marks:                       Here are some random punctuation marks:
+; # . : @ % ^ & $                                           | ; # . * _ ` : @ % ^ & $
+<p>                                                           <p>
+
+No need to escape these:                                    | No need to escape these:  * _ `

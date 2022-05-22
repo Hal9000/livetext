@@ -115,9 +115,9 @@ module Livetext::Helpers
     success
   end
 
-  def invoke_dotcmd(name)
+  def invoke_dotcmd(name, *args)
     # FIXME Add cmdargs stuff... depends on name, etc.
-    retval = @main.send(name)
+    retval = @main.send(name, *args)
     retval
   rescue => err
     graceful_error(err)

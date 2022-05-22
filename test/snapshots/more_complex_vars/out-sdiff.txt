@@ -1,0 +1,5 @@
+ACTUAL                                                      | EXPECTED                                                    
+Just some more text.                                          Just some more text.
+My birthday is , so they tell me.                           | My birthday is May 31, so they tell me.
+That's  if you're American.                                 | That's 5/31 if you're American.
+That's all.                                                   That's all.

@@ -19,68 +19,70 @@ h This file specifies which snapshots will/won't be run.
 
 # Note that QUIT (on a line by itself) will stop processing the file
 
+# Bootstrap
 
 # Others (usually passing):
 
 # import/include/mixin, others...
 
-   error_no_such_inc        # Output BEFORE error doesn't get passed through ("leading" output)
-   error_no_such_copy       # ^ Same behavior as  error_no_such_inc
-   error_no_such_mixin      # ^ Same behavior as error_missing_end
-   simple_copy              #                    
-   simple_import            # 
-   simple_include           #                            
-   simple_mixin             #                            
-   import                   # "Leading" output doesn't get generated (same as error_no_such_inc)
-   import2                  # 
-   mixin_bookish            # 
-   import_bookish           # 
-                    
-# raw input                     
-                     
-   single_raw_line          #  
-   raw_lines                #  
-   raw_text_block           #  
-   copy_is_raw              #  
-                     
-# comments                     
-                     
-   block_comment            #                              
-   comments_ignored_1       #  
-                     
-# variables and heredocs                     
-                     
-   predef_vars              #  
-   simple_vars              #  
-   more_complex_vars        #  
-   table_with_heredocs      #  
+x   error_no_such_inc        # Output BEFORE error doesn't get passed through ("leading" output)
+x   error_no_such_copy       # ^ Same behavior as  error_no_such_inc
+x   error_no_such_mixin      # ^ Same behavior as error_missing_end
+x   simple_copy              #
+x   simple_import            #
+x   simple_include           #
+x   simple_mixin             #
+x   import                   # "Leading" output doesn't get generated (same as error_no_such_inc)
+x   import2                  #
+x   mixin_bookish            #
+x   import_bookish           #
+x   test_wtf_bookish         #
+
+# raw input
+
+x   single_raw_line          #
+x   raw_lines                #
+x   raw_text_block           #
+x   copy_is_raw              #
+
+# comments
+
+x   block_comment            #
+x   comments_ignored_1       #
+
+# variables and heredocs
+
+x   predef_vars              #
+x   simple_vars              #
+x   more_complex_vars        #
+x   table_with_heredocs      #
 
 # testing def
 
-   def_method               #  
-                     
+x   def_method               #
+
 # intraline formatting
 
-   basic_formatting         #  
-   test_formatting_34       # 
-   test_formatting_35       # 
+x   basic_formatting         #
+x   test_formatting_34       #
+x   test_formatting_35       #
 
 # Errors
 
-   error_line_num           #  
-   error_mismatched_end     #  
-   error_name_not_permitted #  
-   error_invalid_name       # ^ Same behavior as error_no_such_inc
-   error_missing_end        # Output is duplicated somehow. Look for: puts @body or puts @main.body
-   error_inc_line_num       # Forgot what's wrong here
+x   error_line_num           #
+x   error_mismatched_end     #
+x   error_name_not_permitted #
+x   error_invalid_name       # ^ Same behavior as error_no_such_inc
+x   error_missing_end        # Output is duplicated somehow. Look for: puts @body or puts @main.body
+x   error_inc_line_num       # Forgot what's wrong here
 
 # functions
 
-   functions                #  
-   more_functions           # 
+x   functions                #
+x   more_functions           #
 
-# More/misc...                     
-                     
-   example_alpha            #  
-   example_alpha2           #  
-   hello_world              #  
+# More/misc...
+
+x   example_alpha            #
+x   example_alpha2           #
+x   hello_world              #
