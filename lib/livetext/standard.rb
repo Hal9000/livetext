@@ -45,6 +45,12 @@ module Livetext::Standard
     api.optional_blank_line
   end
 
+#  def setvars(pairs)
+#    pairs.each do |var, value|
+#      api.setvar(var, value)
+#    end
+#  end
+
   def backtrace(args = nil, body = nil)
     @backtrace = onoff(api.args.first)
     api.optional_blank_line
@@ -159,9 +165,9 @@ module Livetext::Standard
   end
 
   def set(args = nil, body = nil)
-    line = api.data.chomp
+    line = api.args.join(" ")  # data.chomp
     pairs = Livetext::ParseSet.new(line).parse
-    set_variables(pairs)
+    api.setvars(pairs)
     api.optional_blank_line
   end
 
@@ -178,7 +184,8 @@ module Livetext::Standard
       lines = api.body
     end
     pairs = Livetext::ParseGeneral.parse_vars(lines, prefix: nil)
-    set_variables(pairs)
+STDERR.puts "! pairs = #{pairs.inspect}"
+    api.setvars(pairs)
     api.optional_blank_line
   end
 
@@ -193,7 +200,8 @@ module Livetext::Standard
       lines = api.body
     end
     pairs = Livetext::ParseGeneral.parse_vars(lines, prefix: nil)
-    set_variables(pairs)
+STDERR.puts "pairs = #{pairs.inspect}"
+    api.setvars(pairs)
     api.optional_blank_line
   end
 
@@ -207,7 +215,7 @@ module Livetext::Standard
     end
     indent = @parent.indentation.last
     indented = " " * indent
-    api.setvar(var, rhs.chomp)
+    api.set(var, rhs.chomp)
     api.optional_blank_line
   end
 
@@ -271,7 +279,9 @@ module Livetext::Standard
   end
 
   def r(args = nil, body = nil)
-    api.out api.data  # No processing at all
+    # FIXME api.data is broken
+    # api.out api.data  # No processing at all
+    api.out api.args.join(" ")
     api.optional_blank_line
   end
 

@@ -26,6 +26,15 @@ class Livetext::Functions
     "[Error evaluating $$isqrt(#{arg})]"
   end
 
+  def reverse(param=nil)      # again, just for testing
+    arg = param
+    if arg.nil? || arg.empty?
+      return "(reverse: No parameter)" 
+    else
+      return arg.reverse
+    end
+  end
+
   def date(param=nil)
     Time.now.strftime("%F")
   end

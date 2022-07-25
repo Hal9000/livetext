@@ -53,8 +53,9 @@ class Livetext::ParseSet < StringParser
     var = get_var
     skip_equal
     value = get_value
-    value = Livetext.interpolate(value)
+    # value = Livetext.interpolate(value)
     pair = [var, value]
+    Livetext::Vars[var.to_sym] = value
     pair
   end
 
@@ -115,10 +116,11 @@ class Livetext::ParseSet < StringParser
   end
 
   def unquoted_value
-    char = nil
     value = ""
+    char = nil
     loop do
       char = peek
+      break if char.nil?
       break if eos?
       break if char == " " || char == ","
       value << char
@@ -133,7 +135,12 @@ class Livetext::ParseSet < StringParser
 
   def get_value
     char = peek
-    value = quote?(char) ? quoted_value : unquoted_value
+    flag = quote?(char)
+    if flag
+      value = quoted_value 
+    else
+      value = unquoted_value
+    end
     value
   end
 end

@@ -6,6 +6,7 @@ class Livetext
   include Helpers
 
   class Variables
+    attr_reader :vars
     def initialize(hash = {})
       @vars = {}
       hash.each_pair {|k, v| @vars[k.to_sym] = v }
@@ -17,6 +18,21 @@ class Livetext
 
     def []=(var, value)
       @vars[var.to_sym] = value
+    end
+
+    def get(var)
+      @vars[var.to_sym] || "[#{var} is undefined]"
+    end
+
+    def set(var, value)
+      @vars[var.to_sym] = value.to_s
+    end
+
+    def setvars(pairs)
+      pairs = pairs.to_a if pairs.is_a?(Hash)
+      pairs.each do |var, value|
+        api.setvar(var, value)
+      end
     end
   end
 
@@ -37,8 +53,10 @@ class Livetext
   end
 
   def self.interpolate(str)
-    parse = Livetext::LineParser.new(str)
-    parse.var_func_parse
+    expand = Livetext::Expansion.new(self) 
+    str2 = expand.expand_variables(str)
+    str3 = expand.expand_function_calls(str2)
+    str3
   end
 
   def self.customize(mix: [], call: [], vars: {})
@@ -47,7 +65,8 @@ class Livetext
     call = Array(call)
     mix.each {|lib| obj.mixin(lib) }
     call.each {|cmd| obj.main.send(cmd[1..-1]) }  # ignores leading dot, no param
-    vars.each_pair {|var, val| obj.setvar(var, val.to_s) }
+    # vars.each_pair {|var, val| obj.setvar(var, val.to_s) }
+    api.setvars(vars)
     obj
   end
 
@@ -88,7 +107,8 @@ class Livetext
     call = Array(call)
     mix.each {|lib| mixin(lib) }
     call.each {|cmd| @main.send(cmd[1..-1]) }  # ignores leading dot, no param
-    vars.each_pair {|var, val| @api.setvar(var, val.to_s) }
+    # vars.each_pair {|var, val| @api.set(var, val.to_s) }
+    api.setvars(vars)
     self
   end
 

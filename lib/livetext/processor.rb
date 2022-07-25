@@ -35,10 +35,15 @@ class Processor
     @indentation = @parent.indentation
     @_mixins = []
     @_imports = []
+    @html = HTML.new(@parent.api)
   end
 
   def api
     @parent.api   # FIXME Is this weird??
+  end
+
+  def html
+    @html
   end
 
   def output=(io)

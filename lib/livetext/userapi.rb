@@ -1,5 +1,5 @@
-
-require_relative 'lineparser'     # FIXME  meh, because of #format
+require_relative 'expansion'
+require_relative 'html'
 
 # Encapsulate the UserAPI as a class
 
@@ -15,18 +15,32 @@ class Livetext::UserAPI
   def initialize(live)
     @live = live
     @vars = live.vars
+    @html = HTML.new(self)
+    @expander = Livetext::Expansion.new(live)
   end
 
   def api
     @live.api
   end
 
+  def html
+    @html
+  end
+
   def dot
     @live
   end
 
-  def setvar(var, val)
-    Livetext::Vars[var] = val  # Now indifferent and "safe"
+  def setvar(var, val)   # FIXME
+    # Livetext::Vars[var] = val  # Now indifferent and "safe"
+    @live.vars.set(var, val)
+  end
+
+  def setvars(pairs)
+    pairs = pairs.to_a if pairs.is_a?(Hash)
+    pairs.each do |var, value|
+      @live.vars.set(var, value)
+    end
   end
 
   def check_existence(file, msg)
@@ -34,9 +48,12 @@ class Livetext::UserAPI
   end
 
   def data=(value)
-# TTY.puts "in #{__FILE__}: api = #{@live.api.inspect}"
     @data = value
     @args = format(@data).chomp.split
+  end
+
+  def data
+    @data
   end
 
   def args
@@ -44,9 +61,9 @@ class Livetext::UserAPI
     @args.each {|arg| yield arg }
   end
 
-  def vars
-    @vars
-  end
+ def vars
+   @vars
+ end
 
   def optional_blank_line
     peek = @live.peek_nextline  # ???
@@ -119,15 +136,21 @@ class Livetext::UserAPI
 
   def format(line)
     return "" if line == "\n" || line.nil?
-    line2 = Livetext::LineParser.parse!(line)
+    line2 = @expander.format(line)
     line2
   end
 
   def passthru(line)
     return if @live.nopass
-    out "<p>" if line == "\n" and ! @live.nopara
-    line = format(line)
-    out line
+    if line == "\n"
+      unless @live.nopara
+        out "<p>" 
+        out
+      end
+    else
+      text = @expander.format(line.chomp)
+      out text
+    end
   end
 
   def out(str = "", file = nil)

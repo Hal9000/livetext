@@ -1,5 +1,6 @@
 
 require_relative 'global_helpers'
+require_relative 'expansion'
 
 module Livetext::Helpers
 
@@ -55,10 +56,10 @@ module Livetext::Helpers
     base  = "#{name}#{ext}"
     paths.each do |path|
       file = path + base
-::Livetext::TTY.puts  "   Checking: #{file}"
+# ::Livetext::TTY.puts  "   Checking: #{file}"
       return file if File.exist?(file)
     end
-::Livetext::TTY.puts  "   ...oops"
+# ::Livetext::TTY.puts  "   ...oops"
     return nil
   end
 
@@ -124,6 +125,7 @@ module Livetext::Helpers
   end
 
   def handle_dotcmd(line, indent = 0)
+    # FIXME api.data is broken
     indent = @indentation.last # top of stack
     line = line.sub(/# .*$/, "")   # FIXME Could be problematic?
     name = get_name(line)
@@ -161,11 +163,13 @@ module Livetext::Helpers
     return File.exist?(file)
   end
 
+  def read_variables(file)
+    pairs = File.readlines(file).map {|x| x.chomp.split }
+    @api.setvars(pairs)
+  end
+
   def set_variables(pairs)
-    pairs.each do |pair|
-      var, value = *pair
-      @parent.setvar(var, value)
-    end
+    @api.setvars(pairs)
   end
 
   def grab_file(fname)
@@ -215,26 +219,27 @@ module Livetext::Helpers
   end
 
   def setvar(var, val)
-    str, sym = var.to_s, var.to_sym
-    Livetext::Vars[str] = val
-    Livetext::Vars[sym] = val
-    @_vars[str] = val
-    @_vars[sym] = val
+    api.setvar(var, val)
+#    str, sym = var.to_s, var.to_sym
+#    Livetext::Vars[str] = val
+#    Livetext::Vars[sym] = val
+#    @_vars[str] = val
+#    @_vars[sym] = val
   end
 
   def setfile(file)
     if file
-      setvar(:File, file)
+      api.setvar(:File, file)
       dir = File.dirname(File.expand_path(file))
-      setvar(:FileDir, dir)
+      api.setvar(:FileDir, dir)
     else
-      setvar(:File,    "[no file]")
-      setvar(:FileDir, "[no dir]")
+      api.setvar(:File,    "[no file]")
+      api.setvar(:FileDir, "[no dir]")
     end
   end
 
   def setfile!(file)  # FIXME why does this variant exist?
-    setvar(:File, file)
+    api.setvar(:File, file)
   end
 
 end

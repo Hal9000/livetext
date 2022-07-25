@@ -24,7 +24,7 @@ class Livetext::ParseGeneral < StringParser
     lines.each do |line|
       next if line.strip.empty?
       var, value = line.split(" ", 2)
-      val = Livetext.interpolate(value)
+      # val = Livetext.interpolate(value)
       var = prefix + "." + var if prefix
       pairs << [var, value]
     end
