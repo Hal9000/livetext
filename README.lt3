@@ -7,8 +7,9 @@
 
 *[This README is currently mangled. Fixes coming soon!]
 
-Livetext is simply a tool for transforming text from one format into another. The source file
-has commands embedded in it, and the output is dependent on those commands.  
+Livetext is simply a tool for transforming text another format which may be HTML or some arbitrary
+format (text or otherwise). The source file has commands embedded in it, and the output is dependent 
+on those commands.  
 
 Why is this special? It's very flexible, very extensible, and it's extensible _[in Ruby].  
 

@@ -19,8 +19,9 @@ puts
 puts "  Copying repo to gem at: #{lib.inspect}"
 
 sys("cp -r lib/* #{lib}/")
-sys("cp plugin/* #{lib}/../plugin/")
-sys("cp imports/* #{lib}/../imports/")
+sys("cp plugin/misc/* #{lib}/../plugin/misc/*")
+sys("cp plugin/*rb #{lib}/../plugin/")
+sys("cp imports/*rb #{lib}/../imports/")
 sys("cp -r test/* #{lib}/../test/")
 sys("cp bin/* #{lib}/../bin/")
 

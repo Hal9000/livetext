@@ -145,15 +145,6 @@ class TestParseSet < MiniTest::Test
     # ^ ParseSet isn't smart enough to know about variables/functions
   end
 
-  def test_var_eq_func
-    set = ParseSet.new("date = $$date").parse
-    set = set.first  # [["var", "value"]]
-    assert_equal set.first, "date"
-p set.last
-    assert set.last =~ /undefined/, "Found 'undefined' for variable value"
-    # ^ ParseSet isn't smart enough to know about variables/functions
-  end
-
   def xtest_two_strings
     line = %[bday="May 31", date='5/31']
     set = ParseSet.new(line).parse

@@ -3,11 +3,10 @@ and <i>italics</i>
 and <font size=+1><tt>code</tt></font>
 as well as <b>more complex</b> examples 
 of <i>italicized text</i>
-and <font size=+1><tt>code font</tt></font>.
+and <tt>code font</tt>.
 <p>
 
 Here are some random punctuation marks:
 ; # . * _ ` : @ % ^ & $
 <p>
-
 No need to escape these:  * _ `

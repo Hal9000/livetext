@@ -332,7 +332,7 @@ end
   TestLines.each.with_index do |item, num|
     msg, src, exp, blank = *item
     # generate tests...
-    name = "test_formatting_#{'%02d' % (num + 1)}"
+    name = "test_formatting_#{'%03d' % (num + 1)}"
     method_source = <<~RUBY
       def #{name}   # #{msg}
         msg, src, exp = <<~STUFF.split("\\n")

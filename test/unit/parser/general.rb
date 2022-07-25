@@ -33,11 +33,11 @@ class TestParseGeneral < MiniTest::Test
   def test_variables
     vars = ["foo 234\n", "bar 456\n"]
     expect = [%w[foo 234], %w[bar 456]]
-    assert_equal ParseGeneral.parse_vars(vars), expect
+    assert_equal ParseGeneral.parse_vars(vars), expect, "case 1 failed"
 
     vars = ["foo2 234", "bar2 456"]     # newline irrelevant
     expect = [%w[foo2 234], %w[bar2 456]]
-    assert_equal ParseGeneral.parse_vars(vars), expect
+    assert_equal ParseGeneral.parse_vars(vars), expect, "case 2 failed"
 
     # quotes are not stripped... hmm
     vars = ["alpha 'simple string'", 'beta "another string"']
