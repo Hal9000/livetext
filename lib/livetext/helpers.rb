@@ -116,9 +116,12 @@ module Livetext::Helpers
     success
   end
 
-  def invoke_dotcmd(name, *args)
+  def invoke_dotcmd(name, data="")
     # FIXME Add cmdargs stuff... depends on name, etc.
-    retval = @main.send(name, *args)
+    api.data = data
+    args = data.split
+    api.args = args
+    retval = @main.send(name)  # , *args)
     retval
   rescue => err
     graceful_error(err)
@@ -128,13 +131,13 @@ module Livetext::Helpers
     # FIXME api.data is broken
     indent = @indentation.last # top of stack
     line = line.sub(/# .*$/, "")   # FIXME Could be problematic?
-    name = get_name(line)
+    name, data = get_name_data(line)
     success = true  # Be optimistic...  :P
     case
       when name == :end   # special case
         graceful_error EndWithoutOpening()
       when @main.respond_to?(name)
-        success = invoke_dotcmd(name)
+        success = invoke_dotcmd(name, data)
     else
       graceful_error UnknownMethod(name)
     end
@@ -145,14 +148,15 @@ module Livetext::Helpers
     return true
   end
 
-  def get_name(line)
-    name, data = line.split(" ", 2)
+  def get_name_data(line)
+    name, data = line.chomp.split(" ", 2)  # FIXME don't eat consecutive spaces
+    data ||= ""
     name = name[1..-1]  # chop off sigil
     name = "dot_" + name if %w[include def].include?(name)
     @main.check_disallowed(name)
-    @main.data = data
-    @main.api.data = data
-    name.to_sym
+#   @main.data = data      # FIXME kill this
+    @main.api.data = data  # FIXME kill this?
+    [name.to_sym, data]
   end
 
   def check_disallowed(name)

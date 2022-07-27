@@ -1,6 +1,6 @@
 Here are examples of <b>boldface</b> 
 and <i>italics</i>
-and <font size=+1><tt>code</tt></font>
+and <tt>code</tt>
 as well as <b>more complex</b> examples 
 of <i>italicized text</i>
 and <tt>code font</tt>.
@@ -9,4 +9,5 @@ and <tt>code font</tt>.
 Here are some random punctuation marks:
 ; # . * _ ` : @ % ^ & $
 <p>
+
 No need to escape these:  * _ `
