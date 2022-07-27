@@ -74,7 +74,7 @@ module Livetext::Standard
     funcname = funcname.gsub(/\./, "__")
     func_def = <<~EOS
       def #{funcname}(param)
-        #{api.body.to_a.join("\n")}
+        #{api.body(true).to_a.join("\n")}
       end
     EOS
     api.optional_blank_line

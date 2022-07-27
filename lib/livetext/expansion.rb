@@ -85,14 +85,12 @@ class Livetext::Expansion
         param = fmatch["param"]   # may be nil
         full  = fmatch["full_param"]
         fsym  = fname[2..-1]      # no $$
-=begin
-puts "rx     = #{rx.inspect}"
-puts "fmatch = #{fmatch.inspect}"
-puts "fname  = #{fname.inspect}"
-puts "param  = #{param.inspect}"
-puts "full   = #{full.inspect}"
-puts "fsym   = #{fsym.inspect}"
-=end
+#STDERR.puts "rx     = #{rx.inspect}"
+#STDERR.puts "fmatch = #{fmatch.inspect}"
+#STDERR.puts "fname  = #{fname.inspect}"
+#STDERR.puts "param  = #{param.inspect}"
+#STDERR.puts "full   = #{full.inspect}"
+#STDERR.puts "fsym   = #{fsym.inspect}"
         str.sub!(fname, "")
         str.sub!(full, "") if full
         retval = funcall(fsym, param)
@@ -103,6 +101,7 @@ puts "fsym   = #{fsym.inspect}"
         buffer << char
       end
     end
+# STDERR.puts "buffer     = #{buffer.inspect}"
     buffer
   end
 end

@@ -7,12 +7,9 @@ end
 
 arg = ARGV.first
 
-if arg
-  version = arg
-else
-  ret = system("livetext -v >/tmp/livetext.version 2>/tmp/livetext.version.error")
-  raise "Malformed version number? #{version.inspect}" unless ret
-end
+info = `gem list | grep livetext`
+vrx  = /\((.*)\)/
+version = vrx.match(info).to_a[1]
 
 lib = "/Users/Hal/.rvm/gems/ruby-2.7.0/gems/livetext-#{version}/lib/"
 puts

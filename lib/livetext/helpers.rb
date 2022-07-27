@@ -118,7 +118,7 @@ module Livetext::Helpers
 
   def invoke_dotcmd(name, data="")
     # FIXME Add cmdargs stuff... depends on name, etc.
-    api.data = data
+    api.data = data   # should permit _ in function names at least
     args = data.split
     api.args = args
     retval = @main.send(name)  # , *args)
