@@ -21,12 +21,14 @@ class Livetext::Expansion
 
   def expand_variables(str)
     rx = Regexp.compile("(?<result>" + Var + Dotted + ")")
-    enum = str.each_char
     buffer = ""
     loop do |i|
       case                           # var or func or false alarm
       when str.empty?                # end of string
         break
+      when str.slice(0..1) == "\\$"  # escaped, ignore it
+        str.slice!(0..1)    
+        buffer << "$"
       when str.slice(0..1) == "$$"   # func?
         buffer << str.slice!(0..1)    
       when str.slice(0) == "$"       # var?
@@ -41,7 +43,8 @@ class Livetext::Expansion
         vars = @live.vars
         buffer << vars.get(vsym)
       else                           # other
-        buffer << str.slice!(0)
+        char = str.slice!(0)
+        buffer << char
       end
     end
     buffer
