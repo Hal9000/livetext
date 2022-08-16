@@ -1,115 +1,223 @@
 module Formatter
-  
-  def self.make_class(marker, tag)
-    Class.new do
-      @Klass  = self
-      @Marker = marker
-      @Tag = tag
 
-      @SingleSigil = Regexp.escape(marker)
-      @DoubleSigil = Regexp.escape(marker + marker)
+## Hmmm...
+# 
+#  Double:  b, i, t, s
+#  Single:  bits
+#  Brackt:  bits
+# 
 
-      @Single = [@SingleSigil,                     # sigil
-                /(?<start>[^#{@SingleSigil}]*)/,   # start
-                /((?<cdata>[^$ \[\*][^ ]*))/,      # cdata
-                /(?<stop>( |$))/                   # stop
-               ]
-
-      @Double = [@DoubleSigil,
-                /(?<start>[^#{@DoubleSigil}]*)/,
-                /(?<cdata>[^ \.,]*?)/,
-                /(?<stop>[\.,]|$)/
-               ]
-
-      def self.handle(str)
-        s2 = double(str)  # in this order...
-        s2 = single(s2)
-        s2 = bracket(s2)
-        s2
-      end
-
-      def self.handle_via_scenario(str, scenario)
-        sigil, start, cdata, stop = scenario
-        @rx = /#{start}#{sigil}#{cdata}#{stop}/
-        result = iterate(str)  # , rx, @Tag)
-        result  # str
-      end
-
-      def self.double(str)
-        handle_via_scenario(str, @Double)
-      end
-
-      def self.single(str)
-        handle_via_scenario(str, @Single)
-      end
-
-      def self.bracket(str)
-        buffer = ""
-        sigil = @Marker + "["
-        loop do
-          i = str.index(sigil)
-          case
-            when i.nil?
-              buffer << str
-              break
-            when (i == 0) || ((i != 0) && (str[i-1] != "\\"))
-              buffer << str[0..(i-1)] unless i == 0
-              post_sigil = str[(i+2)..-1]
-              j = post_sigil.index("]")
-              case
-                when j.nil?  # eol terminates instead of ]
-                  return post_sigil
-                when str[j-1] != "\\"   # What about \]? Darn it
-                  portion = post_sigil[0..(j-1)]
-                  result = "<#@Tag>" + portion + "<\/#@Tag>"
-                  buffer << result
-                  ended = i + portion.length + 3
-                  str = str[ended..-1]
-                else
-                  raise "Dammit"
-              end
-            else
-              raise "Can't happen"
-          end
-        end
-        buffer
-      end
-
-      def self.iterate(str)
-        buffer = ""
-        loop do
-          result, remainder = make_string(str)
-          buffer << result
-          break if remainder.empty?
-          str = remainder
-        end
-        buffer
-      end
-
-      def self.make_string(str)
-        md = @rx.match(str)
-        return [str, ""] if md.nil?
-        start, cdata, stop = md.values_at(:start, :cdata, :stop)
-        matched = md.to_a.first
-        result = matched.sub(@rx, start + "<#@Tag>" + cdata + "<\/#@Tag>" + stop)
-        remainder = str.sub(matched, "")
-        [result, remainder]
-      end
-    end
-  end   # def make_class
-
-  Bold    = make_class("*", "b")
-  Italics = make_class("_", "i")
-  Code    = make_class("`", "tt")
-  Strike  = make_class("~", "strike")
 
   def self.format(str)
-    s2 = str.chomp
-    s2 = Bold.handle(s2)
-    s2 = Italics.handle(s2)
-    s2 = Code.handle(s2)
-    s2 = Strike.handle(s2)
-    s2
+    str = str.chomp
+    s2 = Double.process(str.chomp)
+    s3 = Bracketed.process(s2)
+    s4 = Single.process(s3)
+    s4
   end
+  
+  class Delimited
+    def initialize(str, marker, tag)
+      @str, @marker, @tag = str.dup, marker, tag
+      @buffer = ""
+      @cdata  = ""
+      @state  = :INITIAL
+    end
+
+    def status(where)
+      if $debug
+        STDERR.printf "%-11s %-7s #{@marker.inspect} \n #{' '*11} state = %-8s  str = %-20s  buffer = %-20s  cdata = %-20s\n", 
+          where, self.class, @state, @str.inspect, @buffer.inspect, @cdata.inspect
+      end
+    end
+
+    def front
+      @str[0]
+    end
+
+    def grab(n=1)
+      char = @str.slice!(0..(n-1))   # grab n chars
+      char
+    end
+
+    def grab_terminator
+      status("** grabterm 0")
+      @state = :LOOPING
+      # goes onto buffer by default
+      # Don't? what if searching for space_marker?
+      # @buffer << grab  
+    end
+
+    def eol?
+      @str.empty?
+    end
+
+    def space?
+      front == " "
+    end
+
+    def escape?
+      front == "\\"
+    end
+
+    def terminated?
+      space?   # Will be overridden except in Single
+    end
+
+    def marker?
+      @str.start_with?(@marker)
+    end
+
+    def space_marker?
+      @str.start_with?(" " + @marker)
+    end
+
+    def wrap(text)
+      status("** wrap 0")
+      if text.empty?
+        result = @marker
+        result = "" if @marker[1] == "["
+        return result
+      end
+      "<#{@tag}>#{text}</#{@tag}>"
+    end
+    
+    def initial
+      status("** init 0")
+      n = @marker.length
+      case
+      when escape?
+        status("** esc i0")
+        grab               # backslash
+        status("** esc i1")
+        @buffer << grab    # char
+        status("** esc i2")
+      when space_marker?
+        status("** init 1")
+        @buffer << grab   # append the space
+        grab(n)           # eat the marker
+        @state = :CDATA
+      when marker?
+        status("** init 2")
+        grab(n)  # Eat the marker
+        @state = :CDATA
+      when eol?
+        status("** init 3")
+        @state = :FINAL
+      else
+        status("** init 4")
+        @state = :BUFFER
+      end
+    end
+
+    def buffer
+      status("** buffer 0")
+      @buffer << grab
+      @state = :LOOPING
+    end
+
+    def cdata
+      status("** cdata 0")
+      case
+      when eol?
+        status("** cdata 1")
+        if @cdata.empty?
+          status("** cdata 2")
+          @buffer << @marker unless @marker[1] == "["
+        else
+          status("** cdata 3")
+          @buffer << wrap(@cdata)
+        end
+        @state = :FINAL
+      when terminated?
+        status("** cdata 4")
+        @buffer << wrap(@cdata)
+        grab_terminator    # "*a *b"  case???
+        @cdata = ""
+        @state = :LOOPING
+      else
+        status("** cdata 5")
+        @cdata << grab
+        @state = :CDATA
+      end
+    end
+
+    def looping
+      n = @marker.length
+      case
+      when escape?
+        status("** esc l0")
+        grab               # backslash
+        status("** esc l1")
+        @buffer << grab    # char
+        status("** esc l2")
+      when space_marker?
+        @buffer << grab   # append the space
+        grab(n)           # eat the marker
+        @state = :CDATA
+      when eol?
+        @state = :FINAL
+      else   # includes marker not preceded by space!
+        @buffer << grab
+      end
+    end
+
+    def handle
+      loop do
+        break if @state == :FINAL
+        meth = @state.downcase
+        send(meth)
+      end
+      return @buffer
+    end
+
+    def self.process(str)
+      bold = self.new(str, "*", "b")
+      sb   = bold.handle
+# return sb
+      ital = self.new(sb, "_", "i")
+      si   = ital.handle
+      code = self.new(si, "`", "tt")
+      sc   = code.handle
+      stri = self.new(sc, "~", "strike")
+      si   = stri.handle
+      si
+    end
+  end
+
+  class Single < Delimited
+    # Yeah, this one is that simple
+  end
+
+  class Double < Delimited
+    def initialize(str, sigil, tag)
+      super
+      # Convention: marker is "**", sigil is "*"
+      @marker = sigil + sigil
+    end
+
+    def terminated?
+      terms = [" ", ".", ","]
+      terms.include?(front)
+    end
+  end
+
+  class Bracketed < Delimited
+    def initialize(str, sigil, tag)
+      super
+      # Convention: marker is "*[", sigil is "*"
+      @marker = sigil + "["
+    end
+
+    def terminated?
+      front == "]" || eol?
+    end
+
+    def grab_terminator
+      @state = :LOOPING
+      grab
+    end
+  end
+
 end
 

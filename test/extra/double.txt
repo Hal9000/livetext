@@ -1,0 +1,44 @@
+Double marker plus end of line
+"**abc"
+"<b>abc</b>"
+-----------------------------------
+Embedded double marker is ignored
+"abc**d"
+"abc**d"
+-----------------------------------
+Double marker at end of line is ignored
+"abc**"
+"abc**"
+-----------------------------------
+Two valid double markers
+"**A, **B, C"
+"<b>A</b>, <b>B</b>, C"
+-----------------------------------
+One valid double marker
+"Just a **test..."
+"Just a <b>test</b>..."
+-----------------------------------
+Double marker by itself is ignored
+" ** "
+" ** "
+-----------------------------------
+Double marker terminated by comma, period, end of line
+"**ab, **c. d **e"
+"<b>ab</b>, <b>c</b>. d <b>e</b>"
+-----------------------------------
+Embedded double markers are ignored
+"x**y**z"
+"x**y**z"
+-----------------------------------
+Double markers terminated by space or end of line
+"**a **b"
+"<b>a</b> <b>b</b>"
+-----------------------------------
+Single valid double marker
+"**A"
+"<b>A</b>"
+-----------------------------------
+Double marker by itself is ignored
+"**"
+"**"
+-----------------------------------

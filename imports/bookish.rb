@@ -173,7 +173,7 @@ module Bookish
     lines = api.body(true)
     maxw = nil
     lines.each do |line|
-      api.format(line)
+      # line = api.format(line)
       cells = line.split(delim)
       wide = cells.map {|x| x.length }
       maxw = [0] * cells.size

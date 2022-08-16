@@ -1,0 +1,52 @@
+No marker at all
+"abc"
+"abc"
+------------------------------------
+Single marker at front
+"*abc"
+"<b>abc</b>"
+------------------------------------
+Embedded marker is ignored
+"abc*d"
+"abc*d"
+------------------------------------
+Trailing marker is ignored
+"abc*"
+"abc*"
+------------------------------------
+Two valid markers
+"*A *B C"
+"<b>A</b> <b>B</b> C"
+------------------------------------
+One valid marker
+"Just a little *test here"
+"Just a little <b>test</b> here"
+------------------------------------
+Marker surrounded by spaces is ignored
+" * "
+" * "
+------------------------------------
+Multiple valid markers
+"*abc *d ef *gh i"
+"<b>abc</b> <b>d</b> ef <b>gh</b> i"
+------------------------------------
+Valid markers are ignored
+"x*y*z"
+"x*y*z"
+------------------------------------
+Valid markers at start+end of string
+"*a *b"
+"<b>a</b> <b>b</b>"
+------------------------------------
+Marker by itself on line is ignored
+"*"
+"*"
+------------------------------------
+Marker at end unaffected by newline
+"This is *bold\n"
+"This is <b>bold</b>"
+------------------------------------
+Escaped marker is ignored
+"\\*escaped"
+"*escaped"
+------------------------------------

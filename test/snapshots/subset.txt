@@ -19,8 +19,6 @@ h This file specifies which snapshots will/won't be run.
 
 # Note that QUIT (on a line by itself) will stop processing the file
 
-# Bootstrap
-
 # Others (usually passing):
 
 # import/include/mixin, others...

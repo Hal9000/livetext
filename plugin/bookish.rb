@@ -173,7 +173,7 @@ def simple_table(args = nil, body = nil)
   lines = api.body(true)
   maxw = nil
   lines.each do |line|
-    api.format(line)
+    # api.format(line)
     cells = line.split(delim)
     wide = cells.map {|x| x.length }
     maxw = [0] * cells.size

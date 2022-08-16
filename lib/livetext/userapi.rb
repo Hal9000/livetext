@@ -48,7 +48,7 @@ class Livetext::UserAPI
   end
 
   def data=(value)
-    @data = value
+    @data = value.dup
     @args = format(@data).chomp.split
   end
 
@@ -104,17 +104,29 @@ class Livetext::UserAPI
     lines = []
     end_found = false
     loop do
+# TTY.puts "BODY 0: @line = #{@line.inspect}"
       @line = @live.nextline
+# TTY.puts "BODY 1: @line = #{@line.inspect}"
       break if @line.nil?
+# TTY.puts "BODY 2: @line = #{@line.inspect}"
       @line.chomp!
+# TTY.puts "BODY 3: @line = #{@line.inspect}"
       break if end?(@line)
+# TTY.puts "BODY 4: @line = #{@line.inspect}"
       next if comment?(@line)
+# TTY.puts "BODY 5: @line = #{@line.inspect}"
       @line = format(@line) unless raw
+# TTY.puts "BODY 6: @line = #{@line.inspect}"
       lines << @line
+# TTY.puts "BODY 7: @line = #{@line.inspect}"
     end
+# TTY.puts "BODY 8: lines = #{lines.inspect}"
     raise "Expected .end, found end of file" unless end?(@line)  # use custom exception
+# TTY.puts "BODY 9: lines = #{lines.inspect}"
     optional_blank_line   # FIXME Delete this??
+# TTY.puts "BODY A: lines = #{lines.inspect}"
     return lines unless block_given?
+# TTY.puts "BODY B: lines = #{lines.inspect}"
     lines.each {|line| yield line }   # FIXME what about $. ?
   end
 
@@ -135,7 +147,6 @@ class Livetext::UserAPI
   end
 
   def format(line)
-    return "" if line == "\n" || line.nil?
     line2 = @expander.format(line)
     line2
   end

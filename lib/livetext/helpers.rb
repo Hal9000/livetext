@@ -10,6 +10,8 @@ module Livetext::Helpers
   ESCAPING = { "'" => '&#39;', '&' => '&amp;', '"' => '&quot;',
                '<' => '&lt;', '>' => '&gt;' }
 
+  TTY = ::File.open("/dev/tty", "w")
+
   def friendly_error(err)
     return graceful_error(err) if self.respond_to?(:graceful_error)
     return self.parent.graceful_error(err) if self.respond_to?(:parent)
@@ -100,14 +102,14 @@ module Livetext::Helpers
     when DotCmd
       success = handle_dotcmd(line)
     when DollarDot
-      success = handle_dollar_dot
+      success = handle_dollar_dot(line)
     else
       api.passthru(line)  # must succeed?
     end
     success
   end
 
-  def handle_dollar_dot
+  def handle_dollar_dot(line)
     indent = line.index("$") + 1
     @indentation.push(indent)
     line.sub!(/^ *\$/, "")
@@ -128,7 +130,6 @@ module Livetext::Helpers
   end
 
   def handle_dotcmd(line, indent = 0)
-    # FIXME api.data is broken
     indent = @indentation.last # top of stack
     line = line.sub(/# .*$/, "")   # FIXME Could be problematic?
     name, data = get_name_data(line)
@@ -149,14 +150,20 @@ module Livetext::Helpers
   end
 
   def get_name_data(line)
-    name, data = line.chomp.split(" ", 2)  # FIXME don't eat consecutive spaces
-    data ||= ""
-    name = name[1..-1]  # chop off sigil
+    line = line.chomp
+    blank = line.index(" ")
+    if blank
+      name = line[1..(blank-1)]
+      data0 = line[(blank+1)..-1]
+    else
+      name = line[1..-1]
+      data0 = ""
+    end
     name = "dot_" + name if %w[include def].include?(name)
     @main.check_disallowed(name)
-#   @main.data = data      # FIXME kill this
-    @main.api.data = data  # FIXME kill this?
-    [name.to_sym, data]
+#   @main.data = data       # FIXME kill this
+    @main.api.data = data0  # FIXME kill this?
+    [name.to_sym, data0]
   end
 
   def check_disallowed(name)

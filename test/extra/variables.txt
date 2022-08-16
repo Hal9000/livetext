@@ -1,0 +1,35 @@
+Simple variable
+"User name is $User, and all is well"
+/is RX_USER, and/
+-------------------------------------------------
+Simple user variable
+init: @live.api.setvar(:whatever, "some var value")
+"This is $whatever"
+"This is some var value"
+-------------------------------------------------
+Test undefined variable
+"foo.bar is $foo.bar, apparently."
+/undefined/
+-------------------------------------------------
+Variables $User and $Version
+"I am user $User using Livetext v. $Version"
+/user RX_USER using Livetext v. RX_VERS/
+-------------------------------------------------
+Undefined variable
+"Here is $no.such.var's value"
+"Here is [no.such.var is undefined]'s value"
+-------------------------------------------------
+Escaped variable name
+"The backslash means that \$gamma is not a variable"
+"The backslash means that $gamma is not a variable"
+-------------------------------------------------
+Backslash dollar dollar
+init: @live.api.setvar(:amount, 2.37)
+"Observe: \$$amount is not a function"
+"Observe: $2.37 is not a function"
+-------------------------------------------------
+Period after variable name
+init: @live.api.setvar(:pi, 3.14159)
+"Pi is roughly $pi."
+"Pi is roughly 3.14159."
+-------------------------------------------------

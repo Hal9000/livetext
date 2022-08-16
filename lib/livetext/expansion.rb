@@ -12,11 +12,11 @@ class Livetext::Expansion
     @live = instance
   end
 
-  def format(line)   # new/experimental
+  def format(line)
     return "" if line == "\n" || line.nil?
-    formatted = Formatter.format(line)
-    with_vars = expand_variables(formatted)
+    with_vars = expand_variables(line)
     with_func = expand_function_calls(with_vars)
+    formatted = Formatter.format(with_func)
   end
 
   def expand_variables(str)

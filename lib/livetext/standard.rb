@@ -17,6 +17,8 @@ module Livetext::Standard
   include HTMLHelper
   include Livetext::Helpers
 
+  TTY = ::File.open("/dev/tty", "w")
+
   SimpleFormats =     # Move this?
    { b: %w[<b> </b>],
      i: %w[<i> </i>],
@@ -216,7 +218,7 @@ STDERR.puts "pairs = #{pairs.inspect}"
     end
     indent = @parent.indentation.last
     indented = " " * indent
-    api.set(var, rhs.chomp)
+    api.setvar(var, rhs.chomp)
     api.optional_blank_line
   end
 
@@ -229,7 +231,7 @@ STDERR.puts "pairs = #{pairs.inspect}"
   end
 
   def dot_include   # dot command
-    file = api.format(api.args.first)  # allows for variables
+    file = api.args.first # api.format(api.args.first)  # allows for variables
     check_file_exists(file)
     @parent.process_file(file)
     api.optional_blank_line

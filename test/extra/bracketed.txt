@@ -1,0 +1,44 @@
+Single bracketed item
+"*[abc]"
+"<b>abc</b>"
+--------------------------------
+End of line can replace bracket
+"*[abc"
+"<b>abc</b>"
+--------------------------------
+End of line can replace bracket again
+"abc *[d"
+"abc <b>d</b>"
+--------------------------------
+Missing right bracket ignored at eol if empty
+"abc*["
+"abc*["
+--------------------------------
+Two simple bracketed items
+"*[A], *[B], C"
+"<b>A</b>, <b>B</b>, C"
+--------------------------------
+Simple bracketed item
+"Just a *[test]..."
+"Just a <b>test</b>..."
+--------------------------------
+Bracketed item with space
+"A *[simple test]"
+"A <b>simple test</b>"
+--------------------------------
+Empty bracketed item results in null
+" *[] "
+"  "
+--------------------------------
+Bracketed item with space again
+"*[ab c] d"
+"<b>ab c</b> d"
+--------------------------------
+Two bracketed items with spaces
+"*[a b] *[c d]"
+"<b>a b</b> <b>c d</b>"
+--------------------------------
+Solitary item, missing right bracket ignored at eol if empty
+"*["
+""
+--------------------------------

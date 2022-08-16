@@ -1,0 +1,58 @@
+Simple function call
+"Today is $$date"
+/Today is RX_DATE/
+-------------------------------------------------
+Function call with colon parameter
+"Square root of 225 is $$isqrt:225"
+/is 15$/
+-------------------------------------------------
+Function call with empty colon parameter
+"Calculate $$isqrt:"
+/Error evaluating/
+-------------------------------------------------
+Function call with empty bracket parameter
+"Calculate $$isqrt[]"
+/Error evaluating/
+-------------------------------------------------
+Function detects invalid bracket parameter
+"Calculate $$isqrt[3a5]"
+/Error evaluating/
+-------------------------------------------------
+Function call followed by comma
+"Today is $$date, I think"
+/Today is RX_DATE, I think/
+-------------------------------------------------
+Undefined function
+"I am calling an $$unknown.function here"
+/evaluating/
+-------------------------------------------------
+Functions date, time, pwd
+"Today is $$date at $$time, and I am in $$pwd"
+/Today is RX_DATE at RX_TIME, and I am in RX_PATH/
+-------------------------------------------------
+Function detects missing parameter
+"Here I call $$reverse with no parameters"
+"Here I call (reverse: No parameter) with no parameters"
+-------------------------------------------------
+Simple function test
+"'animal' spelled backwards is '$$reverse[animal]'"
+"'animal' spelled backwards is 'lamina'"
+-------------------------------------------------
+Simple function with colon parameter
+"'lamina' spelled backwards is $$reverse:lamina"
+"'lamina' spelled backwards is animal"
+-------------------------------------------------
+Variable inside function bracket parameter
+init: @live.api.setvar(:whatever, "some var value")
+"$whatever backwards is $$reverse[$whatever]"
+"some var value backwards is eulav rav emos"
+-------------------------------------------------
+Function with variable in colon param is nonhygienic
+init: @live.api.setvar(:whatever, "some var value")
+"Like non-hygienic macros: $whatever backwards != $$reverse:$whatever"
+"Like non-hygienic macros: some var value backwards != emos var value"
+-------------------------------------------------
+Function call with variable in bracket param
+"User $User backwards is $$reverse[$User]"
+/User RX_USER backwards is RX_USER$/
+-------------------------------------------------
