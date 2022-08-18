@@ -27,16 +27,6 @@ module Livetext::Standard
 
   attr_reader :data
 
-#   def data=(val)    # FIXME this is weird, let's remove it soonish  and why are there two???
-# # api.tty ">>>> in #{__FILE__}: api id = #{api.object_id}"
-#     val ||= ""
-#     val = val.chomp
-#     api.data = val
-#     api.args = format(val).split rescue []
-#     @mixins = []
-#     @imports = []
-#   end
-
   # dumb name - bold, italic, teletype, striketrough
 
   def bits   # FIXME umm what is this?
@@ -153,12 +143,8 @@ module Livetext::Standard
   end
 
   def dot_def
-# api.tty "in #{__FILE__}: api id = #{api.inspect}"
     name = api.args[0]
-# api.tty :dd1
-# api.tty name.inspect
     check_disallowed(name)
-# api.tty :dd2
     # Difficult to avoid eval here
     str = "def #{name}\n"
     str << api.body(true).join("\n")
@@ -364,7 +350,6 @@ STDERR.puts "pairs = #{pairs.inspect}"
   end
 
   def xtable   # Borrowed from bookish - FIXME
-# TTY.puts "=== #{__method__} #{__FILE__} #{__LINE__}"
     title = api.data
     delim = " :: "
     api.out "<br><center><table width=90% cellpadding=5>"

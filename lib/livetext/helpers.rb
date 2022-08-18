@@ -58,10 +58,8 @@ module Livetext::Helpers
     base  = "#{name}#{ext}"
     paths.each do |path|
       file = path + base
-# ::Livetext::TTY.puts  "   Checking: #{file}"
       return file if File.exist?(file)
     end
-# ::Livetext::TTY.puts  "   ...oops"
     return nil
   end
 
@@ -118,11 +116,10 @@ module Livetext::Helpers
     success
   end
 
-  def invoke_dotcmd(name, data="")
-    # FIXME Add cmdargs stuff... depends on name, etc.
-    api.data = data   # should permit _ in function names at least
-    args = data.split
-    api.args = args
+  def invoke_dotcmd(name, data0="")
+    api.data = data0.dup   # should permit _ in function names at least
+    args0 = data0.split
+    api.args = args0.dup
     retval = @main.send(name)  # , *args)
     retval
   rescue => err
@@ -161,7 +158,6 @@ module Livetext::Helpers
     end
     name = "dot_" + name if %w[include def].include?(name)
     @main.check_disallowed(name)
-#   @main.data = data       # FIXME kill this
     @main.api.data = data0  # FIXME kill this?
     [name.to_sym, data0]
   end

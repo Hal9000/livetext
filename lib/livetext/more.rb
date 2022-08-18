@@ -59,17 +59,6 @@ class Livetext
     str3
   end
 
-  def self.customize(mix: [], call: [], vars: {})
-    obj = self.new
-    mix  = Array(mix)
-    call = Array(call)
-    mix.each {|lib| obj.mixin(lib) }
-    call.each {|cmd| obj.main.send(cmd[1..-1]) }  # ignores leading dot, no param
-    # vars.each_pair {|var, val| obj.setvar(var, val.to_s) }
-    api.setvars(vars)
-    obj
-  end
-
   def peek_nextline
     @main.peek_nextline  # delegate
   end
@@ -100,6 +89,17 @@ class Livetext
   def graceful_error(err)
     dump
     raise err
+  end
+
+  def self.customize(mix: [], call: [], vars: {})
+    obj = self.new
+    mix  = Array(mix)
+    call = Array(call)
+    mix.each {|lib| obj.mixin(lib) }
+    call.each {|cmd| obj.main.send(cmd[1..-1]) }  # ignores leading dot, no param
+    # vars.each_pair {|var, val| obj.setvar(var, val.to_s) }
+    obj.api.setvars(vars)
+    obj
   end
 
   def customize(mix: [], call: [], vars: {})
