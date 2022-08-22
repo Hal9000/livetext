@@ -7,6 +7,7 @@ class Livetext
 
   class Variables
     attr_reader :vars
+
     def initialize(hash = {})
       @vars = {}
       hash.each_pair {|k, v| @vars[k.to_sym] = v }
@@ -33,6 +34,10 @@ class Livetext
       pairs.each do |var, value|
         api.setvar(var, value)
       end
+    end
+
+    def to_a
+      @vars.to_a
     end
   end
 
@@ -95,7 +100,10 @@ class Livetext
     obj = self.new
     mix  = Array(mix)
     call = Array(call)
-    mix.each {|lib| obj.mixin(lib) }
+# STDERR.puts "#{__method__}: obj meth = #{obj.methods.sort.inspect}"
+    mix.each do |lib| 
+      obj.invoke_dotcmd(:mixin, lib.dup)
+    end
     call.each {|cmd| obj.main.send(cmd[1..-1]) }  # ignores leading dot, no param
     # vars.each_pair {|var, val| obj.setvar(var, val.to_s) }
     obj.api.setvars(vars)

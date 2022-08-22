@@ -173,7 +173,6 @@ module Livetext::Standard
       lines = api.body
     end
     pairs = Livetext::ParseGeneral.parse_vars(lines, prefix: nil)
-STDERR.puts "! pairs = #{pairs.inspect}"
     api.setvars(pairs)
     api.optional_blank_line
   end
@@ -189,7 +188,6 @@ STDERR.puts "! pairs = #{pairs.inspect}"
       lines = api.body
     end
     pairs = Livetext::ParseGeneral.parse_vars(lines, prefix: nil)
-STDERR.puts "pairs = #{pairs.inspect}"
     api.setvars(pairs)
     api.optional_blank_line
   end
@@ -217,7 +215,7 @@ STDERR.puts "pairs = #{pairs.inspect}"
   end
 
   def dot_include   # dot command
-    file = api.args.first # api.format(api.args.first)  # allows for variables
+    file = api.expand_variables(api.args.first)  # allows for variables
     check_file_exists(file)
     @parent.process_file(file)
     api.optional_blank_line

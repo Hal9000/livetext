@@ -31,12 +31,26 @@ class Livetext::UserAPI
     @live
   end
 
+  def include_file(file)
+    api.data = file
+    api.dot_include
+  end
+
+  def expand_variables(str)
+    @expander.expand_variables(str)
+  end
+
+  def expand_functions(str)
+    @expander.expand_functions(str)
+  end
+
   def setvar(var, val)   # FIXME
     @live.vars.set(var, val)
   end
 
   def setvars(pairs)
-    pairs = pairs.to_a if pairs.is_a?(Hash)
+    # STDERR.puts "#{__method__}: pairs = #{pairs.inspect} (#{pairs.class})"
+    pairs = pairs.to_a   # could be Hash or Variables
     pairs.each do |var, value|
       @live.vars.set(var, value)
     end

@@ -41,7 +41,6 @@ module Formatter
     end
 
     def grab_terminator
-      status("** grabterm 0")
       @state = :LOOPING
       # goes onto buffer by default
       # Don't? what if searching for space_marker?
@@ -73,7 +72,6 @@ module Formatter
     end
 
     def wrap(text)
-      status("** wrap 0")
       if text.empty?
         result = @marker
         result = "" if @marker[1] == "["
@@ -83,60 +81,45 @@ module Formatter
     end
     
     def initial
-      status("** init 0")
       n = @marker.length
       case
       when escape?
-        status("** esc i0")
         grab               # backslash
-        status("** esc i1")
         @buffer << grab    # char
-        status("** esc i2")
       when space_marker?
-        status("** init 1")
         @buffer << grab   # append the space
         grab(n)           # eat the marker
         @state = :CDATA
       when marker?
-        status("** init 2")
         grab(n)  # Eat the marker
         @state = :CDATA
       when eol?
-        status("** init 3")
         @state = :FINAL
       else
-        status("** init 4")
         @state = :BUFFER
       end
     end
 
     def buffer
-      status("** buffer 0")
       @buffer << grab
       @state = :LOOPING
     end
 
     def cdata
-      status("** cdata 0")
       case
       when eol?
-        status("** cdata 1")
         if @cdata.empty?
-          status("** cdata 2")
           @buffer << @marker unless @marker[1] == "["
         else
-          status("** cdata 3")
           @buffer << wrap(@cdata)
         end
         @state = :FINAL
       when terminated?
-        status("** cdata 4")
         @buffer << wrap(@cdata)
         grab_terminator    # "*a *b"  case???
         @cdata = ""
         @state = :LOOPING
       else
-        status("** cdata 5")
         @cdata << grab
         @state = :CDATA
       end
@@ -146,11 +129,8 @@ module Formatter
       n = @marker.length
       case
       when escape?
-        status("** esc l0")
         grab               # backslash
-        status("** esc l1")
         @buffer << grab    # char
-        status("** esc l2")
       when space_marker?
         @buffer << grab   # append the space
         grab(n)           # eat the marker
