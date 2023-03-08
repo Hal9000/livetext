@@ -138,6 +138,10 @@ class Livetext
     @api
   end
 
+  def api=(obj)
+    @api = obj
+  end
+
   def initial_vars
     # Other predefined variables (see also setfile)
     @api.setvar(:User, `whoami`.chomp)

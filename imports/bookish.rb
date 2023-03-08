@@ -98,14 +98,18 @@ module Bookish
   end
 
   def sec(args = nil, body = nil)
+api.tty "## sec: cp 1"
     @sec += 1
     @sec2 = 0
     @section = "#@chapter.#@sec"
+api.tty "## sec: cp 2"
     title = api.data.dup
     @toc << "#{_nbsp(3)}<b>#@section</b> #{title}<br>"
-    api.data = _slug(api.data)
+    api.data = _slug(title)
+api.tty "## sec: cp 3"
     next_output
     api.out "<h3>#@section #{title}</h3>\n"
+api.tty "## sec: cp 4"
   rescue => err
     ::STDERR.puts "#{err}\n#{err.backtrace}"
     exit

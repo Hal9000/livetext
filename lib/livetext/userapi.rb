@@ -5,6 +5,8 @@ require_relative 'html'
 
 class Livetext::UserAPI
 
+  include ::Livetext::Standard
+
   KBD = File.new("/dev/tty", "r")
   TTY = File.new("/dev/tty", "w")
 
@@ -33,6 +35,8 @@ class Livetext::UserAPI
 
   def include_file(file)
     api.data = file
+    api.args = [file]
+STDERR.puts "incfile: #{api.methods.sort.inspect}\n "
     api.dot_include
   end
 

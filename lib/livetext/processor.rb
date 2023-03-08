@@ -27,6 +27,8 @@ class Processor
 
   def initialize(parent, output = nil)
     @parent = parent
+    # STDERR.puts "PARENT.api = #{parent.api.inspect}"
+    @parent.api ||= Livetext::UserAPI.new(@parent)
     @nopass = false
     @nopara = false
     # Meh?

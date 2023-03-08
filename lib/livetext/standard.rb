@@ -14,7 +14,7 @@ make_exception(:FileNotFound,     "Error: file '%1' not found")
 
 module Livetext::Standard
 
-  include HTMLHelper
+# include HTMLHelper
   include Livetext::Helpers
 
   TTY = ::File.open("/dev/tty", "w")
@@ -82,14 +82,14 @@ module Livetext::Standard
   def h6; api.out wrapped(api.data, :h6); return true; end
 
   def list
-    wrap :ul do
+    html.wrap :ul do
       api.body {|line| api.out wrapped(line, :li) }
     end
     api.optional_blank_line
   end
 
   def list!
-    wrap(:ul) do
+    html.wrap(:ul) do
       lines = api.body.each   # enumerator
       loop do
         line = lines.next
@@ -281,7 +281,7 @@ module Livetext::Standard
   end
 
   def debug
-    self._debug = onoff(api.args.first)
+    self.debug = onoff(api.args.first)
     api.optional_blank_line
   end
 
@@ -321,7 +321,7 @@ module Livetext::Standard
   end
 
   def mono
-    wrap ":pre" do
+    html.wrap ":pre" do
       api.body(true) {|line| api.out line }
     end
     api.optional_blank_line
@@ -329,7 +329,7 @@ module Livetext::Standard
 
   def dlist
     delim = api.args.first
-    wrap(:dl) do
+    html.wrap(:dl) do
       api.body do |line|
         line = api.format(line)
         term, defn = line.split(delim)
@@ -369,7 +369,7 @@ module Livetext::Standard
 
     processed.each do |line|
       cells = line.split(delim)
-      wrap :tr do
+      html.wrap :tr do
         cells.each {|cell| api.out "  <td valign=top>#{cell}</td>" }
       end
     end
@@ -378,8 +378,10 @@ module Livetext::Standard
   end
 
   def image
-    name = api.args[0]
-    api.out "<img src='#{name}'></img>"
+    name, wide, high = api.args
+    geom = ""
+    geom = "width=#{wide} height=#{high}" if wide || high
+    api.out "<img src='#{name} #{geom}'></img>"
     api.optional_blank_line
   end
 
