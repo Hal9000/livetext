@@ -117,9 +117,10 @@ module Livetext::Standard
     api.optional_blank_line
   end
 
-  def say
-    str = api.format(api.data)
-    TTY.puts str
+  def say(arg=nil)
+    data = arg || api.args.join(" ")
+    str = api.format(data)
+    TTY.puts "(say) #{str}"
     api.optional_blank_line
   end
 
@@ -281,7 +282,7 @@ module Livetext::Standard
   end
 
   def debug
-    self.debug = onoff(api.args.first)
+    @debug = onoff(api.args.first)
     api.optional_blank_line
   end
 

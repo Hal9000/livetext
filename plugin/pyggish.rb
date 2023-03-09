@@ -82,13 +82,25 @@ def self.pyg_finalize(code, lexer=:elixir)
     result
   end
 
-  def fragment
+  def fragment(args = nil, body = nil)
     lang = api.args.empty? ? :elixir : api.args.first.to_sym   # ruby or elixir
     api.args = []
-  # TTY.puts "\n#{self.inspect}"
-    send(lang)
+    lines = api.body(true)  # .to_a  # raw
+    result = send(lang, lines)
+    api.out result
     api.out "\n"
+    api.optional_blank_line
+  rescue => err
+    STDERR.puts "fragment Error: #{__method__} err = #{err}\n#{err.backtrace.join("\n")}"
   end
+
+def dammit(args = nil, body = nil)
+  lines = api.body(true)
+  api.out "BODY:"
+  lines.each {|x| api.out x }
+  api.out "END BODY"
+  api.optional_blank_line
+end
 
   def code       # FIXME ?
     text = ""   
@@ -145,8 +157,9 @@ def self.pyg_finalize(code, lexer=:elixir)
     text
   end
 
-  def ruby
+  def xruby
     file = api.args.first 
+    code = nil
     if file.nil?
       code = "  # Ruby code\n\n"
       api.body {|line| code << "  " + line + "\n" }
@@ -158,15 +171,76 @@ def self.pyg_finalize(code, lexer=:elixir)
     api.out html
   end
 
-  def elixir
+  def xelixir
     file = api.args.first 
+    code = nil
     if file.nil?
       code = ""
       api.body {|line| code << "  " + line + "\n" }
     else
       code = ::File.read(file)
     end
-
     html = format_elixir(code)
     api.out html
+  end
+
+def ruby(lines)
+  theme = :Github  # default
+  source = lines.join("\n")
+  formatter = Rouge::Formatters::HTML.new
+  lexer = Rouge::Lexers::Ruby.new
+  body = formatter.format(lexer.lex(source))
+
+# css = Rouge::Themes.const_get(theme.to_s).render(scope: '.highlight')
+# added = ".highlight { font-family: courier; white-space: pre }"
+
+  result = <<~HTML
+    <div class="highlight">
+#{body}
+    </div>
+    <br>
+  HTML
+  return result
+
+  iheight = lines.size * 25
+  api.out <<~HTML
+    <center>
+      <iframe width=90% height=#{iheight} src='#{File.basename(html_file)}'></iframe>
+    </center>
+    <br>
+  HTML
+rescue => err
+  STDERR.puts "Error: #{__method__} err = #{err}\n#{err.backtrace.join("\n")}"
 end
+
+
+def elixir(lines)
+  theme = :Github  # default
+  source = lines.join("\n")
+  formatter = Rouge::Formatters::HTML.new
+  lexer = Rouge::Lexers::Elixir.new
+  body = formatter.format(lexer.lex(source))
+
+# css = Rouge::Themes.const_get(theme.to_s).render(scope: '.highlight')
+# added = ".highlight { font-family: courier; white-space: pre }"
+
+  result = <<~HTML
+    <div class="highlight">
+#{body}
+    </div>
+    <br>
+  HTML
+  return result
+
+  iheight = lines.size * 25
+  api.out <<~HTML
+    <center>
+      <iframe width=90% height=#{iheight} src='#{File.basename(html_file)}'></iframe>
+    </center>
+    <br>
+  HTML
+rescue => err
+  STDERR.puts "Error: #{__method__} err = #{err}\n#{err.backtrace}"
+end
+
+

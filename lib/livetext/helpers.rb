@@ -2,6 +2,7 @@
 require_relative 'global_helpers'
 require_relative 'expansion'
 
+
 module Livetext::Helpers
 
   Space = " "
@@ -98,13 +99,16 @@ module Livetext::Helpers
     when Comment
       success = handle_scomment(line)
     when DotCmd
-      success = handle_dotcmd(line)
+      success = handle_dotcmd(line)       # was 102
     when DollarDot
       success = handle_dollar_dot(line)
     else
       api.passthru(line)  # must succeed?
     end
     success
+  rescue => err
+    STDERR.puts "ERROR: #{err}\n#{err.backtrace.join("\n")}"
+    exit
   end
 
   def handle_dollar_dot(line)
@@ -120,7 +124,7 @@ module Livetext::Helpers
     api.data = data0.dup   # should permit _ in function names at least
     args0 = data0.split
     api.args = args0.dup
-    retval = @main.send(name)  # , *args)
+    retval = @main.send(name)  # , *args)      # was 125
     retval
   rescue => err
     graceful_error(err)
@@ -135,7 +139,7 @@ module Livetext::Helpers
       when name == :end   # special case
         graceful_error EndWithoutOpening()
       when @main.respond_to?(name)
-        success = invoke_dotcmd(name, data)
+        success = invoke_dotcmd(name, data)    # was 141
     else
       graceful_error UnknownMethod(name)
     end
@@ -250,3 +254,9 @@ module Livetext::Helpers
   end
 
 end
+
+=begin
+/Users/Hal/.rvm/gems/ruby-2.7.0/gems/livetext-0.9.35/lib/livetext/helpers.rb:125:in `invoke_dotcmd'
+/Users/Hal/.rvm/gems/ruby-2.7.0/gems/livetext-0.9.35/lib/livetext/helpers.rb:141:in `handle_dotcmd'
+/Users/Hal/.rvm/gems/ruby-2.7.0/gems/livetext-0.9.35/lib/livetext/helpers.rb:102:in `process_line'
+=end

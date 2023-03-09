@@ -93,8 +93,8 @@ def parse_command_line
     end
   end
   @live.dump if success
-# rescue => err
-#   STDERR.puts "Unexpected error! #{err.inspect}"
+rescue => err
+  STDERR.puts "Unexpected error! #{err.inspect}\n#{err.backtrace.join("\n")}"
 end
 
 # Main
