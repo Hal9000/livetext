@@ -15,9 +15,12 @@ end
 
 # These are duplicated. Remove safely
 
-def h1; api.out "<h1>#{api.data}</h1>"; api.optional_blank_line; end
-def h2; api.out "<h2>#{api.data}</h2>";  api.optional_blank_line; end
-def h3; api.out "<h3>#{api.data}</h3>";  api.optional_blank_line; end
+  def h1(args = nil, body = nil); api.out html.tag(:h1, api.data); return true; end
+  def h2(args = nil, body = nil); api.out html.tag(:h2, api.data); return true; end
+  def h3(args = nil, body = nil); api.out html.tag(:h3, api.data); return true; end
+  def h4(args = nil, body = nil); api.out html.tag(:h4, api.data); return true; end
+  def h5(args = nil, body = nil); api.out html.tag(:h5, api.data); return true; end
+  def h6(args = nil, body = nil); api.out html.tag(:h6, api.data); return true; end
 
 def alpha_columns(args = nil, body = nil)
   n = api.args.first.to_i   # FIXME: what if it's missing?
@@ -71,7 +74,7 @@ def figure(args = nil, body = nil)
   api.optional_blank_line
 end
 
-def chapter(args = nil, body = nil)
+def xchapterN(args = nil, body = nil)
   @chapter = api.args.first.to_i
   @sec = @sec2 = 0
   title = api.data.split(" ",2)[1]
@@ -81,13 +84,12 @@ def chapter(args = nil, body = nil)
   api.out "<title>#{@chapter}. #{title}</title>"
   api.out <<-HTML
     <h2>Chapter #{@chapter}</h2>
-    <h1>#{title}</h1>
-
+    <h1>#{title}</h1>\n
   HTML
   api.optional_blank_line
 end
 
-def chapterN(args = nil, body = nil)
+def chapter(args = nil, body = nil)
   @chapter += 1
   @sec = @sec2 = 0
   title = api.data    # .split(" ",2)[1]
@@ -98,8 +100,7 @@ def chapterN(args = nil, body = nil)
   api.out "<title>#{@chapter}. #{title}</title>"
   api.out <<-HTML
     <h2>Chapter #{@chapter}</h2>
-    <h1>#{title}</h1>
-
+    <h1>#{title}</h1>\n
   HTML
   api.optional_blank_line
 end
@@ -115,8 +116,8 @@ def sec(args = nil, body = nil)
   api.out "<h3>#@section #{title}</h3>\n"
   api.optional_blank_line
 rescue => err
-  api.tty  "#{err}\n#{err.backtrace}"
-  ::STDERR.puts "#{err}\n#{err.backtrace}"
+  api.tty  "#{err}\n#{err.backtrace.join("\n")}"
+  ::STDERR.puts "#{err}\n#{err.backtrace.join("\n")}"
   exit
 end
 
@@ -296,22 +297,22 @@ rescue => err
 end
 
 def init_bookish
+  @_file_num = 0
   @toc_file = "toc.tmp"
   @toc = ::File.new(@toc_file, "w")
   @chapter = -1
 end
 
-###################  custom.rb
+###########
 
-
-def outdir
+def outdir(args = nil, body = nil)
   @_outdir = api.args.first
 # @output = STDOUT
   @output = nil
   api.optional_blank_line
 end
 
-def outdir!  # FIXME ?
+def outdir!(args = nil, body = nil)  # FIXME ?
   @_outdir = api.args.first
   raise "No output directory specified" if @_outdir.nil?
   raise "No output directory specified" if @_outdir.empty?
@@ -327,12 +328,12 @@ def _append(name)
 end
 
 
-def append
+def append(args = nil, body = nil)
   file = api.args[0]
   _append(file)
 end
 
-def close_output
+def close_output(args = nil, body = nil)
   return if @output == STDOUT
   @_outdir ||= "."
   @output.puts "<meta charset='UTF-8'>\n\n"
@@ -343,16 +344,19 @@ def close_output
 end
 
 def _prep_next_output(args)
-  tag, num = args    # _next_output(tag, num)
-  @_file_num = num ? num : @_file_num + 1
-  @_file_num = @_file_num.to_i
-  name = "#{'%03d' % @_file_num}-#{tag}.html"
-  api.tty "tag, num, name= #{[tag, num, name].inspect}"
-  name
+  *title = args    # _next_output(tag, num)
+  title = title.join(" ")
+  slug = _slug(title)
+  api.tty "title = #{title.inspect}"
+  @_file_num += 1
+  fname = "#{'%03d' % @_file_num}-#{slug}.html"
+  api.tty "slug, fnum, fname= #{[slug, @_file_num, fname].inspect}"
+  fname
 end
 
-def next_output
-  name = _prep_next_output(api.args)
+def next_output(args = nil, body = nil)
+  args ||= api.args
+  fname = _prep_next_output(args)
   @_outdir ||= "."
   unless @output.nil?
     @output.puts "<meta charset='UTF-8'>\n\n"
@@ -360,12 +364,12 @@ def next_output
     @parent.body = ""
     @output.close unless @output == STDOUT
   end
-  fname = @_outdir + "/" + name
+  fname = @_outdir + "/" + fname
   @output = File.open(fname, "w")
   api.optional_blank_line
 end
 
-def output
+def output(args = nil, body = nil)
   name = api.args.first
   _debug "Redirecting output to: #{name}"
   # _output(name)
@@ -378,7 +382,7 @@ def output
   @output = File.open(fname, "w")  #; STDERR.puts "---- @out = #{@output.inspect}"
 end
 
-def columns
+def columns(args = nil, body = nil)
   api.out "<table border=1><tr><td valign=top><br>\n"
   api.body.to_a.each do |line|
     if line.start_with?("##col")
@@ -392,7 +396,7 @@ def columns
   api.out "<br>\n</td></tr></table>"
 end
 
-def quote
+def quote(args = nil, body = nil)
   api.out "<blockquote>"
   lines = api.body.to_a
 # STDERR.puts "-----------------------------------------------------"

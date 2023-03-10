@@ -127,7 +127,7 @@ module Livetext::Helpers
     retval = @main.send(name)  # , *args)      # was 125
     retval
   rescue => err
-    graceful_error(err)
+    graceful_error(err)   # , "#{__method__}: name = #{name}")
   end
 
   def handle_dotcmd(line, indent = 0)

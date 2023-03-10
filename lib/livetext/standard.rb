@@ -44,23 +44,23 @@ module Livetext::Standard
 #    end
 #  end
 
-  def backtrace
+  def backtrace(args = nil, body = nil)
     @backtrace = onoff(api.args.first)
     api.optional_blank_line
   end
 
-  def comment
+  def comment(args = nil, body = nil)
     api.body
     api.optional_blank_line
   end
 
-  def shell
+  def shell(args = nil, body = nil)
     cmd = api.data
     system(cmd)
     api.optional_blank_line
   end
 
-  def func
+  def func(args = nil, body = nil)
     funcname = api.args[0]
     # check_disallowed(funcname)  # should any be invalid?
     funcname = funcname.gsub(/\./, "__")
@@ -74,21 +74,21 @@ module Livetext::Standard
     return true
   end
 
-  def h1; api.out wrapped(api.data, :h1); return true; end
-  def h2; api.out wrapped(api.data, :h2); return true; end
-  def h3; api.out wrapped(api.data, :h3); return true; end
-  def h4; api.out wrapped(api.data, :h4); return true; end
-  def h5; api.out wrapped(api.data, :h5); return true; end
-  def h6; api.out wrapped(api.data, :h6); return true; end
+  def h1(args = nil, body = nil); api.out html.tag(:h1, api.data); return true; end
+  def h2(args = nil, body = nil); api.out html.tag(:h2, api.data); return true; end
+  def h3(args = nil, body = nil); api.out html.tag(:h3, api.data); return true; end
+  def h4(args = nil, body = nil); api.out html.tag(:h4, api.data); return true; end
+  def h5(args = nil, body = nil); api.out html.tag(:h5, api.data); return true; end
+  def h6(args = nil, body = nil); api.out html.tag(:h6, api.data); return true; end
 
-  def list
+  def list(args = nil, body = nil)
     html.wrap :ul do
-      api.body {|line| api.out wrapped(line, :li) }
+      api.body {|line| api.out html.tag(:li, line) }
     end
     api.optional_blank_line
   end
 
-  def list!
+  def list!(args = nil, body = nil)
     html.wrap(:ul) do
       lines = api.body.each   # enumerator
       loop do
@@ -101,41 +101,41 @@ module Livetext::Standard
     api.optional_blank_line
   end
 
-  def shell!
+  def shell!(args = nil, body = nil)
     cmd = api.data
     system(cmd)
     api.optional_blank_line
   end
 
-  def errout
+  def errout(args = nil, body = nil)
     ::STDERR.puts api.data
     api.optional_blank_line
   end
 
-  def ttyout
+  def ttyout(args = nil, body = nil)
     TTY.puts api.data
     api.optional_blank_line
   end
 
-  def say(arg=nil)
-    data = arg || api.args.join(" ")
+  def say(args = nil, body = nil)
+    data = args || api.args.join(" ")
     str = api.format(data)
     TTY.puts "(say) #{str}"
     api.optional_blank_line
   end
 
-  def banner
+  def banner(args = nil, body = nil)
     str = api.format(api.data)
     num = str.length
     decor = "-"*num + "\n"
     puts decor + str + "\n" + decor
   end
 
-  def quit
+  def quit(args = nil, body = nil)
     @output.close
   end
 
-  def cleanup
+  def cleanup(args = nil, body = nil)
     api.args.each do |item|
       cmd = ::File.directory?(item) ? "rm -f #{item}/*" : "rm #{item}"
       system(cmd)
@@ -143,7 +143,7 @@ module Livetext::Standard
     api.optional_blank_line
   end
 
-  def dot_def
+  def dot_def(args = nil, body = nil)
     name = api.args[0]
     check_disallowed(name)
     # Difficult to avoid eval here
@@ -154,7 +154,7 @@ module Livetext::Standard
     api.optional_blank_line
   end
 
-  def set
+  def set(args = nil, body = nil)
     line = api.args.join(" ")  # data.chomp
     pairs = Livetext::ParseSet.new(line).parse
     api.setvars(pairs)
@@ -163,7 +163,7 @@ module Livetext::Standard
 
   # FIXME really these should be one method...
 
-  def variables!  # cwd, not FileDir - weird, fix later
+  def variables!(args = nil, body = nil)  # cwd, not FileDir - weird, fix later
     prefix = api.args[0]
     file = api.args[1]
     prefix = nil if prefix == "-"  # FIXME dumb hack
@@ -178,7 +178,7 @@ module Livetext::Standard
     api.optional_blank_line
   end
 
-  def variables
+  def variables(args = nil, body = nil)
     prefix = api.args[0]
     file = api.args[1]
     prefix = nil if prefix == "-"  # FIXME dumb hack
@@ -193,7 +193,7 @@ module Livetext::Standard
     api.optional_blank_line
   end
 
-  def heredoc
+  def heredoc(args = nil, body = nil)
     var = api.args[0]
     text = api.body.join("\n")
     rhs = ""
@@ -207,7 +207,7 @@ module Livetext::Standard
     api.optional_blank_line
   end
 
-  def seek    # like include, but search upward as needed
+  def seek(args = nil, body = nil)    # like include, but search upward as needed
     file = api.args.first
 		file = search_upward(file)
     check_file_exists(file)
@@ -215,14 +215,14 @@ module Livetext::Standard
     api.optional_blank_line
   end
 
-  def dot_include   # dot command
+  def dot_include(args = nil, body = nil)   # dot command
     file = api.expand_variables(api.args.first)  # allows for variables
     check_file_exists(file)
     @parent.process_file(file)
     api.optional_blank_line
   end
 
-  def inherit
+  def inherit(args = nil, body = nil)
     file = api.args.first
     upper = "../#{file}"
     got_upper, got_file = File.exist?(upper), File.exist?(file)
@@ -234,7 +234,7 @@ module Livetext::Standard
     api.optional_blank_line
   end
 
-  def mixin
+  def mixin(args = nil, body = nil)
     name = api.args.first   # Expect a module name
     @mixins ||= []
     return if @mixins.include?(name)
@@ -246,7 +246,7 @@ module Livetext::Standard
     api.optional_blank_line
   end
 
-  def import
+  def import(args = nil, body = nil)
     name = api.args.first   # Expect a module name
     @imports ||= []
     return if @imports.include?(name)
@@ -258,7 +258,7 @@ module Livetext::Standard
     api.optional_blank_line
   end
 
-  def copy
+  def copy(args = nil, body = nil)
     file = api.args.first
     ok = check_file_exists(file)
 
@@ -268,67 +268,67 @@ module Livetext::Standard
     [ok, file]
   end
 
-  def r
+  def r(args = nil, body = nil)
     # FIXME api.data is broken
     # api.out api.data  # No processing at all
     api.out api.args.join(" ")
     api.optional_blank_line
   end
 
-  def raw
+  def raw(args = nil, body = nil)
     # No processing at all (terminate with __EOF__)
     api.raw_body {|line| api.out line }  # no formatting
     api.optional_blank_line
   end
 
-  def debug
+  def debug(args = nil, body = nil)
     @debug = onoff(api.args.first)
     api.optional_blank_line
   end
 
-  def passthru
+  def passthru(args = nil, body = nil)
     # FIXME - add check for args size? (helpers)
     @nopass = ! onoff(api.args.first)
     api.optional_blank_line
   end
 
-  def nopass
+  def nopass(args = nil, body = nil)
     @nopass = true
     api.optional_blank_line
   end
 
-  def para
+  def para(args = nil, body = nil)
     # FIXME - add check for args size? (helpers)
     @nopara = ! onoff(api.args.first)
     api.optional_blank_line
   end
 
-  def nopara
+  def nopara(args = nil, body = nil)
     @nopara = true
     api.optional_blank_line
   end
 
-  def heading
+  def heading(args = nil, body = nil)
     api.print "<center><font size=+1><b>"
     api.print api.data
     api.print "</b></font></center>"
     api.optional_blank_line
   end
 
-  def newpage
+  def newpage(args = nil, body = nil)
     api.out '<p style="page-break-after:always;"></p>'
     api.out "<p/>"
     api.optional_blank_line
   end
 
-  def mono
+  def mono(args = nil, body = nil)
     html.wrap ":pre" do
       api.body(true) {|line| api.out line }
     end
     api.optional_blank_line
   end
 
-  def dlist
+  def dlist(args = nil, body = nil)
     delim = api.args.first
     html.wrap(:dl) do
       api.body do |line|
@@ -341,14 +341,14 @@ module Livetext::Standard
     api.optional_blank_line
   end
 
-  def link
+  def link(args = nil, body = nil)
     url = api.args.first
     text = api.args[2..-1].join(" ")
     api.out "<a style='text-decoration: none' href='#{url}'>#{text}</a>"
     api.optional_blank_line
   end
 
-  def xtable   # Borrowed from bookish - FIXME
+  def xtable(args = nil, body = nil)   # Borrowed from bookish - FIXME
     title = api.data
     delim = " :: "
     api.out "<br><center><table width=90% cellpadding=5>"
@@ -378,7 +378,7 @@ module Livetext::Standard
     api.optional_blank_line
   end
 
-  def image
+  def image(args = nil, body = nil)
     name, wide, high = api.args
     geom = ""
     geom = "width=#{wide} height=#{high}" if wide || high
@@ -386,7 +386,7 @@ module Livetext::Standard
     api.optional_blank_line
   end
 
-  def br
+  def br(args = nil, body = nil)
     num = api.args.first || "1"
     str = ""
     num.to_i.times { str << "<br>" }
@@ -394,7 +394,7 @@ module Livetext::Standard
     api.optional_blank_line
   end
 
-  def reflection   # strictly experimental!
+  def reflection(args = nil, body = nil)   # strictly experimental!
     list = self.methods
     obj  = Object.instance_methods
     diff = (list - obj).sort

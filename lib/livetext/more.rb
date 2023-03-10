@@ -91,8 +91,9 @@ class Livetext
     TTY.puts "#dump had an error: #{err.inspect}"
   end
 
-  def graceful_error(err)
+  def graceful_error(err, msg = nil)
     dump
+    STDERR.puts msg if msg
     raise err
   end
 
