@@ -74,16 +74,16 @@ module Livetext::Standard
     return true
   end
 
-  def h1(args = nil, body = nil); api.out html.tag(:h1, api.data); return true; end
-  def h2(args = nil, body = nil); api.out html.tag(:h2, api.data); return true; end
-  def h3(args = nil, body = nil); api.out html.tag(:h3, api.data); return true; end
-  def h4(args = nil, body = nil); api.out html.tag(:h4, api.data); return true; end
-  def h5(args = nil, body = nil); api.out html.tag(:h5, api.data); return true; end
-  def h6(args = nil, body = nil); api.out html.tag(:h6, api.data); return true; end
+  def h1(args = nil, body = nil); api.out html.tag(:h1, cdata: api.data); return true; end
+  def h2(args = nil, body = nil); api.out html.tag(:h2, cdata: api.data); return true; end
+  def h3(args = nil, body = nil); api.out html.tag(:h3, cdata: api.data); return true; end
+  def h4(args = nil, body = nil); api.out html.tag(:h4, cdata: api.data); return true; end
+  def h5(args = nil, body = nil); api.out html.tag(:h5, cdata: api.data); return true; end
+  def h6(args = nil, body = nil); api.out html.tag(:h6, cdata: api.data); return true; end
 
   def list(args = nil, body = nil)
     html.wrap :ul do
-      api.body {|line| api.out html.tag(:li, line) }
+      api.body {|line| api.out html.tag(:li, cdata: line) }
     end
     api.optional_blank_line
   end
@@ -94,7 +94,7 @@ module Livetext::Standard
       loop do
         line = lines.next
         line = api.format(line)
-        str = line[0] == " " ? line : html.tag(:li, line)
+        str = line[0] == " " ? line : html.tag(:li, cdata: line)
         api.out str
       end
     end
@@ -335,8 +335,8 @@ module Livetext::Standard
       api.body do |line|
         line = api.format(line)
         term, defn = line.split(delim)
-        api.out html.tag(:dt, term)
-        api.out html.tag(:dd, defn)
+        api.out html.tag(:dt, cdata: term)
+        api.out html.tag(:dd, cdata: defn)
       end
     end
     api.optional_blank_line
