@@ -325,7 +325,7 @@ rescue => err
   exit
 end
 
-def init_bookish
+def init_booktool
   @_file_num = 0
   @toc_file = "toc.tmp"
   @toc = ::File.new(@toc_file, "w")

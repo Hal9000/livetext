@@ -1,11 +1,16 @@
    SOONISH?
    --------
-   Vars/functions via regex (integrate into existing code)
-   Bootstrap navbar
-x  Change .func to permit dotted function names
+   Tests for booktool
+   Tests for codetool
+   booktool/codetool as modules
+   Add .link, $$link, .imglink, ...
+   Refine/standardize: .table, .link, ...
+   HTML stuff as implicit lib?
+   For imports: Change init_plugin to init
+
    Bugs, failing tests, weirdness
-     - 4 tests failing, all related to formatline.rb?
-     - Bug: \$alpha prints as $lpha
+     - Can't passthru a double backslash?
+     - User-defined functions are broken?
      - Bug: Can't pass a variable into a function (snapshots/var_into_func)
      - Bug: Comma after function with param (see test_formatting_35)
      - Many identical duplicated tests in test/unit/formatline - see test_formatting_NN
@@ -15,10 +20,6 @@ x  Change .func to permit dotted function names
      - test suite for each import?
      - more "here-doc" style snapshot tests?
    Fix/improve overall structure 
-     - Break up FormatLine into pieces: parse_formatting, etc.
-     - Hide FormatLine better inside Livetext
-x    - Clean up livetext.rb (like rubocop)
-x    - Annoying require_relative paths:  ../../.. blah blah
      - Livetext::Parse:: namespace??
      - Miscellaneous "extraneous" requires? (but it breaks without them)
      - Address duplication in code
@@ -27,7 +28,6 @@ x    - Annoying require_relative paths:  ../../.. blah blah
      - Better parameter handling for custom dot commands (see: reify args/data)
      - Better parameter handling for custom functions
    Improve UserAPI...
-x    - Make it a class, not a module
      - Improve imports -- functionality, duplication, inconsistency, ...
      - All dot-commands into their own module?? (as an "import" or similar)
      - Support function "namespacing" like variables   $$some.func.name
@@ -42,8 +42,6 @@ x    - Make it a class, not a module
    `.meth? method ending in `? takes a block that may be processed or thrown away (`.else perhaps?)
    `.dump to dump all variables and their values
    Other debugging features
-   HTML helper? (in its own library?)
-   Add .link, $$link
    `.if and `[.else]?
    Feature to "break" to EOF?
    change from .lt3 to .live
@@ -100,6 +98,17 @@ x    - Make it a class, not a module
 
    DONE
    ----
+x  HTML helper? (in its own library?)
+x    - 4 tests failing, all related to formatline.rb?
+x    - Bug: \$alpha prints as $lpha
+x    - Break up FormatLine into pieces: parse_formatting, etc.
+x    - Hide FormatLine better inside Livetext
+x    - Clean up livetext.rb (like rubocop)
+x    - Annoying require_relative paths:  ../../.. blah blah
+x    - Make UserAPI a class, not a module
+x  Vars/functions via regex (integrate into existing code)
+x  Bootstrap navbar
+x  Change .func to permit dotted function names
 x  Address failing snapshot tests (one at a time?)
 x  import command
 x  Remove incomplete 'import' code
