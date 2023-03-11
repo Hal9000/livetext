@@ -94,7 +94,7 @@ module Livetext::Standard
       loop do
         line = lines.next
         line = api.format(line)
-        str = line[0] == " " ? line : wrapped(line, :li)
+        str = line[0] == " " ? line : html.tag(:li, line)
         api.out str
       end
     end
@@ -120,7 +120,7 @@ module Livetext::Standard
   def say(args = nil, body = nil)
     data = args || api.args.join(" ")
     str = api.format(data)
-    TTY.puts "(say) #{str}"
+    TTY.puts str
     api.optional_blank_line
   end
 
@@ -128,7 +128,8 @@ module Livetext::Standard
     str = api.format(api.data)
     num = str.length
     decor = "-"*num + "\n"
-    puts decor + str + "\n" + decor
+    api.tty decor + str + "\n" + decor
+    api.optional_blank_line
   end
 
   def quit(args = nil, body = nil)
@@ -334,8 +335,8 @@ module Livetext::Standard
       api.body do |line|
         line = api.format(line)
         term, defn = line.split(delim)
-        api.out wrapped(term, :dt)
-        api.out wrapped(defn, :dd)
+        api.out html.tag(:dt, term)
+        api.out html.tag(:dd, defn)
       end
     end
     api.optional_blank_line

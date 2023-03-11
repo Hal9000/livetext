@@ -1,8 +1,10 @@
 require 'fileutils'
 
 def epub!(args = nil, body = nil)
+api.tty "======== Entering epub"
   out = api.format(api.args[0])
   src = api.args[1]
+api.tty "======== epub: src = #{src}"
   @cover = api.args[2]
   if ::File.directory?(src)
     files = ::Dir["#{src}/*"].grep /\.html$/

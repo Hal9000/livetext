@@ -86,21 +86,13 @@ def self.pyg_finalize(code, lexer=:elixir)
     lang = api.args.empty? ? :elixir : api.args.first.to_sym   # ruby or elixir
     api.args = []
     lines = api.body(true)  # .to_a  # raw
-    result = send(lang, lines)
+    result = send("format_#{lang}", lines)
     api.out result
     api.out "\n"
     api.optional_blank_line
   rescue => err
     STDERR.puts "fragment Error: #{__method__} err = #{err}\n#{err.backtrace.join("\n")}"
   end
-
-def dammit(args = nil, body = nil)
-  lines = api.body(true)
-  api.out "BODY:"
-  lines.each {|x| api.out x }
-  api.out "END BODY"
-  api.optional_blank_line
-end
 
   def code       # FIXME ?
     text = ""   
@@ -138,26 +130,7 @@ end
     File.write("#{dir}/elixir.css", css)
   end
 
-
-  def format_ruby(source, theme = "Github", back = "black")
-    # theme/back not used now
-    formatter = Rouge::Formatters::HTML.new
-    lexer = Rouge::Lexers::Ruby.new
-    body = formatter.format(lexer.lex(source))
-    text = "<div class=rb_highlight>#{body}</div>"
-    text
-  end
-
-  def format_elixir(source, theme = "Github", back = "black")
-    # theme/back not used now
-    formatter = Rouge::Formatters::HTML.new
-    lexer = Rouge::Lexers::Elixir.new
-    body = formatter.format(lexer.lex(source))
-    text = "<div class=ex_highlight>#{body}</div>"
-    text
-  end
-
-  def xruby
+  def ruby(args = nil, body = nil)
     file = api.args.first 
     code = nil
     if file.nil?
@@ -171,7 +144,7 @@ end
     api.out html
   end
 
-  def xelixir
+  def elixir(args = nil, body = nil)
     file = api.args.first 
     code = nil
     if file.nil?
@@ -184,7 +157,29 @@ end
     api.out html
   end
 
-def ruby(lines)
+  def format_ruby(lines, theme = "Github", back = "black")
+    # theme/back not used now
+    source = lines
+    source = source.join("\n") if source.is_a?(Array)
+    formatter = Rouge::Formatters::HTML.new
+    lexer = Rouge::Lexers::Ruby.new
+    body = formatter.format(lexer.lex(source))
+    text = "<div class=rb_highlight>#{body}</div>"
+    text
+  end
+
+  def format_elixir(lines, theme = "Github", back = "black")
+    # theme/back not used now
+    source = lines
+    source = source.join("\n") if source.is_a?(Array)
+    formatter = Rouge::Formatters::HTML.new
+    lexer = Rouge::Lexers::Elixir.new
+    body = formatter.format(lexer.lex(source))
+    text = "<div class=ex_highlight>#{body}</div>"
+    text
+  end
+
+def __ruby(lines)
   theme = :Github  # default
   source = lines.join("\n")
   formatter = Rouge::Formatters::HTML.new
@@ -214,7 +209,7 @@ rescue => err
 end
 
 
-def elixir(lines)
+def __elixir(lines)
   theme = :Github  # default
   source = lines.join("\n")
   formatter = Rouge::Formatters::HTML.new
