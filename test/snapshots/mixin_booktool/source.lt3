@@ -1,4 +1,4 @@
-.mixin bookish
+.mixin booktool
 
 .simple_table
 this :: that
