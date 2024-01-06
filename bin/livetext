@@ -49,7 +49,7 @@ end
 def testing
   file = "#{Livetext::Path}/../../test/all.rb"
   flag = @backtrace ? "-back" : ""
-  cmd = "ruby #{file} cmdline#{flag}"
+  cmd = "ruby #{file} cmdline #{flag}"
   puts cmd
   system(cmd)
 end

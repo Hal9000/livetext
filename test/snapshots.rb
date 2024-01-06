@@ -66,7 +66,9 @@ class TestingLivetext < MiniTest::Test
 
     Args = ARGV - ["cmdline"]
     dir = self.get_dir
-    Data = "#{dir}test/snapshots"
+    # Data = "#{dir}/test/snapshots"
+    Data = "../../test/snapshots"
+puts ">> snapshot: pwd = #{Dir.pwd}"
     Dir.chdir(Data)
     TestDirs = Dir.entries(".").reject {|fname| ! File.directory?(fname) } - %w[. ..]
 
