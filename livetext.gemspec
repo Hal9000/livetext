@@ -20,6 +20,10 @@ Gem::Specification.new do |s|
   misc = %w[./README.lt3 ./README.md livetext.gemspec]
   test = Find.find("test").to_a
 
+  p main
+  p misc
+  p test
+
   s.files       =  main + misc + test
   s.homepage    = 'https://github.com/Hal9000/livetext'
   s.license     = "Ruby"

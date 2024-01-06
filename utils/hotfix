@@ -11,8 +11,9 @@ info = `gem list | grep livetext`
 vrx  = /\((.*)\)/
 version = vrx.match(info).to_a[1]
 
-### FIXME!!!
-# lib = "/Users/Hal/.rvm/gems/ruby-2.7.0/gems/livetext-#{version}/lib/"
+rbver = `rbenv version`.split[0]
+
+lib = "/Users/Hal/.rbenv/versions/#{rbver}/lib/ruby/gems/#{rbver}/gems/livetext-#{version}/lib"
 puts
 puts "  Copying repo to gem at: #{lib.inspect}"
 

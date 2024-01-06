@@ -47,7 +47,7 @@ def version
 end
 
 def testing
-  file = "#{Livetext::Path}/../test/test.rb"
+  file = "#{Livetext::Path}/../../test/all.rb"
   flag = @backtrace ? "-back" : ""
   cmd = "ruby #{file} cmdline#{flag}"
   puts cmd
