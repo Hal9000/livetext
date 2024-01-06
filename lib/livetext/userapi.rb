@@ -173,6 +173,7 @@ STDERR.puts "incfile: #{api.methods.sort.inspect}\n "
   def out(str = "", file = nil)
     return if str.nil?
     return file.puts str unless file.nil?
+    str.gsub!("\b ", "")   # ignore spaces
     @live.body << str
     @live.body << "\n" unless str.end_with?("\n")
   end

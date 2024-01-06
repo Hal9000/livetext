@@ -200,7 +200,21 @@ module Livetext::Standard
     rhs = ""
     text.each_line do |line|
       str = api.format(line.chomp)
-      rhs << str + "<br>"
+      rhs << str + "<br>\n"
+    end
+    indent = @parent.indentation.last
+    indented = " " * indent
+    api.setvar(var, rhs.chomp)
+    api.optional_blank_line
+  end
+
+  def heredoc!(args = nil, body = nil)     # no <br>
+    var = api.args[0]
+    text = api.body.join("\n")
+    rhs = ""
+    text.each_line do |line|
+      str = api.format(line.chomp)
+      rhs << str + "\n"
     end
     indent = @parent.indentation.last
     indented = " " * indent
@@ -211,6 +225,20 @@ module Livetext::Standard
   def seek(args = nil, body = nil)    # like include, but search upward as needed
     file = api.args.first
 		file = search_upward(file)
+    check_file_exists(file)
+    @parent.process_file(file)
+    api.optional_blank_line
+  end
+
+  def cinclude(args = nil, body = nil)   # dot command
+    file = api.expand_variables(api.args.first)    # allows for variables
+    if api.args.size > 1  # there is an HTML file
+      processed = api.expand_variables(api.args[1]) 
+      if File.exist?(processed) && File.mtime(processed) > File.mtime(file)
+        api.args = [processed]
+        copy
+      end
+    end
     check_file_exists(file)
     @parent.process_file(file)
     api.optional_blank_line
@@ -336,9 +364,10 @@ module Livetext::Standard
         line = api.format(line)
         term, defn = line.split(delim)
         api.out html.tag(:dt, cdata: term)
-        api.out html.tag(:dd, cdata: defn)
+        api.out "  " + html.tag(:dd, cdata: defn)
       end
     end
+    api.out ""
     api.optional_blank_line
   end
 
@@ -352,13 +381,13 @@ module Livetext::Standard
   def xtable(args = nil, body = nil)   # Borrowed from bookish - FIXME
     title = api.data
     delim = " :: "
-    api.out "<br><center><table width=90% cellpadding=5>"
+    api.out "<br>\n\n<center><table width=90% cellpadding=5>"
     lines = api.body(true)
     maxw = nil
     processed = []
     lines.each do |line|
       line = api.format(line)
-      line.gsub!(/\n+/, "<br>")
+      line.gsub!(/\n+/, "<br>\n")
       processed << line
       cells = line.split(delim)
       wide = cells.map {|cell| cell.length }

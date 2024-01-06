@@ -11,6 +11,14 @@ class Livetext::Functions
     attr_accessor :param   # kill this?
   end
 
+  def code_lines(param = nil)
+    $code_lines.to_i  # FIXME pleeease
+  end
+
+  def ns(param = nil)
+    "\b"
+  end
+
 # FIXME Function parameters need to be fixed...
 
   def isqrt(param = nil)      # "integer square root" - Just for testing

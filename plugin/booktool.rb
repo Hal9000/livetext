@@ -1,10 +1,31 @@
 require 'fileutils'
 
-def epub(args = nil, body = nil)
-api.tty "======== Entering epub"
+def mobi(args = nil, body = nil)
   out = api.format(api.args[0])
   src = api.args[1]
-api.tty "======== epub: src = #{src}"
+  @cover = api.args[2]
+  if ::File.directory?(src)
+    files = ::Dir["#{src}/*"].grep /\.html$/
+    files = files.sort  # why is this necessary now?
+    cmd = "cat #{files.join(' ')} >TEMP.html"
+    system(cmd)
+  else
+    raise "Not supported yet"
+  end
+
+  cmd = "ebook-convert "
+  cmd << "TEMP.html #{out}.mobi "
+  cmd << "--cover #@cover " if @cover
+  system(cmd)
+
+  system("links -dump TEMP.html >/tmp/links.out")
+  str = `wc -w /tmp/links.out`
+  nw = str.split[0]
+end
+
+def epub(args = nil, body = nil)
+  out = api.format(api.args[0])
+  src = api.args[1]
   @cover = api.args[2]
   if ::File.directory?(src)
     files = ::Dir["#{src}/*"].grep /\.html$/
@@ -107,7 +128,7 @@ def xchapterN(args = nil, body = nil)
   @chapter = api.args.first.to_i
   @sec = @sec2 = 0
   title = api.data.split(" ",2)[1]
-  @toc << "<br><b>#@chapter</b> #{title}<br>"
+  @toc << "<br>\n\n<b>#@chapter</b> #{title}<br>\n\n"
   api.data = _slug(title)
   next_output
   api.out "<title>#{@chapter}. #{title}</title>"
@@ -123,7 +144,7 @@ def chapter(args = nil, body = nil)
   @sec = @sec2 = 0
   title = api.data    # .split(" ",2)[1]
   _errout("Chapter #@chapter: #{title}")
-  @toc << "<br><b>#@chapter</b> #{title}<br>"
+  @toc << "<br>\n\n<b>#@chapter</b> #{title}<br>\n\n"
   api.data = _slug(title)
   next_output
   api.out "<title>#{@chapter}. #{title}</title>"
@@ -139,10 +160,10 @@ def sec(args = nil, body = nil)
   @sec2 = 0
   @section = "#@chapter.#@sec"
   title = api.data.dup
-  @toc << "#{_nbsp(3)}<b>#@section</b> #{title}<br>"
+  @toc << "#{_nbsp(3)}<b>#@section</b> #{title}<br>\n"
   api.data = _slug(api.data)
   next_output
-  api.out "<h3>#@section #{title}</h3>\n"
+  api.out "<h3>#@section #{title}</h3>\n\n"
   api.optional_blank_line
 rescue => err
   api.tty  "#{err}\n#{err.backtrace.join("\n")}"
@@ -154,10 +175,10 @@ def subsec(args = nil, body = nil)
   @sec2 += 1
   @subsec = "#@chapter.#@sec.#@sec2"
   title = api.data.dup
-  @toc << "#{_nbsp(6)}<b>#@subsec</b> #{title}<br>"
+  @toc << "#{_nbsp(6)}<b>#@subsec</b> #{title}<br>\n"
   api.data = _slug(api.data)
   next_output
-  api.out "<h3>#@subsec #{title}</h3>\n"
+  api.out "<h3>#@subsec #{title}</h3>\n\n"
   api.optional_blank_line
 end
 
@@ -165,7 +186,7 @@ def definition_table(args = nil, body = nil)
   title = api.data
   wide = "95"
   delim = " :: "
-  api.out "<br><center><table width=#{wide}% cellpadding=5>"
+  api.out "<br>\n\n<center><table width=#{wide}% cellpadding=5>"
   lines = api.body(true)
   lines.map! {|line| api.format(line) }
 
@@ -178,7 +199,7 @@ def definition_table(args = nil, body = nil)
     end
     api.out "</tr>"
   end
-  api.out "</table></center><br><br>"
+  api.out "</table></center>\n\n<br><br>\n\n"
 
   api.optional_blank_line
 end
@@ -188,7 +209,7 @@ def table2(args = nil, body = nil)
   wide = "90"
   extra = api.args[2]
   delim = " :: "
-  api.out "<br><center><table width=#{wide}% cellpadding=5>"
+  api.out "<br>\n\n<center><table width=#{wide}% cellpadding=5>"
   lines = api.body(true)
   lines.map! {|line| api.format(line) }
 
@@ -202,7 +223,7 @@ def table2(args = nil, body = nil)
     end
     api.out "</tr>"
   end
-  api.out "</table></center><br><br>"
+  api.out "</table></center>\n\n<br><br>\n\n"
   api.optional_blank_line
 end
 
@@ -241,11 +262,12 @@ def table(args = nil, body = nil)
   @table_num += 1
   title = api.data
   delim = " :: "
-  api.out "<br><center><table width=90% cellpadding=5>"
+  api.out "<br>\n\n<center><table width=90% cellpadding=5>"
+
   lines = api.body(true)
+  # Find max width for each column
   maxw = nil
   lines.each do |line|
-    api.format(line)
     cells = line.split(delim)
     wide = cells.map {|x| x.length }
     maxw = [0] * cells.size
@@ -253,21 +275,22 @@ def table(args = nil, body = nil)
   end
 
   sum = maxw.inject(0, :+)
-  maxw.map! {|x| (x/sum*100).floor }
+  maxw.map! {|x| (x/sum*100.0).floor }
 
   lines.each do |line|
+    line = api.format(line)
     cells = line.split(delim)
     api.out "<tr>"
     cells.each.with_index do |cell, i| 
-      api.out "  <td width=#{maxw}% valign=top>" + 
-            "#{cell}</td>"
+      api.out "  <td width=#{maxw[i]}% valign=top>#{cell}</td>"
+#     api.out "  <td valign=top>#{cell}</td>"
     end
     api.out "</tr>"
   end
   api.out "</table>"
-  @toc << "#{_nbsp(8)}<b>Table #@chapter.#@table_num</b> #{title}<br>"
+  @toc << "#{_nbsp(8)}<b>Table #@chapter.#@table_num</b> #{title}<br>\n"
 # _next_output(_slug("table_#{title}"))
-  api.out "<b>Table #@chapter.#@table_num &nbsp;&nbsp; #{title}</b></center><br>"
+  api.out "\n<br><b>Table #@chapter.#@table_num &nbsp;&nbsp; #{title}</b></center><br>\n\n"
   api.optional_blank_line
 end
 
@@ -296,20 +319,20 @@ EOS
 end
 
 def missing(args = nil, body = nil)
-  @toc << "#{_nbsp(8)}<font color=red>TBD: #{api.data}</font><br>"
+  @toc << "#{_nbsp(8)}<font color=red>TBD: #{api.data}</font><br>\n"
   stuff = api.data.empty? ? "" : ": #{api.data}"
   api.out "<br><font color=red><i>[Material missing#{stuff}]</i></font><br>\n "
   api.optional_blank_line
 end
 
 def TBC(args = nil, body = nil)
-  @toc << "#{_nbsp(8)}<font color=red>To be continued...</font><br>"
+  @toc << "#{_nbsp(8)}<font color=red>To be continued...</font><br>\n"
   api.out "<br><font color=red><i>To be continued...</i></font><br>"
   api.optional_blank_line
 end
 
 def note(args = nil, body = nil)
-  api.out "<br><font color=red><i>Note: "
+  api.out "\n<br>\n<font color=red><i>Note: "
   api.out api.data 
   api.out "</i></font><br>\n "
   api.optional_blank_line

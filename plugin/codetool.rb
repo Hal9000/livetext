@@ -83,12 +83,14 @@ def self.pyg_finalize(code, lexer=:elixir)
   end
 
   def fragment(args = nil, body = nil)
+    $code_lines ||= 0  # FIXME later
     lang = api.args.empty? ? :elixir : api.args.first.to_sym   # ruby or elixir
     api.args = []
     lines = api.body(true)  # .to_a  # raw
+    $code_lines += lines.size
     result = send("format_#{lang}", lines)
     api.out result
-    api.out "\n"
+    api.out "<br>\n"
     api.optional_blank_line
   rescue => err
     STDERR.puts "fragment Error: #{__method__} err = #{err}\n#{err.backtrace.join("\n")}"

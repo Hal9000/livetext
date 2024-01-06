@@ -255,8 +255,3 @@ module Livetext::Helpers
 
 end
 
-=begin
-/Users/Hal/.rvm/gems/ruby-2.7.0/gems/livetext-0.9.35/lib/livetext/helpers.rb:125:in `invoke_dotcmd'
-/Users/Hal/.rvm/gems/ruby-2.7.0/gems/livetext-0.9.35/lib/livetext/helpers.rb:141:in `handle_dotcmd'
-/Users/Hal/.rvm/gems/ruby-2.7.0/gems/livetext-0.9.35/lib/livetext/helpers.rb:102:in `process_line'
-=end
