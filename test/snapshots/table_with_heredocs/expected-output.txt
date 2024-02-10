@@ -1,7 +1,9 @@
 Testing heredocs (used in a table)
 <p>
 
-<br><center><table width=90% cellpadding=5>
+<br>
+
+<center><table width=90% cellpadding=5>
 <tr>
   <td valign=top>This is <br>only <br>a test.<br></td>
   <td valign=top>This is <br>just <br>some <br>random text.<br></td>

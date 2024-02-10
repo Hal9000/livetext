@@ -7,6 +7,25 @@ require_relative '../lib/livetext'
 def usage
   STDERR.puts <<~EOF
   Usage: 
+    livetext [options] [filename]
+
+    Options:
+      -v, --version            Print version information
+      -t, --test               Run all tests
+      -p, --path               Print the path of the installed gem
+      -b, --backtrace          Enable backtrace information
+      -m name, --mixin name    Load the specified mixin before processing
+      -s, --stdin              Read from standard input
+      -h, --help               Print this help information
+      -i name, --install name  Install the specified plugin         
+
+  EOF
+  exit
+end
+
+def old_usage
+  STDERR.puts <<~EOF
+  Usage: 
     livetext filename
 
     Read STDIN
@@ -21,6 +40,10 @@ def usage
     Show path:
       livetext -p
       livetext --path
+
+    Load a mixin:
+      livetext -m name
+      livetext --mixin name
 
     Run tests:
       livetext -t

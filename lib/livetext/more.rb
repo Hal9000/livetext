@@ -101,12 +101,10 @@ class Livetext
     obj = self.new
     mix  = Array(mix)
     call = Array(call)
-# STDERR.puts "#{__method__}: obj meth = #{obj.methods.sort.inspect}"
     mix.each do |lib| 
       obj.invoke_dotcmd(:mixin, lib.dup)
     end
     call.each {|cmd| obj.main.send(cmd[1..-1]) }  # ignores leading dot, no param
-    # vars.each_pair {|var, val| obj.setvar(var, val.to_s) }
     obj.api.setvars(vars)
     obj
   end

@@ -182,7 +182,12 @@ module Livetext::Standard
   def variables(args = nil, body = nil)
     prefix = api.args[0]
     file = api.args[1]
+puts ">> variables: pre=#{prefix.inspect}  file=#{file.inspect} pwd=#{Dir.pwd}"
     prefix = nil if prefix == "-"  # FIXME dumb hack
+    here = File.dirname(file)
+    dok, fok = Dir.exist?(here), File.exist?(file)
+    raise "No such dir #{here.inspect} (file #{file})" unless dok
+    raise "No such file #{file.inspect} (file #{file})" unless fok
     if file
       here = ::Livetext::Vars[:FileDir] + "/"
       lines = File.readlines(here + file)
@@ -192,6 +197,9 @@ module Livetext::Standard
     pairs = Livetext::ParseGeneral.parse_vars(lines, prefix: nil)
     api.setvars(pairs)
     api.optional_blank_line
+  rescue => e
+    puts e
+    puts $!
   end
 
   def heredoc(args = nil, body = nil)
