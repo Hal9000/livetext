@@ -179,18 +179,55 @@ module Livetext::Standard
     api.optional_blank_line
   end
 
+=begin
+      Filename: foobar
+get_globals - 1 - transforming /private/tmp/.blogs/views/foobar/data/global.lt3
+
+>> variables: fdir = /private/tmp/.blogs/views/foobar/data/ 
+              fname = ../settings/view.txt 
+              path = /private/tmp/.blogs/views/foobar/data/../settings/view.txt
+
+              rpath = /private/tmp/.blogs/views/foobar/settings/view.txt 
+              path = /private/tmp/.blogs/views/foobar/settings/view.txt  
+              dir = /private/tmp/.blogs/views/foobar/settings  
+              base = view.txt
+
+>> variables: fdir = /private/tmp/.blogs/views/foobar/data/ 
+              fname = ../settings/recent.txt 
+              path = /private/tmp/.blogs/views/foobar/data/../settings/recent.txt
+              rpath = /private/tmp/.blogs/views/foobar/settings/recent.txt 
+              path = /private/tmp/.blogs/views/foobar/settings/recent.txt  
+              dir = /private/tmp/.blogs/views/foobar/settings  
+              base = recent.txt
+
+>> variables: fdir = /private/tmp/.blogs/views/foobar/data/ 
+              fname = ../settings/publish.txt 
+              path = /private/tmp/.blogs/views/foobar/data/../settings/publish.txt
+              rpath = /private/tmp/.blogs/views/foobar/settings/publish.txt 
+              path = /private/tmp/.blogs/views/foobar/settings/publish.txt  
+              dir = /private/tmp/.blogs/views/foobar/settings  
+              base = publish.txt
+
+get_globals - 2
+
+=end
+
   def variables(args = nil, body = nil)
     prefix = api.args[0]
-    file = api.args[1]
-puts ">> variables: pre=#{prefix.inspect}  file=#{file.inspect} pwd=#{Dir.pwd}"
+    fname = api.args[1]
     prefix = nil if prefix == "-"  # FIXME dumb hack
-    here = File.dirname(file)
-    dok, fok = Dir.exist?(here), File.exist?(file)
-    raise "No such dir #{here.inspect} (file #{file})" unless dok
-    raise "No such file #{file.inspect} (file #{file})" unless fok
-    if file
-      here = ::Livetext::Vars[:FileDir] + "/"
-      lines = File.readlines(here + file)
+    fdir  = ::Livetext::Vars[:FileDir] + "/"   # where is the file we are reading?
+    if fname
+      path0  = fdir + fname
+      # puts ">> variables: fdir = #{fdir} fname = #{fname} path = #{path0}"
+      pname = Pathname.new(path0)
+      rpath = pname.realpath(pname)
+      path, dir, base = rpath.to_s, rpath.dirname.to_s, rpath.basename.to_s
+      # puts "              rpath = #{rpath} path = #{path}  dir = #{dir}  base = #{base}"
+      dok, fok = Dir.exist?(dir), File.exist?(path)
+      raise "No such dir #{dir.inspect} (file #{path})" unless dok
+      raise "No such file #{path.inspect} (file #{path})" unless fok
+      lines = File.readlines(path)
     else
       lines = api.body
     end
@@ -387,6 +424,36 @@ puts ">> variables: pre=#{prefix.inspect}  file=#{file.inspect} pwd=#{Dir.pwd}"
   end
 
   def xtable(args = nil, body = nil)   # Borrowed from bookish - FIXME
+    title = api.data
+    delim = " :: "
+    api.out "<br>\n\n<center><table width=90% cellpadding=5>"
+    lines = api.body(true)
+    maxw = nil
+    processed = []
+    lines.each do |line|
+      line = api.format(line)
+      line.gsub!(/\n+/, "<br>\n")
+      processed << line
+      cells = line.split(delim)
+      wide = cells.map {|cell| cell.length }
+      maxw = [0] * cells.size
+      maxw = maxw.map.with_index {|x, i| [x, wide[i]].max }
+    end
+
+    sum = maxw.inject(0, :+)
+    maxw.map! {|x| (x/sum*100).floor }
+
+    processed.each do |line|
+      cells = line.split(delim)
+      html.wrap :tr do
+        cells.each {|cell| api.out "  <td valign=top>#{cell}</td>" }
+      end
+    end
+    api.out "</table></center>"
+    api.optional_blank_line
+  end
+
+  def table(args = nil, body = nil)   # Same as xtable
     title = api.data
     delim = " :: "
     api.out "<br>\n\n<center><table width=90% cellpadding=5>"
