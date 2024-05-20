@@ -4,21 +4,22 @@ def mobi(args = nil, body = nil)
   out = api.format(api.args[0])
   src = api.args[1]
   @cover = api.args[2]
+  @name = api.args[3]
   if ::File.directory?(src)
     files = ::Dir["#{src}/*"].grep /\.html$/
     files = files.sort  # why is this necessary now?
-    cmd = "cat #{files.join(' ')} >TEMP.html"
+    cmd = "cat #{files.join(' ')} >#@name.html"
     system(cmd)
   else
     raise "Not supported yet"
   end
 
   cmd = "ebook-convert "
-  cmd << "TEMP.html #{out}.mobi "
+  cmd << "#@name.html #{out}.mobi "
   cmd << "--cover #@cover " if @cover
   system(cmd)
 
-  system("links -dump TEMP.html >/tmp/links.out")
+  system("links -dump #@name.html >/tmp/links.out")
   str = `wc -w /tmp/links.out`
   nw = str.split[0]
 end
@@ -27,21 +28,22 @@ def epub(args = nil, body = nil)
   out = api.format(api.args[0])
   src = api.args[1]
   @cover = api.args[2]
+  @name = api.args[3]
   if ::File.directory?(src)
     files = ::Dir["#{src}/*"].grep /\.html$/
     files = files.sort  # why is this necessary now?
-    cmd = "cat #{files.join(' ')} >TEMP.html"
+    cmd = "cat #{files.join(' ')} >#@name.html"
     system(cmd)
   else
     raise "Not supported yet"
   end
 
   cmd = "ebook-convert "
-  cmd << "TEMP.html #{out}.epub "
+  cmd << "#@name.html #{out}.epub "
   cmd << "--cover #@cover " if @cover
   system(cmd)
 
-  system("links -dump TEMP.html >/tmp/links.out")
+  system("links -dump #@name.html >/tmp/links.out")
   str = `wc -w /tmp/links.out`
   nw = str.split[0]
   puts "Approx words: #{nw}"

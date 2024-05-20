@@ -1,5 +1,7 @@
 require 'minitest/autorun'
 
+MiniTest = Minitest
+
 require_relative '../../lib/livetext'
 
 class TestingLivetext < MiniTest::Test

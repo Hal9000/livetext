@@ -1,5 +1,7 @@
 require 'minitest/autorun'
 
+MiniTest = Minitest unless defined?(MiniTest)
+
 require_relative '../parser'      # nested
 
 class TestStringParser < MiniTest::Test

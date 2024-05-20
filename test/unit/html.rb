@@ -1,5 +1,7 @@
 require 'minitest/autorun'
 
+MiniTest = Minitest unless defined?(MiniTest)
+
 require 'livetext'
 
 class TestingLivetext < MiniTest::Test

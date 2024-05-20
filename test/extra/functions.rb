@@ -1,5 +1,7 @@
 require 'minitest/autorun'
 
+MiniTest = Minitest unless defined?(MiniTest)
+
 require 'livetext'
 
 # Just another testing class. Chill.

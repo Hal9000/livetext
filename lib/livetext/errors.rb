@@ -15,4 +15,4 @@ end
 
 make_exception(:EndWithoutOpening, "Error: found .end with no opening command")
 make_exception(:UnknownMethod,     "Error: name '%1' is unknown")
-
+make_exception(:NoSuchFile,        "Error: can't find file '%1' (method '%2')")

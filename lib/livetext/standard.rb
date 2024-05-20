@@ -234,9 +234,14 @@ get_globals - 2
     pairs = Livetext::ParseGeneral.parse_vars(lines, prefix: nil)
     api.setvars(pairs)
     api.optional_blank_line
-  rescue => e
-    puts e
-    puts $!
+  rescue => err
+    puts "Error in #{__method__} in #{__FILE__}
+    puts  "     #{err.inspect}"
+    if err.respond_to?(:backtrace)
+      context = err.backtrace.map {|x| "     " + x}.join("\n")
+      puts context
+    end
+    abort "\nTerminated."
   end
 
   def heredoc(args = nil, body = nil)
