@@ -2,5 +2,5 @@
 # Defining VERSION
 
 class Livetext
-  VERSION = "0.9.43"
+  VERSION = "0.9.44"
 end
