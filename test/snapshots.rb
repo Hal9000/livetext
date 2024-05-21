@@ -1,11 +1,11 @@
-require 'simplecov'            # These two lines must go first
-SimpleCov.use_merging(true)
-SimpleCov.start  do
-  puts "SimpleCov: Snapshots"
-  add_filter "/test/"
-  enable_coverage :branch
-  primary_coverage :branch
-end
+# require 'simplecov'            # These two lines must go first
+# SimpleCov.use_merging(true)
+# SimpleCov.start  do
+#   puts "SimpleCov: Snapshots"
+#   add_filter "/test/"
+#   enable_coverage :branch
+#   primary_coverage :branch
+# end
 
 require 'minitest/autorun'
 

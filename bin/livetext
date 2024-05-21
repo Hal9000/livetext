@@ -115,7 +115,7 @@ def parse_command_line
       STDERR.puts "Command line - #{arg.inspect} is  unknown"
     end
   end
-  @live.dump if success
+  @live.api.dump if success
 rescue => err
   STDERR.puts "Unexpected error! #{err.inspect}\n#{err.backtrace.join("\n")}"
 end

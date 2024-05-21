@@ -26,7 +26,7 @@ class Processor
   attr_reader :parent, :sources
 
   def initialize(parent, output = nil)
-    @parent = parent
+    @parent = parent || self
     # STDERR.puts "PARENT.api = #{parent.api.inspect}"
     @parent.api ||= Livetext::UserAPI.new(@parent)
     @nopass = false
@@ -65,7 +65,6 @@ class Processor
 
   def disallowed?(name)
     flag = Disallowed.include?(name.to_sym)
-# api.tty "disa name = #{name.inspect} flag = #{flag}"
     flag
   end
 
@@ -95,4 +94,6 @@ class Processor
     @sources.pop
     nil
   end
+
+
 end

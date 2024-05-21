@@ -25,6 +25,14 @@ class Livetext::UserAPI
     @live.api
   end
 
+  def dump(file = nil)   # not a dot command!
+    file ||= ::STDOUT
+    # TTY.puts "--- Writing body (#{@live.body.size} bytes)"
+    file.puts @live.body
+  rescue => err
+    TTY.puts "#dump had an error: #{err.inspect}"
+  end
+
   def html
     @html
   end
@@ -34,9 +42,9 @@ class Livetext::UserAPI
   end
 
   def include_file(file)
+# checkpoint "DATA = #{file.inspect}"
     api.data = file
     api.args = [file]
-STDERR.puts "incfile: #{api.methods.sort.inspect}\n "
     api.dot_include
   end
 
@@ -191,11 +199,13 @@ STDERR.puts "incfile: #{api.methods.sort.inspect}\n "
   end
 
   def puts(*args)
-    @live.output.puts *args
+    # @live.output.puts *args
+    @live.api.out *args
   end
 
   def print(*args)
-    @live.output.print *args
+    # @live.output.print *args
+    @live.api.out! *args
   end
 
   def debug=(val)

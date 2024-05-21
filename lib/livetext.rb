@@ -12,7 +12,8 @@ require_relative 'livetext/userapi'
 require_relative 'livetext/formatter'
 require_relative 'livetext/processor'
 require_relative 'livetext/helpers'
+require_relative 'livetext/more'
+
 require_relative 'livetext/handler'
 
-require_relative 'livetext/more'
 

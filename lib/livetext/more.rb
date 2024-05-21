@@ -10,7 +10,21 @@ class Livetext
 
     def initialize(hash = {})
       @vars = {}
-      hash.each_pair {|k, v| @vars[k.to_sym] = v }
+      hash.each_pair do |k, v| 
+        sym = k.to_sym
+        str = k.to_s
+        @vars[sym] = v 
+        @vars[str] = v 
+      end
+    end
+
+    def inspect
+      syms = @vars.keys.select {|x| x.is_a? Symbol }
+      out = "\nVariables:"
+      syms.each do |sym|
+        out << "    #{sym}: #{@vars[sym].inspect}\n"
+      end
+      out
     end
   
     def [](var)
@@ -84,19 +98,6 @@ class Livetext
     @save_location = where  # delegate
   end
 
-  def dump(file = nil)   # not a dot command!
-    file ||= ::STDOUT
-    file.puts @body
-  rescue => err
-    TTY.puts "#dump had an error: #{err.inspect}"
-  end
-
-  def graceful_error(err, msg = nil)
-    dump
-    STDERR.puts msg if msg
-    raise err
-  end
-
   def self.customize(mix: [], call: [], vars: {})
     obj = self.new
     mix  = Array(mix)
@@ -126,11 +127,23 @@ class Livetext
     @_outdir = "."
     @no_puts = output.nil?
     @body = ""
-    @main = Processor.new(self, output)
+    @main = Processor.new(self, output)  # nil = make @main its own parent??
     @indentation = [0]
     @_vars = Livetext::Vars
     @api = UserAPI.new(self)
     initial_vars
+  end
+
+  def inspect
+    "Livetext:\n" + 
+    "  source = #{@source.inspect}\n" +
+    "  mixins = #{@_mixins.inspect}\n" + 
+    "  import = #{@_mixins.inspect}\n" + 
+    "  main   = (not shown)\n" + 
+    "  indent = #{@indentation.inspect}\n" + 
+    "  vars   = #{@_vars.inspect}\n" + 
+    "  api    = (not shown)\n" +
+    "  body   = (#{@body.size} bytes)"
   end
 
   def api
@@ -181,7 +194,9 @@ class Livetext
   def xform_file(file, vars: nil)
     Livetext::Vars.replace(vars) unless vars.nil?
     @_vars.replace(vars) unless vars.nil?
+# checkpoint! "Calling process_file..."
     self.process_file(file)
+# checkpoint! "...returned"
     self.body
   end
 

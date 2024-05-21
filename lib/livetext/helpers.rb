@@ -17,8 +17,8 @@ module Livetext::Helpers
     return graceful_error(err) if self.respond_to?(:graceful_error)
     return self.parent.graceful_error(err) if self.respond_to?(:parent)
     raise err
-  rescue => myerr
-    TTY.puts "--- Warning: friendly_error #{myerr.inspect}"
+#  rescue => myerr
+#    TTY.puts "--- Warning: friendly_error #{myerr.inspect}"
   end
 
   def escape_html(string)
@@ -75,7 +75,10 @@ module Livetext::Helpers
 ## FIXME process_file[!] should call process[_text] ?
 
   def process_file(fname, btrace=false)
-    graceful_error FileNotFound(fname) unless File.exist?(fname)
+    unless File.exist?(fname)
+      api.dump
+      raise FileNotFound(fname) 
+    end
     setfile(fname)
     text = File.readlines(fname)
     enum = text.each
@@ -107,7 +110,7 @@ module Livetext::Helpers
     end
     success
   rescue => err
-    STDERR.puts "ERROR: #{err}\n#{err.backtrace.join("\n")}"
+    STDERR.puts "ERROR: #{err.inspect}\n#{err.backtrace.join("\n")}"
     exit
   end
 
@@ -186,8 +189,9 @@ module Livetext::Helpers
   def grab_file(fname)
     File.read(fname)
   rescue
-    ::STDERR.puts "Can't find #{fname.inspect} \n "
-	  return nil
+    graceful_error NoSuchFile(fname)
+    # ::STDERR.puts "Can't find #{fname.inspect} \n "
+	  # return nil
   end
 
   def search_upward(file)
@@ -212,6 +216,7 @@ module Livetext::Helpers
   end
 
   def include_file(file)
+    api.data = file
     api.args = [file]
     dot_include
   end
@@ -253,5 +258,18 @@ module Livetext::Helpers
     api.setvar(:File, file)
   end
 
+#   def dump(file = nil)   # not a dot command!
+#     file ||= ::STDOUT
+#     TTY.puts "--- Writing body (#{@body.size} bytes)" if @body
+#     file.puts @body
+#   rescue => err
+#     TTY.puts "#dump had an error: #{err.inspect}"
+#   end
+
+  def graceful_error(err, msg = nil)
+    api.dump
+    STDERR.puts msg if msg
+    raise err
+  end
 end
 

@@ -179,39 +179,6 @@ module Livetext::Standard
     api.optional_blank_line
   end
 
-=begin
-      Filename: foobar
-get_globals - 1 - transforming /private/tmp/.blogs/views/foobar/data/global.lt3
-
->> variables: fdir = /private/tmp/.blogs/views/foobar/data/ 
-              fname = ../settings/view.txt 
-              path = /private/tmp/.blogs/views/foobar/data/../settings/view.txt
-
-              rpath = /private/tmp/.blogs/views/foobar/settings/view.txt 
-              path = /private/tmp/.blogs/views/foobar/settings/view.txt  
-              dir = /private/tmp/.blogs/views/foobar/settings  
-              base = view.txt
-
->> variables: fdir = /private/tmp/.blogs/views/foobar/data/ 
-              fname = ../settings/recent.txt 
-              path = /private/tmp/.blogs/views/foobar/data/../settings/recent.txt
-              rpath = /private/tmp/.blogs/views/foobar/settings/recent.txt 
-              path = /private/tmp/.blogs/views/foobar/settings/recent.txt  
-              dir = /private/tmp/.blogs/views/foobar/settings  
-              base = recent.txt
-
->> variables: fdir = /private/tmp/.blogs/views/foobar/data/ 
-              fname = ../settings/publish.txt 
-              path = /private/tmp/.blogs/views/foobar/data/../settings/publish.txt
-              rpath = /private/tmp/.blogs/views/foobar/settings/publish.txt 
-              path = /private/tmp/.blogs/views/foobar/settings/publish.txt  
-              dir = /private/tmp/.blogs/views/foobar/settings  
-              base = publish.txt
-
-get_globals - 2
-
-=end
-
   def variables(args = nil, body = nil)
     prefix = api.args[0]
     fname = api.args[1]
@@ -221,7 +188,7 @@ get_globals - 2
       path0  = fdir + fname
       # puts ">> variables: fdir = #{fdir} fname = #{fname} path = #{path0}"
       pname = Pathname.new(path0)
-      rpath = pname.realpath(pname)
+      rpath = pname.realpath
       path, dir, base = rpath.to_s, rpath.dirname.to_s, rpath.basename.to_s
       # puts "              rpath = #{rpath} path = #{path}  dir = #{dir}  base = #{base}"
       dok, fok = Dir.exist?(dir), File.exist?(path)
@@ -235,13 +202,7 @@ get_globals - 2
     api.setvars(pairs)
     api.optional_blank_line
   rescue => err
-    puts "Error in #{__method__} in #{__FILE__}
-    puts  "     #{err.inspect}"
-    if err.respond_to?(:backtrace)
-      context = err.backtrace.map {|x| "     " + x}.join("\n")
-      puts context
-    end
-    abort "\nTerminated."
+    fatal(err)
   end
 
   def heredoc(args = nil, body = nil)
