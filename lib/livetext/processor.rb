@@ -3,8 +3,6 @@
 
 class Processor
 
-  GenericError = Class.new(StandardError)
-
   include Livetext::Standard
 
   Disallowed = 
@@ -54,13 +52,6 @@ class Processor
 
   def error(*args)
     ::STDERR.puts *args
-  end
-
-  def _error!(err, raise_error=false, trace=false)   # FIXME much bullshit happens here
-    where = @sources.last || @live.save_location
-    error "Error: #{err} (at #{where[1]} line #{where[2]})"
-    error(err.backtrace) rescue nil
-    raise GenericError.new("Error: #{err}") if raise_error
   end
 
   def disallowed?(name)

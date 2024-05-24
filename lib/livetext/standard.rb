@@ -258,6 +258,7 @@ module Livetext::Standard
   def dot_include(args = nil, body = nil)   # dot command
     file = api.expand_variables(api.args.first)  # allows for variables
     check_file_exists(file)
+# checkpoint "====== self.methods = #{self.methods.sort.inspect}"
     @parent.process_file(file)
     api.optional_blank_line
   end

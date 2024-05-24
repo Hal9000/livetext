@@ -98,28 +98,6 @@ class Livetext
     @save_location = where  # delegate
   end
 
-  def self.customize(mix: [], call: [], vars: {})
-    obj = self.new
-    mix  = Array(mix)
-    call = Array(call)
-    mix.each do |lib| 
-      obj.invoke_dotcmd(:mixin, lib.dup)
-    end
-    call.each {|cmd| obj.main.send(cmd[1..-1]) }  # ignores leading dot, no param
-    obj.api.setvars(vars)
-    obj
-  end
-
-  def customize(mix: [], call: [], vars: {})
-    mix  = Array(mix)
-    call = Array(call)
-    mix.each {|lib| mixin(lib) }
-    call.each {|cmd| @main.send(cmd[1..-1]) }  # ignores leading dot, no param
-    # vars.each_pair {|var, val| @api.set(var, val.to_s) }
-    api.setvars(vars)
-    self
-  end
-
   def initialize(output = ::STDOUT)
     @source = nil
     @_mixins = []
@@ -132,6 +110,32 @@ class Livetext
     @_vars = Livetext::Vars
     @api = UserAPI.new(self)
     initial_vars
+# puts "------ init: self = "
+# p self
+  end
+
+  def self.customize(mix: [], call: [], vars: {})
+    obj = self.new
+    mix  = Array(mix)
+    call = Array(call)
+    mix.each do |lib| 
+      obj.invoke_dotcmd(:mixin, lib.dup)
+    end
+    call.each {|cmd| obj.main.send(cmd[1..-1]) }  # ignores leading dot, no param
+    obj.api.setvars(vars)
+# puts "------ init: obj = "
+# p obj
+    obj
+  end
+
+  def customize(mix: [], call: [], vars: {})
+    mix  = Array(mix)
+    call = Array(call)
+    mix.each {|lib| mixin(lib) }
+    call.each {|cmd| @main.send(cmd[1..-1]) }  # ignores leading dot, no param
+    # vars.each_pair {|var, val| @api.set(var, val.to_s) }
+    api.setvars(vars)
+    self
   end
 
   def inspect

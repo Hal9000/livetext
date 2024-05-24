@@ -218,7 +218,7 @@ module Livetext::Helpers
   def include_file(file)
     api.data = file
     api.args = [file]
-    dot_include
+    api.dot_include
   end
 
   def onoff(arg)   # helper
