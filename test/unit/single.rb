@@ -7,7 +7,6 @@ require 'livetext'
 # Just another testing class. Chill.
 
 class TestingLivetextSingle < MiniTest::Test
-
   def setup
     @live = Livetext.new
   end
@@ -131,11 +130,9 @@ class TestingLivetextSingle < MiniTest::Test
   def test_single_013_escaped_marker_is_ignored   
     # Escaped marker is ignored
     # No special initialization
-    src = "\\\\*escaped"
+    src = '\\' + "*escaped"   # Note single quote
     exp = "*escaped"
     actual = @live.api.format(src)
     check_match(exp, actual)
   end
- 
-
 end

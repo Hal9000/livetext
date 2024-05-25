@@ -1,4 +1,4 @@
-class HTML    # FIXME - better as Livetext::HTML ?
+class Livetext::HTML
 
   def initialize(api)   # HTML
     raise "API is nil!" unless api

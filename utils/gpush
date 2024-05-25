@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+
+status = `git status`.split("\n")
+
+status.each do |line|
+  break if line =~ /Untracked/
+  puts "  " + line
+end
+
+print "Continue? (y/n) "
+
+abort "Quitting\n " unless gets.chomp =~ /^y$/i
+
+print "Commit msg: "
+
+msg = gets.chomp
+
+rc = system("git add -u && git commit -m \"#{msg}\" && git pull && git push")
+
+abort "\nFAILED" unless rc
+

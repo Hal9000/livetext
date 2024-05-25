@@ -16,7 +16,7 @@ class Livetext::UserAPI
   def initialize(live)  # Livetext::UserAPI
     @live = live
     @vars = live.vars
-    @html = HTML.new(self)
+    @html = Livetext::HTML.new(self)
     @expander = Livetext::Expansion.new(live)
   end
 

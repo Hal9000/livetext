@@ -1,5 +1,5 @@
 
-module GlobalHelpers
+module Livetext::GlobalHelpers
 
   def check_disallowed(name)
     raise DisallowedName(name) if disallowed?(name)

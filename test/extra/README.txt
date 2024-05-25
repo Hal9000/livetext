@@ -11,6 +11,7 @@ The tests here include:
    double.txt        Double sigil (see Formatting below)
    bracketed.txt     Bracketed sigil (see Formatting below)
 
+NOTE: These are moved under test/unit/ now.
 
 Variables:
 ----------

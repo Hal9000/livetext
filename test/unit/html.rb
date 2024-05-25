@@ -12,7 +12,7 @@ class TestingLivetext < MiniTest::Test
 
   def test_wrapped
     live = Livetext.new
-    html = HTML.new(live.api)
+    html = Livetext::HTML.new(live.api)
     str = "nothing much"
     assert_equal html.tag(:b, cdata: str), "<b>#{str}</b>"
     assert_equal html.tag(:b, :i, cdata: str), "<b><i>#{str}</i></b>"
@@ -23,7 +23,7 @@ class TestingLivetext < MiniTest::Test
 
   def test_wrapped_extra
     live = Livetext.new
-    html = HTML.new(live.api)
+    html = Livetext::HTML.new(live.api)
     str = "nothing much"
     assert_equal html.tag(:td, cdata: str, valign: :top), 
                      "<td valign='top'>#{str}</td>"

@@ -3,10 +3,19 @@ require_relative 'parser/string'    # FIXME eh, should fix this
 # Class Livetext skeleton (top level).
 
 class Livetext
+  class Variables
+  end
+
   module Handler
   end
 
-  module ParsingConstants
+  module Formatter
+  end
+
+  class HTML
+  end
+
+  class ParsingConstants
   end
 
   class LineParser < StringParser

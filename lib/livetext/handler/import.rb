@@ -5,7 +5,7 @@ require_relative '../helpers'
 
 class Livetext::Handler::Import
   include Livetext::Helpers
-  include GlobalHelpers
+  include Livetext::GlobalHelpers
 
   attr_reader :file
 

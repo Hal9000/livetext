@@ -5,5 +5,8 @@
 #   add_filter "/test/"
 # end
 
+# FIXME - this file is broken - path issues
+
 require_relative 'unit/all'
+
 require_relative 'snapshots'             # snapshots

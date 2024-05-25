@@ -11,8 +11,6 @@ make_exception(:FileNotFound,     "Error: file '%1' not found")
 # Module Standard comprises most of the standard or "common" methods.
 
 module Livetext::Standard
-
-# include HTMLHelper
   include Livetext::Helpers
 
   TTY = ::File.open("/dev/tty", "w")

@@ -35,7 +35,7 @@ class Processor
     @indentation = @parent.indentation
     @_mixins = []
     @_imports = []
-    @html = HTML.new(@parent.api)
+    @html = Livetext::HTML.new(@parent.api)
   end
 
   def api
