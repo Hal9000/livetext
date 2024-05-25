@@ -4,8 +4,7 @@ require_relative 'html'
 # Encapsulate the UserAPI as a class
 
 class Livetext::UserAPI
-
-  include ::Livetext::Standard
+  include ::Livetext::Standard    # FIXME - feels wonky?
 
   KBD = File.new("/dev/tty", "r")
   TTY = File.new("/dev/tty", "w")
@@ -14,7 +13,7 @@ class Livetext::UserAPI
 
   attr_accessor :data, :args
 
-  def initialize(live)
+  def initialize(live)  # Livetext::UserAPI
     @live = live
     @vars = live.vars
     @html = HTML.new(self)
@@ -45,7 +44,7 @@ class Livetext::UserAPI
 # checkpoint "DATA = #{file.inspect}"
     api.data = file
     api.args = [file]
-    api.dot_include
+    dot_include
   end
 
   def expand_variables(str)
@@ -215,6 +214,5 @@ class Livetext::UserAPI
   def debug(*args)
     TTY.puts *args if @live.debug
   end
-
 end
 

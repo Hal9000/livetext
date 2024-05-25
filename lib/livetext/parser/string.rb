@@ -2,7 +2,7 @@ class StringParser
 
   attr_reader :line, :eos, :i, :len
 
-  def initialize(line)
+  def initialize(line)   # StringParser
     raise NilValue if line.nil?
     raise ExpectedString unless String === line
     @line = line

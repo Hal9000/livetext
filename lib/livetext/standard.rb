@@ -1,4 +1,3 @@
-
 require 'pathname'   # For _seek - remove later??
 
 require_relative 'parser'   # nested requires
@@ -8,7 +7,6 @@ require_relative 'helpers'
 make_exception(:ExpectedOnOff,    "Error: expected 'on' or 'off'")
 make_exception(:DisallowedName,   "Error: name '%1' is invalid")
 make_exception(:FileNotFound,     "Error: file '%1' not found")
-
 
 # Module Standard comprises most of the standard or "common" methods.
 
@@ -73,6 +71,8 @@ module Livetext::Standard
     Livetext::Functions.class_eval func_def
     return true
   end
+
+  # FIXME - move these to a single universal place in code
 
   def h1(args = nil, body = nil); api.out html.tag(:h1, cdata: api.data); return true; end
   def h2(args = nil, body = nil); api.out html.tag(:h2, cdata: api.data); return true; end
@@ -258,7 +258,7 @@ module Livetext::Standard
   def dot_include(args = nil, body = nil)   # dot command
     file = api.expand_variables(api.args.first)  # allows for variables
     check_file_exists(file)
-# checkpoint "====== self.methods = #{self.methods.sort.inspect}"
+checkpoint 
     @parent.process_file(file)
     api.optional_blank_line
   end

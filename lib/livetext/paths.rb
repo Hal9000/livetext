@@ -1,4 +1,4 @@
-# Reopening for paths... do differently?
+# Reopening for paths... do differently?  FIXME
 
 class Livetext
   def self.get_path(dir = "")

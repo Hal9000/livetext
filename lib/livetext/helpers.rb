@@ -2,9 +2,7 @@
 require_relative 'global_helpers'
 require_relative 'expansion'
 
-
 module Livetext::Helpers
-
   Space = " "
   Sigil = "." # Can't change yet
 
@@ -75,6 +73,7 @@ module Livetext::Helpers
 ## FIXME process_file[!] should call process[_text] ?
 
   def process_file(fname, btrace=false)
+checkpoint "fname = #{fname.inspect}"
     unless File.exist?(fname)
       api.dump
       raise FileNotFound(fname) 
@@ -127,6 +126,7 @@ module Livetext::Helpers
     api.data = data0.dup   # should permit _ in function names at least
     args0 = data0.split
     api.args = args0.dup
+checkpoint "name = #{name} args = #{args0.inspect}"
     retval = @main.send(name)  # , *args)      # was 125
     retval
   rescue => err
@@ -257,14 +257,6 @@ module Livetext::Helpers
   def setfile!(file)  # FIXME why does this variant exist?
     api.setvar(:File, file)
   end
-
-#   def dump(file = nil)   # not a dot command!
-#     file ||= ::STDOUT
-#     TTY.puts "--- Writing body (#{@body.size} bytes)" if @body
-#     file.puts @body
-#   rescue => err
-#     TTY.puts "#dump had an error: #{err.inspect}"
-#   end
 
   def graceful_error(err, msg = nil)
     api.dump

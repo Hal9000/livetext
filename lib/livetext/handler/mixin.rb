@@ -9,7 +9,7 @@ class Livetext::Handler::Mixin
 
   attr_reader :file
 
-  def initialize(name, parent)
+  def initialize(name, parent)     # Livetext::Handler::Mixin
     @name = name
     @file = find_file(name, ".rb", "plugin")
     parent.graceful_error FileNotFound(name) if @file.nil?

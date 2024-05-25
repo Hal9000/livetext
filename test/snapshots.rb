@@ -132,7 +132,7 @@ class TestingLivetext < MiniTest::Test
       @included - @excluded
     end
 
-    def initialize(base, assertion = nil)
+    def initialize(base, assertion = nil)    # Testing::Livetext
       @assertion = assertion
       @base = base
       @errors = false

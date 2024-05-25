@@ -1,14 +1,6 @@
 module Formatter
 
-## Hmmm...
-# 
-#  Double:  b, i, t, s
-#  Single:  bits
-#  Brackt:  bits
-# 
-
-
-  def self.format(str)
+  def self.format(str)    # FIXME - unneeded?
     str = str.chomp
     s2 = Double.process(str.chomp)
     s3 = Bracketed.process(s2)
@@ -16,8 +8,15 @@ module Formatter
     s4
   end
   
+  ## Hmmm...
+  # 
+  #  Double:  b, i, t, s
+  #  Single:  bits
+  #  Brackt:  bits
+  # 
+
   class Delimited
-    def initialize(str, marker, tag)
+    def initialize(str, marker, tag)    # Delimited
       @str, @marker, @tag = str.dup, marker, tag
       @buffer = ""
       @cdata  = ""
@@ -170,7 +169,7 @@ module Formatter
   end
 
   class Double < Delimited
-    def initialize(str, sigil, tag)
+    def initialize(str, sigil, tag)    # Double
       super
       # Convention: marker is "**", sigil is "*"
       @marker = sigil + sigil
@@ -183,7 +182,7 @@ module Formatter
   end
 
   class Bracketed < Delimited
-    def initialize(str, sigil, tag)
+    def initialize(str, sigil, tag)   # Bracketed
       super
       # Convention: marker is "*[", sigil is "*"
       @marker = sigil + "["

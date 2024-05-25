@@ -8,7 +8,7 @@ class Livetext::Expansion
   Lbrack = "\\["
   Colon  = ":"
 
-  def initialize(instance)
+  def initialize(instance)   # Livetext::Expansion
     @live = instance
   end
 

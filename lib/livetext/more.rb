@@ -5,10 +5,10 @@ class Livetext
 
   include Helpers
 
-  class Variables
+  class Variables      # FIXME - split out into file as Livetext::Variables
     attr_reader :vars
 
-    def initialize(hash = {})
+    def initialize(hash = {})   # Livetext::Variables
       @vars = {}
       hash.each_pair do |k, v| 
         sym = k.to_sym
@@ -98,7 +98,7 @@ class Livetext
     @save_location = where  # delegate
   end
 
-  def initialize(output = ::STDOUT)
+  def initialize(output = ::STDOUT)  # Livetext
     @source = nil
     @_mixins = []
     @_imports = []
@@ -123,8 +123,6 @@ class Livetext
     end
     call.each {|cmd| obj.main.send(cmd[1..-1]) }  # ignores leading dot, no param
     obj.api.setvars(vars)
-# puts "------ init: obj = "
-# p obj
     obj
   end
 

@@ -9,7 +9,7 @@ class Livetext::Handler::Import
 
   attr_reader :file
 
-  def initialize(name)
+  def initialize(name)     # Livetext::Handler::Import
     @name = name
     @file = find_file(name)
   end

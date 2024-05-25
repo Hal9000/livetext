@@ -23,7 +23,7 @@ class Processor
 
   attr_reader :parent, :sources
 
-  def initialize(parent, output = nil)
+  def initialize(parent, output = nil)   # Processor
     @parent = parent || self
     # STDERR.puts "PARENT.api = #{parent.api.inspect}"
     @parent.api ||= Livetext::UserAPI.new(@parent)
@@ -85,6 +85,4 @@ class Processor
     @sources.pop
     nil
   end
-
-
 end

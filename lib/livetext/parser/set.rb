@@ -10,7 +10,7 @@ class Livetext::ParseSet < StringParser
     self.new(str).parse
   end
 
-  def initialize(line)
+  def initialize(line)   # Livetext::ParseSet
     super
   end
 

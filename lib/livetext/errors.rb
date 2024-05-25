@@ -10,16 +10,19 @@
   end
 
   def checkpoint(msg = nil)
+    return unless ENV['LIVETEXT_DEBUG'] == "true"
     file, line, meth = whence(1)
     display(file, line, meth, msg)
   end
 
   def checkpoint?(msg = nil)        # with sleep 3
+    return unless ENV['LIVETEXT_DEBUG'] == "true"
     file, line, meth = whence(1)
     display(file, line, meth, msg)
   end
 
   def checkpoint!(msg = nil)        # with pause
+    return unless ENV['LIVETEXT_DEBUG'] == "true"
     file, line, meth = whence(1)
     display(file, line, meth, msg)
     print "::: Pause..."
@@ -70,7 +73,4 @@ make_exception(:NoSuchFile,        "Error: can't find file '%1' (method '%2')")
 make_exception(:ExpectedDotEnd,    "Error: expected .end but found end of file")
 make_exception(:ExpectedAlphaNum,  "Error: expected an alphanumeric but foun '%1'")   # parser/set.rb
 make_exception(:ExpectedCommaEOS,  "Error: expected comma or end of string")          # parser/set.rb
-
-
-
 

@@ -6,7 +6,7 @@ make_exception(:ExpectedString,   "Error: expected a string")
 
 class Livetext::ParseGeneral < StringParser
 
-  def initialize(str)
+  def initialize(str)    # Livetext::ParseGeneral
     super
   end
 
