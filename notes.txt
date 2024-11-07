@@ -1,3 +1,9 @@
+Recent notes:
+-------------
+add 'meta' parallel to 'api'?
+also 'user' or something?
+
+
 Mostly done
 -----------
 rewrite line formatter

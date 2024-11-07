@@ -55,6 +55,7 @@ class Livetext
     @no_puts = output.nil?
     @body = ""
     @main = Processor.new(self, output)  # nil = make @main its own parent??
+    @parent = @main
     @indentation = [0]
     @_vars = Livetext::Vars
     @api = UserAPI.new(self)
@@ -86,14 +87,16 @@ class Livetext
   end
 
   def inspect
+   api_abbr  = @api ? "(non-nil)" : "(not shown)"
+   main_abbr = @main ? "(non-nil)" : "(not shown)"
     "Livetext:\n" + 
     "  source = #{@source.inspect}\n" +
     "  mixins = #{@_mixins.inspect}\n" + 
     "  import = #{@_mixins.inspect}\n" + 
-    "  main   = (not shown)\n" + 
+    "  main   = #{main_abbr}\n" + 
     "  indent = #{@indentation.inspect}\n" + 
     "  vars   = #{@_vars.inspect}\n" + 
-    "  api    = (not shown)\n" +
+    "  api    = #{api_abbr}\n" +
     "  body   = (#{@body.size} bytes)"
   end
 

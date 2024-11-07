@@ -73,7 +73,6 @@ module Livetext::Helpers
 ## FIXME process_file[!] should call process[_text] ?
 
   def process_file(fname, btrace=false)
-checkpoint "fname = #{fname.inspect}"
     unless File.exist?(fname)
       api.dump
       raise FileNotFound(fname) 
@@ -126,7 +125,6 @@ checkpoint "fname = #{fname.inspect}"
     api.data = data0.dup   # should permit _ in function names at least
     args0 = data0.split
     api.args = args0.dup
-checkpoint "name = #{name} args = #{args0.inspect}"
     retval = @main.send(name)  # , *args)      # was 125
     retval
   rescue => err
@@ -173,7 +171,7 @@ checkpoint "name = #{name} args = #{args0.inspect}"
     friendly_error DisallowedName(name) if disallowed?(name)
   end
 
-  def check_file_exists(file)
+  def file_exists?(file)
     return File.exist?(file)
   end
 

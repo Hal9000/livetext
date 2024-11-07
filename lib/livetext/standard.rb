@@ -11,6 +11,7 @@ make_exception(:FileNotFound,     "Error: file '%1' not found")
 # Module Standard comprises most of the standard or "common" methods.
 
 module Livetext::Standard
+  include Livetext::GlobalHelpers
   include Livetext::Helpers
 
   TTY = ::File.open("/dev/tty", "w")
@@ -211,8 +212,8 @@ module Livetext::Standard
       str = api.format(line.chomp)
       rhs << str + "<br>\n"
     end
-    indent = @parent.indentation.last
-    indented = " " * indent
+    # indent = @parent.indentation.last
+    # indented = " " * indent
     api.setvar(var, rhs.chomp)
     api.optional_blank_line
   end
@@ -225,8 +226,8 @@ module Livetext::Standard
       str = api.format(line.chomp)
       rhs << str + "\n"
     end
-    indent = @parent.indentation.last
-    indented = " " * indent
+    # indent = @parent.indentation.last
+    # indented = " " * indent
     api.setvar(var, rhs.chomp)
     api.optional_blank_line
   end
@@ -256,7 +257,6 @@ module Livetext::Standard
   def dot_include(args = nil, body = nil)   # dot command
     file = api.expand_variables(api.args.first)  # allows for variables
     check_file_exists(file)
-checkpoint 
     @parent.process_file(file)
     api.optional_blank_line
   end
@@ -299,7 +299,7 @@ checkpoint
 
   def copy(args = nil, body = nil)
     file = api.args.first
-    ok = check_file_exists(file)
+    ok = file_exists?(file)
 
     self.parent.graceful_error FileNotFound(file) unless ok   # FIXME seems weird?
       api.out grab_file(file)

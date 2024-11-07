@@ -15,6 +15,7 @@ class Livetext::UserAPI
 
   def initialize(live)  # Livetext::UserAPI
     @live = live
+    @parent = live   # FIXME experiment related to runeblog error
     @vars = live.vars
     @html = Livetext::HTML.new(self)
     @expander = Livetext::Expansion.new(live)
