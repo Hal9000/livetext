@@ -16,14 +16,14 @@ class Livetext::Handler::Mixin
 
   def self.get_module(filename, parent)
     handler = self.new(filename, parent)
-STDERR.puts "handler was passed: #{filename}"
+# STDERR.puts "handler was passed: #{filename}"
     modname, code = handler.read_mixin
-STDERR.puts "Modname was: #{modname}\n\n "
-STDERR.puts "Code was:\n=============\n#{code}\n==============\n "
+# STDERR.puts "Modname was: #{modname}\n\n "
+# STDERR.puts "Code was:\n=============\n#{code}\n==============\n "
     eval(code)   # Avoid in the future
-STDERR.puts "After eval"
+# STDERR.puts "After eval"
     newmod = Object.const_get("::" + modname)
-STDERR.puts "After const_get"
+# STDERR.puts "After const_get"
     newmod   # return actual module
   end
 
