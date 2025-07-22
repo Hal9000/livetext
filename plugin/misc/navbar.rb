@@ -26,7 +26,7 @@ end
 private def get_brand
   peek = @enum.peek
   arg = peek[6..-1]
-  href, item, blank = get_href_title(arg)
+  href, item, _blank = get_href_title(arg)
   # doesn't honor @root... and blank is unused here
   if item =~ /\.(jpg|png|gif)$/i
     item = "<img src='#{item}'></img>" 
@@ -50,6 +50,7 @@ private def slash_tags
         @classes = peek[9..-1]
     end
     line = @enum.next
+    line
   end
 end
 
@@ -95,7 +96,7 @@ private def handle_body
   @dropdowns = 1
   loop do
     line = @enum.next
-    href, title, blank = get_href_title(line)
+    href, title, _blank = get_href_title(line)
     case line[0]
     when "-"
       no_children(href, title)
@@ -138,7 +139,7 @@ def html
 end
 
 def navbar
-  @html = HTML.new(api)
+  @html = Livetext::HTML.new(api)
   # bootstrap
   @space = " "
   @enum = api.body.each
