@@ -41,13 +41,11 @@ end
 output.puts <<~RUBY
   require 'minitest/autorun'
 
-  MiniTest = Minitest unless defined?(MiniTest)
-
   require 'livetext'
 
   # Just another testing class. Chill.
 
-  class TestingLivetext#{classname} < MiniTest::Test
+  class TestingLivetext#{classname} < Minitest::Test
 
     def setup
       @live = Livetext.new

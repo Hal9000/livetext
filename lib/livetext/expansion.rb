@@ -55,10 +55,26 @@ class Livetext::Expansion
   def funcall(name, param)
     err = "[Error evaluating $$#{name}(#{param})]"
     name = name.gsub(/\./, "__")
-    return if self.send?(name, param)
+    
+    # First check Livetext::Functions (for predefined and inline functions)
     fobj = ::Livetext::Functions.new
-    result = fobj.send(name, param) rescue err
-    result.to_s
+    result = fobj.send(name, param) rescue nil
+    return result.to_s if result
+    
+    # Then check the processor instance (for mixin functions)
+    if @live.main.respond_to?(name)
+      # Check if the method expects parameters
+      method = @live.main.method(name)
+      if method.parameters.empty?
+        result = @live.main.send(name) rescue err
+      else
+        result = @live.main.send(name, param) rescue err
+      end
+      return result.to_s
+    end
+    
+    # If not found anywhere
+    err
   end
 
   def expand_function_calls(str)

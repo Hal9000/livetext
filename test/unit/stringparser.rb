@@ -1,10 +1,10 @@
 require 'minitest/autorun'
 
-MiniTest = Minitest unless defined?(MiniTest)
+
 
 require_relative '../../lib/stringparser'
 
-class TestStringParser < MiniTest::Test
+class TestStringParser < Minitest::Test
 
   def setup
     # Lengths: zero, one, arbitrary

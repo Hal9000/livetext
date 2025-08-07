@@ -1,0 +1,18 @@
+Testing functions defined in external .rb files
+<p>
+
+Now calling a function defined in the .rb file:
+External function called with: test_parameter
+<p>
+
+And another one with brackets:
+Another function called with: with brackets
+<p>
+
+And a function with no parameters:
+Simple function with no parameters
+<p>
+
+That's all.
+<p>
+

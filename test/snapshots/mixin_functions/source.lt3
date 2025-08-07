@@ -1,0 +1,15 @@
+Testing functions defined in external .rb files
+
+.mixin mixin_functions
+
+Now calling a function defined in the .rb file:
+$$external_func:test_parameter
+
+And another one with brackets:
+$$another_func[with brackets]
+
+And a function with no parameters:
+$$simple_func
+
+That's all.
+

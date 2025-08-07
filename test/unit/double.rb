@@ -1,12 +1,10 @@
 require 'minitest/autorun'
 
-MiniTest = Minitest unless defined?(MiniTest)
-
 require 'livetext'
 
 # Just another testing class. Chill.
 
-class TestingLivetextDouble < MiniTest::Test
+class TestingLivetextDouble < Minitest::Test
 
   def setup
     @live = Livetext.new

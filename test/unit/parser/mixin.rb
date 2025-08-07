@@ -1,11 +1,11 @@
 
 require 'minitest/autorun'
 
-MiniTest = Minitest unless defined?(MiniTest)
+
 
 require_relative '../parser'      # nested
 
-class TestParseSet < MiniTest::Test
+class TestParseSet < Minitest::Test
 
   def setup
   end

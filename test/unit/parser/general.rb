@@ -1,13 +1,13 @@
 
 require 'minitest/autorun'
 
-MiniTest = Minitest unless defined?(MiniTest)
+
 
 require_relative '../parser'      # nested
 
 ParseGeneral = ::Livetext::ParseGeneral
 
-class TestParseGeneral < MiniTest::Test
+class TestParseGeneral < Minitest::Test
 
   def setup
   end

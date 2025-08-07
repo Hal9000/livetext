@@ -1,10 +1,8 @@
 require 'minitest/autorun'
 
-MiniTest = Minitest
-
 require_relative '../../lib/livetext'
 
-class TestingLivetext < MiniTest::Test
+class TestingLivetext < Minitest::Test
   include Livetext::Standard
 
   # Only method here "really" belongs elsewhere?  FIXME

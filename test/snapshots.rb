@@ -9,8 +9,6 @@
 
 require 'minitest/autorun'
 
-MiniTest = Minitest unless defined?(MiniTest)
-
 require_relative '../lib/livetext'
 
 =begin
@@ -45,7 +43,7 @@ It works this way:
 
 # Just a testing class. Chill.
 
-class TestingLivetext < MiniTest::Test
+class TestingLivetext < Minitest::Test
 
   class Snapshot
     SOURCE = "source.lt3"
@@ -67,9 +65,10 @@ class TestingLivetext < MiniTest::Test
     end
 
     Args = ARGV - ["cmdline"]
+    cmdline = ARGV.first == "cmdline"
     dir = self.get_dir
     # Data = "#{dir}/test/snapshots"
-    Data = "../../test/snapshots"
+    Data = cmdline ? "../../test/snapshots" : "test/snapshots"
     Dir.chdir(Data)
     TestDirs = Dir.entries(".").reject {|fname| ! File.directory?(fname) } - %w[. ..]
 

@@ -1,10 +1,10 @@
 require 'minitest/autorun'
 
-MiniTest = Minitest unless defined?(MiniTest)
+
 
 require 'livetext'
 
-class TestingLivetext < MiniTest::Test
+class TestingLivetext < Minitest::Test
   include Livetext::Standard
 
   # Some of these methods being tested "really" belong elsewhere?
