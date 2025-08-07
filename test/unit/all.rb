@@ -11,4 +11,5 @@ require_relative 'variable_manager'
 require_relative 'functions'
 require_relative 'function_registry'
 require_relative 'formatter'
+require_relative 'core_methods'
 

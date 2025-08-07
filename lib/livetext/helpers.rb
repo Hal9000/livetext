@@ -125,7 +125,25 @@ module Livetext::Helpers
     api.data = data0.dup   # should permit _ in function names at least
     args0 = data0.split
     api.args = args0.dup
-    retval = send(name)  # , *args)      # was 125
+    # Get method signature to determine what parameters to pass
+    method = method(name)
+    param_count = method.parameters.length
+    
+    # Pass parameters based on method signature
+    case param_count
+    when 0
+      retval = send(name)
+    when 2
+      retval = send(name, args0, data0)
+    when 3
+      # Check if this is a method that needs raw body content
+      # For now, we'll check if it's dot_def and if it has 'body raw' in args
+      raw_body = (name == :dot_def && args0.length >= 3 && args0[2] == 'raw')
+      body_lines = raw_body ? api.body(true) : api.body(false)
+      retval = send(name, args0, data0, body_lines)
+    else
+      retval = send(name)  # fallback to no parameters
+    end
     retval
   rescue => err
     graceful_error(err)   # , "#{__method__}: name = #{name}")

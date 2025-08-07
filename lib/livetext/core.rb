@@ -58,15 +58,8 @@ class Livetext
   end
 
   def initialize(output = ::STDOUT)  # Livetext
-    @source = nil
-    @_mixins = []
-    @_imports = []
-    @_outdir = "."
-    @no_puts = output.nil?
     @body = ""
-
     @indentation = [0]
-    @_vars = Livetext::Vars
     @api = UserAPI.new(self)
     @output = ::Livetext.output = output
     @html = Livetext::HTML.new(@api)
@@ -74,7 +67,6 @@ class Livetext
     @function_registry = Livetext::FunctionRegistry.new
     @variables = Livetext::VariableManager.new(self)
     @formatter = Livetext::Formatter.new(self)
-    initial_vars
 # puts "------ init: self = "
 # p self
   end
@@ -86,7 +78,7 @@ class Livetext
     mix.each do |lib| 
       obj.invoke_dotcmd(:mixin, lib.dup)
     end
-    call.each {|cmd| obj.main.send(cmd[1..-1]) }  # ignores leading dot, no param
+    call.each {|cmd| obj.send(cmd[1..-1]) }  # ignores leading dot, no param
     obj.api.setvars(vars)
     obj
   end
@@ -104,11 +96,8 @@ class Livetext
     def inspect
    api_abbr  = @api ? "(non-nil)" : "(not shown)"
     "Livetext:\n" + 
-    "  source = #{@source.inspect}\n" +
-    "  mixins = #{@_mixins.inspect}\n" + 
-    "  import = #{@_mixins.inspect}\n" + 
     "  indent = #{@indentation.inspect}\n" + 
-    "  vars   = #{@_vars.inspect}\n" + 
+    "  vars   = #{@variables.inspect}\n" + 
     "  api    = #{api_abbr}\n" +
     "  body   = (#{@body.size} bytes)"
   end
@@ -165,12 +154,29 @@ class Livetext
     @api = obj
   end
 
-  def initial_vars
-    # Variables are now handled by VariableManager
-    # This method is kept for backward compatibility
+
+
+  def process(text: nil, file: nil, vars: {})
+    # Set variables first
+    @variables.set_multiple(vars) unless vars.empty?
+    
+    # Process based on input type
+    case
+    when file && text.nil?
+      process_file(file)
+    when file.nil? && text
+      transform_text(text)
+    when file.nil? && text.nil?
+      raise "Must specify file or text"
+    when file && text
+      raise "Cannot specify file and text"
+    end
+    
+    [self.body, @variables.to_h]
   end
 
-  def transform(text)
+  # Keep transform for backward compatibility, but make it private
+  private def transform_text(text)
     setfile!("(string)")
     enum = text.each_line
     front = text.match(/.*?\n/).to_a.first.chomp rescue ""
@@ -185,29 +191,22 @@ class Livetext
     result
   end
 
-  # EXPERIMENTAL and incomplete
-  def xform(*args, file: nil, text: nil, vars: {})
-    case
-      when file && text.nil?
-        xform_file(file)
-      when file.nil? && text
-        transform(text)
-      when file.nil? && text.nil?
-        raise "Must specify file or text"
-      when file && text
-        raise "Cannot specify file and text"
-    end
-    self.process_file(file)
-    self.body
+  # Keep for backward compatibility
+  def transform(text)
+    transform_text(text)
   end
 
+  # Keep for backward compatibility
+  def xform(*args, file: nil, text: nil, vars: {})
+    body, _vars = process(file: file, text: text, vars: vars)
+    body
+  end
+
+  # Keep for backward compatibility
   def xform_file(file, vars: nil)
-    Livetext::Vars.replace(vars) unless vars.nil?
-    @_vars.replace(vars) unless vars.nil?
-# checkpoint! "Calling process_file..."
-    self.process_file(file)
-# checkpoint! "...returned"
-    self.body
+    vars_hash = vars.nil? ? {} : vars
+    body, _vars = process(file: file, vars: vars_hash)
+    body
   end
 
 end

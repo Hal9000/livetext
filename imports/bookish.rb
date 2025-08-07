@@ -205,7 +205,7 @@ api.tty "## sec: cp 4"
     title = api.data
     delim = " :: "
     api.out "<br><center><table width=90% cellpadding=5>"
-    lines = api.body(true)
+    lines = body
     maxw = nil
     lines.each do |line|
       api.format(line)
@@ -238,8 +238,8 @@ api.tty "## sec: cp 4"
     _debug "Closing TOC"
     @toc.close
   rescue => err
-     puts @parent.body
-     @parent.body = ""
+     puts self.body
+     self.body = ""
     _errout "Exception: #{err.inspect}"
   end
 

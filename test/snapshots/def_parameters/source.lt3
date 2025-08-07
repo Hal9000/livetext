@@ -1,0 +1,44 @@
+.def no_params
+  api.out "No parameters method called"
+.end
+
+.def with_args args
+  api.out "Args: #{args.inspect}, Data: #{data.inspect}"
+.end
+
+.def with_body body
+  api.out "Args: #{args.inspect}, Data: #{data.inspect}"
+  api.out "Body has #{body.length} lines:"
+  body.each_with_index do |line, i|
+    api.out "  #{i+1}: #{line}"
+  end
+.end
+
+.def with_body_raw body raw
+  api.out "Args: #{args.inspect}, Data: #{data.inspect}"
+  api.out "Raw body has #{body.length} lines:"
+  body.each_with_index do |line, i|
+    api.out "  #{i+1}: #{line}"
+  end
+.end
+
+Testing no parameters:
+.no_params
+
+Testing with args and data:
+.with_args arg1 arg2
+This is the data line
+
+Testing with body:
+.with_body arg1 arg2
+This is line 1 of the body
+This is line 2 of the body
+This is line 3 of the body
+.end
+
+Testing with raw body:
+.with_body_raw arg1 arg2
+This is line 1 of the raw body
+This is line 2 of the raw body
+This is line 3 of the raw body
+.end

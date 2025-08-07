@@ -32,6 +32,10 @@ class Livetext::VariableManager
     @variables.inspect
   end
 
+  def to_h
+    @variables.to_h
+  end
+
   def replace(vars)
     @variables = Livetext::Variables.new(vars)
   end

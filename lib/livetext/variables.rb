@@ -46,5 +46,9 @@
     def to_a
       @vars.to_a
     end
+
+    def to_h
+      @vars.select { |k, v| k.is_a?(Symbol) }
+    end
   end
 

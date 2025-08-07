@@ -301,8 +301,8 @@ def toc!(args = nil, body = nil)
   @toc.close
   api.optional_blank_line
 rescue => err
-   puts @parent.body
-   @parent.body = ""
+   puts self.body
+   self.body = ""
   _errout "Exception: #{err.inspect}"
 end
 
@@ -391,9 +391,9 @@ def close_output(args = nil, body = nil)
   return if @output == STDOUT
   @_outdir ||= "."
   @output.puts "<meta charset='UTF-8'>\n\n"
-  @output.puts @parent.body
+  @output.puts self.body
   @output.close
-  @parent.body = ""   # See bin/livetext
+  self.body = ""   # See bin/livetext
   @output = STDOUT
 end
 
@@ -412,8 +412,8 @@ def next_output(args = nil, body = nil)
   @_outdir ||= "."
   unless @output.nil?
     @output.puts "<meta charset='UTF-8'>\n\n"
-    @output.puts @parent.body
-    @parent.body = ""
+      @output.puts self.body
+  self.body = ""
     @output.close unless @output == STDOUT
   end
   fname = @_outdir + "/" + fname
@@ -427,8 +427,8 @@ def output(args = nil, body = nil)
   # _output(name)
   @_outdir ||= "."  # FIXME
   @output.puts "<meta charset='UTF-8'>\n\n"
-  @output.puts @parent.body
-  @parent.body = ""
+  @output.puts self.body
+  self.body = ""
   @output.close unless @output == STDOUT
   fname = @_outdir + "/" + name    #; STDERR.puts "---  _output: fname = #{fname.inspect}"
   @output = File.open(fname, "w")  #; STDERR.puts "---- @out = #{@output.inspect}"
