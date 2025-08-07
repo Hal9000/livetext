@@ -1,0 +1,5 @@
+.func testfunc
+  "Test function: #{param}"
+.end
+
+.functions

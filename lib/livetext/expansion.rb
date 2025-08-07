@@ -53,28 +53,30 @@ class Livetext::Expansion
   end
 
   def funcall(name, param)
-    err = "[Error evaluating $$#{name}(#{param})]"
+    # Use the unified function registry
     name = name.gsub(/\./, "__")
+    result = @live.function_registry.call(name, param)
     
-    # First check Livetext::Functions (for predefined and inline functions)
-    fobj = ::Livetext::Functions.new
-    result = fobj.send(name, param) rescue nil
-    return result.to_s if result
-    
-    # Then check the processor instance (for mixin functions)
-    if @live.main.respond_to?(name)
-      # Check if the method expects parameters
-      method = @live.main.method(name)
-      if method.parameters.empty?
-        result = @live.main.send(name) rescue err
-      else
-        result = @live.main.send(name, param) rescue err
+    # If not found in registry, fall back to old system for backward compatibility
+    if result.start_with?("[Error evaluating $$#{name}(")
+      # Try old Livetext::Functions system
+      fobj = ::Livetext::Functions.new
+      old_result = fobj.send(name, param) rescue nil
+      return old_result.to_s if old_result
+      
+      # Try processor instance (for mixin functions)
+      if @live.main.respond_to?(name)
+        method = @live.main.method(name)
+        if method.parameters.empty?
+          old_result = @live.main.send(name) rescue nil
+        else
+          old_result = @live.main.send(name, param) rescue nil
+        end
+        return old_result.to_s if old_result
       end
-      return result.to_s
     end
     
-    # If not found anywhere
-    err
+    result
   end
 
   def expand_function_calls(str)

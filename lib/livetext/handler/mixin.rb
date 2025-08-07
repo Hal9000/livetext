@@ -24,6 +24,10 @@ class Livetext::Handler::Mixin
 # STDERR.puts "After eval"
     newmod = Object.const_get("::" + modname)
 # STDERR.puts "After const_get"
+    
+    # Register functions from the mixin with the registry
+    handler.register_mixin_functions(newmod, parent)
+    
     newmod   # return actual module
   end
 
@@ -31,6 +35,30 @@ class Livetext::Handler::Mixin
     modname = @name.gsub("/","_").capitalize
     meths = grab_file(@file)  # already has .rb?
     [modname, "module ::#{modname}; #{meths}\nend"]
+  end
+
+  def register_mixin_functions(module_obj, parent)
+    # Get all instance methods from the module
+    methods = module_obj.instance_methods(false)
+    
+    methods.each do |method_name|
+      # Create a lambda that calls the method on the processor instance
+      function = ->(param) do
+        # Get the processor instance from the parent
+        processor = parent.main
+        
+        # Check if the method expects parameters
+        method = processor.method(method_name)
+        if method.parameters.empty?
+          processor.send(method_name)
+        else
+          processor.send(method_name, param)
+        end
+      end
+      
+      # Register with the function registry
+      parent.function_registry.register_user(method_name.to_s, function, source: :mixin, filename: @file)
+    end
   end
 
 end

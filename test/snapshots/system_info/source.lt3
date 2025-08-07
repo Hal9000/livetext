@@ -1,0 +1,16 @@
+System Info Variables:
+Hostname: $Hostname
+Platform: $Platform
+Ruby Version: $RubyVersion
+Livetext Version: $LivetextVersion
+
+System Info Functions:
+Hostname: $$hostname
+Platform: $$platform
+Ruby Version: $$ruby_version
+Livetext Version: $$livetext_version
+
+Date Formatting Functions:
+Default: $$format_date
+Days ago: $$days_ago[7]
+Days from now: $$days_from_now[7]

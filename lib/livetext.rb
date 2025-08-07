@@ -13,6 +13,7 @@ if !defined?(Livetext)
   require_relative 'livetext/errors'
   require_relative 'livetext/standard'
   require_relative 'livetext/functions'
+  require_relative 'livetext/function_registry'
   require_relative 'livetext/userapi'
   # require_relative 'livetext/formatter'
   require_relative 'livetext/processor'

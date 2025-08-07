@@ -1,0 +1,27 @@
+<h3>Available Functions</h3>
+<ul>
+<li><strong>$$br</strong> - builtin</li>
+<li><strong>$$date</strong> - builtin</li>
+<li><strong>$$day</strong> - builtin</li>
+<li><strong>$$days_ago</strong> - builtin</li>
+<li><strong>$$days_from_now</strong> - builtin</li>
+<li><strong>$$format_date</strong> - builtin</li>
+<li><strong>$$hostname</strong> - builtin</li>
+<li><strong>$$hour</strong> - builtin</li>
+<li><strong>$$isqrt</strong> - builtin</li>
+<li><strong>$$link</strong> - builtin</li>
+<li><strong>$$livetext_version</strong> - builtin</li>
+<li><strong>$$minute</strong> - builtin</li>
+<li><strong>$$month</strong> - builtin</li>
+<li><strong>$$platform</strong> - builtin</li>
+<li><strong>$$pwd</strong> - builtin</li>
+<li><strong>$$rand</strong> - builtin</li>
+<li><strong>$$reverse</strong> - builtin</li>
+<li><strong>$$ruby_version</strong> - builtin</li>
+<li><strong>$$second</strong> - builtin</li>
+<li><strong>$$testfunc</strong> - inline (unknown)</li>
+<li><strong>$$time</strong> - builtin</li>
+<li><strong>$$week</strong> - builtin</li>
+<li><strong>$$weekday</strong> - builtin</li>
+<li><strong>$$year</strong> - builtin</li>
+</ul>

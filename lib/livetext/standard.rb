@@ -61,13 +61,48 @@ module Livetext::Standard
     funcname = api.args[0]
     # check_disallowed(funcname)  # should any be invalid?
     funcname = funcname.gsub(/\./, "__")
+    function_body = api.body(true).to_a.join("\n")
     func_def = <<~EOS
       def #{funcname}(param)
-        #{api.body(true).to_a.join("\n")}
+        #{function_body}
       end
     EOS
     api.optional_blank_line
+    
+    # Register in old system for backward compatibility
     Livetext::Functions.class_eval func_def
+    
+    # Also register in new registry
+    function = ->(param) do
+      # Execute the function body with param available
+      eval(func_def)
+      # Call the newly defined method
+      method(funcname).call(param)
+    end
+    
+    @parent.function_registry.register_user(funcname, function, source: :inline, filename: @current_file)
+    return true
+  end
+
+  def functions(args = nil, body = nil)
+    # List all available functions with their sources
+    registry = @parent.function_registry
+    functions = registry.list_functions
+    
+    if functions.empty?
+      api.out "No functions available."
+      return true
+    end
+    
+    api.out "<h3>Available Functions</h3>"
+    api.out "<ul>"
+    
+    functions.each do |func|
+      api.out "<li><strong>$$#{func[:name]}</strong> - #{func[:source]}</li>"
+    end
+    
+    api.out "</ul>"
+    api.optional_blank_line
     return true
   end
 
