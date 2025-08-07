@@ -8,7 +8,23 @@ class Livetext
 
   TTY = ::File.open("/dev/tty", "w")
 
-  attr_reader :main, :sources, :function_registry, :variables, :formatter
+  Disallowed = 
+     %i[ __binding__        __id__            __send__          class
+         clone              display           dup               enum_for
+         eql?               equal?            extend            freeze
+         frozen?            hash              inspect           instance_eval   
+         instance_exec      instance_of?      is_a?             kind_of?
+         method             methods           nil?              object_id          
+         pretty_inspect     private_methods   protected_methods public_method
+         public_methods     public_send       respond_to?       send
+         singleton_class    singleton_method  singleton_methods taint
+         tainted?           tap               to_enum           to_s
+         trust              untaint           untrust           untrusted?
+         define_singleton_method              instance_variable_defined?
+         instance_variable_get                instance_variable_set
+         remove_instance_variable             instance_variables ]
+
+  attr_reader :sources, :function_registry, :variables, :formatter
   attr_accessor :nopass, :nopara
   attr_accessor :body, :indentation
 
@@ -27,16 +43,10 @@ class Livetext
     str3
   end
 
-  def peek_nextline
-    @main.peek_nextline  # delegate
-  end
 
-  def nextline
-    @main.nextline       # delegate
-  end
 
   def sources
-    @main.sources        # delegate
+    @sources        # delegate
   end
 
   def save_location
@@ -54,11 +64,13 @@ class Livetext
     @_outdir = "."
     @no_puts = output.nil?
     @body = ""
-    @main = Processor.new(self, output)  # nil = make @main its own parent??
-    @parent = @main
+
     @indentation = [0]
     @_vars = Livetext::Vars
     @api = UserAPI.new(self)
+    @output = ::Livetext.output = output
+    @html = Livetext::HTML.new(@api)
+    @sources = []
     @function_registry = Livetext::FunctionRegistry.new
     @variables = Livetext::VariableManager.new(self)
     @formatter = Livetext::Formatter.new(self)
@@ -83,20 +95,18 @@ class Livetext
     mix  = Array(mix)
     call = Array(call)
     mix.each {|lib| mixin(lib) }
-    call.each {|cmd| @main.send(cmd[1..-1]) }  # ignores leading dot, no param
+    call.each {|cmd| send(cmd[1..-1]) }  # ignores leading dot, no param
     # vars.each_pair {|var, val| @api.set(var, val.to_s) }
     api.setvars(vars)
     self
   end
 
-  def inspect
+    def inspect
    api_abbr  = @api ? "(non-nil)" : "(not shown)"
-   main_abbr = @main ? "(non-nil)" : "(not shown)"
     "Livetext:\n" + 
     "  source = #{@source.inspect}\n" +
     "  mixins = #{@_mixins.inspect}\n" + 
     "  import = #{@_mixins.inspect}\n" + 
-    "  main   = #{main_abbr}\n" + 
     "  indent = #{@indentation.inspect}\n" + 
     "  vars   = #{@_vars.inspect}\n" + 
     "  api    = #{api_abbr}\n" +
@@ -105,6 +115,50 @@ class Livetext
 
   def api
     @api
+  end
+
+  def error(*args)
+    ::STDERR.puts *args
+  end
+
+  def disallowed?(name)
+    flag = Disallowed.include?(name.to_sym)
+    flag
+  end
+
+  def output=(io)
+    @output = io
+  end
+
+  def html
+    @html
+  end
+
+  def source(enum, file, line)
+    @sources.push([enum, file, line])
+  end
+
+  def peek_nextline
+    return nil if @sources.empty?
+    source = @sources.last
+    line = source[0].peek
+    line
+  rescue StopIteration
+    @sources.pop
+    nil
+  rescue => err
+    TTY.puts "#{__method__}: RESCUE err = #{err.inspect}"
+    nil
+  end
+
+  def nextline
+    return nil if @sources.empty?
+    line = @sources.last[0].next
+    @sources.last[2] += 1
+    line
+  rescue StopIteration
+    @sources.pop
+    nil
   end
 
   def api=(obj)
@@ -120,9 +174,9 @@ class Livetext
     setfile!("(string)")
     enum = text.each_line
     front = text.match(/.*?\n/).to_a.first.chomp rescue ""
-    @main.source(enum, "STDIN: '#{front}...'", 0)
+    source(enum, "STDIN: '#{front}...'", 0)
     loop do 
-      line = @main.nextline
+      line = nextline
       break if line.nil?
       process_line(line)
     end

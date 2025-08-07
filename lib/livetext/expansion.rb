@@ -62,13 +62,13 @@ class Livetext::Expansion
       old_result = fobj.send(name, param) rescue nil
       return old_result.to_s if old_result
       
-      # Try processor instance (for mixin functions)
-      if @live.main.respond_to?(name)
-        method = @live.main.method(name)
+              # Try Livetext instance (for mixin functions)
+      if @live.respond_to?(name)
+        method = @live.method(name)
         if method.parameters.empty?
-          old_result = @live.main.send(name) rescue nil
+          old_result = @live.send(name) rescue nil
         else
-          old_result = @live.main.send(name, param) rescue nil
+          old_result = @live.send(name, param) rescue nil
         end
         return old_result.to_s if old_result
       end

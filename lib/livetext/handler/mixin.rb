@@ -42,17 +42,14 @@ class Livetext::Handler::Mixin
     methods = module_obj.instance_methods(false)
     
     methods.each do |method_name|
-      # Create a lambda that calls the method on the processor instance
+      # Create a lambda that calls the method on the parent (Livetext instance)
       function = ->(param) do
-        # Get the processor instance from the parent
-        processor = parent.main
-        
         # Check if the method expects parameters
-        method = processor.method(method_name)
+        method = parent.method(method_name)
         if method.parameters.empty?
-          processor.send(method_name)
+          parent.send(method_name)
         else
-          processor.send(method_name, param)
+          parent.send(method_name, param)
         end
       end
       

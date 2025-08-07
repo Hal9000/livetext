@@ -16,7 +16,12 @@ if !defined?(Livetext)
   require_relative 'livetext/variable_manager'
   require_relative 'livetext/formatter'
   require_relative 'livetext/userapi'
-  require_relative 'livetext/processor'
+
 
   require_relative 'livetext/handler'
+  
+  # Include Standard after it's loaded
+  class Livetext
+    include Livetext::Standard
+  end
 end

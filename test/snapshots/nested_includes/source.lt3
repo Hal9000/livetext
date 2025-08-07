@@ -1,0 +1,49 @@
+# Main file - Level 1
+# This file includes level2 and tests all variables and functions from all levels
+
+.set main_var="I am from main level", main_number=999
+
+.func main_function
+  "Main function called with: " + param
+.end
+
+.func test_all_levels
+  "Main: " + "I am from main level" + ", Middle: " + "I am from level 2" + ", Deep: " + "I am from level 3"
+.end
+
+# Include level2 (which includes level3)
+.include level2.inc
+
+# Test all variables from all levels
+Main variable: $main_var
+Middle variable: $middle_var  
+Deep variable: $deep_var
+
+# Test all functions from all levels
+Main function: $$main_function[from main]
+Middle function: $$middle_function[from main]
+Deep function: $$deep_function[from main]
+
+# Test math functions
+Deep math: $$deep_math[10] = 20
+Main number: $main_number
+Middle number: $middle_number
+Deep number: $deep_number
+
+# Test combined functions
+Combine vars: $$combine_vars[]
+Test all levels: $$test_all_levels[]
+
+.def main_method
+  api.out "Main method called from main level"
+.end
+
+# Test methods from all levels
+.main_method
+.middle_method
+.deep_method
+
+# Test that we can still access everything after the include
+Final test - deep function: $$deep_function[final call]
+Final test - middle function: $$middle_function[final call]
+Final test - main function: $$main_function[final call]

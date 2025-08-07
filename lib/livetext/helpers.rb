@@ -81,15 +81,15 @@ module Livetext::Helpers
     text = File.readlines(fname)
     enum = text.each
     @backtrace = btrace
-    @main.source(enum, fname, 0)
+    source(enum, fname, 0)
     line = nil
     loop do
-      line = @main.nextline
+      line = nextline
       break if line.nil?
       success = process_line(line)
       break unless success
     end
-    val = @main.finalize rescue nil
+    val = finalize rescue nil
     @body    # FIXME?   @body.join("\n")  # array
     return true
   end
@@ -125,7 +125,7 @@ module Livetext::Helpers
     api.data = data0.dup   # should permit _ in function names at least
     args0 = data0.split
     api.args = args0.dup
-    retval = @main.send(name)  # , *args)      # was 125
+    retval = send(name)  # , *args)      # was 125
     retval
   rescue => err
     graceful_error(err)   # , "#{__method__}: name = #{name}")
@@ -139,7 +139,7 @@ module Livetext::Helpers
     case
       when name == :end   # special case
         graceful_error EndWithoutOpening()
-      when @main.respond_to?(name)
+      when respond_to?(name)
         success = invoke_dotcmd(name, data)    # was 141
     else
       graceful_error UnknownMethod(name)
@@ -162,8 +162,8 @@ module Livetext::Helpers
       data0 = ""
     end
     name = "dot_" + name if %w[include def].include?(name)
-    @main.check_disallowed(name)
-    @main.api.data = data0  # FIXME kill this?
+    check_disallowed(name)
+    api.data = data0  # FIXME kill this?
     [name.to_sym, data0]
   end
 

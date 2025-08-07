@@ -78,13 +78,13 @@ module Livetext::Standard
       fobj.send(funcname, param)
     end
     
-    @parent.function_registry.register_user(funcname, function, source: :inline, filename: @current_file)
+                 function_registry.register_user(funcname, function, source: :inline, filename: @current_file)
     return true
   end
 
   def functions(args = nil, body = nil)
     # List all available functions with their sources
-    registry = @parent.function_registry
+    registry = function_registry
     functions = registry.list_functions
     
     if functions.empty?
@@ -283,14 +283,14 @@ module Livetext::Standard
       end
     end
     check_file_exists(file)
-    @parent.process_file(file)
+    process_file(file)
     api.optional_blank_line
   end
 
   def dot_include(args = nil, body = nil)   # dot command
     file = api.expand_variables(api.args.first)  # allows for variables
     check_file_exists(file)
-    @parent.process_file(file)
+    process_file(file)
     api.optional_blank_line
   end
 
@@ -301,8 +301,8 @@ module Livetext::Standard
     good = got_upper || got_file
     STDERR.puts "File #{file} not found (local or parent)" unless good
 
-    @parent.process_file(upper) if got_upper
-    @parent.process_file(file)  if got_file
+    process_file(upper) if got_upper
+    process_file(file)  if got_file
     api.optional_blank_line
   end
 
@@ -311,7 +311,7 @@ module Livetext::Standard
     @mixins ||= []
     return if @mixins.include?(name)
     @mixins << name
-    mod = Livetext::Handler::Mixin.get_module(name, @parent)
+    mod = Livetext::Handler::Mixin.get_module(name, self)
     self.extend(mod)
     init = "init_#{name}"
     self.send(init) rescue nil  # if self.respond_to? init
@@ -323,7 +323,7 @@ module Livetext::Standard
     @imports ||= []
     return if @imports.include?(name)
     @imports << name
-    mod = Livetext::Handler::Import.get_module(name, @parent)
+    mod = Livetext::Handler::Import.get_module(name, self)
     self.extend(mod)
     init = "init_#{name}"
     self.send(init) rescue nil  # if self.respond_to? init
@@ -334,7 +334,7 @@ module Livetext::Standard
     file = api.args.first
     ok = file_exists?(file)
 
-    self.parent.graceful_error FileNotFound(file) unless ok   # FIXME seems weird?
+    graceful_error FileNotFound(file) unless ok   # FIXME seems weird?
       api.out grab_file(file)
     api.optional_blank_line
     [ok, file]
