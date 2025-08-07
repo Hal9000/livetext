@@ -1,0 +1,10 @@
+Testing function parameter handling...
+
+.func testparam
+  param.empty? ? 'nil' : param
+.end
+
+Testing with no parameter: $$testparam[]
+Testing with empty parameter: $$testparam[]
+Testing with string parameter: $$testparam[hello]
+Testing with number parameter: $$testparam[42]

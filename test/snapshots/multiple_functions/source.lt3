@@ -1,0 +1,16 @@
+Testing multiple user functions in the same document...
+
+.func func1
+  'one'
+.end
+
+.func func2
+  'two'
+.end
+
+.func func3
+  'three'
+.end
+
+Calling all functions:
+$$func1[] and $$func2[] and $$func3[]

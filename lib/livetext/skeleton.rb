@@ -9,9 +9,6 @@ class Livetext
   module Handler
   end
 
-  module Formatter
-  end
-
   class HTML
   end
 

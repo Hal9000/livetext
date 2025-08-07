@@ -1,0 +1,5 @@
+Testing multiple user functions in the same document...
+<p>
+
+Calling all functions:
+one

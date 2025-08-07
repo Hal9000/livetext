@@ -8,8 +8,6 @@ class Livetext::Expansion
   Lbrack = "\\["
   Colon  = ":"
 
-  Formatter = ::Livetext::Formatter
-
   def initialize(instance)   # Livetext::Expansion
     @live = instance
   end
@@ -18,7 +16,7 @@ class Livetext::Expansion
     return "" if line == "\n" || line.nil?
     with_vars = expand_variables(line)
     with_func = expand_function_calls(with_vars)
-    formatted = Formatter.format(with_func)
+    formatted = @live.formatter.format(with_func)
   end
 
   def expand_variables(str)
@@ -87,7 +85,7 @@ class Livetext::Expansion
     rbrack = "\\]"
     space_eol = "( |$)"
     prx1 = "(?<param>[^ ]+)"
-    prx2 = "(?<param>.+)"
+    prx2 = "(?<param>.*)"
     pat2 = "(?<full_param>#{colon}#{prx1})"
     pat3 = "(?<full_param>#{lbrack}#{prx2}#{rbrack})"
     rx = Regexp.compile("#{pat1}(#{pat2}|#{pat3})?")

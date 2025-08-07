@@ -61,7 +61,7 @@ module Livetext::Standard
     funcname = api.args[0]
     # check_disallowed(funcname)  # should any be invalid?
     funcname = funcname.gsub(/\./, "__")
-    function_body = api.body(true).to_a.join("\n")
+    function_body = api.body(false).to_a.join("\n")
     func_def = <<~EOS
       def #{funcname}(param)
         #{function_body}
@@ -69,15 +69,13 @@ module Livetext::Standard
     EOS
     api.optional_blank_line
     
-    # Register in old system for backward compatibility
+    # Register in old system (this works perfectly)
     Livetext::Functions.class_eval func_def
     
-    # Also register in new registry
+    # Also register in new registry with proper delegation
     function = ->(param) do
-      # Execute the function body with param available
-      eval(func_def)
-      # Call the newly defined method
-      method(funcname).call(param)
+      fobj = ::Livetext::Functions.new
+      fobj.send(funcname, param)
     end
     
     @parent.function_registry.register_user(funcname, function, source: :inline, filename: @current_file)

@@ -1,0 +1,7 @@
+Testing function parameter handling...
+<p>
+
+Testing with no parameter: nil
+Testing with empty parameter: nil
+Testing with string parameter: hello
+Testing with number parameter: 42

@@ -25,14 +25,26 @@ class TestingLivetextFunctionRegistry < Minitest::Test
 
   def test_registry_user_functions
     # Test that user functions are registered and work
-    # This test will be implemented when we fix the function body execution context
-    skip "Function body execution context needs to be fixed"
+    registry = @live.function_registry
+    
+    # Register a test function
+    registry.register_user('testfunc', ->(param) { param.upcase }, source: :inline, filename: 'test.lt3')
+    
+    # Test that it works
+    result = registry.call('testfunc', 'hello')
+    assert_equal('HELLO', result)
   end
 
   def test_registry_function_override
     # Test that user functions override builtin functions
-    # This test will be implemented when we fix the function body execution context
-    skip "Function body execution context needs to be fixed"
+    registry = @live.function_registry
+    
+    # Register a user function that should override the builtin
+    registry.register_user('reverse', ->(param) { param.upcase }, source: :inline, filename: 'test.lt3')
+    
+    # Test that user function is called, not builtin
+    result = registry.call('reverse', 'hello')
+    assert_equal('HELLO', result)  # User function (uppercase), not builtin (reverse)
   end
 
   def test_registry_function_listing
@@ -55,11 +67,7 @@ class TestingLivetextFunctionRegistry < Minitest::Test
     check_match(exp, actual)
   end
 
-  def test_registry_parameter_handling
-    # Test different parameter scenarios
-    # This test will be implemented when we fix the function body execution context
-    skip "Function body execution context needs to be fixed"
-  end
+
 
   def test_registry_function_source_tracking
     # Test that function sources are tracked correctly
@@ -120,15 +128,5 @@ class TestingLivetextFunctionRegistry < Minitest::Test
     check_match(exp, actual)
   end
 
-  def test_registry_multiple_user_functions
-    # Test multiple user functions in the same document
-    # This test will be implemented when we fix the function body execution context
-    skip "Function body execution context needs to be fixed"
-  end
 
-  def test_registry_function_with_complex_body
-    # Test function with more complex logic
-    # This test will be implemented when we fix the function body execution context
-    skip "Function body execution context needs to be fixed"
-  end
 end

@@ -1,0 +1,19 @@
+Testing complex function body logic...
+
+.func complex
+  if param.empty?
+    'nil'
+  elsif param == "\"\""
+    'empty'
+  elsif param.to_i.to_s == param
+    'number'
+  else
+    param.upcase
+  end
+.end
+
+Testing with nil: $$complex[]
+Testing with empty: $$complex[]
+Testing with number: $$complex[42]
+Testing with string: $$complex[hello]
+Testing explicit empty: $$complex[""]

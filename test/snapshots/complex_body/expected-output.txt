@@ -1,0 +1,8 @@
+Testing complex function body logic...
+<p>
+
+Testing with nil: nil
+Testing with empty: nil
+Testing with number: number
+Testing with string: HELLO
+Testing explicit empty: empty

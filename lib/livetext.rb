@@ -5,7 +5,6 @@ if !defined?(Livetext)
   require_relative 'livetext/helpers'
   require_relative 'livetext/variables'
   require_relative 'livetext/core'
-  require_relative 'livetext/formatter'
   require_relative 'livetext/paths'
 
   require_relative 'livetext/reopen'
@@ -14,8 +13,9 @@ if !defined?(Livetext)
   require_relative 'livetext/standard'
   require_relative 'livetext/functions'
   require_relative 'livetext/function_registry'
+  require_relative 'livetext/variable_manager'
+  require_relative 'livetext/formatter'
   require_relative 'livetext/userapi'
-  # require_relative 'livetext/formatter'
   require_relative 'livetext/processor'
 
   require_relative 'livetext/handler'

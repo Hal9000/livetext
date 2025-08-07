@@ -8,7 +8,7 @@ class Livetext
 
   TTY = ::File.open("/dev/tty", "w")
 
-  attr_reader :main, :sources, :function_registry
+  attr_reader :main, :sources, :function_registry, :variables, :formatter
   attr_accessor :nopass, :nopara
   attr_accessor :body, :indentation
 
@@ -17,7 +17,7 @@ class Livetext
   end
 
   def vars
-    @_vars
+    @variables
   end
 
   def self.interpolate(str)
@@ -60,6 +60,8 @@ class Livetext
     @_vars = Livetext::Vars
     @api = UserAPI.new(self)
     @function_registry = Livetext::FunctionRegistry.new
+    @variables = Livetext::VariableManager.new(self)
+    @formatter = Livetext::Formatter.new(self)
     initial_vars
 # puts "------ init: self = "
 # p self
@@ -110,26 +112,8 @@ class Livetext
   end
 
   def initial_vars
-    # Other predefined variables (see also setfile)
-    @api.setvar(:User, `whoami`.chomp)
-    @api.setvar(:Version, Livetext::VERSION)
-    
-    # System info variables
-    @api.setvar(:Hostname, `hostname`.chomp)
-    @api.setvar(:Platform, RUBY_PLATFORM)
-    @api.setvar(:RubyVersion, RUBY_VERSION)
-    @api.setvar(:LivetextVersion, Livetext::VERSION)
-    
-    # Date/time variables
-    now = Time.now
-    @api.setvar(:Year, now.year.to_s)
-    @api.setvar(:Month, now.mon.to_s)
-    @api.setvar(:Day, now.day.to_s)
-    @api.setvar(:Hour, now.hour.to_s)
-    @api.setvar(:Minute, now.min.to_s)
-    @api.setvar(:Second, now.sec.to_s)
-    @api.setvar(:Weekday, now.wday.to_s)
-    @api.setvar(:Week, now.strftime("%U").to_s)
+    # Variables are now handled by VariableManager
+    # This method is kept for backward compatibility
   end
 
   def transform(text)
