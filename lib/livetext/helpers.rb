@@ -134,40 +134,34 @@ module Livetext::Helpers
     when 2
       retval = send(name, args0, data0)
     when 3
-      # Method takes 3 parameters - assumes processed body
       processed_body = api.body(false)
       retval = send(name, args0, data0, processed_body)
     when 4
-      # Method explicitly takes 4 parameters - check if it wants raw body
-      if params[3][1] == :raw # Check if the 4th parameter is named 'raw'
-        # Method wants raw body - call api.body(true) once
+      if params[3][1] == :raw 
         raw_body = api.body(true)
         retval = send(name, args0, data0, raw_body, true)
       else
-        # If 4th param exists but isn't 'raw', fallback to processed body
-        processed_body = api.body(false)
-        retval = send(name, args0, data0, processed_body)
+        raise "4th parameter is not :raw!"
       end
     else
-      retval = send(name)
+      raise "#{name} has #{params.length} parameters!"
     end
     retval
-  rescue => err
-    graceful_error(err)
   end
 
   def handle_dotcmd(line, indent = 0)
+    line = line.sub(/# .*$/, "")
     name, data = get_name_data(line)
-    
     check_disallowed(name)
-    
-    if respond_to?(name)
-      invoke_dotcmd(name, data)
+    case
+    when name == :end   # special case
+      graceful_error EndWithoutOpening()
+    when respond_to?(name)
+      success = invoke_dotcmd(name, data)    # was 141
     else
-      graceful_error UnknownMethod(name, data)
+      graceful_error UnknownMethod(name)
     end
-  rescue => err
-    graceful_error(err)
+    success
   end
 
   def handle_scomment(line)

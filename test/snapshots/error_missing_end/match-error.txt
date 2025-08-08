@@ -1,1 +1,1 @@
-1 /Expected .end, found end of file/
+1 /expected .end but found end of file/

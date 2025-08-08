@@ -138,7 +138,7 @@ class Livetext::UserAPI
       @line = format(@line) unless raw
       lines << @line
     end
-    raise "Expected .end, found end of file" unless end?(@line)  # use custom exception
+    graceful_error ExpectedEnd() unless end?(@line)  # use custom exception
     optional_blank_line   # FIXME Delete this??
     return lines unless block_given?
     lines.each {|line| yield line }   # FIXME what about $. ?
@@ -158,7 +158,7 @@ class Livetext::UserAPI
       @line = format(@line)
       processed_lines << @line
     end
-    raise "Expected .end, found end of file" unless end?(@line)  # use custom exception
+    graceful_error ExpectedEnd() unless end?(@line)  # use custom exception
     optional_blank_line   # FIXME Delete this??
     [processed_lines, raw_lines]
   end
