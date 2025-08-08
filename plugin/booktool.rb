@@ -67,12 +67,12 @@ end
 
 # These are duplicated. Remove safely
 
-  def h1(args = nil, body = nil); api.out html.tag(:h1, api.data); return true; end
-  def h2(args = nil, body = nil); api.out html.tag(:h2, api.data); return true; end
-  def h3(args = nil, body = nil); api.out html.tag(:h3, api.data); return true; end
-  def h4(args = nil, body = nil); api.out html.tag(:h4, api.data); return true; end
-  def h5(args = nil, body = nil); api.out html.tag(:h5, api.data); return true; end
-  def h6(args = nil, body = nil); api.out html.tag(:h6, api.data); return true; end
+  def h1(args = nil, body = nil); api.out html.tag(:h1, cdata: api.data); return true; end
+  def h2(args = nil, body = nil); api.out html.tag(:h2, cdata: api.data); return true; end
+  def h3(args = nil, body = nil); api.out html.tag(:h3, cdata: api.data); return true; end
+  def h4(args = nil, body = nil); api.out html.tag(:h4, cdata: api.data); return true; end
+  def h5(args = nil, body = nil); api.out html.tag(:h5, cdata: api.data); return true; end
+  def h6(args = nil, body = nil); api.out html.tag(:h6, cdata: api.data); return true; end
 
 def alpha_columns(args = nil, body = nil)
   n = api.args.first.to_i   # FIXME: what if it's missing?

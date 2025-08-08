@@ -122,47 +122,52 @@ module Livetext::Helpers
   end
 
   def invoke_dotcmd(name, data0="")
-    api.data = data0.dup   # should permit _ in function names at least
+    api.data = data0.dup
     args0 = data0.split
     api.args = args0.dup
-    # Get method signature to determine what parameters to pass
     method = method(name)
-    param_count = method.parameters.length
+    params = method.parameters
     
-    # Pass parameters based on method signature
-    case param_count
+    case params.length
     when 0
       retval = send(name)
     when 2
       retval = send(name, args0, data0)
     when 3
-      # Check if this is a method that needs raw body content
-      # For now, we'll check if it's dot_def and if it has 'body raw' in args
-      raw_body = (name == :dot_def && args0.length >= 3 && args0[2] == 'raw')
-      body_lines = raw_body ? api.body(true) : api.body(false)
-      retval = send(name, args0, data0, body_lines)
+      # Method takes 3 parameters - assumes processed body
+      processed_body = api.body(false)
+      retval = send(name, args0, data0, processed_body)
+    when 4
+      # Method explicitly takes 4 parameters - check if it wants raw body
+      if params[3][1] == :raw # Check if the 4th parameter is named 'raw'
+        # Method wants raw body - call api.body(true) once
+        raw_body = api.body(true)
+        retval = send(name, args0, data0, raw_body, true)
+      else
+        # If 4th param exists but isn't 'raw', fallback to processed body
+        processed_body = api.body(false)
+        retval = send(name, args0, data0, processed_body)
+      end
     else
-      retval = send(name)  # fallback to no parameters
+      retval = send(name)
     end
     retval
   rescue => err
-    graceful_error(err)   # , "#{__method__}: name = #{name}")
+    graceful_error(err)
   end
 
   def handle_dotcmd(line, indent = 0)
-    indent = @indentation.last # top of stack
-    line = line.sub(/# .*$/, "")   # FIXME Could be problematic?
     name, data = get_name_data(line)
-    success = true  # Be optimistic...  :P
-    case
-      when name == :end   # special case
-        graceful_error EndWithoutOpening()
-      when respond_to?(name)
-        success = invoke_dotcmd(name, data)    # was 141
+    
+    check_disallowed(name)
+    
+    if respond_to?(name)
+      invoke_dotcmd(name, data)
     else
-      graceful_error UnknownMethod(name)
+      graceful_error UnknownMethod(name, data)
     end
-    success
+  rescue => err
+    graceful_error(err)
   end
 
   def handle_scomment(line)

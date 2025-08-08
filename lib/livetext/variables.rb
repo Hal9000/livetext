@@ -21,7 +21,7 @@
     end
   
     def [](var)
-      @vars[var.to_sym]
+      @vars[var.to_sym] || "[#{var} is undefined]"
     end
 
     def []=(var, value)
@@ -49,6 +49,10 @@
 
     def to_h
       @vars.select { |k, v| k.is_a?(Symbol) }
+    end
+
+    def exists?(var)
+      @vars[var.to_sym] != nil
     end
   end
 

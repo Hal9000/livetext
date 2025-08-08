@@ -25,7 +25,7 @@ class Livetext::VariableManager
   end
 
   def exists?(name)
-    @variables[name.to_sym] != nil
+    @variables.exists?(name)
   end
 
   def list
@@ -38,6 +38,19 @@ class Livetext::VariableManager
 
   def replace(vars)
     @variables = Livetext::Variables.new(vars)
+  end
+
+  # Enable live.vars.myvar syntax
+  def method_missing(name, *args)
+    if args.empty?
+      @variables[name.to_sym] || "[#{name} is undefined]"
+    else
+      super
+    end
+  end
+
+  def respond_to_missing?(name, include_private = false)
+    true  # Since method_missing always returns a value, respond_to? should always return true
   end
 
   private

@@ -144,6 +144,25 @@ class Livetext::UserAPI
     lines.each {|line| yield line }   # FIXME what about $. ?
   end
 
+  def body_with_raw
+    processed_lines = []
+    raw_lines = []
+    end_found = false
+    loop do
+      @line = @live.nextline
+      break if @line.nil?
+      @line.chomp!
+      break if end?(@line)
+      next if comment?(@line)
+      raw_lines << @line
+      @line = format(@line)
+      processed_lines << @line
+    end
+    raise "Expected .end, found end of file" unless end?(@line)  # use custom exception
+    optional_blank_line   # FIXME Delete this??
+    [processed_lines, raw_lines]
+  end
+
   def body_text(raw=false)
     raw_body.join("\n")
   end

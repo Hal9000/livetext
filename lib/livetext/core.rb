@@ -78,8 +78,10 @@ class Livetext
     mix.each do |lib| 
       obj.invoke_dotcmd(:mixin, lib.dup)
     end
-    call.each {|cmd| obj.send(cmd[1..-1]) }  # ignores leading dot, no param
+    call.each {|cmd| obj.handle_dotcmd(cmd) }  # Use handle_dotcmd for proper command parsing
     obj.api.setvars(vars)
+    # Also set variables in global Livetext::Vars for backward compatibility
+    vars.each {|var, val| Vars[var.to_sym] = val.to_s }
     obj
   end
 
@@ -87,9 +89,11 @@ class Livetext
     mix  = Array(mix)
     call = Array(call)
     mix.each {|lib| mixin(lib) }
-    call.each {|cmd| send(cmd[1..-1]) }  # ignores leading dot, no param
+    call.each {|cmd| handle_dotcmd(cmd) }  # Use handle_dotcmd for proper command parsing
     # vars.each_pair {|var, val| @api.set(var, val.to_s) }
     api.setvars(vars)
+    # Also set variables in global Livetext::Vars for backward compatibility
+    vars.each {|var, val| Vars[var.to_sym] = val.to_s }
     self
   end
 
