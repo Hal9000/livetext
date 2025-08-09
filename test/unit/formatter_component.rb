@@ -10,7 +10,7 @@ class TestingLivetextFormatter < Minitest::Test
   def test_formatter_component_initialization
     # Test that FormatterComponent is properly initialized
     assert(@live.formatter, "FormatterComponent should be initialized")
-    assert_instance_of(Livetext::FormatterComponent, @live.formatter)
+    assert_instance_of(Livetext::Formatter, @live.formatter)
   end
 
   def test_basic_formatting

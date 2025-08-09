@@ -1,0 +1,17 @@
+Testing functions defined in Livetext::Functions class
+
+.mixin mixin_functions_class
+
+Now calling functions defined in Livetext::Functions class:
+$$class_func:test_parameter
+
+And another one with brackets:
+$$another_class_func[with brackets]
+
+And a function with no parameters:
+$$simple_class_func
+
+Testing that the functions have access to Livetext::Vars:
+$$vars_test:some_value
+
+That's all.

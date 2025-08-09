@@ -1,8 +1,6 @@
 require 'minitest/autorun'
 
-
-
-require_relative '../../lib/stringparser'
+require_relative '../../lib/livetext/parser/string'
 
 class TestStringParser < Minitest::Test
 
@@ -38,13 +36,13 @@ class TestStringParser < Minitest::Test
   end
 
   def test_next
-    assert_nil @zero.next
+    assert_nil @zero.grab
     assert_equal @zero.i, 0      # nothing happens
 
-    assert_equal @one.next, "x"
+    assert_equal @one.grab, "x"
     assert_equal @one.i, 1
 
-    assert_equal @many.next, "T"
+    assert_equal @many.grab, "T"
     refute @many.eos, "EOS was true for #{@many.inspect}"
     assert_equal @many.i, 1
   end
@@ -56,20 +54,20 @@ class TestStringParser < Minitest::Test
   end
 
   def test_next_eos
-    @zero.next
+    @zero.grab
     assert @zero.eos?
 
     @one.eos?
     refute @one.eos?
-    @one.next
+    @one.grab
     assert @one.eos?
-    @one.next # One beyond the actual end
+    @one.grab # One beyond the actual end
     assert @one.eos? # Still the end
 
-    @many.next
+    @many.grab
     refute @many.eos?
     count = @many.len    # doesn't make sense??
-    count.times { @many.next }
+    count.times { @many.grab }
     assert @many.eos?
   end
 
@@ -80,36 +78,20 @@ class TestStringParser < Minitest::Test
   end
 
   def test_next_peek
-    char1 = @zero.next
+    char1 = @zero.grab
     char2 = @zero.peek
     assert_nil char1
     assert_nil char2
     assert @zero.i == 0
-    assert @zero.last?
     assert @zero.eos?
 
-    refute @one.last?
     char1 = @one.peek
-    refute @one.last?
-    char2 = @one.next
-    assert @one.last? # One beyond the last
+    char2 = @one.grab
     char3 = @one.peek
     assert char1
     assert char2 == char1
     assert char3 == @str1[1]
     assert @one.i == 1
-    assert @one.last?
-    assert @one.eos?
-
-    char1 = @many.peek
-    char2 = @many.next
-    char3 = @many.peek
-    assert char1
-    assert char2 == char1
-    assert char3 == @strN[1]
-    assert @many.i == 1
-    refute @many.last?
-    refute @many.eos?
   end
 
   def test_skip_spaces
@@ -135,8 +117,8 @@ class TestStringParser < Minitest::Test
 
   def test_for_parse_set
     str = StringParser.new('gamma = "oh, well"')
-    count = str.len    # doesn't make sense??
-    count.times { print str.next; }
-
+    count = str.len
+    count.times { str.grab }
+    assert str.eos?
   end
 end

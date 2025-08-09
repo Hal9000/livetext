@@ -11,6 +11,32 @@ class Livetext::Functions
     attr_accessor :param   # kill this?
   end
 
+  # Instance variables for accessing the Livetext instance and its variables
+  attr_accessor :live, :vars
+
+  def initialize
+    @live = nil
+    @vars = nil
+  end
+
+  # Helper method to access variables with fallback to global Livetext::Vars
+  def get_var(name)
+    return @vars.get(name) if @vars
+    return @live&.vars.get(name) if @live&.vars
+    Livetext::Vars[name]
+  end
+
+  # Helper method to set variables
+  def set_var(name, value)
+    if @vars
+      @vars.set(name, value)
+    elsif @live&.vars
+      @live.vars.set(name, value)
+    else
+      Livetext::Vars[name] = value
+    end
+  end
+
   def code_lines(param = nil)
     $code_lines.to_i  # FIXME pleeease
   end

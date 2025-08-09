@@ -158,8 +158,6 @@ class Livetext
     @api = obj
   end
 
-
-
   def process(text: nil, file: nil, vars: {})
     # Set variables first
     @variables.set_multiple(vars) unless vars.empty?

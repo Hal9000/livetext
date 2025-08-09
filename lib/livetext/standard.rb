@@ -322,7 +322,7 @@ module Livetext::Standard
   end
 
   def mixin(args, data)
-    name = api.args.first   # Expect a module name
+    name = args.first   # Expect a module name
     @mixins ||= []
     return if @mixins.include?(name)
     @mixins << name
@@ -334,7 +334,7 @@ module Livetext::Standard
   end
 
   def import(args, data)
-    name = api.args.first   # Expect a module name
+    name = args.first   # Expect a module name
     @imports ||= []
     return if @imports.include?(name)
     @imports << name

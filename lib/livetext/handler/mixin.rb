@@ -56,6 +56,34 @@ class Livetext::Handler::Mixin
       # Register with the function registry
       parent.function_registry.register_user(method_name.to_s, function, source: :mixin, filename: @file)
     end
+    
+    # Also look for methods defined in Livetext::Functions class
+    # Get all methods from Livetext::Functions
+    functions_class_methods = Livetext::Functions.instance_methods(false)
+    
+    functions_class_methods.each do |method_name|
+      # Skip methods that are already built-in (defined in the original functions.rb)
+      builtin_methods = [:code_lines, :ns, :isqrt, :reverse, :date, :time, :pwd, :rand, :link, :br, :yt, :simple_format, 
+                        :b, :i, :t, :s, :bi, :bt, :bs, :it, :is, :ts, :bit, :bis, :bts, :its, :bits]
+      next if builtin_methods.include?(method_name)
+      
+      # Create a lambda that calls the method on a new Livetext::Functions instance
+      function = ->(param) do
+        fobj = ::Livetext::Functions.new
+        # Set the Livetext instance and its variables for access in functions
+        fobj.live = parent
+        fobj.vars = parent.vars
+        method = fobj.method(method_name)
+        if method.parameters.empty?
+          fobj.send(method_name)
+        else
+          fobj.send(method_name, param)
+        end
+      end
+      
+      # Register with the function registry
+      parent.function_registry.register_user(method_name.to_s, function, source: :mixin, filename: @file)
+    end
   end
 
 end
