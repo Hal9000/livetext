@@ -1,14 +1,50 @@
-# Livetext User Documentation
+
+*[NOTE]: This document is strictly preliminary. It was largely AI-generated and contains errors.
+
+.br
+
+.h1 Livetext User Documentation
 
 Livetext transforms plain text to HTML with powerful formatting, variables, functions, and extensibility.
 
-## Installation
+.h2 Installation
 
 gem install livetext
 
-## Basic Text Formatting
+.h2 Getting Started
 
-Livetext uses simple markers for text formatting:
+.h3 Your First Document
+
+Create a file called hello.lt3:
+
+.h1 Hello World
+This is my first Livetext document!
+
+*This is bold text
+_This is italic text
+
+.set name=World
+Hello, $name!
+
+Process it with:
+livetext hello.lt3
+
+.h3 Basic Concepts
+
+Livetext processes text files (.lt3) and converts them to HTML. It supports:
+.list
+Text formatting with simple markers
+Variables for dynamic content
+Functions for reusable logic
+Dot commands for document control
+Mixins for extensibility
+.end
+
+.h2 Core Syntax
+
+.h3 Text Formatting
+
+Livetext uses prefix-only markers for text formatting:
 
 *This is bold text
 _This is italic text
@@ -17,133 +53,567 @@ _This is italic text
 
 You can combine them: *bold _italic text
 
-Note: The markers are processed and converted to HTML tags.
+Formatting Rules:
+.list
+Markers must be at the start of a word or after whitespace
+Formatting continues until the end of the word or line
+You can nest formatting: *bold _italic text
+Use \ to escape markers: \*literal asterisk
+.end
 
-## Variables
+.h3 Variables
 
-Variables store data and are referenced with \$variable. Predefined variables are always capitalized:
+Variables store data and are referenced with $variable syntax.
 
-- \$File - current file being processed
-- \$View - current view or context
+.h4 Predefined Variables
 
-Set variables with the .set command:
+Predefined variables are always capitalized:
+.list
+$File - current file being processed
+$View - current view or context
+$Date - current date
+$Time - current time
+.end
+
+.h4 Setting Variables
+
+Use the .set command to create variables:
 
 .set name=John
 .set count=42
+.set title=MyDocument
 
-Reference them: Hello $name, you have $count items.
+.h4 Referencing Variables
 
-## Dot Commands
+Reference variables anywhere in your document:
 
-Dot commands start with \. and control document processing:
+Hello $name, you have $count items.
+The title is: $title
 
-### Basic Commands
-.h1 Main Title
-.h2 Section Title
-.br
-.set variable=value
+.h4 Variable Scope
 
-### Function Definition
-.func myfunction
-  return "Hello, World!"
+Variables are global by default. Use instance variables for better organization:
+
+@live.vars.set(:user, "admin")
+@live.vars.get(:user)
+
+.h3 Functions
+
+Functions are called with $$function syntax.
+
+.h4 Built-in Functions
+
+Date and Time:
+.raw
+- $$date - current date (YYYY-MM-DD)
+- $$time - current time (HH:MM:SS)
 .end
 
-### Mixins and Imports
-.mixin tutorial
+Text Processing:
+.raw
+- $$reverse - reverse text
+- $$pwd - current working directory
+.end
 
-## Functions
+Formatting:
+.raw
+- $$br - line break
+- $$link[text|url] - create hyperlink
+.end
 
-Functions are called with \$\$function syntax.
+Math:
+.raw
+- $$isqrt[number] - integer square root
+- $$rand[min max] - random number
+.end
 
-### Built-in Functions
-$$date - current date
-$$time - current time
-$$pwd - current directory
+.h4 User-defined Functions
 
-### User-defined Functions
 Create functions with .func:
 
 .func greet
   return "Hello, $name!"
 .end
 
-Call them: $$greet
+.func format_title
+  return "<h1>#{param}</h1>"
+.end
 
-## Advanced Features
+Call them: $$greet and $$format_title:My Title
 
-### Custom Dot Commands
-Create reusable functionality with mixins:
+.h4 Functions with Complex Logic
 
+.func format_list
+  items = param.split(",")
+  html = "<ul>"
+  items.each { |item| html += "<li>#{item.strip}</li>" }
+  html += "</ul>"
+  return html
+.end
+
+.h4 Conditional Functions
+
+.func status
+  if param == "ok"
+    return "<span style='color: green'>✓ OK</span>"
+  else
+    return "<span style='color: red'>✗ Error</span>"
+  end
+.end
+
+.h2 Dot Commands Reference
+
+Dot commands start with . and control document processing.
+
+.h3 Basic Commands
+
+.h4 Headings
+.h1 Main Title
+.h2 Section Title
+.h3 Subsection Title
+.h4 Sub-subsection Title
+.h5 Level 5 Heading
+.h6 Level 6 Heading
+
+.h4 Text Control
+.br - line break
+.br 3 - multiple line breaks
+.para on - enable paragraph mode
+.para off - disable paragraph mode
+
+.h4 Variables
+.set name=value
+.set title=MyDocument
+
+.h3 Function Definition
+
+.h4 Simple Functions
+.func function_name
+  return "Hello, World!"
+.end
+
+.h4 Functions with Parameters
+.func greet
+  name = param || "World"
+  return "Hello, #{name}!"
+.end
+
+.h3 Mixins and Imports
+
+.h4 Using Mixins
+.comment
 .mixin tutorial
+.end
 
-Create a mixin file plugin/mytools.rb:
+Loads and executes the Ruby file plugin/tutorial.rb.
 
+.h4 Using Imports
+.comment
+.import tutorial
+.end
+
+Imports functionality from imports/tutorial.rb.
+
+.h4 Creating Mixins
+
+Create a file plugin/mytools.rb:
+
+.raw
 def sort_list(args, data)
   items = data.split("\n").sort
   items.join("\n")
 end
 
-### Variable Access in Functions
+def format_table(args, data)
+  rows = data.split("\n")
+  html = "<table border='1'>"
+  rows.each do |row|
+    cells = row.split(",")
+    html += "<tr>"
+    cells.each { |cell| html += "<td>#{cell.strip}</td>" }
+    html += "</tr>"
+  end
+  html += "</table>"
+  return html
+end
+.end
+
+.h3 Control Commands
+
+.h4 Comments
+.comment This is a comment
+This comment spans multiple lines
+.end
+
+.h4 Raw Text
+.raw
+This text will be output exactly as written
+No processing will be applied
+.end
+
+.h4 Debug
+.debug
+This will show debug output
+.end
+
+.h2 Advanced Features
+
+.h3 Custom Dot Commands
+
+Create reusable functionality with mixins:
+
+.mixin mytools
+
+Create a mixin file plugin/mytools.rb:
+
+.raw
+def sort_list(args, data)
+  items = data.split("\n").sort
+  items.join("\n")
+end
+
+def format_table(args, data)
+  rows = data.split("\n")
+  html = "<table border='1'>"
+  rows.each do |row|
+    cells = row.split(",")
+    html += "<tr>"
+    cells.each { |cell| html += "<td>#{cell.strip}</td>" }
+    html += "</tr>"
+  end
+  html += "</table>"
+  return html
+end
+
+def calculate(args, data)
+  expression = data.strip
+  begin
+    result = eval(expression)
+    return result.to_s
+  rescue => e
+    return "Error: #{e.message}"
+  end
+end
+.end
+
+.h3 Variable Access in Functions
+
 Functions can access variables through the Livetext instance:
 
+.raw
 class Livetext::Functions
   def get_user_info(param)
     user = @live.vars.User || "unknown"
     "User: #{user}"
   end
+  
+  def format_with_context(param)
+    context = @live.vars.Context || "default"
+    "<div class='#{context}'>#{param}</div>"
+  end
+  
+  def conditional_content(param)
+    if @live.vars.Debug == "true"
+      return "<div class='debug'>#{param}</div>"
+    else
+      return param
+    end
+  end
 end
+.end
 
-## Examples
+.h3 Error Handling
 
-### Simple Documentation
+Livetext provides graceful error handling:
+
+.list
+Missing files: Shows "file not found" error
+Invalid syntax: Displays syntax error messages
+Function errors: Returns error message in output
+Variable errors: Shows "[variable is undefined]"
+.end
+
+.h3 Debugging
+
+Use .debug to see what Livetext is processing:
+
+.debug
+This will show debug output including:
+- Variable values
+- Function calls
+- Processing steps
+.end
+
+.h2 Examples and Tutorials
+
+.h3 Simple Documentation
 .h1 API Reference
 .set version=1.2.3
+.set author=Development Team
 
-This is version $version of the API.
+This is version $version of the API, maintained by $author.
 
 .func format_code
   return "<pre><code>#{param}</code></pre>"
 .end
 
-$$format_code:function example() { return true; }
+.func format_method
+  return "<h3>#{param}</h3>"
+.end
 
-### Data Table
-.set items=apple,banana,cherry
+$$format_method:getUser()
+$$format_code:function getUser() { return user; }
 
-.h2 Fruit List
+.h3 Data Table Generation
+.set items=apple,banana,cherry,date,elderberry
+
+.h2 Fruit Inventory
 .func list_items
   items = param.split(",")
-  html = "<ul>"
-  items.each { |item| html += "<li>#{item}</li>" }
-  html += "</ul>"
+  html = "<table border='1'><tr><th>Item</th><th>Length</th></tr>"
+  items.each do |item|
+    html += "<tr><td>#{item.strip}</td><td>#{item.strip.length}</td></tr>"
+  end
+  html += "</table>"
   return html
 .end
 
 $$list_items:$items
 
-## Use Cases and Ideas
+.h3 Dynamic Content
 
-### Ad Hoc Solutions
-- **Sorted Lists**: Create a .sort command that sorts list items alphabetically
-- **Date Formatting**: Custom date functions for different locales
-- **Data Processing**: Transform CSV data into formatted tables
+.set current_date=$$date
+.set current_time=$$time
 
-### Plugin Possibilities
-- **PDF Generation**: Convert Livetext to PDF
-- **SVG Graphics**: Generate charts and diagrams
-- **Image Processing**: Integrate with RMagick for image manipulation
-- **Database Integration**: Pull data from databases
-- **API Integration**: Fetch data from web services
+.h2 System Status
+.func status_row
+  parts = param.split("|")
+  status = parts[1] == "ok" ? "✓" : "✗"
+  color = parts[1] == "ok" ? "green" : "red"
+  return "<tr><td>#{parts[0]}</td><td style='color: #{color}'>#{status} #{parts[1]}</td></tr>"
+.end
 
-## File Extensions
+.raw
+<table border="1">
+<tr><th>Component</th><th>Status</th></tr>
+$$status_row:Database|ok
+$$status_row:Web Server|ok
+$$status_row:Cache|error
+</table>
+.end
 
-- .lt3 - Livetext source files
-- .rb - Ruby mixin/plugin files
+.h3 Custom Plugin Example
 
-## Getting Help
+Create plugin/reporting.rb:
 
-Use .debug to see what Livetext is processing:
+.raw
+def generate_report(args, data)
+  lines = data.split("\n")
+  html = "<div class='report'>"
+  html += "<h2>Report Generated: #{Time.now.strftime('%Y-%m-%d %H:%M')}</h2>"
+  
+  lines.each do |line|
+    if line.start_with?("ERROR:")
+      html += "<div class='error'>#{line}</div>"
+    elsif line.start_with?("WARNING:")
+      html += "<div class='warning'>#{line}</div>"
+    else
+      html += "<div class='info'>#{line}</div>"
+    end
+  end
+  
+  html += "</div>"
+  return html
+end
 
-.debug
-This will show debug output
+def format_metrics(args, data)
+  metrics = data.split(",")
+  html = "<div class='metrics'>"
+  metrics.each do |metric|
+    name, value = metric.split(":")
+    html += "<div class='metric'><span class='name'>#{name}</span><span class='value'>#{value}</span></div>"
+  end
+  html += "</div>"
+  return html
+end
+.end
+
+Use it in your document:
+
+.mixin reporting
+
+.generate_report
+INFO: System started
+WARNING: High memory usage
+ERROR: Database connection failed
+INFO: Cache cleared
+.end
+
+.format_metrics
+CPU:85%,Memory:67%,Disk:23%
+.end
+
+.h2 Reference
+
+.h3 Complete Dot Commands List
+
+Document Structure:
+.list
+.h1 through .h6 - Headings
+.br n - Line breaks (n is optional, default 1)
+.para on|off - Paragraph mode
+.end
+
+Variables:
+.list
+.set name=value - Set variable
+.end
+
+Functions:
+.list
+.func name - Define function
+.end - End function definition
+.end
+
+Control:
+.list
+.comment - Comments
+.raw - Raw text
+.debug - Debug output
+.end
+
+Extensibility:
+.list
+.mixin name - Load mixin
+.import name - Import module
+.end
+
+.h3 Complete Functions List
+
+Built-in Functions:
+.list
+$$date - Current date
+$$time - Current time
+$$pwd - Current directory
+$$reverse[text] - Reverse text
+$$isqrt[number] - Integer square root
+$$rand[min max] - Random number
+$$br[n] - Line breaks
+$$link[text|url] - Hyperlink
+.end
+
+.h3 File Extensions
+.list
+.lt3 - Livetext source files
+.rb - Ruby mixin/plugin files
+.end
+
+.h3 Variable Reference
+
+Predefined Variables:
+.list
+$File - Current file
+$View - Current view
+$Date - Current date
+$Time - Current time
+.end
+
+.h2 Troubleshooting
+
+.h3 Common Errors
+
+"file not found"
+.list
+Check file path and name
+Ensure file exists in current directory or plugin directory
+.end
+
+"[variable is undefined]"
+.list
+Variable not set with .set
+Check variable name spelling
+Use \$variable to escape variable references
+.end
+
+"[Error evaluating $$function()]"
+.list
+Function not defined
+Check function name spelling
+Ensure function is properly defined with .func
+.end
+
+"Missing .end"
+.list
+Function or block not properly closed
+Add .end to close function definition
+.end
+
+.h3 Debugging Tips
+.list
+Use .debug to see processing steps
+Check variable values with .debug
+Verify file paths are correct
+Test functions individually
+Check syntax for missing .end
+.end
+
+.h3 Performance
+
+.list
+Large files: Process in chunks
+Complex functions: Optimize logic
+Many variables: Use instance variables
+Frequent processing: Consider caching
+.end
+
+.h3 Best Practices
+.list
+Organize code with mixins for reusability
+Use meaningful names for variables and functions
+Comment complex logic with .comment
+Test incrementally as you build
+Keep functions simple and focused
+Use consistent formatting for readability
+.end
+
+.h2 Use Cases and Ideas
+
+.h3 Documentation
+.list
+API documentation with dynamic examples
+Technical manuals with interactive elements
+User guides with conditional content
+Code documentation with syntax highlighting
+.end
+
+.h3 Content Management
+.list
+Blog posts with dynamic metadata
+Newsletters with personalized content
+Reports with real-time data
+Catalogs with filtering capabilities
+.end
+
+.h3 Development Tools
+.list
+Code generators with templates
+Configuration file processors
+Build system documentation
+Test result formatters
+.end
+
+.h3 Creative Writing
+.list
+Novels with character databases
+Poetry with dynamic formatting
+Scripts with scene management
+Interactive stories with branching
+.end
+
+.h3 Business Applications
+.list
+Invoice generators with calculations
+Report builders with charts
+Email templates with personalization
+Form processors with validation
 .end
