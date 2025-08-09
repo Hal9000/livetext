@@ -1,0 +1,149 @@
+# Livetext User Documentation
+
+Livetext transforms plain text to HTML with powerful formatting, variables, functions, and extensibility.
+
+## Installation
+
+gem install livetext
+
+## Basic Text Formatting
+
+Livetext uses simple markers for text formatting:
+
+*This is bold text
+_This is italic text
+`This is code
+~This is strikethrough
+
+You can combine them: *bold _italic text
+
+Note: The markers are processed and converted to HTML tags.
+
+## Variables
+
+Variables store data and are referenced with \$variable. Predefined variables are always capitalized:
+
+- \$File - current file being processed
+- \$View - current view or context
+
+Set variables with the .set command:
+
+.set name=John
+.set count=42
+
+Reference them: Hello $name, you have $count items.
+
+## Dot Commands
+
+Dot commands start with \. and control document processing:
+
+### Basic Commands
+.h1 Main Title
+.h2 Section Title
+.br
+.set variable=value
+
+### Function Definition
+.func myfunction
+  return "Hello, World!"
+.end
+
+### Mixins and Imports
+.mixin tutorial
+
+## Functions
+
+Functions are called with \$\$function syntax.
+
+### Built-in Functions
+$$date - current date
+$$time - current time
+$$pwd - current directory
+
+### User-defined Functions
+Create functions with .func:
+
+.func greet
+  return "Hello, $name!"
+.end
+
+Call them: $$greet
+
+## Advanced Features
+
+### Custom Dot Commands
+Create reusable functionality with mixins:
+
+.mixin tutorial
+
+Create a mixin file plugin/mytools.rb:
+
+def sort_list(args, data)
+  items = data.split("\n").sort
+  items.join("\n")
+end
+
+### Variable Access in Functions
+Functions can access variables through the Livetext instance:
+
+class Livetext::Functions
+  def get_user_info(param)
+    user = @live.vars.User || "unknown"
+    "User: #{user}"
+  end
+end
+
+## Examples
+
+### Simple Documentation
+.h1 API Reference
+.set version=1.2.3
+
+This is version $version of the API.
+
+.func format_code
+  return "<pre><code>#{param}</code></pre>"
+.end
+
+$$format_code:function example() { return true; }
+
+### Data Table
+.set items=apple,banana,cherry
+
+.h2 Fruit List
+.func list_items
+  items = param.split(",")
+  html = "<ul>"
+  items.each { |item| html += "<li>#{item}</li>" }
+  html += "</ul>"
+  return html
+.end
+
+$$list_items:$items
+
+## Use Cases and Ideas
+
+### Ad Hoc Solutions
+- **Sorted Lists**: Create a .sort command that sorts list items alphabetically
+- **Date Formatting**: Custom date functions for different locales
+- **Data Processing**: Transform CSV data into formatted tables
+
+### Plugin Possibilities
+- **PDF Generation**: Convert Livetext to PDF
+- **SVG Graphics**: Generate charts and diagrams
+- **Image Processing**: Integrate with RMagick for image manipulation
+- **Database Integration**: Pull data from databases
+- **API Integration**: Fetch data from web services
+
+## File Extensions
+
+- .lt3 - Livetext source files
+- .rb - Ruby mixin/plugin files
+
+## Getting Help
+
+Use .debug to see what Livetext is processing:
+
+.debug
+This will show debug output
+.end
