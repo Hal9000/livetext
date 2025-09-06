@@ -1,3 +1,4 @@
+<p>
 A copy command 
 does not interpret its input:
 This is not a comment:
@@ -5,3 +6,4 @@ This is not a comment:
 This is not a method:
 .no_such_method
 That's all.
+</p>

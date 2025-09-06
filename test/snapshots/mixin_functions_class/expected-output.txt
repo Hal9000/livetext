@@ -1,20 +1,27 @@
-Testing functions defined in Livetext::Functions class
 <p>
+Testing functions defined in Livetext::Functions class
+</p>
 
+<p>
 Now calling functions defined in Livetext::Functions class:
 Class function called with: test_parameter
-<p>
+</p>
 
+<p>
 And another one with brackets:
 Another class function called with: with brackets
-<p>
+</p>
 
+<p>
 And a function with no parameters:
 Simple class function with no parameters
-<p>
+</p>
 
+<p>
 Testing that the functions have access to Livetext::Vars:
 Vars test: param=some_value, View=[View is undefined]
-<p>
+</p>
 
+<p>
 That's all.
+</p>

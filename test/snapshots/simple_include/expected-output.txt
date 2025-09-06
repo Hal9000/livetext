@@ -1,7 +1,10 @@
+<p>
 Here I am
 trying to 
 include
 a simple 
 include file.
+</p>
 I hope that
 worked.
+</p>

@@ -1,18 +1,22 @@
- 1  System Info Variables:
- 2  Hostname: HAL9000
- 3  /Platform: .*x86_64-darwin\d+/
- 4  /Ruby Version: \d+\.\d+\.\d+/
- 5  Livetext Version: 0.9.58
- 6  <p>
- 7  
- 8  System Info Functions:
- 9  Hostname: HAL9000
-10  /Platform: .*x86_64-darwin\d+/
-11  /Ruby Version: \d+\.\d+\.\d+/
-12  Livetext Version: \d+\.\d+\.\d+/
-13  <p>
-14  
-15  Date Formatting Functions:
-16  /Default: \d{4}-\d{2}-\d{2}/
-17  /Days ago: \d{4}-\d{2}-\d{2}/
-18  /Days from now: \d{4}-\d{2}-\d{2}/
+ 1  <p>
+ 2  System Info Variables:
+ 3  Hostname: HAL9000
+ 4  /Platform: .*x86_64-darwin\d+/
+ 5  /Ruby Version: \d+\.\d+\.\d+/
+ 6  Livetext Version: 0.9.59
+ 7  </p>
+ 8  
+ 9  <p>
+10  System Info Functions:
+11  Hostname: HAL9000
+12  /Platform: .*x86_64-darwin\d+/
+13  /Ruby Version: \d+\.\d+\.\d+/
+14  /Livetext Version: \d+\.\d+\.\d+/
+15  </p>
+16  
+ 17  <p>
+ 18  Date Formatting Functions:
+ 19  /Default: \d{4}-\d{2}-\d{2}/
+ 20  /Days ago: \d{4}-\d{2}-\d{2}/
+ 21  /Days from now: \d{4}-\d{2}-\d{2}/
+ 22  </p>

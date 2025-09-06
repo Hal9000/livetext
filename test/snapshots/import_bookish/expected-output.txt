@@ -8,3 +8,4 @@
   <td width=0% valign=top>bar</td>
 </tr>
 </table>
+</p>

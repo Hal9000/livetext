@@ -188,13 +188,23 @@ class Livetext::UserAPI
     return if @live.nopass
     if line == "\n"
       unless @live.nopara
-        out "<p>" 
-        out
+        out "</p>\n\n<p>"
       end
     else
+      # Start first paragraph if needed
+      if @live.body.empty? && !@live.nopara
+        out "<p>"
+      end
       text = @expander.format(line.chomp)
       out text
     end
+  end
+
+  def close_paragraph
+    return if @live.nopara
+    return if @live.body.empty?
+    return if @live.body.end_with?("</p>")
+    out "</p>"
   end
 
   def out(str = "", file = nil)

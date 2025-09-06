@@ -1,5 +1,7 @@
+<p>
 Make sure 
 a nonexistent include
 will give an error.
-<p>
+</p>
 
+<p>

@@ -1,3 +1,4 @@
+<p>
 This is my 
 source file
 which includes file2 here:

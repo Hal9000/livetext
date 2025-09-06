@@ -188,6 +188,7 @@ class Livetext
       break if line.nil?
       process_line(line)
     end
+    api.close_paragraph  # Close any open paragraph
     result = @body
 #   @body = ""
     result

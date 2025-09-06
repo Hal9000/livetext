@@ -1,12 +1,15 @@
+<p>
 Testing no parameters:
 No parameters method called
-<p>
+</p>
 
+<p>
 Testing with args and data:
 Args: ["arg1", "arg2"], Data: "arg1 arg2"
 This is the data line
-<p>
+</p>
 
+<p>
 Testing with body:
 Args: ["arg1", "arg2"], Data: "arg1 arg2"
 Body has 3 lines:
@@ -19,3 +22,4 @@ Raw body has 3 lines:
   1: This is line 1 of the raw body
   2: This is line 2 of the raw body
   3: This is line 3 of the raw body
+</p>

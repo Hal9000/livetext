@@ -1,16 +1,23 @@
-<p>
+</p>
 
+<p>
 Testing STILL more functions here...
-<p>
+</p>
 
 <p>
+</p>
 
+<p>
 Now... let's try passing a variable to a function. Will this work??
-<p>
+</p>
 
+<p>
 Variable $alpha is regal, which reversed is lager
-<p>
+</p>
 
+<p>
 That's all.
-<p>
+</p>
 
+<p>
+</p>

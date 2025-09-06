@@ -1,68 +1,83 @@
+<p>
 # Main file - Level 1
 # This file includes level2 and tests all variables and functions from all levels
-<p>
+</p>
 
+<p>
 # Include level2 (which includes level3)
 # Level 2 - Middle level
 # This file includes level3 and defines its own variables and functions
-<p>
+</p>
 
+<p>
 # Level 3 - Deepest level
 # This file defines variables and functions that should be accessible to all higher levels
-<p>
+</p>
 
+<p>
 This is content from level 3.
 The deep variable is: I am from level 3
 The deep number is: 42
+</p>
 This is content from level 2.
 The middle variable is: I am from level 2
 The middle number is: 100
-<p>
+</p>
 
+<p>
 # Test using deep level variables and functions
 Deep variable from level 2: I am from level 3
 Deep function call: Deep function called with: from level 2
 Deep math: 42 = 42
-<p>
+</p>
 
+<p>
 # Test our own variables and functions
 Middle function call: Middle function called with: from level 2
 Combined variables: Deep: I am from level 3, Middle: I am from level 2
-<p>
+</p>
 
+<p>
 # Test deep method from level 3
 Deep method called from level 3
+</p>
 # Test all variables from all levels
 Main variable: I am from main level
 Middle variable: I am from level 2  
 Deep variable: I am from level 3
-<p>
+</p>
 
+<p>
 # Test all functions from all levels
 Main function: Main function called with: from main
 Middle function: Middle function called with: from main
 Deep function: Deep function called with: from main
-<p>
+</p>
 
+<p>
 # Test math functions
 Deep math: 20 = 20
 Main number: 999
 Middle number: 100
 Deep number: 42
-<p>
+</p>
 
+<p>
 # Test combined functions
 Combine vars: Deep: I am from level 3, Middle: I am from level 2
 Test all levels: Main: I am from main level, Middle: I am from level 2, Deep: I am from level 3
-<p>
+</p>
 
+<p>
 # Test methods from all levels
 Main method called from main level
 Middle method called from level 2
 Deep method called from level 3
-<p>
+</p>
 
+<p>
 # Test that we can still access everything after the include
 Final test - deep function: Deep function called with: final call
 Final test - middle function: Middle function called with: final call
 Final test - main function: Main function called with: final call
+</p>

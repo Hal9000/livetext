@@ -1,8 +1,12 @@
-Testing .import:
 <p>
+Testing .import:
+</p>
 
+<p>
 Now call a method:
 Hello, world.
-<p>
+</p>
 
+<p>
 That's all.
+</p>

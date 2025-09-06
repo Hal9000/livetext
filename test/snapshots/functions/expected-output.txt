@@ -1,20 +1,27 @@
+<p>
 Testing out
 some functions 
 here...
-<p>
+</p>
 
+<p>
 I am calling Eureka! here...
 Let's see 
 what happens.
-<p>
+</p>
 
+<p>
 Functions can take a parameter in brackets 
 (which it can parse itself as needed):
-<p>
+</p>
 
+<p>
 The result is 4.0 as I see it.
-<p>
+</p>
 
+<p>
 Some functions like date and time are predefined.
-<p>
+</p>
 
+<p>
+</p>

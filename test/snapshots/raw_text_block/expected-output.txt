@@ -1,3 +1,4 @@
+<p>
 This text block will be passed thru
 with no interpretation or processing:
 .comment
@@ -14,3 +15,4 @@ Or these:
   `(alpha male) 
   _(beta max) 
   *(gamma rays)
+</p>

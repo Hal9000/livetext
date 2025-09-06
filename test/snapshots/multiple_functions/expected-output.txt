@@ -1,5 +1,8 @@
-Testing multiple user functions in the same document...
 <p>
+Testing multiple user functions in the same document...
+</p>
 
+<p>
 Calling all functions:
 one
+</p>

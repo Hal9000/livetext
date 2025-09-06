@@ -1,9 +1,13 @@
+<p>
 Here I am
 testing a simple import
-<p>
+</p>
 
+<p>
 Now call a method:
 Hello, world.
-<p>
+</p>
 
+<p>
 That's all.
+</p>

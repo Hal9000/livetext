@@ -1,6 +1,8 @@
+<p>
 It is an error
 to specify .end
 without something
 beginning a block:
-<p>
+</p>
 
+<p>

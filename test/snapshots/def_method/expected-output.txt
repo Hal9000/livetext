@@ -1,7 +1,10 @@
+<p>
 abc
 123
 xyz
-<p>
+</p>
 
+<p>
 xyzzy
 123
+</p>

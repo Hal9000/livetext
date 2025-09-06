@@ -1,7 +1,9 @@
+<p>
 The .r can be used to output single lines
 without interpretation:
-<p>
+</p>
 
+<p>
 Ordinary line... plus two blank lines:
 
 
@@ -9,3 +11,4 @@ No formatting: *foo `foo _foo ~foo
 No variables: $alpha $beta
 No functions: $$this $$that
 That's all.
+</p>

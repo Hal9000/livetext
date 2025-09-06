@@ -1,6 +1,8 @@
-Here is an alphabetized list:
 <p>
+Here is an alphabetized list:
+</p>
 
+<p>
     aardvark
     anamorphic
     anarchist
@@ -18,6 +20,8 @@ Here is an alphabetized list:
     quark
     zootrope
     zymurgy
-<p>
+</p>
 
+<p>
 That's all.
+</p>

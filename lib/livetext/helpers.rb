@@ -89,6 +89,7 @@ module Livetext::Helpers
       success = process_line(line)
       break unless success
     end
+    api.close_paragraph  # Close any open paragraph
     val = finalize rescue nil
     @body    # FIXME?   @body.join("\n")  # array
     return true

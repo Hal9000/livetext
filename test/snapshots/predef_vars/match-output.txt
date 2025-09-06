@@ -1,6 +1,8 @@
- 1  Here we go...
- 2  File = source.lt3
- 3  /FileDir = .*.test.snapshots.predef_vars/
- 4  /User = [A-Za-z][A-Za-z0-9]*/
- 5  /Version = 0\.\d{1,2}\.\d{1,2}/
- 6  NoSuchVar = [NoSuchVar is undefined]
+ 1  <p>
+ 2  Here we go...
+ 3  File = source.lt3
+ 4  /FileDir = .*.test.snapshots.predef_vars/
+ 5  /User = [A-Za-z][A-Za-z0-9]*/
+ 6  /Version = 0\.\d{1,2}\.\d{1,2}/
+ 7  NoSuchVar = [NoSuchVar is undefined]
+ 8  </p>

@@ -25,3 +25,4 @@
 <li><strong>$$weekday</strong> - builtin</li>
 <li><strong>$$year</strong> - builtin</li>
 </ul>
+</p>

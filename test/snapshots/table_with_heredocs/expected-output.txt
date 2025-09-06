@@ -1,6 +1,8 @@
-Testing heredocs (used in a table)
 <p>
+Testing heredocs (used in a table)
+</p>
 
+<p>
 <br>
 
 <center><table width=90% cellpadding=5>
@@ -21,3 +23,4 @@ row 2<br><br>
 col 2<br></td>
 </tr>
 </table></center>
+</p>

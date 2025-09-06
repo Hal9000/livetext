@@ -1,3 +1,4 @@
+<p>
 The copy command
 copies any file
 without interpretation,
@@ -5,3 +6,4 @@ such as:
 a simple 
 include file.
 That is all.
+</p>
