@@ -12,8 +12,9 @@ vrx  = /\((.*)\)/
 version = vrx.match(info).to_a[1]
 
 rbver = `rbenv version`.split[0]
+rbver2 = "3.2.0"
 
-lib = "/Users/Hal/.rbenv/versions/#{rbver}/lib/ruby/gems/#{rbver}/gems/livetext-#{version}/lib"
+lib = "/Users/Hal/.rbenv/versions/#{rbver}/lib/ruby/gems/#{rbver2}/gems/livetext-#{version}/lib"
 puts
 puts "  Copying repo to gem at: #{lib.inspect}"
 
