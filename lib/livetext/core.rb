@@ -60,13 +60,13 @@ class Livetext
   def initialize(output = ::STDOUT)  # Livetext
     @body = ""
     @indentation = [0]
+    @function_registry = Livetext::FunctionRegistry.new
+    @variables = Livetext::VariableManager.new(self)
+    @formatter = Livetext::Formatter.new(self)
     @api = UserAPI.new(self)
     @output = ::Livetext.output = output
     @html = Livetext::HTML.new(@api)
     @sources = []
-    @function_registry = Livetext::FunctionRegistry.new
-    @variables = Livetext::VariableManager.new(self)
-    @formatter = Livetext::Formatter.new(self)
 # puts "------ init: self = "
 # p self
   end

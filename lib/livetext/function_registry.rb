@@ -5,7 +5,7 @@ class Livetext::FunctionRegistry
     @builtin_functions = {}
     @metadata = {}
     register_builtin_functions
-    puts "DEBUG: Registered #{@builtin_functions.size} builtin functions" if ENV['DEBUG']
+    # puts "DEBUG: Registered #{@builtin_functions.size} builtin functions" if ENV['DEBUG']
   end
   
   def register_user(name, function, source: :inline, filename: nil)
@@ -98,7 +98,7 @@ class Livetext::FunctionRegistry
       end
     end)
     register_builtin(:br, ->(param) do
-      n = (param || "1").to_i
+      n = (param && !param.empty?) ? param.to_i : 1
       "<br>" * n
     end)
     register_builtin(:reverse, ->(param) do

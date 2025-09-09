@@ -1,0 +1,18 @@
+1 <h3>Testing Simple Function API</h3>
+2 <p>Date: 2025-09-09</p>
+3 /<p>Time: \d{2}:\d{2}:\d{2}</p>/
+4 /<p>Directory: .*livetext.*</p>/
+5 <p>Platform: universal.x86_64-darwin22</p>
+6 <p>Ruby version: 2.6.10</p>
+7 <p>Livetext version: 0.9.60</p>
+8 <p>Reverse of 'hello': olleh</p>
+9 <p>Square root of 16: 4</p>
+10 /<p>Random \(1-10\): \d+</p>/
+11 /<p>Link: <a style='text-decoration: none' href='https://google\.com'>Google</a></p>/
+12 <p>Line breaks: <br><br></p>
+13 <p>Date exists: true</p>
+14 <p>Nonexistent exists: false</p>
+15 <p>Total functions: 23</p>
+16 /<p>First 5 functions: br, date, day, days_ago, days_from_now</p>/
+17 <p><strong>Simple API works!</strong></p>
+18 </p>

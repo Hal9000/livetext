@@ -1,0 +1,31 @@
+.dot_def test_simple_func_api args
+  api.out "<h3>Testing Simple Function API</h3>"
+  
+  # Test basic function calls
+  api.out "<p>Date: #{api.funcs.date()}</p>"
+  api.out "<p>Time: #{api.funcs.time()}</p>"
+  api.out "<p>Directory: #{api.funcs.pwd()}</p>"
+  api.out "<p>Platform: #{api.funcs.platform()}</p>"
+  api.out "<p>Ruby version: #{api.funcs.ruby_version()}</p>"
+  api.out "<p>Livetext version: #{api.funcs.livetext_version()}</p>"
+  
+  # Test functions with parameters
+  api.out "<p>Reverse of 'hello': #{api.funcs.reverse('hello')}</p>"
+  api.out "<p>Square root of 16: #{api.funcs.isqrt('16')}</p>"
+  api.out "<p>Random (1-10): #{api.funcs.rand('1 10')}</p>"
+  api.out "<p>Link: #{api.funcs.link('Google|https://google.com')}</p>"
+  api.out "<p>Line breaks: #{api.funcs.br('2')}</p>"
+  
+  # Test function existence
+  api.out "<p>Date exists: #{api.funcs.exists?('date')}</p>"
+  api.out "<p>Nonexistent exists: #{api.funcs.exists?('nonexistent')}</p>"
+  
+  # Test function listing
+  functions = api.funcs.list
+  api.out "<p>Total functions: #{functions.length}</p>"
+  api.out "<p>First 5 functions: #{functions.first(5).join(', ')}</p>"
+  
+  api.out "<p><strong>Simple API works!</strong></p>"
+.end
+
+.test_simple_func_api

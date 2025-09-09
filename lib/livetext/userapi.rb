@@ -1,5 +1,6 @@
 require_relative 'expansion'
 require_relative 'html'
+require_relative 'function_caller'
 
 # Encapsulate the UserAPI as a class
 
@@ -19,6 +20,7 @@ class Livetext::UserAPI
     @vars = live.vars
     @html = Livetext::HTML.new(self)
     @expander = Livetext::Expansion.new(live)
+    @funcs = Livetext::FunctionCaller.new(live.function_registry)
   end
 
   def api
@@ -53,7 +55,7 @@ class Livetext::UserAPI
   end
 
   def expand_functions(str)
-    @expander.expand_functions(str)
+    @expander.expand_function_calls(str)
   end
 
   def setvar(var, val)   # FIXME
@@ -243,6 +245,10 @@ class Livetext::UserAPI
 
   def debug(*args)
     TTY.puts *args if @live.debug
+  end
+  
+  def funcs
+    @funcs
   end
 end
 
