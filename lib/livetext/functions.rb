@@ -20,6 +20,11 @@ class Livetext::Functions
     @vars = nil
   end
 
+  # Simple method to access the class variable
+  def api
+    self.class.api
+  end
+
   # Helper method to access variables with fallback to global Livetext::Vars
   def get_var(name)
     return @vars.get(name) if @vars

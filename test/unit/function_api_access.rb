@@ -31,8 +31,8 @@ class TestFunctionAPIAccess < Minitest::Test
     Livetext::Functions.class_eval do
       def test_asset_function(param)
         # This mimics the asset function from Scriptorium that needs api.vars
-        vname = self.class.api.vars.to_h[:View]
-        postid = self.class.api.vars.to_h[:"post.id"]
+        vname = api.vars.to_h[:View]
+        postid = api.vars.to_h[:"post.id"]
         "view=#{vname}, post=#{postid}, file=#{param}"
       end
     end
@@ -47,8 +47,8 @@ class TestFunctionAPIAccess < Minitest::Test
     # Define a function that needs access to api.vars but takes no parameters
     Livetext::Functions.class_eval do
       def test_view_info
-        vname = self.class.api.vars.to_h[:View]
-        postid = self.class.api.vars.to_h[:"post.id"]
+        vname = api.vars.to_h[:View]
+        postid = api.vars.to_h[:"post.id"]
         "view=#{vname}, post=#{postid}"
       end
     end
