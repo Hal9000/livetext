@@ -3,7 +3,7 @@
  3  Hostname: HAL9000
  4  /Platform: .*x86_64-darwin\d+/
  5  /Ruby Version: \d+\.\d+\.\d+/
- 6  Livetext Version: 0.9.61
+ 6  /Livetext Version: \d+\.\d+\.\d+/
  7  </p>
  8  
  9  <p>

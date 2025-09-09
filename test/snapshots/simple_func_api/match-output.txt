@@ -4,7 +4,7 @@
 4 /<p>Directory: .*livetext.*</p>/
 5 <p>Platform: universal.x86_64-darwin22</p>
 6 <p>Ruby version: 2.6.10</p>
-7 <p>Livetext version: 0.9.61</p>
+7 /<p>Livetext version: \d+\.\d+\.\d+<\/p>/
 8 <p>Reverse of 'hello': olleh</p>
 9 <p>Square root of 16: 4</p>
 10 /<p>Random \(1-10\): \d+</p>/

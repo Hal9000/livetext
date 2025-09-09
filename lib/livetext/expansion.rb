@@ -59,6 +59,8 @@ class Livetext::Expansion
     if result.start_with?("[Error evaluating $$#{name}(")
       # Try old Livetext::Functions system
       fobj = ::Livetext::Functions.new
+      # Set api on Livetext::Functions so functions can access it
+      Livetext::Functions.api = @live.api
       old_result = fobj.send(name, param) rescue nil
       return old_result.to_s if old_result
       
