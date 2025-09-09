@@ -162,6 +162,9 @@ class Livetext
     # Set variables first
     @variables.set_multiple(vars) unless vars.empty?
     
+    # Set api on Livetext::Functions so all functions can access it
+    Livetext::Functions.api = @api
+    
     # Process based on input type
     case
     when file && text.nil?
