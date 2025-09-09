@@ -28,6 +28,18 @@ class Livetext::FunctionRegistry
     elsif @builtin_functions[name_sym]
       call_function(name, @builtin_functions[name_sym], param)
     else
+      # Fall back to Livetext::Functions for backward compatibility
+      fobj = ::Livetext::Functions.new
+      if fobj.respond_to?(name_sym)
+        method = fobj.method(name_sym)
+        if method.parameters.empty?
+          result = fobj.send(name_sym)
+        else
+          result = fobj.send(name_sym, param)
+        end
+        return result.to_s if result
+      end
+      
       "[Error evaluating $$#{name}(#{param})]"
     end
   end

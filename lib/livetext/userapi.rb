@@ -20,7 +20,7 @@ class Livetext::UserAPI
     @vars = live.vars
     @html = Livetext::HTML.new(self)
     @expander = Livetext::Expansion.new(live)
-    @funcs = Livetext::FunctionCaller.new(live.function_registry)
+    @funcs = Livetext::FunctionCaller.new(live.function_registry, self)
   end
 
   def api

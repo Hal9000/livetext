@@ -9,6 +9,7 @@ class Livetext::Functions
 
   class << self
     attr_accessor :param   # kill this?
+    attr_accessor :api
   end
 
   # Instance variables for accessing the Livetext instance and its variables

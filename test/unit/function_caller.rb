@@ -5,7 +5,8 @@ require_relative '../../lib/livetext/function_caller'
 class TestFunctionCaller < Minitest::Test
   def setup
     @registry = Livetext::FunctionRegistry.new
-    @caller = Livetext::FunctionCaller.new(@registry)
+    @api = Object.new  # Mock api object for testing
+    @caller = Livetext::FunctionCaller.new(@registry, @api)
   end
 
   def test_calls_builtin_functions
